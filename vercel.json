@@ -24,6 +24,18 @@
       "dest": "/$1"
     },
     {
+      "src": "/home.html",
+      "dest": "/home.html"
+    },
+    {
+      "src": "/editor.html",
+      "dest": "/editor.html"
+    },
+    {
+      "src": "/gettingstarted.html",
+      "dest": "/gettingstarted.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }

@@ -157,6 +157,14 @@ export default defineConfig({
     emptyOutDir: true,
     minify: 'esbuild',
     copyPublicDir: true,
+    rollupOptions: {
+      input: {
+        index: path.resolve(process.cwd(), 'src/app/index.html'),
+        home: path.resolve(process.cwd(), 'src/app/home.html'),
+        editor: path.resolve(process.cwd(), 'src/app/editor.html'),
+        gettingstarted: path.resolve(process.cwd(), 'src/app/gettingstarted.html'),
+      }
+    }
   },
   resolve: {
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
