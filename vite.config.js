@@ -2,7 +2,22 @@ import { defineConfig } from 'vite'
 import fs from 'fs'
 import path from 'path'
 
-// Plugin para servir CSS raw (sem PostCSS) para arquivos com template literals
+/**
+ * Processa template literals CSS em tempo de build.
+ * ${css_vh(N)} → Nvh  |  ${css_vw(N)} → Nvw
+ * ${N * scaleMultiplier} → Npx  |  ${scaleMultiplier} → 1
+ */
+function processTemplateLiteralCss(content) {
+  content = content.replace(/\$\{css_vh\(([^)]+)\)\}/g, (_, n) => parseFloat(n).toFixed(3) + 'vh')
+  content = content.replace(/\$\{css_vw\(([^)]+)\)\}/g, (_, n) => parseFloat(n).toFixed(3) + 'vw')
+  content = content.replace(/\$\{([0-9.]+)\s*\*\s*scaleMultiplier\}/g, (_, n) => parseFloat(n).toFixed(3) + 'px')
+  content = content.replace(/\$\{scaleMultiplier\}/g, '1')
+  // Fallback para qualquer expressão restante
+  content = content.replace(/\$\{[^}]+\}/g, '1px')
+  return content
+}
+
+
 const rawCssPlugin = {
   name: 'raw-css-loader',
   resolveId(id) {
@@ -59,26 +74,26 @@ const handleTemplateLiteralCss = {
   load(id) {
     if (id.endsWith('.css') && !id.includes('node_modules')) {
       try {
-        const content = fs.readFileSync(id, 'utf-8')
+        let content = fs.readFileSync(id, 'utf-8')
         if (content.includes('${')) {
-          // Retorna CSS vazio para evitar erro no PostCSS
-          // O app carrega estes arquivos dinamicamente via preprocessAndLoadCss
-          return '/* template literal CSS - loaded dynamically */'
+          content = processTemplateLiteralCss(content)
+          return content
         }
       } catch (e) { /* ignore */ }
     }
   },
   writeBundle(options) {
-    // Copia os CSS originais com template literals para o dist
+    // Também copia os CSS processados para o dist/css/ para acesso direto
     const cssDir = path.resolve(process.cwd(), 'src/app/css')
     const outDir = path.resolve(options.dir || path.resolve(process.cwd(), 'dist'), 'css')
     if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true })
     fs.readdirSync(cssDir).forEach(file => {
       if (file.endsWith('.css')) {
-        const content = fs.readFileSync(path.join(cssDir, file), 'utf-8')
+        let content = fs.readFileSync(path.join(cssDir, file), 'utf-8')
         if (content.includes('${')) {
-          fs.writeFileSync(path.join(outDir, file), content)
+          content = processTemplateLiteralCss(content)
         }
+        fs.writeFileSync(path.join(outDir, file), content)
       }
     })
   }
