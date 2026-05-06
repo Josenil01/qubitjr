@@ -10,17 +10,19 @@ const { createClient } = require('@supabase/supabase-js');
 
 const router = express.Router();
 
-// Inicializar cliente Supabase
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('❌ Erro: SUPABASE_URL ou SUPABASE_ANON_KEY não configurados');
+// Lazy Supabase client — reads env vars at request time to work in Vercel serverless
+let _supabase = null;
+function getSupabase() {
+  if (_supabase) return _supabase;
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_ANON_KEY;
+  if (!url || !key) {
+    console.error('❌ SUPABASE_URL or SUPABASE_ANON_KEY not set. Available SUPABASE keys:', Object.keys(process.env).filter(k => k.startsWith('SUPABASE')));
+    return null;
+  }
+  _supabase = createClient(url, key);
+  return _supabase;
 }
-
-const supabase = supabaseUrl && supabaseAnonKey
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
 
 const BUCKET_NAME = 'media';
 
@@ -29,6 +31,8 @@ const BUCKET_NAME = 'media';
  * Baixar/obter URL do arquivo de mídia
  */
 router.get('/:filename', async (req, res) => {
+  const supabase = getSupabase();
+  if (!supabase) return res.status(503).json({ error: 'Database not configured' });
   try {
     const { filename } = req.params;
 
@@ -65,6 +69,8 @@ router.get('/:filename', async (req, res) => {
  * Body: { filename: string, data: base64 }
  */
 router.post('/', async (req, res) => {
+  const supabase = getSupabase();
+  if (!supabase) return res.status(503).json({ error: 'Database not configured' });
   try {
     const { filename, data } = req.body;
 
@@ -121,6 +127,8 @@ router.post('/', async (req, res) => {
  * Deletar arquivo de mídia
  */
 router.delete('/:filename', async (req, res) => {
+  const supabase = getSupabase();
+  if (!supabase) return res.status(503).json({ error: 'Database not configured' });
   try {
     const { filename } = req.params;
 
@@ -155,6 +163,8 @@ router.delete('/:filename', async (req, res) => {
  * Listar arquivos de mídia
  */
 router.post('/list', async (req, res) => {
+  const supabase = getSupabase();
+  if (!supabase) return res.status(503).json({ error: 'Database not configured' });
   try {
     const { limit = 100 } = req.body;
 
