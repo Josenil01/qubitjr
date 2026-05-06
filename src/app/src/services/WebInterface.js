@@ -112,7 +112,8 @@ class WebInterface {
       return {
         success: result.success,
         changes: result.changes,
-        lastID: result.lastID
+        lastID: result.lastID,
+        data: result.data
       };
     } catch (error) {
       console.error('[WebInterface] database_stmt error:', error);
@@ -377,7 +378,8 @@ class WebInterface {
           }
           
           // Se for um asset dentro de assets/
-          const response = await fetch(`assets/${filename}`);
+          const assetUrl = filename.startsWith('assets/') ? filename : `assets/${filename}`;
+          const response = await fetch(assetUrl);
           if (response.ok) {
             const content = await response.text();
             if (fcn) fcn(content);
