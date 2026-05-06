@@ -79,12 +79,23 @@ function buildSelectQuery(supabase, sql, values = []) {
 }
 
 /**
+ * Convert a millisecond-epoch timestamp string to ISO-8601 for Postgres.
+ * ScratchJr stores mtime/ctime as 13-digit ms strings; Postgres TIMESTAMP rejects them.
+ */
+function sanitizeValue(val) {
+  if (typeof val === 'string' && /^\d{13}$/.test(val)) {
+    return new Date(parseInt(val, 10)).toISOString();
+  }
+  return val;
+}
+
+/**
  * Translate INSERT / UPDATE / DELETE SQL into a Supabase mutation.
  */
 function buildMutationQuery(supabase, sql, values = []) {
   const sqlLower = sql.toLowerCase().trim();
   let valIdx = 0;
-  const nextVal = () => values[valIdx++];
+  const nextVal = () => sanitizeValue(values[valIdx++]);
 
   // INSERT INTO table (col1,col2,...) VALUES (?,?,...)
   if (sqlLower.startsWith('insert')) {
