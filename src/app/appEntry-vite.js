@@ -242,14 +242,24 @@ async function loadPage(page) {
     console.log('[AppEntry] 6️⃣ ½ Pré-carregando PNGs para watermarks...');
     console.log('[AppEntry] DEBUG: window.MediaLib =', !!window.MediaLib, 'window.MediaLib.sprites =', !!(window.MediaLib && window.MediaLib.sprites), 'window.PNGCache =', !!window.PNGCache);
     if (window.MediaLib && window.MediaLib.sprites && window.PNGCache) {
-      const spriteNames = window.MediaLib.sprites
-        .map(item => item.name)
-        .filter(name => name); // remover nomes vazios
+      // Pré-carregar usando md5 (nome do arquivo) e criar alias pelo name (nome exibido)
+      const spriteItems = window.MediaLib.sprites.filter(item => item.md5);
+      const spriteFileNames = spriteItems
+        .map(item => item.md5.replace(/\.[^.]+$/, ''))
+        .filter(name => name);
+      const spriteNames = spriteItems.map(item => item.name).filter(name => name);
       
-      console.log('[AppEntry] Sprites para pré-carregar:', spriteNames);
-      if (spriteNames.length > 0) {
-        await window.PNGCache.preload(spriteNames);
-        console.log('[AppEntry] ✅ PNGs pré-carregadas:', Object.keys(window.PNGCache.cache || {}));
+      console.log('[AppEntry] Sprites para pré-carregar:', spriteFileNames.length);
+      if (spriteFileNames.length > 0) {
+        await window.PNGCache.preload(spriteFileNames);
+        // Criar aliases: cache[name] = cache[md5fileName] para que getWatermark(this.name) funcione
+        spriteItems.forEach(item => {
+          const fileKey = item.md5.replace(/\.[^.]+$/, '');
+          if (item.name && item.name !== fileKey && window.PNGCache.cache[fileKey]) {
+            window.PNGCache.cache[item.name] = window.PNGCache.cache[fileKey];
+          }
+        });
+        console.log('[AppEntry] ✅ PNGs pré-carregadas:', Object.keys(window.PNGCache.cache || {}).length);
       }
     } else {
       console.warn('[AppEntry] ⚠️ Não foi possível pré-carregar PNGs - MediaLib.sprites ou PNGCache indisponíveis');
