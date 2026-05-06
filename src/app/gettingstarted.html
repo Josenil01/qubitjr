@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="mobile-web-app-capable" content="yes">
+<meta http-equiv="cache-control" content="no-cache">
+<meta charset="utf-8">
+
+<head>
+<title>ScratchJr</title>
+
+<!-- CSS carregado direto (sem processamento Vite) para suportar template literals -->
+<link rel="stylesheet" href="./css/font.css">
+<link rel="stylesheet" href="./css/base.css">
+<link rel="stylesheet" href="./css/start.css">
+<link rel="stylesheet" href="./css/thumbs.css">
+<link rel="stylesheet" href="./css/editor.css">
+<link rel="stylesheet" href="./css/editorleftpanel.css">
+<link rel="stylesheet" href="./css/editorstage.css">
+<link rel="stylesheet" href="./css/editormodal.css">
+<link rel="stylesheet" href="./css/librarymodal.css">
+<link rel="stylesheet" href="./css/lobby.css">
+<link rel="stylesheet" href="./css/paintlook.css">
+<link rel="stylesheet" href="./css/gs.css">
+
+<script>
+    window.scratchJrPage = 'gettingStarted';
+    window.API_URL = window.API_URL || 'http://localhost:5000/api';
+</script>
+<!-- Vite bundler: resolve todas as dependências npm e ES6 modules -->
+<script type="module" src="./appEntry-vite.js"></script>
+
+</head>
+<body>
+<div class="tutorial" id="tutorialmode">
+  <div class="closehelp" id="closeHelp"></div>
+  <div class="introvideocontainer">
+      <video class="introvideo" id="myVideo" controls></video>
+  </div>
+</div>
+</body>
+</html>

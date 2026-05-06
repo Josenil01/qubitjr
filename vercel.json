@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "name": "ScratchJr",
+  "buildCommand": "npm run install:all && npm run build",
+  "devCommand": "npm run dev",
+  "env": {
+    "SUPABASE_URL": "@SUPABASE_URL",
+    "SUPABASE_ANON_KEY": "@SUPABASE_ANON_KEY",
+    "SUPABASE_SERVICE_ROLE_KEY": "@SUPABASE_SERVICE_ROLE_KEY"
+  },
+  "functions": {
+    "backend/src/index.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/src/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "src/app"
+    }
+  ]
+}
