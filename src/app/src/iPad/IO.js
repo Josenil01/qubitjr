@@ -188,6 +188,8 @@ export default class IO {
     }
 
     static getObject (md5, fcn) {
+        // Ensure md5 is a string (Supabase returns numeric ids as integers)
+        if (md5 !== null && md5 !== undefined) md5 = String(md5);
         console.log('[IO.getObject] md5:', md5);
         if (!md5 || md5 === 'null' || md5 === 'undefined') {
             console.error('[IO.getObject] ❌ md5 é null/undefined! Não posso carregar projeto.');
@@ -262,9 +264,9 @@ export default class IO {
             // result = { success, changes, data: [{id, ...}] } from Supabase INSERT ... SELECT
             var id = null;
             if (result && result.data && result.data[0] && result.data[0].id) {
-                id = result.data[0].id;
+                id = String(result.data[0].id);
             } else if (result && result.lastID) {
-                id = result.lastID;
+                id = String(result.lastID);
             }
             if (fcn) fcn(id);
         });
