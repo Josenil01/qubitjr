@@ -16,10 +16,11 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error('❌ Erro: SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY não configurados');
-  process.exit(1);
 }
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+const supabase = supabaseUrl && supabaseServiceKey
+  ? createClient(supabaseUrl, supabaseServiceKey)
+  : null;
 console.log('✅ Supabase conectado:', supabaseUrl);
 
 // ============================================
@@ -45,6 +46,7 @@ function formatResult(data, rowCount) {
  * Executar SELECT query via PostgreSQL
  */
 router.post('/query', async (req, res) => {
+  if (!supabase) return res.status(503).json({ error: 'Database not configured' });
   try {
     const { table, filters = {} } = req.body;
 

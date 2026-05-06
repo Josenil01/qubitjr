@@ -16,10 +16,11 @@ const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('❌ Erro: SUPABASE_URL ou SUPABASE_ANON_KEY não configurados');
-  process.exit(1);
 }
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = supabaseUrl && supabaseAnonKey
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 const BUCKET_NAME = 'media';
 

@@ -5,7 +5,8 @@
  * Faz chamadas HTTP para o backend Express
  */
 
-const API_BASE_URL = window.API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api');
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
 
 class WebInterface {
   constructor() {
