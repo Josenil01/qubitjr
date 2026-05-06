@@ -119,7 +119,7 @@ const copyStaticAssetsPlugin = {
   writeBundle(options) {
     const appDir = path.resolve(process.cwd(), 'src/app')
     const outDir = path.resolve(process.cwd(), 'dist')
-    const staticDirs = ['sounds', 'pnglibrary', 'svglibrary', 'localizations', 'samples', 'inapp', 'css']
+    const staticDirs = ['sounds', 'pnglibrary', 'svglibrary', 'localizations', 'samples', 'inapp', 'css', 'assets']
     staticDirs.forEach(dir => {
       const src = path.join(appDir, dir)
       if (fs.existsSync(src)) {
