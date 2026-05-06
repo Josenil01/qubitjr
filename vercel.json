@@ -5,7 +5,7 @@
   "outputDirectory": "dist",
   "installCommand": "npm install --legacy-peer-deps && cd backend && npm install --legacy-peer-deps && cd ..",
   "functions": {
-    "backend/src/index.js": {
+    "api/index.js": {
       "memory": 1024,
       "maxDuration": 30
     }
@@ -13,17 +13,11 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "backend/src/index.js"
+      "dest": "/api/index.js"
     },
     {
       "src": "/(.*)",
       "dest": "/index.html"
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/backend/src/index.js"
     }
   ]
 }
