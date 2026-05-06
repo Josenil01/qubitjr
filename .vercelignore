@@ -1,0 +1,14 @@
+.env
+.env.local
+.env.*.local
+node_modules/
+dist/
+build/
+.git
+.gitignore
+README.md
+CONTRIBUTING.md
+docs/
+*.log
+.DS_Store
+backend/data/
