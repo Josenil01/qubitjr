@@ -191,6 +191,8 @@ export default class ScratchJr {
         ScratchJr.log('blocks init', ScratchJr.getTime(), 'sec', BlockSpecs.loadCount);
         // Verificar se há um md5 definido globalmente (pelo Router)
         currentProject = window.currentProjectMd5 || urlvars.pmd5;
+        // Tratar string 'null'/'undefined' como ausência de projeto
+        if (currentProject === 'null' || currentProject === 'undefined') currentProject = null;
         // Limpar a variável global após usar
         window.currentProjectMd5 = null;
         console.log('[ScratchJr.appinit] currentProject:', currentProject);

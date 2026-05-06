@@ -113,7 +113,18 @@ export default class Project {
 
     static dataRecieved (str) {
         ScratchJr.log('got project metadata', ScratchJr.getTime(), 'sec');
-        var data = JSON.parse(str)[0];
+        var parsed;
+        try { parsed = str ? JSON.parse(str) : []; } catch (e) { parsed = []; }
+        var data = parsed && parsed[0] ? parsed[0] : null;
+        if (!data) {
+            // Projeto não encontrado, iniciar com página em branco
+            mediaCount = 0;
+            let page = new Page(getIdFor('page')); // eslint-disable-line no-unused-vars
+            Palette.selectCategory(1);
+            setTimeout(function () { Palette.selectCategory(1); }, 100);
+            Project.loadwait(doneProjectLoad);
+            return;
+        }
         metadata = IO.parseProjectData(data);
         mediaCount = -1;
         if (metadata.json) {

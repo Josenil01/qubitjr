@@ -189,7 +189,7 @@ export default class IO {
 
     static getObject (md5, fcn) {
         console.log('[IO.getObject] md5:', md5);
-        if (!md5) {
+        if (!md5 || md5 === 'null' || md5 === 'undefined') {
             console.error('[IO.getObject] ❌ md5 é null/undefined! Não posso carregar projeto.');
             if (fcn) {
                 fcn('[]');  // Retornar array vazio
