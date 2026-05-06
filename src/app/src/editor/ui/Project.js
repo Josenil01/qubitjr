@@ -118,6 +118,7 @@ export default class Project {
         var data = parsed && parsed[0] ? parsed[0] : null;
         if (!data) {
             // Projeto não encontrado, iniciar com página em branco
+            metadata = {};
             mediaCount = 0;
             let page = new Page(getIdFor('page')); // eslint-disable-line no-unused-vars
             Palette.selectCategory(1);

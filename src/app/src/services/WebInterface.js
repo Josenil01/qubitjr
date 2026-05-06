@@ -105,7 +105,9 @@ class WebInterface {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+        const body = await response.text().catch(() => '');
+        console.error('[WebInterface] Backend error response:', body);
+        throw new Error(`HTTP ${response.status}: ${body}`);
       }
 
       const result = await response.json();
