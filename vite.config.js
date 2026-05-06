@@ -52,6 +52,38 @@ const serveCssRawMiddleware = {
   }
 }
 
+// Plugin para interceptar CSS com template literals (${css_vw()}) antes do PostCSS
+const handleTemplateLiteralCss = {
+  name: 'handle-template-literal-css',
+  enforce: 'pre',
+  load(id) {
+    if (id.endsWith('.css') && !id.includes('node_modules')) {
+      try {
+        const content = fs.readFileSync(id, 'utf-8')
+        if (content.includes('${')) {
+          // Retorna CSS vazio para evitar erro no PostCSS
+          // O app carrega estes arquivos dinamicamente via preprocessAndLoadCss
+          return '/* template literal CSS - loaded dynamically */'
+        }
+      } catch (e) { /* ignore */ }
+    }
+  },
+  writeBundle(options) {
+    // Copia os CSS originais com template literals para o dist
+    const cssDir = path.resolve(process.cwd(), 'src/app/css')
+    const outDir = path.resolve(options.dir || path.resolve(process.cwd(), 'dist'), 'css')
+    if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true })
+    fs.readdirSync(cssDir).forEach(file => {
+      if (file.endsWith('.css')) {
+        const content = fs.readFileSync(path.join(cssDir, file), 'utf-8')
+        if (content.includes('${')) {
+          fs.writeFileSync(path.join(outDir, file), content)
+        }
+      }
+    })
+  }
+}
+
 // Plugin para resolver imports sem extensão .js
 const resolveJsExtensionPlugin = {
   name: 'resolve-js-extension',
@@ -103,5 +135,5 @@ export default defineConfig({
       'stream': '/src/shims/stream.js'
     }
   },
-  plugins: [serveCssRawMiddleware, resolveJsExtensionPlugin]
+  plugins: [serveCssRawMiddleware, handleTemplateLiteralCss, resolveJsExtensionPlugin]
 })
