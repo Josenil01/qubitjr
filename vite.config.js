@@ -124,7 +124,8 @@ export default defineConfig({
   build: {
     outDir: '../../dist',
     emptyOutDir: true,
-    minify: 'esbuild'
+    minify: 'esbuild',
+    copyPublicDir: true,
   },
   resolve: {
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],

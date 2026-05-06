@@ -5,7 +5,7 @@
  * Faz chamadas HTTP para o backend Express
  */
 
-const API_BASE_URL = window.API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = window.API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api');
 
 class WebInterface {
   constructor() {
@@ -21,26 +21,28 @@ class WebInterface {
 
   async testConnection() {
     try {
-      // Tentar conectar ao backend
-      const response = await fetch('http://localhost:5000/health');
+      const healthUrl = window.location.hostname === 'localhost'
+        ? 'http://localhost:5000/health'
+        : '/api/health';
+      const response = await fetch(healthUrl);
       if (response.ok) {
-        console.log('✅ Conectado ao backend em http://localhost:5000');
+        console.log('✅ Conectado ao backend em', healthUrl);
         this.offlineMode = false;
         return;
       }
-    } catch (err1) {
-      // Tentar com 127.0.0.1 como fallback
-      try {
-        const response = await fetch('http://127.0.0.1:5000/health');
-        if (response.ok) {
-          console.log('✅ Conectado ao backend em http://127.0.0.1:5000');
-          this.offlineMode = false;
-          return;
-        }
-      } catch (err2) {
-        console.warn('⚠️ Backend não respondendo, ativando modo offline');
-        this.offlineMode = true;
+    } catch (err) {
+      // Tentar com 127.0.0.1 como fallback (apenas local)
+      if (window.location.hostname === 'localhost') {
+        try {
+          const response = await fetch('http://127.0.0.1:5000/health');
+          if (response.ok) {
+            this.offlineMode = false;
+            return;
+          }
+        } catch (err2) { /* ignore */ }
       }
+      console.warn('⚠️ Backend não respondendo, ativando modo offline');
+      this.offlineMode = true;
     }
   }
 
