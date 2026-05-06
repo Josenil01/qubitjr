@@ -8,7 +8,8 @@
 <title>ScratchJr</title>
 <script>
     window.scratchJrPage = 'index';
-    window.API_URL = window.API_URL || 'http://localhost:5000/api';
+    var _isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    window.API_URL = window.API_URL || (_isLocal ? 'http://localhost:5000/api' : (location.origin + '/api'));
 </script>
 </head>
 <body style="margin:0px; background: black;">

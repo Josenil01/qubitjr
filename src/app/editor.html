@@ -24,7 +24,8 @@
 
 <script>
     window.scratchJrPage = 'editor';
-    window.API_URL = window.API_URL || 'http://localhost:5000/api';
+    var _isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    window.API_URL = window.API_URL || (_isLocal ? 'http://localhost:5000/api' : (location.origin + '/api'));
 </script>
 <!-- Vite bundler: resolve todas as dependências npm e ES6 modules -->
 <script type="module" src="./appEntry-vite.js"></script>
