@@ -84,6 +84,37 @@ const handleTemplateLiteralCss = {
   }
 }
 
+// Função auxiliar para copiar diretórios recursivamente
+function copyDirSync(src, dest) {
+  if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true })
+  fs.readdirSync(src).forEach(file => {
+    const srcFile = path.join(src, file)
+    const destFile = path.join(dest, file)
+    if (fs.statSync(srcFile).isDirectory()) {
+      copyDirSync(srcFile, destFile)
+    } else {
+      fs.copyFileSync(srcFile, destFile)
+    }
+  })
+}
+
+// Plugin para copiar assets estáticos para o dist
+const copyStaticAssetsPlugin = {
+  name: 'copy-static-assets',
+  writeBundle(options) {
+    const appDir = path.resolve(process.cwd(), 'src/app')
+    const outDir = path.resolve(process.cwd(), 'dist')
+    const staticDirs = ['sounds', 'pnglibrary', 'svglibrary', 'localizations', 'samples', 'inapp', 'css']
+    staticDirs.forEach(dir => {
+      const src = path.join(appDir, dir)
+      if (fs.existsSync(src)) {
+        copyDirSync(src, path.join(outDir, dir))
+        console.log(`[copy-static] Copiado: ${dir}`)
+      }
+    })
+  }
+}
+
 // Plugin para resolver imports sem extensão .js
 const resolveJsExtensionPlugin = {
   name: 'resolve-js-extension',
@@ -136,5 +167,5 @@ export default defineConfig({
       'stream': '/src/shims/stream.js'
     }
   },
-  plugins: [serveCssRawMiddleware, handleTemplateLiteralCss, resolveJsExtensionPlugin]
+  plugins: [serveCssRawMiddleware, handleTemplateLiteralCss, copyStaticAssetsPlugin, resolveJsExtensionPlugin]
 })
