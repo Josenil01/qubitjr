@@ -170,7 +170,7 @@ export default class Home {
         }
         function doNext () {
             iOS.analyticsEvent('lobby', 'existing_project_edited');
-            window.location.href = 'editor.html?pmd5=' + md5 + '&mode=edit';
+            window.location.href = '/editor.html?pmd5=' + md5 + '&mode=edit';
         }
     }
 
@@ -189,7 +189,7 @@ export default class Home {
             doNext(md5);
         });
         function doNext (md5) {
-            window.location.href = 'editor.html?pmd5=' + md5 + '&mode=edit';
+            window.location.href = '/editor.html?pmd5=' + md5 + '&mode=edit';
         }
     }
 

@@ -149,11 +149,13 @@ window.ScratchJrRouter = {
     const pages = {
       'index': '/index.html',
       'home': '/home.html',
-      'lobby': '/home.html',  // Alias
+      'lobby': '/home.html',
+      'splash': '/index.html',
       'editor': '/editor.html',
-      'gettingstarted': '/gettingstarted.html'
+      'gettingstarted': '/gettingstarted.html',
+      'starting': '/gettingstarted.html'
     };
-    const url = pages[page] || pages['index'];
+    const url = pages[page] || '/index.html';
     window.location.href = url;
   }
 };

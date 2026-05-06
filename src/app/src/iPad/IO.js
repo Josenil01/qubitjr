@@ -258,7 +258,16 @@ export default class IO {
             addValue('thumbnail', JSON.stringify(obj.thumbnail));
         }
         json.stmt = 'insert into ' + database + ' (' + keylist.toString() + ') values (' + values + ')';
-        iOS.stmt(json, fcn);
+        iOS.stmt(json, function(result) {
+            // result = { success, changes, data: [{id, ...}] } from Supabase INSERT ... SELECT
+            var id = null;
+            if (result && result.data && result.data[0] && result.data[0].id) {
+                id = result.data[0].id;
+            } else if (result && result.lastID) {
+                id = result.lastID;
+            }
+            if (fcn) fcn(id);
+        });
         function addValue (key, str) {
             keylist.push(key);
             values += ',?';
