@@ -141,6 +141,7 @@ export default class Project {
             Project.loadwait(doneProjectLoad);
         }
         function doneProjectLoad () {
+            console.log('[doneProjectLoad] ✅ chamado, metadata.id:', metadata && metadata.id, 'sprite:', ScratchJr.stage && ScratchJr.stage.currentPage && ScratchJr.stage.currentPage.currentSpriteName);
             // Clear gift flag
             if ('id' in metadata) {
                 metadata.isgift = '0';
