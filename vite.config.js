@@ -8,12 +8,19 @@ import path from 'path'
  * ${N * scaleMultiplier} → Npx  |  ${scaleMultiplier} → 1
  */
 function processTemplateLiteralCss(content) {
-  content = content.replace(/\$\{css_vh\(([^)]+)\)\}/g, (_, n) => parseFloat(n).toFixed(3) + 'vh')
-  content = content.replace(/\$\{css_vw\(([^)]+)\)\}/g, (_, n) => parseFloat(n).toFixed(3) + 'vw')
-  content = content.replace(/\$\{([0-9.]+)\s*\*\s*scaleMultiplier\}/g, (_, n) => parseFloat(n).toFixed(3) + 'px')
-  content = content.replace(/\$\{scaleMultiplier\}/g, '1')
+  // ${css_vh(N)}px? → Nvh  (consume trailing px if present)
+  content = content.replace(/\$\{css_vh\(([^)]+)\)\}(px)?/g, (_, n) => parseFloat(n).toFixed(3) + 'vh')
+  content = content.replace(/\$\{css_vw\(([^)]+)\)\}(px)?/g, (_, n) => parseFloat(n).toFixed(3) + 'vw')
+  // ${N * scaleMultiplier}px? → Npx  (consume trailing px to avoid pxpx)
+  content = content.replace(/\$\{([0-9.]+)\s*\*\s*scaleMultiplier\}(px)?/g, (_, n) => parseFloat(n).toFixed(3) + 'px')
+  // -${scaleMultiplier}px → -1px  (handles negative prefix)
+  content = content.replace(/-\$\{scaleMultiplier\}(px)?/g, '-1px')
+  // ${-scaleMultiplier}px → -1px
+  content = content.replace(/\$\{-scaleMultiplier\}(px)?/g, '-1px')
+  // ${scaleMultiplier}px? → 1px
+  content = content.replace(/\$\{scaleMultiplier\}(px)?/g, '1px')
   // Fallback para qualquer expressão restante
-  content = content.replace(/\$\{[^}]+\}/g, '1px')
+  content = content.replace(/\$\{[^}]+\}(px)?/g, '1px')
   return content
 }
 
