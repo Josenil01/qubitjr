@@ -359,7 +359,7 @@ export default class Home {
     static insertThumbnail (p, w, h, data) {
         var md5 = data.md5;
         var img = newHTML('img', undefined, p);
-        if (md5) {
+        if (md5 && typeof md5 === 'string') {
             IO.getAsset(md5, drawMe);
         }
         function drawMe (url) {

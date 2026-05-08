@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS projects (
   thumbnail TEXT,
   owner TEXT,
   gallery TEXT,
+  isgift TEXT DEFAULT '0',
   deleted TEXT DEFAULT 'NO',
   version TEXT DEFAULT 'iOSv01',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -74,6 +75,9 @@ CREATE INDEX IF NOT EXISTS idx_projects_deleted ON projects(deleted);
 CREATE INDEX IF NOT EXISTS idx_usershapes_owner ON usershapes(owner);
 CREATE INDEX IF NOT EXISTS idx_userbkgs_owner ON userbkgs(owner);
 CREATE INDEX IF NOT EXISTS idx_media_project_id ON media(project_id);
+
+-- Migração: adicionar coluna isgift (caso a tabela já exista no Supabase)
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS isgift TEXT DEFAULT '0';
 
 -- ============================================
 -- Cole o conteúdo acima no Supabase SQL Editor
