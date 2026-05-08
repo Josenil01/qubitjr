@@ -327,10 +327,7 @@ export default class Home {
         var data = IO.parseProjectData(aa);
         var id = data.id;
         var th = data.thumbnail;
-        if (!th) {
-            return;
-        }
-        var thumb = (typeof th === 'string') ? JSON.parse(th) : th;
+        var thumb = th ? ((typeof th === 'string') ? JSON.parse(th) : th) : {};
         var pc = thumb.pagecount ? thumb.pagecount : 1;
         var tb = newHTML('div', 'projectthumb', parent);
         tb.setAttribute('id', id);
