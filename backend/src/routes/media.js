@@ -24,7 +24,30 @@ function getSupabase() {
   return _supabase;
 }
 
-const BUCKET_NAME = 'media';
+const BUCKET_NAME = process.env.SUPABASE_MEDIA_BUCKET || 'media';
+
+async function ensureBucketExists(supabase) {
+  const { data: buckets, error: listError } = await supabase.storage.listBuckets();
+  if (listError) {
+    return { ok: false, error: listError };
+  }
+
+  const exists = Array.isArray(buckets) && buckets.some((bucket) => bucket && bucket.name === BUCKET_NAME);
+  if (exists) {
+    return { ok: true, created: false };
+  }
+
+  const { error: createError } = await supabase.storage.createBucket(BUCKET_NAME, {
+    public: true,
+    fileSizeLimit: 52428800
+  });
+
+  if (createError) {
+    return { ok: false, error: createError };
+  }
+
+  return { ok: true, created: true };
+}
 
 /**
  * GET /api/media/:filename
@@ -89,12 +112,31 @@ router.post('/', async (req, res) => {
     const buffer = Buffer.from(data, 'base64');
 
     // Upload para Supabase Storage
-    const { data: uploadData, error } = await supabase.storage
+    let { data: uploadData, error } = await supabase.storage
       .from(BUCKET_NAME)
       .upload(filename, buffer, {
         cacheControl: '3600',
         upsert: true // Sobrescrever se existir
       });
+
+    // If bucket is missing, create it and retry once.
+    if (error && /bucket.*not found/i.test(error.message || '')) {
+      const ensureResult = await ensureBucketExists(supabase);
+      if (!ensureResult.ok) {
+        console.error('Bucket ensure error:', ensureResult.error);
+        return res.status(500).json({
+          error: 'Failed to prepare media bucket',
+          message: process.env.NODE_ENV === 'development' ? ensureResult.error.message : undefined
+        });
+      }
+
+      ({ data: uploadData, error } = await supabase.storage
+        .from(BUCKET_NAME)
+        .upload(filename, buffer, {
+          cacheControl: '3600',
+          upsert: true
+        }));
+    }
 
     if (error) {
       console.error('Upload error:', error);
