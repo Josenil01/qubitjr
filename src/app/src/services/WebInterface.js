@@ -21,6 +21,16 @@ class WebInterface {
     this.testConnection();
   }
 
+  /**
+   * Retorna objeto de headers com Authorization, se houver token disponível.
+   * Modo mock: usa VITE_MOCK_TOKEN (injetado em build pelo Vite).
+   * Modo produção: usa window.__AUTH_TOKEN__ injetado pela plataforma externa.
+   */
+  _authHeader() {
+    const token = window.__AUTH_TOKEN__ || (import.meta?.env?.VITE_MOCK_TOKEN) || null;
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+  }
+
   async testConnection() {
     try {
       const healthUrl = window.location.hostname === 'localhost'
@@ -67,7 +77,10 @@ class WebInterface {
       
       const response = await fetch(`${API_BASE_URL}/db/query`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...this._authHeader(),
+        },
         body: JSON.stringify(queryObj)
       });
 
@@ -101,7 +114,10 @@ class WebInterface {
       
       const response = await fetch(`${API_BASE_URL}/db/stmt`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...this._authHeader(),
+        },
         body: JSON.stringify(stmtObj)
       });
 
@@ -205,7 +221,9 @@ class WebInterface {
         return this._base64ToBlob(localData, this._mimeFromFilename(filename));
       }
 
-      const metaResp = await fetch(`${API_BASE_URL}/media/${filename}`);
+      const metaResp = await fetch(`${API_BASE_URL}/media/${filename}`, {
+        headers: { ...this._authHeader() }
+      });
       if (!metaResp.ok) {
         throw new Error(`Failed to get media metadata: ${filename}`);
       }
@@ -255,7 +273,7 @@ class WebInterface {
       // Melhor esforco: sincronizar com backend quando disponivel.
       fetch(`${API_BASE_URL}/media`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...this._authHeader() },
         body: JSON.stringify({
           filename,
           data: content
@@ -572,7 +590,7 @@ class WebInterface {
 
       fetch(`${API_BASE_URL}/media`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...this._authHeader() },
         body: JSON.stringify({ filename, data })
       }).catch((err) => {
         console.warn('[WebInterface] io_setmedianame backend sync warning:', err?.message || err);
@@ -590,7 +608,8 @@ class WebInterface {
       localStorage.removeItem(this._mediaKey(path));
 
       fetch(`${API_BASE_URL}/media/${encodeURIComponent(path)}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: { ...this._authHeader() }
       }).catch((err) => {
         console.warn('[WebInterface] io_remove backend sync warning:', err?.message || err);
       });
