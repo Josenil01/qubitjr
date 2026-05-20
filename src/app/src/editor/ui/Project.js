@@ -654,7 +654,14 @@ export default class Project {
                 if (!spr || !spr.shown) {
                     doNext(n + 1);
                 } else {
-                    drawLoadedImage(page, ctx, spr.outline, spr, scale, n);
+                    // For regular sprites, use originalImg (the <img> element whose src is
+                    // the full data:image/svg+xml;base64 including any embedded PNG).
+                    // spr.outline is a canvas drawn by SVG2Canvas which renders embedded
+                    // images asynchronously (via img.onload) and may still be blank when
+                    // the thumbnail is captured if the PNG hasn't decoded yet.
+                    // Page.stampSpriteAt already uses this same strategy for page thumbs.
+                    var img = (spr.type === 'sprite') ? spr.originalImg : spr.outline;
+                    drawLoadedImage(page, ctx, img, spr, scale, n);
                 }
             }
         }
