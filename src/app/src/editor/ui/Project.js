@@ -89,7 +89,7 @@ export default class Project {
             console.warn('[Project.startLoad] ⚠️ currentProject é null/undefined - criando novo projeto em branco');
             // Se não há projeto, criar um novo em branco
             Project.createNewProject(function(md5) {
-                console.log('[Project.createNewProject] Novo projeto criado com md5:', md5);
+                console.log('[Project.startLoad] Novo projeto criado com md5:', md5, '→ currentProject atualizado');
             });
         } else {
             IO.getObject(ScratchJr.currentProject, Project.dataRecieved);
@@ -105,6 +105,7 @@ export default class Project {
         IO.createProject(obj, function(md5) {
             console.log('[Project.createNewProject] Novo projeto criado, md5:', md5);
             window.currentProjectMd5 = md5;
+            ScratchJr.currentProject = md5;   // ← atualiza o currentProject para o autosave funcionar
             if (fcn) fcn(md5);
             // Recarregar o projeto agora
             IO.getObject(md5, Project.dataRecieved);
@@ -476,20 +477,30 @@ export default class Project {
 
     static save (id, whenDone) {
         saving = true;
-        var th = metadata.thumbnail;
-        if (th && ScratchJr.editmode != 'storyStarter') { // Don't try to delete the thumbnail in a sample project
-            var thumb = (typeof th === 'string') ? JSON.parse(th) : th;
-            if (thumb && thumb.md5.indexOf('samples/') < 0) { // In case we've exited story-starter mode
-                Project.thumbnailUnique(thumb.md5, id, function (isUnique) {
-                    if (isUnique) {
-                        iOS.remove(thumb.md5, iOS.trace); // remove thumb;
-                    }
-                });
+        console.log('[Project.save] Iniciando save para id:', id, 'pages:', ScratchJr.stage && ScratchJr.stage.pages ? ScratchJr.stage.pages.length : 'N/A');
+        try {
+            var th = metadata.thumbnail;
+            if (th && ScratchJr.editmode != 'storyStarter') { // Don't try to delete the thumbnail in a sample project
+                var thumb = (typeof th === 'string') ? JSON.parse(th) : th;
+                if (thumb && thumb.md5 && thumb.md5.indexOf('samples/') < 0) { // In case we've exited story-starter mode
+                    Project.thumbnailUnique(thumb.md5, id, function (isUnique) {
+                        if (isUnique) {
+                            iOS.remove(thumb.md5, iOS.trace); // remove thumb;
+                        }
+                    });
+                }
             }
+            metadata.id = id;
+            metadata.json = Project.getProject(ScratchJr.stage.pages[0].id);
+            console.log('[Project.save] metadata.json definido, pages:', metadata.json && metadata.json.pages ? metadata.json.pages.length : 0);
+            Project.getThumbnailPNG(ScratchJr.stage.pages[0], 192, 144, getMD5);
+        } catch (e) {
+            console.error('[Project.save] Erro ao preparar save:', e);
+            saving = false;
+            if (whenDone) whenDone();
+            return;
         }
-        metadata.id = id;
-        metadata.json = Project.getProject(ScratchJr.stage.pages[0].id);
-        Project.getThumbnailPNG(ScratchJr.stage.pages[0], 192, 144, getMD5);
+
         function getMD5 (dataurl) {
             var pngBase64 = dataurl.split(',')[1];
             iOS.getmd5(pngBase64, function (str) {
@@ -503,6 +514,7 @@ export default class Project {
         }
 
         function doNext (md5) {
+            console.log('[Project.save] doNext chamado, md5:', md5, 'json pages:', metadata.json && metadata.json.pages ? metadata.json.pages.length : 'N/A');
             metadata.thumbnail = {
                 'pagecount': ScratchJr.stage.pages.length,
                 'md5': md5
@@ -511,7 +523,12 @@ export default class Project {
             IO.saveProject(metadata, saveDone);
         }
 
-        function saveDone () {
+        function saveDone (result) {
+            if (result && result.success === false) {
+                console.error('[Project.save] saveDone: save falhou!', result);
+            } else {
+                console.log('[Project.save] saveDone: save concluído com sucesso');
+            }
             saving = false;
             if (whenDone) {
                 whenDone();

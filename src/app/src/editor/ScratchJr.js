@@ -128,6 +128,10 @@ export default class ScratchJr {
         return currentProject;
     }
 
+    static set currentProject (v) {
+        currentProject = v;
+    }
+
     static get editmode () {
         return editmode;
     }

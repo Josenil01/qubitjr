@@ -118,7 +118,20 @@ function buildMutationQuery(supabase, sql, values = []) {
       if (m) data[m[1]] = nextVal();
     });
     const id = idExpr === '?' ? nextVal() : parseInt(idExpr);
-    return supabase.from(table).update(data).eq('id', id).select();
+    // Log UPDATE details for debugging
+    const logData = {};
+    for (const k of Object.keys(data)) {
+      logData[k] = (typeof data[k] === 'string' && data[k].length > 80)
+        ? data[k].substring(0, 80) + '...[' + data[k].length + ' chars]'
+        : data[k];
+    }
+    console.log(`[DB UPDATE] table=${table} id=${id} data:`, JSON.stringify(logData));
+    const result = supabase.from(table).update(data).eq('id', id).select();
+    result.then(({ data: d, error: e }) => {
+      if (e) console.error('[DB UPDATE] Supabase error:', e);
+      else console.log('[DB UPDATE] Supabase ok, rows updated:', d ? d.length : 0, d && d[0] ? { json: d[0].json ? d[0].json.substring(0,40)+'...' : 'NULL', thumbnail: d[0].thumbnail } : '');
+    }).catch(err => console.error('[DB UPDATE] Promise error:', err));
+    return result;
   }
 
   // DELETE FROM table WHERE id = ?

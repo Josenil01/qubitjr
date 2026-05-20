@@ -281,8 +281,23 @@ export default class IO {
     static saveProject (obj, fcn) {
         var json = {};
         var keylist = ['version = ?', 'deleted = ?', 'name = ?', 'json = ?', 'thumbnail = ?', 'mtime = ?'];
-        json.values = [obj.version, obj.deleted, obj.name, JSON.stringify(obj.json),
-            JSON.stringify(obj.thumbnail), (new Date()).getTime().toString()];
+        var jsonStr;
+        var thumbStr;
+        try {
+            jsonStr = JSON.stringify(obj.json);
+        } catch (e) {
+            console.error('[IO.saveProject] Falha ao serializar json do projeto:', e);
+            jsonStr = null;
+        }
+        try {
+            thumbStr = JSON.stringify(obj.thumbnail);
+        } catch (e) {
+            console.error('[IO.saveProject] Falha ao serializar thumbnail:', e);
+            thumbStr = null;
+        }
+        console.log('[IO.saveProject] id:', obj.id, 'name:', obj.name, 'jsonLen:', jsonStr ? jsonStr.length : 0, 'thumbLen:', thumbStr ? thumbStr.length : 0);
+        json.values = [obj.version, obj.deleted, obj.name, jsonStr,
+            thumbStr, (new Date()).getTime().toString()];
         json.stmt = 'update ' + database + ' set ' + keylist.toString() + ' where id = ' + obj.id;
         iOS.stmt(json, fcn);
     }
