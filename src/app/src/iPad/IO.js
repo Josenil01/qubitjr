@@ -85,11 +85,19 @@ export default class IO {
         }
         if (IO.getExtension(md5) == 'png') {
             // PNG files = user-generated content (thumbnails, photos).
-            // Never use iOS.path here — in web mode that resolves to a local
-            // path that does not exist. Always fetch via getmedia which reads
-            // from localStorage first, then from Supabase Storage.
-            iOS.getmedia(md5, function (url) {
-                if (url) fcn(url);
+            // iOS.getmedia uses the synchronous chunk protocol (io_getmedialen)
+            // which only reads localStorage and returns '' when the file is
+            // not cached in the current session.
+            // Call io_getmedia directly — it is async and falls back to
+            // Supabase Storage when localStorage is empty.
+            var mediaPromise = window.tabletInterface.io_getmedia(md5);
+            mediaPromise.then(function (blob) {
+                if (blob) {
+                    var url = URL.createObjectURL(blob);
+                    fcn(url);
+                }
+            }).catch(function (err) {
+                console.warn('[IO.getAsset] PNG load failed:', md5, err);
             });
         } else {
             iOS.getmedia(md5, nextStep);
