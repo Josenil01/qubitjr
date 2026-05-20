@@ -13,6 +13,7 @@ class WebInterface {
     this.isDebug = true;
     this.currentAudio = {};
     this.offlineMode = false;
+    this.mediaReadCache = {};
     
     console.log('[WebInterface] Inicializado com API:', API_BASE_URL);
     
@@ -199,42 +200,76 @@ class WebInterface {
 
   async io_getmedia(filename) {
     try {
-      const response = await fetch(`${API_BASE_URL}/media/${filename}`);
-      
-      if (!response.ok) {
-        throw new Error(`Failed to get media: ${filename}`);
+      const localData = localStorage.getItem(this._mediaKey(filename));
+      if (localData) {
+        return this._base64ToBlob(localData, this._mimeFromFilename(filename));
       }
 
-      const blob = await response.blob();
-      return blob;
+      const metaResp = await fetch(`${API_BASE_URL}/media/${filename}`);
+      if (!metaResp.ok) {
+        throw new Error(`Failed to get media metadata: ${filename}`);
+      }
+      const meta = await metaResp.json();
+      if (!meta || !meta.url) {
+        throw new Error(`Media URL not found for: ${filename}`);
+      }
+
+      const fileResp = await fetch(meta.url);
+      if (!fileResp.ok) {
+        throw new Error(`Failed to download media file: ${filename}`);
+      }
+      return await fileResp.blob();
     } catch (error) {
       console.error('[WebInterface] io_getmedia error:', error);
       throw error;
     }
   }
 
-  async io_setmedia(data) {
+  io_setmedia(dataOrBase64, ext, fcn) {
     try {
-      const { filename, content } = data;
-      
-      const response = await fetch(`${API_BASE_URL}/media`, {
+      // Compatibilidade:
+      // 1) io_setmedia({ filename, content })
+      // 2) io_setmedia(base64, ext, callback)
+      let filename;
+      let content;
+
+      if (typeof dataOrBase64 === 'object' && dataOrBase64 !== null) {
+        filename = dataOrBase64.filename;
+        content = dataOrBase64.content;
+      } else {
+        const base64 = dataOrBase64 || '';
+        const safeExt = (ext || 'dat').toLowerCase();
+        const md5 = this.io_getmd5(base64);
+        filename = `${md5}.${safeExt}`;
+        content = base64;
+      }
+
+      if (!filename || !content) {
+        if (fcn) fcn(null);
+        return null;
+      }
+
+      // Armazenamento local (sincrono), necessario para o fluxo legado de chunks.
+      localStorage.setItem(this._mediaKey(filename), content);
+
+      // Melhor esforco: sincronizar com backend quando disponivel.
+      fetch(`${API_BASE_URL}/media`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           filename,
-          data: content // Esperado ser base64
+          data: content
         })
+      }).catch((err) => {
+        console.warn('[WebInterface] io_setmedia backend sync warning:', err?.message || err);
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to save media');
-      }
-
-      const result = await response.json();
-      return result;
+      if (fcn) fcn(filename);
+      return filename;
     } catch (error) {
       console.error('[WebInterface] io_setmedia error:', error);
-      throw error;
+      if (fcn) fcn(null);
+      return null;
     }
   }
 
@@ -503,28 +538,91 @@ class WebInterface {
   }
 
   io_getmedialen(file, key) {
-    // Get media file length
-    return 0;
+    try {
+      const data = localStorage.getItem(this._mediaKey(file)) || '';
+      this.mediaReadCache[String(key)] = data;
+      return data.length;
+    } catch (error) {
+      console.error('[WebInterface] io_getmedialen error:', error);
+      this.mediaReadCache[String(key)] = '';
+      return 0;
+    }
   }
 
   io_getmediadata(key, offset, len) {
-    // Get media file data chunk
-    return null;
+    const data = this.mediaReadCache[String(key)] || '';
+    const start = Number(offset) || 0;
+    const size = Number(len) || 0;
+    return data.substring(start, start + size);
   }
 
   io_getmediadone(file) {
-    // Signal media access complete
+    delete this.mediaReadCache[String(file)];
     return true;
   }
 
   io_setmedianame(data, name, ext) {
-    // Set media name
-    return true;
+    try {
+      const filename = `${name}.${ext}`;
+      if (!data) {
+        return null;
+      }
+
+      localStorage.setItem(this._mediaKey(filename), data);
+
+      fetch(`${API_BASE_URL}/media`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename, data })
+      }).catch((err) => {
+        console.warn('[WebInterface] io_setmedianame backend sync warning:', err?.message || err);
+      });
+
+      return filename;
+    } catch (error) {
+      console.error('[WebInterface] io_setmedianame error:', error);
+      return null;
+    }
   }
 
   io_remove(path) {
-    // Remove file/media
-    return true;
+    try {
+      localStorage.removeItem(this._mediaKey(path));
+
+      fetch(`${API_BASE_URL}/media/${encodeURIComponent(path)}`, {
+        method: 'DELETE'
+      }).catch((err) => {
+        console.warn('[WebInterface] io_remove backend sync warning:', err?.message || err);
+      });
+
+      return true;
+    } catch (error) {
+      console.error('[WebInterface] io_remove error:', error);
+      return false;
+    }
+  }
+
+  _mediaKey(filename) {
+    return `scratchjr_media_${filename}`;
+  }
+
+  _mimeFromFilename(filename) {
+    const lower = (filename || '').toLowerCase();
+    if (lower.endsWith('.png')) return 'image/png';
+    if (lower.endsWith('.svg')) return 'image/svg+xml';
+    if (lower.endsWith('.wav')) return 'audio/wav';
+    if (lower.endsWith('.mp3')) return 'audio/mpeg';
+    return 'application/octet-stream';
+  }
+
+  _base64ToBlob(base64, mimeType) {
+    const binary = atob(base64);
+    const length = binary.length;
+    const bytes = new Uint8Array(length);
+    for (let i = 0; i < length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return new Blob([bytes], { type: mimeType });
   }
 
   // ============================================
