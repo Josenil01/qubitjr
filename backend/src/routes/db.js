@@ -27,14 +27,21 @@ function getSupabase() {
 }
 
 // ============================================
+// Tabelas multi-tenant: owner é obrigatório
+// ============================================
+
+const OWNER_TABLES = new Set(['projects', 'usershapes', 'userbkgs']);
+
+// ============================================
 // SQL → Supabase translators
 // ============================================
 
 /**
  * Translate a SQL SELECT statement into a Supabase query.
  * Handles: WHERE col = ?, WHERE col IS NULL, ORDER BY col [desc]
+ * userId: quando fornecido, injeta owner = userId para tabelas multi-tenant.
  */
-function buildSelectQuery(supabase, sql, values = []) {
+function buildSelectQuery(supabase, sql, values = [], userId = null) {
   const match = sql.match(/^select\s+(.+?)\s+from\s+(\w+)(?:\s+where\s+(.+?))?(?:\s+order\s+by\s+(.+?))?$/i);
   if (!match) throw new Error('Cannot parse SELECT: ' + sql);
   const [, fields, table, whereClause, orderClause] = match;
@@ -75,6 +82,11 @@ function buildSelectQuery(supabase, sql, values = []) {
     query = query.order(parts[0], { ascending: !(parts[1] && parts[1].toLowerCase() === 'desc') });
   }
 
+  // Filtro de owner para tabelas multi-tenant
+  if (userId && OWNER_TABLES.has(table)) {
+    query = query.eq('owner', userId);
+  }
+
   return query;
 }
 
@@ -91,8 +103,9 @@ function sanitizeValue(val) {
 
 /**
  * Translate INSERT / UPDATE / DELETE SQL into a Supabase mutation.
+ * userId: quando fornecido, injeta/verifica owner para tabelas multi-tenant.
  */
-function buildMutationQuery(supabase, sql, values = []) {
+function buildMutationQuery(supabase, sql, values = [], userId = null) {
   const sqlLower = sql.toLowerCase().trim();
   let valIdx = 0;
   const nextVal = () => sanitizeValue(values[valIdx++]);
@@ -104,6 +117,10 @@ function buildMutationQuery(supabase, sql, values = []) {
     const [, table, colsStr] = match;
     const data = {};
     colsStr.split(',').map(c => c.trim()).forEach(col => { data[col] = nextVal(); });
+    // Forçar owner em tabelas multi-tenant
+    if (userId && OWNER_TABLES.has(table)) {
+      data.owner = userId;
+    }
     return supabase.from(table).insert(data).select();
   }
 
@@ -126,7 +143,12 @@ function buildMutationQuery(supabase, sql, values = []) {
         : data[k];
     }
     console.log(`[DB UPDATE] table=${table} id=${id} data:`, JSON.stringify(logData));
-    const result = supabase.from(table).update(data).eq('id', id).select();
+    // Filtro de owner previne atualização cruzada entre usuários
+    let q = supabase.from(table).update(data).eq('id', id);
+    if (userId && OWNER_TABLES.has(table)) {
+      q = q.eq('owner', userId);
+    }
+    const result = q.select();
     result.then(({ data: d, error: e }) => {
       if (e) console.error('[DB UPDATE] Supabase error:', e);
       else console.log('[DB UPDATE] Supabase ok, rows updated:', d ? d.length : 0, d && d[0] ? { json: d[0].json ? d[0].json.substring(0,40)+'...' : 'NULL', thumbnail: d[0].thumbnail } : '');
@@ -138,7 +160,12 @@ function buildMutationQuery(supabase, sql, values = []) {
   if (sqlLower.startsWith('delete')) {
     const match = sql.match(/^delete\s+from\s+(\w+)\s+where\s+id\s*=\s*\?/i);
     if (!match) throw new Error('Cannot parse DELETE: ' + sql);
-    return supabase.from(match[1]).delete().eq('id', nextVal());
+    const table = match[1];
+    let q = supabase.from(table).delete().eq('id', nextVal());
+    if (userId && OWNER_TABLES.has(table)) {
+      q = q.eq('owner', userId);
+    }
+    return q;
   }
 
   throw new Error('Unsupported SQL operation: ' + sql);
@@ -162,7 +189,7 @@ router.post('/query', async (req, res) => {
 
     if (sqlStr) {
       console.log(`[DB Query] SQL: ${sqlStr.substring(0, 120)}`, values);
-      const { data, error } = await buildSelectQuery(supabase, sqlStr, values);
+      const { data, error } = await buildSelectQuery(supabase, sqlStr, values, req.userId);
       if (error) { console.error('Query error:', error); return res.status(500).json({ error: 'Query failed', message: error.message }); }
       return res.json({ data: data || [], rowCount: data ? data.length : 0 });
     }
@@ -195,7 +222,7 @@ router.post('/stmt', async (req, res) => {
 
     if (sqlStr) {
       console.log(`[DB Stmt] SQL: ${sqlStr.substring(0, 120)}`);
-      const { data, error } = await buildMutationQuery(supabase, sqlStr, values);
+      const { data, error } = await buildMutationQuery(supabase, sqlStr, values, req.userId);
       if (error) { console.error('Stmt error:', error); return res.status(500).json({ error: 'Statement failed', message: error.message }); }
       return res.json({ success: true, changes: data ? data.length : 1, data });
     }
@@ -204,14 +231,25 @@ router.post('/stmt', async (req, res) => {
 
     let result;
     switch (action.toLowerCase()) {
-      case 'insert': result = await supabase.from(table).insert(reqData).select(); break;
+      case 'insert': {
+        const insertData = OWNER_TABLES.has(table) && req.userId
+          ? { ...reqData, owner: req.userId }
+          : reqData;
+        result = await supabase.from(table).insert(insertData).select();
+        break;
+      }
       case 'update':
         if (!id) return res.status(400).json({ error: 'ID required for update' });
-        result = await supabase.from(table).update(reqData).eq('id', id).select();
+        result = await (OWNER_TABLES.has(table) && req.userId
+          ? supabase.from(table).update(reqData).eq('id', id).eq('owner', req.userId)
+          : supabase.from(table).update(reqData).eq('id', id)
+        ).select();
         break;
       case 'delete':
         if (!id) return res.status(400).json({ error: 'ID required for delete' });
-        result = await supabase.from(table).delete().eq('id', id);
+        result = OWNER_TABLES.has(table) && req.userId
+          ? await supabase.from(table).delete().eq('id', id).eq('owner', req.userId)
+          : await supabase.from(table).delete().eq('id', id);
         break;
       default: return res.status(400).json({ error: 'Invalid action' });
     }
@@ -242,7 +280,7 @@ router.post('/transaction', async (req, res) => {
       const sqlStr = s.sql || s.stmt;
       let result;
       if (sqlStr) {
-        result = await buildMutationQuery(supabase, sqlStr, s.values || []);
+        result = await buildMutationQuery(supabase, sqlStr, s.values || [], req.userId);
       } else {
         const { action, table, data, id } = s;
         switch (action.toLowerCase()) {

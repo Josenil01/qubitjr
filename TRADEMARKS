@@ -1,4 +1,5 @@
-The Scratch trademarks, including the Scratch name, ScratchJr name, logo, the Scratch Cat, Gobo, Pico, Nano, Tera and Giga graphics (the "Marks"), are property of the Massachusetts Institute of Technology (MIT), and the use of the Marks is governed by this policy.
+git commit --allow-empty -m "chore: force redeploy"
+git pushThe Scratch trademarks, including the Scratch name, ScratchJr name, logo, the Scratch Cat, Gobo, Pico, Nano, Tera and Giga graphics (the "Marks"), are property of the Massachusetts Institute of Technology (MIT), and the use of the Marks is governed by this policy.
 
 You may use the Marks to refer to Scratch and ScratchJr in Substantially Unmodified form.
 

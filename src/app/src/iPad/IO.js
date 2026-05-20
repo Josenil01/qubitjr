@@ -83,22 +83,8 @@ export default class IO {
             IO.requestFromServer(md5, gotit); // get url contents
             return;
         }
-        if (IO.getExtension(md5) == 'png') {
-            // PNG files = user-generated content (thumbnails, photos).
-            // iOS.getmedia uses the synchronous chunk protocol (io_getmedialen)
-            // which only reads localStorage and returns '' when the file is
-            // not cached in the current session.
-            // Call io_getmedia directly — it is async and falls back to
-            // Supabase Storage when localStorage is empty.
-            var mediaPromise = window.tabletInterface.io_getmedia(md5);
-            mediaPromise.then(function (blob) {
-                if (blob) {
-                    var url = URL.createObjectURL(blob);
-                    fcn(url);
-                }
-            }).catch(function (err) {
-                console.warn('[IO.getAsset] PNG load failed:', md5, err);
-            });
+        if ((IO.getExtension(md5) == 'png') && iOS.path) {
+            fcn(iOS.path + md5); // only if it is not in debug mode
         } else {
             iOS.getmedia(md5, nextStep);
         } // get url contents
@@ -295,23 +281,8 @@ export default class IO {
     static saveProject (obj, fcn) {
         var json = {};
         var keylist = ['version = ?', 'deleted = ?', 'name = ?', 'json = ?', 'thumbnail = ?', 'mtime = ?'];
-        var jsonStr;
-        var thumbStr;
-        try {
-            jsonStr = JSON.stringify(obj.json);
-        } catch (e) {
-            console.error('[IO.saveProject] Falha ao serializar json do projeto:', e);
-            jsonStr = null;
-        }
-        try {
-            thumbStr = JSON.stringify(obj.thumbnail);
-        } catch (e) {
-            console.error('[IO.saveProject] Falha ao serializar thumbnail:', e);
-            thumbStr = null;
-        }
-        console.log('[IO.saveProject] id:', obj.id, 'name:', obj.name, 'jsonLen:', jsonStr ? jsonStr.length : 0, 'thumbLen:', thumbStr ? thumbStr.length : 0);
-        json.values = [obj.version, obj.deleted, obj.name, jsonStr,
-            thumbStr, (new Date()).getTime().toString()];
+        json.values = [obj.version, obj.deleted, obj.name, JSON.stringify(obj.json),
+            JSON.stringify(obj.thumbnail), (new Date()).getTime().toString()];
         json.stmt = 'update ' + database + ' set ' + keylist.toString() + ' where id = ' + obj.id;
         iOS.stmt(json, fcn);
     }

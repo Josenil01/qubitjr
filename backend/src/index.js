@@ -85,6 +85,55 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(morgan('combined'));
 
 // ============================================
+// Identity Middleware
+// ============================================
+
+const AUTH_MODE = process.env.AUTH_MODE || 'mock';
+const JWT_USER_HEADER = (process.env.JWT_USER_HEADER || 'x-user-id').toLowerCase();
+
+// Mock tokens — apenas em AUTH_MODE=mock
+const MOCK_TOKENS = {
+  'dev-user-a': 'usr_001',
+  'dev-user-b': 'usr_002',
+};
+
+function identityMiddleware(req, res, next) {
+  // Health check não exige autenticação
+  if (req.path === '/health') return next();
+
+  const authHeader = req.headers['authorization'];
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Authorization header required' });
+  }
+
+  const token = authHeader.slice(7);
+
+  if (AUTH_MODE === 'mock') {
+    const userId = MOCK_TOKENS[token];
+    if (!userId) {
+      return res.status(401).json({ error: 'Invalid mock token. Use dev-user-a or dev-user-b' });
+    }
+    req.userId = userId;
+    return next();
+  }
+
+  if (AUTH_MODE === 'production') {
+    // Em produção o API Gateway/Proxy valida o JWT e injeta o id do usuário
+    // como header confiável. O backend apenas lê o header.
+    const userId = req.headers[JWT_USER_HEADER];
+    if (!userId) {
+      return res.status(401).json({ error: `User identity header '${JWT_USER_HEADER}' missing` });
+    }
+    req.userId = userId;
+    return next();
+  }
+
+  return res.status(500).json({ error: 'Invalid AUTH_MODE configuration' });
+}
+
+app.use(identityMiddleware);
+
+// ============================================
 // Health Check
 // ============================================
 
