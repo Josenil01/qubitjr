@@ -83,8 +83,14 @@ export default class IO {
             IO.requestFromServer(md5, gotit); // get url contents
             return;
         }
-        if ((IO.getExtension(md5) == 'png') && iOS.path) {
-            fcn(iOS.path + md5); // only if it is not in debug mode
+        if (IO.getExtension(md5) == 'png') {
+            // PNG files = user-generated content (thumbnails, photos).
+            // Never use iOS.path here — in web mode that resolves to a local
+            // path that does not exist. Always fetch via getmedia which reads
+            // from localStorage first, then from Supabase Storage.
+            iOS.getmedia(md5, function (url) {
+                if (url) fcn(url);
+            });
         } else {
             iOS.getmedia(md5, nextStep);
         } // get url contents
