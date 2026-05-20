@@ -100,7 +100,7 @@ export default class Project {
         iOS.analyticsEvent('editor', 'new_project_created');
         var obj = {};
         obj.name = Localization.localize('NEW_PROJECT_PREFIX') + ' 1';
-        obj.version = '1';
+        obj.version = (window.Settings && window.Settings.scratchJrVersion) || 'iOSv01';
         obj.mtime = (new Date()).getTime().toString();
         IO.createProject(obj, function(md5) {
             console.log('[Project.createNewProject] Novo projeto criado, md5:', md5);
