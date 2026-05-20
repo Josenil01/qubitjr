@@ -60,16 +60,17 @@ router.get('/:filename', async (req, res) => {
     const { filename } = req.params;
 
     // Validação de segurança: não permitir path traversal
-    if (filename.includes('..') || filename.includes('/')) {
+    if (filename.includes('..')) {
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    console.log(`[Media] GET ${filename}`);
+    const storagePath = `${req.userId}/${filename}`;
+    console.log(`[Media] GET ${storagePath}`);
 
     // Obter URL pública do arquivo
     const { data } = supabase.storage
       .from(BUCKET_NAME)
-      .getPublicUrl(filename);
+      .getPublicUrl(storagePath);
 
     if (!data.publicUrl) {
       return res.status(404).json({ error: 'File not found' });
@@ -101,22 +102,23 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'filename and data are required' });
     }
 
-    // Validação de segurança
-    if (filename.includes('..') || filename.includes('/')) {
+    // Validação de segurança: não permitir path traversal
+    if (filename.includes('..')) {
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    console.log(`[Media] POST ${filename}`);
+    const storagePath = `${req.userId}/${filename}`;
+    console.log(`[Media] POST ${storagePath}`);
 
     // Converter base64 para buffer
     const buffer = Buffer.from(data, 'base64');
 
-    // Upload para Supabase Storage
+    // Upload para Supabase Storage (prefixado por userId)
     let { data: uploadData, error } = await supabase.storage
       .from(BUCKET_NAME)
-      .upload(filename, buffer, {
+      .upload(storagePath, buffer, {
         cacheControl: '3600',
-        upsert: true // Sobrescrever se existir
+        upsert: true
       });
 
     // If bucket is missing, create it and retry once.
@@ -132,7 +134,7 @@ router.post('/', async (req, res) => {
 
       ({ data: uploadData, error } = await supabase.storage
         .from(BUCKET_NAME)
-        .upload(filename, buffer, {
+        .upload(storagePath, buffer, {
           cacheControl: '3600',
           upsert: true
         }));
@@ -174,16 +176,17 @@ router.delete('/:filename', async (req, res) => {
   try {
     const { filename } = req.params;
 
-    // Validação de segurança
-    if (filename.includes('..') || filename.includes('/')) {
+    // Validação de segurança: não permitir path traversal
+    if (filename.includes('..')) {
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    console.log(`[Media] DELETE ${filename}`);
+    const storagePath = `${req.userId}/${filename}`;
+    console.log(`[Media] DELETE ${storagePath}`);
 
     const { error } = await supabase.storage
       .from(BUCKET_NAME)
-      .remove([filename]);
+      .remove([storagePath]);
 
     if (error) {
       console.error('Delete error:', error);
@@ -214,7 +217,7 @@ router.post('/list', async (req, res) => {
 
     const { data, error } = await supabase.storage
       .from(BUCKET_NAME)
-      .list('', { limit });
+      .list(req.userId, { limit });
 
     if (error) {
       console.error('List error:', error);
