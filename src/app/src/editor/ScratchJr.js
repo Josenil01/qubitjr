@@ -219,6 +219,7 @@ export default class ScratchJr {
         Events.init();
         if (window.Settings.autoSaveInterval > 0) {
             autoSaveSetInterval = window.setInterval(function () {
+                console.log('[AutoSave] tick — enabled:', autoSaveEnabled, 'onHold:', onHold, 'saving:', Project.saving, 'infoBoxOpen:', UI.infoBoxOpen, 'currentProject:', currentProject, 'changed:', changed);
                 if (autoSaveEnabled && !onHold && !Project.saving && !UI.infoBoxOpen) {
                     ScratchJr.saveProject(null, function () {
                         Alert.close();
@@ -377,8 +378,10 @@ export default class ScratchJr {
                 });
             }, true);
         } else if (ScratchJr.isEditable() && currentProject && !Project.error && changed) {
+            console.log('[ScratchJr.saveProject] Salvando... currentProject:', currentProject, 'changed:', changed);
             Project.prepareToSave(currentProject, onDone);
         } else {
+            console.log('[ScratchJr.saveProject] Skip — isEditable:', ScratchJr.isEditable(), 'currentProject:', currentProject, 'error:', Project.error, 'changed:', changed);
             if (onDone) {
                 onDone();
             }
