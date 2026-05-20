@@ -15,9 +15,9 @@ let _supabase = null;
 function getSupabase() {
   if (_supabase) return _supabase;
   const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_ANON_KEY;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
   if (!url || !key) {
-    console.error('❌ SUPABASE_URL or SUPABASE_ANON_KEY not set. Available SUPABASE keys:', Object.keys(process.env).filter(k => k.startsWith('SUPABASE')));
+    console.error('❌ Supabase env not set. Need SUPABASE_URL and one key (SUPABASE_SERVICE_ROLE_KEY preferred). Available SUPABASE keys:', Object.keys(process.env).filter(k => k.startsWith('SUPABASE')));
     return null;
   }
   _supabase = createClient(url, key);
