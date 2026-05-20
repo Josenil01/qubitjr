@@ -152,12 +152,17 @@ class WebInterface {
       // Retornar string no formato esperado pelo app: "path,flag"
       // path: caminho de armazenamento dos projetos
       // flag: 0 = com barra, 1 = sem barra
-      const path = localStorage.getItem('scratchjr_path') || './data';
-      const flag = localStorage.getItem('scratchjr_pathflag') || '0';
+      // Em ambiente web com backend HTTP, nao usar o path legado /data,
+      // pois thumbnails customizadas devem vir de /api/media autenticado.
+      const savedPath = localStorage.getItem('scratchjr_path');
+      const savedFlag = localStorage.getItem('scratchjr_pathflag');
+      const isLegacyDataPath = !savedPath || savedPath === './data' || savedPath === 'data';
+      const path = isLegacyDataPath ? '' : savedPath;
+      const flag = isLegacyDataPath ? '1' : (savedFlag || '1');
       return `${path},${flag}`;
     } catch (error) {
       console.error('[WebInterface] io_getsettings error:', error);
-      return './data,0'; // Default
+      return ',1'; // Default: desabilita fallback de path local
     }
   }
 
