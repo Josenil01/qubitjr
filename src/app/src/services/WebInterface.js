@@ -14,11 +14,77 @@ class WebInterface {
     this.currentAudio = {};
     this.offlineMode = false;
     this.mediaReadCache = {};
+
+    this._initAuthFromUrl();
+    this._installDebugHelpers();
     
     console.log('[WebInterface] Inicializado com API:', API_BASE_URL);
     
     // Testar conexão com backend
     this.testConnection();
+  }
+
+  _maskToken(token) {
+    if (!token || typeof token !== 'string') return 'none';
+    if (token.length <= 20) return token;
+    return `${token.slice(0, 10)}...${token.slice(-10)}`;
+  }
+
+  _extractTokenFromUrl() {
+    const searchParams = new URLSearchParams(window.location.search || '');
+    const hashRaw = (window.location.hash || '').replace(/^#/, '');
+    const hashParams = new URLSearchParams(hashRaw);
+    const token =
+      searchParams.get('idToken') ||
+      searchParams.get('token') ||
+      hashParams.get('idToken') ||
+      hashParams.get('token');
+
+    const studentId = searchParams.get('studentId') || hashParams.get('studentId');
+    const classId = searchParams.get('classId') || hashParams.get('classId');
+
+    return { token, studentId, classId };
+  }
+
+  _initAuthFromUrl() {
+    const extracted = this._extractTokenFromUrl();
+    if (!window.__AUTH_TOKEN__ && extracted.token) {
+      window.__AUTH_TOKEN__ = extracted.token;
+    }
+    if (!window.__AUTH_CONTEXT__) {
+      window.__AUTH_CONTEXT__ = {
+        studentId: extracted.studentId || null,
+        classId: extracted.classId || null,
+      };
+    }
+
+    console.log('[WebInterface] Auth token:', this._maskToken(window.__AUTH_TOKEN__ || null));
+    console.log('[WebInterface] Auth context:', window.__AUTH_CONTEXT__ || {});
+  }
+
+  _installDebugHelpers() {
+    window.debugApiProbe = async () => {
+      const headers = {
+        'Content-Type': 'application/json',
+        ...this._authHeader(),
+      };
+
+      const payload = {
+        sql: 'select id, name, ctime from projects where deleted = ? order by ctime desc',
+        values: ['NO'],
+      };
+
+      const response = await fetch(`${API_BASE_URL}/db/query`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      });
+
+      const text = await response.text();
+      console.log('[debugApiProbe] status:', response.status);
+      console.log('[debugApiProbe] body:', text);
+      return { status: response.status, body: text };
+    };
   }
 
   /**
@@ -32,30 +98,36 @@ class WebInterface {
   }
 
   async testConnection() {
+    const healthCandidates = [];
+    const origin = window.location.origin;
+    healthCandidates.push(`${origin}/health`);
+    healthCandidates.push(`${origin}/api/health`);
+    if (window.location.hostname === 'localhost') {
+      healthCandidates.push('http://localhost:5000/health');
+      healthCandidates.push('http://127.0.0.1:5000/health');
+    }
+
+    const uniqueHealthUrls = Array.from(new Set(healthCandidates));
+
     try {
-      const healthUrl = window.location.hostname === 'localhost'
-        ? 'http://localhost:5000/health'
-        : '/api/health';
-      const response = await fetch(healthUrl);
-      if (response.ok) {
-        console.log('✅ Conectado ao backend em', healthUrl);
-        this.offlineMode = false;
-        return;
-      }
-    } catch (err) {
-      // Tentar com 127.0.0.1 como fallback (apenas local)
-      if (window.location.hostname === 'localhost') {
+      for (const healthUrl of uniqueHealthUrls) {
         try {
-          const response = await fetch('http://127.0.0.1:5000/health');
+          const response = await fetch(healthUrl);
           if (response.ok) {
+            console.log('✅ Conectado ao backend em', healthUrl);
             this.offlineMode = false;
             return;
           }
-        } catch (err2) { /* ignore */ }
+        } catch (innerErr) {
+          console.warn('[WebInterface] Falha health check em', healthUrl, innerErr?.message || innerErr);
+        }
       }
-      console.warn('⚠️ Backend não respondendo, ativando modo offline');
-      this.offlineMode = true;
+    } catch (err) {
+      console.warn('[WebInterface] Erro inesperado no health check:', err);
     }
+
+    console.warn('⚠️ Backend não respondendo, ativando modo offline');
+    this.offlineMode = true;
   }
 
   // ============================================
@@ -74,6 +146,7 @@ class WebInterface {
       }
       
       console.log('[WebInterface] Enviando query:', JSON.stringify(queryObj).substring(0, 200));
+      console.log('[WebInterface] Query auth header presente:', !!this._authHeader().Authorization);
       
       const response = await fetch(`${API_BASE_URL}/db/query`, {
         method: 'POST',
@@ -112,6 +185,9 @@ class WebInterface {
         delete stmtObj.stmt;
       }
       
+      console.log('[WebInterface] Enviando stmt:', JSON.stringify(stmtObj).substring(0, 200));
+      console.log('[WebInterface] Stmt auth header presente:', !!this._authHeader().Authorization);
+
       const response = await fetch(`${API_BASE_URL}/db/stmt`, {
         method: 'POST',
         headers: {
