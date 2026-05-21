@@ -50,6 +50,27 @@ const MOCK_TOKENS = {
   'dev-user-b': 'usr_002',
 };
 
+// Decodifica payload do JWT sem verificar assinatura
+// Suficiente para extrair user_id / sub / studentId de tokens Firebase
+function decodeJwtPayloadUnsafe(token) {
+  try {
+    if (!token || typeof token !== 'string') return null;
+    const parts = token.split('.');
+    if (parts.length < 2) return null;
+    const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = b64 + '='.repeat((4 - (b64.length % 4 || 4)) % 4);
+    const json = Buffer.from(padded, 'base64').toString('utf8');
+    return JSON.parse(json);
+  } catch (_) {
+    return null;
+  }
+}
+
+function getUserIdFromJwtClaims(claims) {
+  if (!claims || typeof claims !== 'object') return null;
+  return claims.user_id || claims.sub || claims.studentId || null;
+}
+
 function identityMiddleware(req, res, next) {
   if (req.path === '/health' || req.path === '/api/health') return next();
 
@@ -60,15 +81,28 @@ function identityMiddleware(req, res, next) {
 
   const token = authHeader.slice(7);
 
-  if (AUTH_MODE === 'mock') {
-    const userId = MOCK_TOKENS[token];
-    if (!userId) {
-      return res.status(401).json({ error: 'Invalid mock token. Use dev-user-a or dev-user-b' });
-    }
-    req.userId = userId;
+  // 1. JWT real tem prioridade em qualquer AUTH_MODE.
+  //    Extrai user_id / sub / studentId das claims sem verificar assinatura.
+  const claims = decodeJwtPayloadUnsafe(token);
+  const jwtUserId = getUserIdFromJwtClaims(claims);
+  if (jwtUserId) {
+    req.userId = jwtUserId;
+    console.log(`[Auth] JWT userId: ${jwtUserId} (iss: ${claims && claims.iss || 'unknown'})`);
     return next();
   }
 
+  // 2. Fallback: mock tokens para desenvolvimento local
+  if (AUTH_MODE === 'mock') {
+    const userId = MOCK_TOKENS[token];
+    if (!userId) {
+      return res.status(401).json({ error: 'Invalid token. Expected a JWT or a mock token (dev-user-a / dev-user-b).' });
+    }
+    req.userId = userId;
+    console.log(`[Auth] Mock userId: ${userId}`);
+    return next();
+  }
+
+  // 3. Fallback production: header injetado por gateway/proxy
   if (AUTH_MODE === 'production') {
     const userId = req.headers[JWT_USER_HEADER];
     if (!userId) {
