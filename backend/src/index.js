@@ -97,6 +97,25 @@ const MOCK_TOKENS = {
   'dev-user-b': 'usr_002',
 };
 
+function decodeJwtPayloadUnsafe(token) {
+  try {
+    if (!token || typeof token !== 'string') return null;
+    const parts = token.split('.');
+    if (parts.length < 2) return null;
+    const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = b64 + '='.repeat((4 - (b64.length % 4 || 4)) % 4);
+    const json = Buffer.from(padded, 'base64').toString('utf8');
+    return JSON.parse(json);
+  } catch (_) {
+    return null;
+  }
+}
+
+function getUserIdFromJwtClaims(claims) {
+  if (!claims || typeof claims !== 'object') return null;
+  return claims.user_id || claims.sub || claims.studentId || null;
+}
+
 function identityMiddleware(req, res, next) {
   // Health check não exige autenticação
   if (req.path === '/health') return next();
@@ -118,12 +137,19 @@ function identityMiddleware(req, res, next) {
   }
 
   if (AUTH_MODE === 'production') {
-    // Em produção o API Gateway/Proxy valida o JWT e injeta o id do usuário
-    // como header confiável. O backend apenas lê o header.
-    const userId = req.headers[JWT_USER_HEADER];
+    // Em produção: prioriza id extraído do Bearer JWT enviado pelo frontend.
+    // Fallback para header injetado por gateway/proxy.
+    const claims = decodeJwtPayloadUnsafe(token);
+    const jwtUserId = getUserIdFromJwtClaims(claims);
+    const headerUserId = req.headers[JWT_USER_HEADER];
+    const userId = jwtUserId || headerUserId;
+
     if (!userId) {
-      return res.status(401).json({ error: `User identity header '${JWT_USER_HEADER}' missing` });
+      return res.status(401).json({
+        error: `User identity missing (expected JWT claims user_id/sub/studentId or header '${JWT_USER_HEADER}')`
+      });
     }
+
     req.userId = userId;
     return next();
   }
