@@ -127,30 +127,38 @@ function identityMiddleware(req, res, next) {
 
   const token = authHeader.slice(7);
 
-  if (AUTH_MODE === 'mock') {
-    const userId = MOCK_TOKENS[token];
-    if (!userId) {
-      return res.status(401).json({ error: 'Invalid mock token. Use dev-user-a or dev-user-b' });
-    }
-    req.userId = userId;
+  // 1. JWT real tem prioridade em qualquer AUTH_MODE.
+  //    Extrai user_id / sub / studentId das claims sem verificar assinatura.
+  //    A assinatura é validada pelo emissor (Firebase) no frontend; aqui apenas
+  //    confiamos que o claim identifica o usuário corretamente.
+  const claims = decodeJwtPayloadUnsafe(token);
+  const jwtUserId = getUserIdFromJwtClaims(claims);
+  if (jwtUserId) {
+    req.userId = jwtUserId;
+    console.log(`[Auth] JWT userId: ${jwtUserId} (iss: ${claims?.iss || 'unknown'})`);
     return next();
   }
 
-  if (AUTH_MODE === 'production') {
-    // Em produção: prioriza id extraído do Bearer JWT enviado pelo frontend.
-    // Fallback para header injetado por gateway/proxy.
-    const claims = decodeJwtPayloadUnsafe(token);
-    const jwtUserId = getUserIdFromJwtClaims(claims);
-    const headerUserId = req.headers[JWT_USER_HEADER];
-    const userId = jwtUserId || headerUserId;
-
+  // 2. Fallback: mock tokens para desenvolvimento local
+  if (AUTH_MODE === 'mock') {
+    const userId = MOCK_TOKENS[token];
     if (!userId) {
+      return res.status(401).json({ error: 'Invalid token. Expected a JWT or a mock token (dev-user-a / dev-user-b).' });
+    }
+    req.userId = userId;
+    console.log(`[Auth] Mock userId: ${userId}`);
+    return next();
+  }
+
+  // 3. Fallback production: header injetado por gateway/proxy
+  if (AUTH_MODE === 'production') {
+    const headerUserId = req.headers[JWT_USER_HEADER];
+    if (!headerUserId) {
       return res.status(401).json({
         error: `User identity missing (expected JWT claims user_id/sub/studentId or header '${JWT_USER_HEADER}')`
       });
     }
-
-    req.userId = userId;
+    req.userId = headerUserId;
     return next();
   }
 
