@@ -144,6 +144,12 @@ window.inappBlocksGuide = inappBlocksGuide;
 window.inappPaintEditorGuide = inappPaintEditorGuide;
 
 // Router simples para navegar entre páginas
+// Propaga o token de auth na URL para que cada página o receba mesmo sem sessionStorage
+function _getAuthTokenForNav() {
+  try { return window.__AUTH_TOKEN__ || sessionStorage.getItem('scratchjr_auth_token') || null; }
+  catch (_) { return window.__AUTH_TOKEN__ || null; }
+}
+
 window.ScratchJrRouter = {
   navigateTo: function(page) {
     const pages = {
@@ -155,8 +161,9 @@ window.ScratchJrRouter = {
       'gettingstarted': '/gettingstarted.html',
       'starting': '/gettingstarted.html'
     };
-    const url = pages[page] || '/index.html';
-    window.location.href = url;
+    const base = pages[page] || '/index.html';
+    const token = _getAuthTokenForNav();
+    window.location.href = token ? base + '?token=' + encodeURIComponent(token) : base;
   }
 };
 

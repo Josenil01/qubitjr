@@ -170,7 +170,10 @@ export default class Home {
         }
         function doNext () {
             iOS.analyticsEvent('lobby', 'existing_project_edited');
-            window.location.href = '/editor.html?pmd5=' + md5 + '&mode=edit';
+            var _tok = '';
+            try { _tok = window.__AUTH_TOKEN__ || sessionStorage.getItem('scratchjr_auth_token') || ''; } catch (_) {}
+            var _edUrl = '/editor.html?pmd5=' + md5 + '&mode=edit' + (_tok ? '&token=' + encodeURIComponent(_tok) : '');
+            window.location.href = _edUrl;
         }
     }
 
@@ -189,7 +192,10 @@ export default class Home {
             doNext(md5);
         });
         function doNext (md5) {
-            window.location.href = '/editor.html?pmd5=' + md5 + '&mode=edit';
+            var _tok = '';
+            try { _tok = window.__AUTH_TOKEN__ || sessionStorage.getItem('scratchjr_auth_token') || ''; } catch (_) {}
+            var _edUrl = '/editor.html?pmd5=' + md5 + '&mode=edit' + (_tok ? '&token=' + encodeURIComponent(_tok) : '');
+            window.location.href = _edUrl;
         }
     }
 

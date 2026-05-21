@@ -47,43 +47,84 @@ class WebInterface {
   }
 
   _initAuthFromUrl() {
+    const SESSION_KEY_TOKEN   = 'scratchjr_auth_token';
+    const SESSION_KEY_CONTEXT = 'scratchjr_auth_context';
+
     const extracted = this._extractTokenFromUrl();
-    if (!window.__AUTH_TOKEN__ && extracted.token) {
+
+    // 1. Token veio na URL desta página → salva no sessionStorage
+    if (extracted.token) {
       window.__AUTH_TOKEN__ = extracted.token;
-    }
-    if (!window.__AUTH_CONTEXT__) {
-      window.__AUTH_CONTEXT__ = {
-        studentId: extracted.studentId || null,
-        classId: extracted.classId || null,
-      };
+      try { sessionStorage.setItem(SESSION_KEY_TOKEN, extracted.token); } catch (_) {}
+      console.log('[WebInterface] Auth token: ' + this._maskToken(extracted.token) + ' (from URL → saved to sessionStorage)');
     }
 
-    console.log('[WebInterface] Auth token:', this._maskToken(window.__AUTH_TOKEN__ || null));
-    console.log('[WebInterface] Auth context:', window.__AUTH_CONTEXT__ || {});
+    // 2. Token não está na URL → restaura do sessionStorage (navegações internas)
+    if (!window.__AUTH_TOKEN__) {
+      try {
+        const stored = sessionStorage.getItem(SESSION_KEY_TOKEN);
+        if (stored) {
+          window.__AUTH_TOKEN__ = stored;
+          console.log('[WebInterface] Auth token: ' + this._maskToken(stored) + ' (from sessionStorage)');
+        } else {
+          console.warn('[WebInterface] Auth token: NONE — nenhum token na URL nem no sessionStorage');
+        }
+      } catch (_) {}
+    }
+
+    // 3. Contexto do aluno (studentId, classId)
+    const contextFromUrl = {
+      studentId: extracted.studentId || null,
+      classId:   extracted.classId   || null,
+    };
+    if (!window.__AUTH_CONTEXT__) {
+      if (extracted.studentId) {
+        window.__AUTH_CONTEXT__ = contextFromUrl;
+        try { sessionStorage.setItem(SESSION_KEY_CONTEXT, JSON.stringify(contextFromUrl)); } catch (_) {}
+      } else {
+        try {
+          const stored = sessionStorage.getItem(SESSION_KEY_CONTEXT);
+          window.__AUTH_CONTEXT__ = stored ? JSON.parse(stored) : contextFromUrl;
+        } catch (_) {
+          window.__AUTH_CONTEXT__ = contextFromUrl;
+        }
+      }
+    }
+
+    console.log('[WebInterface] Auth context:', window.__AUTH_CONTEXT__);
   }
 
   _installDebugHelpers() {
     window.debugApiProbe = async () => {
-      const headers = {
-        'Content-Type': 'application/json',
-        ...this._authHeader(),
-      };
-
-      const payload = {
-        sql: 'select id, name, ctime from projects where deleted = ? order by ctime desc',
-        values: ['NO'],
-      };
+      const authHdr = this._authHeader();
+      console.group('[debugApiProbe] Estado de autenticação');
+      console.log('window.__AUTH_TOKEN__   :', this._maskToken(window.__AUTH_TOKEN__ || null));
+      console.log('sessionStorage token    :', this._maskToken(sessionStorage.getItem('scratchjr_auth_token') || null));
+      console.log('Authorization header    :', authHdr.Authorization ? authHdr.Authorization.slice(0, 30) + '...' : 'AUSENTE ❌');
+      console.log('Auth context            :', window.__AUTH_CONTEXT__);
+      console.groupEnd();
 
       const response = await fetch(`${API_BASE_URL}/db/query`, {
         method: 'POST',
-        headers,
-        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json', ...authHdr },
+        body: JSON.stringify({
+          sql: 'select id, name, owner, ctime from projects where deleted = ? order by ctime desc',
+          values: ['NO'],
+        }),
       });
 
       const text = await response.text();
-      console.log('[debugApiProbe] status:', response.status);
-      console.log('[debugApiProbe] body:', text);
+      console.log('[debugApiProbe] HTTP status:', response.status);
+      console.log('[debugApiProbe] Body:', text);
       return { status: response.status, body: text };
+    };
+
+    window.debugClearAuth = () => {
+      sessionStorage.removeItem('scratchjr_auth_token');
+      sessionStorage.removeItem('scratchjr_auth_context');
+      window.__AUTH_TOKEN__ = null;
+      window.__AUTH_CONTEXT__ = null;
+      console.log('[debugClearAuth] Token limpo do sessionStorage e window.');
     };
   }
 
