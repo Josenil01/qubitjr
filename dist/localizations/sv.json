@@ -301,6 +301,7 @@
     "CHARACTER_Boat2.svg": "Båt",
     "CHARACTER_Rocket.svg": "Raket",
     "BACKGROUND_Farm.svg": "Bondgård",
+    "BACKGROUND_Farm_1.svg": "Bondgård 1",
     "BACKGROUND_Park.svg": "Park",
     "BACKGROUND_Suburbs.svg": "Förort",
     "BACKGROUND_City.svg": "Stad",
@@ -375,5 +376,6 @@
     "USAGE_SCHOOL": "I skolan",
     "USAGE_HOME": "Hemma",
     "USAGE_OTHER": "Annat",
-    "USAGE_NONE": "Fråga inte igen"
+    "USAGE_NONE": "Fråga inte igen",
+    "DAILY_LIMIT_MESSAGE": "Du kan bara skapa 1 projekt per dag. Försök igen imorgon!"
 }

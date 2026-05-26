@@ -302,6 +302,7 @@
     "CHARACTER_Boat2.svg": "Vaixell",
     "CHARACTER_Rocket.svg": "Coet",
     "BACKGROUND_Farm.svg": "Granja",
+    "BACKGROUND_Farm_1.svg": "Granja 1",
     "BACKGROUND_Park.svg": "Parc",
     "BACKGROUND_Suburbs.svg": "Barri residencial",
     "BACKGROUND_City.svg": "Ciutat",
@@ -376,5 +377,6 @@
     "USAGE_SCHOOL": "Escola",
     "USAGE_HOME": "Casa",
     "USAGE_OTHER": "Altres",
-    "USAGE_NONE": "No preguntar-ho més"
+    "USAGE_NONE": "No preguntar-ho més",
+    "DAILY_LIMIT_MESSAGE": "Només pots crear 1 projecte per dia. Intenta-ho de nou demà!"
 }

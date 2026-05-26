@@ -253,7 +253,7 @@ export default class IO {
         [mtime] => modification time
     */
 
-    static createProject (obj, fcn) {
+    static createProject (obj, fcn, errorFcn) {
         var json = {};
         var keylist = ['name', 'version', 'deleted', 'mtime', 'isgift'];
         var values = '?,?,?,?,?';
@@ -268,6 +268,11 @@ export default class IO {
         }
         json.stmt = 'insert into ' + database + ' (' + keylist.toString() + ') values (' + values + ')';
         iOS.stmt(json, function(result) {
+            // Daily project limit exceeded
+            if (result && result.limitExceeded) {
+                if (errorFcn) errorFcn('DAILY_LIMIT_EXCEEDED');
+                return;
+            }
             // result = { success, changes, data: [{id, ...}] } from Supabase INSERT ... SELECT
             var id = null;
             if (result && result.data && result.data[0] && result.data[0].id) {

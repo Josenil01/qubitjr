@@ -301,6 +301,7 @@
     "CHARACTER_Boat2.svg": "Barco",
     "CHARACTER_Rocket.svg": "Cohete",
     "BACKGROUND_Farm.svg": "Granja",
+    "BACKGROUND_Farm_1.svg": "Granja 1",
     "BACKGROUND_Park.svg": "Parque",
     "BACKGROUND_Suburbs.svg": "Barrio residencial",
     "BACKGROUND_City.svg": "Ciudad",
@@ -375,5 +376,6 @@
     "USAGE_SCHOOL": "School",
     "USAGE_HOME": "Home",
     "USAGE_OTHER": "Other",
-    "USAGE_NONE": "Don't ask again"
+    "USAGE_NONE": "Don't ask again",
+    "DAILY_LIMIT_MESSAGE": "Solo puedes crear 1 proyecto por día. ¡Inténtalo de nuevo mañana!"
 }

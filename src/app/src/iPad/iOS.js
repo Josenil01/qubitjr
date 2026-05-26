@@ -84,7 +84,11 @@ export default class iOS {
             }).catch(error => {
                 console.error('[iOS] stmt error:', error);
                 if (typeof (fcn) !== 'undefined') {
-                    fcn({ success: false, changes: 0 });
+                    var isLimitErr = error && (
+                        error.code === 'DAILY_LIMIT_EXCEEDED' ||
+                        (error.message && error.message.includes('DAILY_LIMIT_EXCEEDED'))
+                    );
+                    fcn({ success: false, changes: 0, limitExceeded: !!isLimitErr });
                 }
             });
         } else {

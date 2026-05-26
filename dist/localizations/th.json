@@ -301,6 +301,7 @@
     "CHARACTER_Boat2.svg": " เรือ",
     "CHARACTER_Rocket.svg": "จรวด",
     "BACKGROUND_Farm.svg": "ทุ่งปศุสัตว์",
+    "BACKGROUND_Farm_1.svg": "ทุ่งปศุสัตว์ 1",
     "BACKGROUND_Park.svg": "อุทยาน",
     "BACKGROUND_Suburbs.svg": "ชานเมือง",
     "BACKGROUND_City.svg": "เมือง",
@@ -375,5 +376,6 @@
     "USAGE_SCHOOL": "School",
     "USAGE_HOME": "Home",
     "USAGE_OTHER": "Other",
-    "USAGE_NONE": "Don't ask again"
+    "USAGE_NONE": "Don't ask again",
+    "DAILY_LIMIT_MESSAGE": "คุณสร้างได้ 1 โปรเจกต์ต่อวัน ลองใหม่พรุ่งนี้!"
 }

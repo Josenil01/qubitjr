@@ -301,6 +301,7 @@
     "CHARACTER_Boat2.svg": "ふね",
     "CHARACTER_Rocket.svg": "ろけっと",
     "BACKGROUND_Farm.svg": "のうじょう",
+    "BACKGROUND_Farm_1.svg": "のうじょう1",
     "BACKGROUND_Park.svg": "こうえん",
     "BACKGROUND_Suburbs.svg": "こうがい",
     "BACKGROUND_City.svg": "まち",
@@ -375,5 +376,6 @@
     "USAGE_SCHOOL": "がっこう",
     "USAGE_HOME": "ほーむ",
     "USAGE_OTHER": "そのほか",
-    "USAGE_NONE": "もうきかないでください。"
+    "USAGE_NONE": "もうきかないでください。",
+    "DAILY_LIMIT_MESSAGE": "1日に作れるプロジェクトは1つだけです。明日またやってみよう！"
 }

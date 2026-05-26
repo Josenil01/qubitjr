@@ -114,7 +114,7 @@ function sanitizeValue(val) {
  * Translate INSERT / UPDATE / DELETE SQL into a Supabase mutation.
  * userId: quando fornecido, injeta/verifica owner para tabelas multi-tenant.
  */
-function buildMutationQuery(supabase, sql, values = [], userId = null) {
+async function buildMutationQuery(supabase, sql, values = [], userId = null) {
   const sqlLower = sql.toLowerCase().trim();
   let valIdx = 0;
   const nextVal = () => sanitizeValue(values[valIdx++]);
@@ -130,6 +130,25 @@ function buildMutationQuery(supabase, sql, values = [], userId = null) {
     // Forçar owner em tabelas multi-tenant
     if (userId && OWNER_TABLES.has(table)) {
       data.owner = userId;
+    }
+    // Daily project limit: max 1 new project per user per UTC day
+    if (table === 'projects' && userId) {
+      const todayStart = new Date();
+      todayStart.setUTCHours(0, 0, 0, 0);
+      const tomorrowStart = new Date(todayStart);
+      tomorrowStart.setUTCDate(tomorrowStart.getUTCDate() + 1);
+      const { count, error: countErr } = await supabase
+        .from('projects')
+        .select('*', { count: 'exact', head: true })
+        .eq('owner', userId)
+        .eq('deleted', 'NO')
+        .gte('created_at', todayStart.toISOString())
+        .lt('created_at', tomorrowStart.toISOString());
+      if (!countErr && count >= 1) {
+        const limitErr = new Error('DAILY_LIMIT_EXCEEDED');
+        limitErr.status = 429;
+        throw limitErr;
+      }
     }
     return supabase.from(table).insert(data).select();
   }

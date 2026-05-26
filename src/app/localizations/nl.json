@@ -376,5 +376,6 @@
     "USAGE_SCHOOL": "School",
     "USAGE_HOME": "Thuis",
     "USAGE_OTHER": "Anders",
-    "USAGE_NONE": "Niet opnieuw vragen"
+    "USAGE_NONE": "Niet opnieuw vragen",
+    "DAILY_LIMIT_MESSAGE": "Je kunt maar 1 project per dag aanmaken. Probeer het morgen opnieuw!"
 }

@@ -405,5 +405,6 @@
     "USAGE_SCHOOL": "Escola",
     "USAGE_HOME": "Casa",
     "USAGE_OTHER": "Outro",
-    "USAGE_NONE": "Não voltar a perguntar."
+    "USAGE_NONE": "Não voltar a perguntar.",
+    "DAILY_LIMIT_MESSAGE": "Você pode criar apenas 1 projeto por dia. Tente novamente amanhã!"
 }

@@ -376,5 +376,6 @@
     "USAGE_SCHOOL": "がっこう",
     "USAGE_HOME": "ほーむ",
     "USAGE_OTHER": "そのほか",
-    "USAGE_NONE": "もうきかないでください。"
+    "USAGE_NONE": "もうきかないでください。",
+    "DAILY_LIMIT_MESSAGE": "1日に作れるプロジェクトは1つだけです。明日またやってみよう！"
 }

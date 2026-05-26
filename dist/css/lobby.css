@@ -557,3 +557,179 @@ div.localizationselect.selected:after {
     font-size: ${18 * scaleMultiplier}px;
     font-weight: bold;
 }
+
+/* === Modal Nomear Projeto === */
+
+#sjr-naming-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#sjr-naming-modal.hidden {
+    display: none;
+}
+
+#sjr-naming-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.60);
+}
+
+#sjr-naming-box {
+    position: relative;
+    background: #FFF8F0;
+    border-radius: 32px;
+    padding: 40px 44px 36px;
+    width: 520px;
+    max-width: 90vw;
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.38);
+}
+
+#sjr-naming-title {
+    font-family: Roboto, arial, sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #355E7C;
+    margin: 0 0 24px;
+    line-height: 1.3;
+}
+
+#sjr-naming-input {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: Roboto, arial, sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: #355E7C;
+    background: #fff;
+    border: 4px solid #35A8E0;
+    border-radius: 20px;
+    padding: 14px 20px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+#sjr-naming-input:focus {
+    border-color: #F9A737;
+    box-shadow: 0 0 0 5px rgba(249, 167, 55, 0.28);
+}
+
+#sjr-naming-buttons {
+    display: flex;
+    gap: 16px;
+    margin-top: 28px;
+}
+
+#sjr-naming-cancel {
+    flex: 1;
+    height: 62px;
+    font-family: Roboto, arial, sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    background: #ADACA6;
+    border: none;
+    border-radius: 31px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+#sjr-naming-cancel:hover {
+    opacity: 0.85;
+}
+
+#sjr-naming-confirm {
+    flex: 2;
+    height: 62px;
+    font-family: Roboto, arial, sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    background: #F9A737;
+    border: none;
+    border-radius: 31px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    box-shadow: 0 4px 12px rgba(249, 167, 55, 0.45);
+}
+
+#sjr-naming-confirm:hover {
+    opacity: 0.88;
+}
+
+/* === Botão Novo Projeto: Limite Diário Atingido === */
+#newproject.daily-limit-reached .aproject.empty {
+    opacity: 0.35;
+    cursor: not-allowed;
+    filter: grayscale(80%);
+}
+
+/* === Modal Limite Diário === */
+#sjr-daily-limit-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#sjr-daily-limit-modal.hidden {
+    display: none;
+}
+
+#sjr-daily-limit-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.60);
+}
+
+#sjr-daily-limit-box {
+    position: relative;
+    background: #FFF8F0;
+    border-radius: 32px;
+    padding: 40px 44px 36px;
+    width: 460px;
+    max-width: 90vw;
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.38);
+}
+
+#sjr-daily-limit-icon {
+    font-size: 56px;
+    margin-bottom: 16px;
+    line-height: 1;
+}
+
+#sjr-daily-limit-text {
+    font-family: Roboto, arial, sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #355E7C;
+    margin: 0 0 28px;
+    line-height: 1.4;
+}
+
+#sjr-daily-limit-ok {
+    width: 180px;
+    height: 62px;
+    font-family: Roboto, arial, sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    background: #35A8E0;
+    border: none;
+    border-radius: 31px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    box-shadow: 0 4px 12px rgba(53, 168, 224, 0.45);
+}
+
+#sjr-daily-limit-ok:hover {
+    opacity: 0.88;
+}

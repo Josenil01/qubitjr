@@ -146,7 +146,11 @@ export default class Home {
         case 'project':
             ScratchAudio.sndFX('keydown.wav');
             if (md5 && (md5 == 'newproject')) {
-                Home.showNewProjectModal();
+                if (Home._dailyLimitReached) {
+                    Home._showDailyLimitModal();
+                } else {
+                    Home.showNewProjectModal();
+                }
             } else if (md5) {
                 iOS.setfile('homescroll.sjr', gn('wrapc').scrollTop, function () {
                     doNext(md5);
@@ -245,12 +249,25 @@ export default class Home {
         obj.name = name;
         obj.version = version;
         obj.mtime = (new Date()).getTime().toString();
-        IO.createProject(obj, Home.gotoEditor);
+        IO.createProject(obj, Home.gotoEditor, function() { Home._showDailyLimitModal(); });
     }
 
     static _hideNewProjectModal () {
         var modal = document.getElementById('sjr-naming-modal');
         if (modal) { modal.classList.add('hidden'); }
+    }
+
+    static _showDailyLimitModal () {
+        var modal = document.getElementById('sjr-daily-limit-modal');
+        var text  = document.getElementById('sjr-daily-limit-text');
+        if (!modal) return;
+        if (text) text.textContent = Localization.localize('DAILY_LIMIT_MESSAGE');
+        modal.classList.remove('hidden');
+        function close () { modal.classList.add('hidden'); }
+        var btnOk    = document.getElementById('sjr-daily-limit-ok');
+        var backdrop = document.getElementById('sjr-daily-limit-backdrop');
+        if (btnOk)    btnOk.onclick    = close;
+        if (backdrop) backdrop.onclick = close;
     }
 
     static gotoEditor (md5) {
@@ -329,7 +346,7 @@ export default class Home {
             }
             var json = {};
             json.cond = 'deleted = ? AND version = ? AND gallery IS NULL';
-            json.items = ['name', 'thumbnail', 'id', 'isgift'];
+            json.items = ['name', 'thumbnail', 'id', 'isgift', 'created_at'];
             json.values = ['NO', version];
             json.order = 'ctime desc';
             IO.query(iOS.database, json, Home.displayProjects);
@@ -357,7 +374,7 @@ export default class Home {
             console.log('[displayProjects] ✅ emptyProjectThumbnail() chamado');
             console.log('[displayProjects] div.childElementCount APÓS emptyProjectThumbnail:', div.childElementCount);
             console.log('[displayProjects] div.innerHTML:', div.innerHTML);
-            
+            Home._dailyLimitReached = false;
             return;
         }
         
@@ -380,6 +397,16 @@ export default class Home {
         }
         
         Home.emptyProjectThumbnail(div);
+        
+        // Check daily project limit (UTC day)
+        var _today = new Date().toISOString().split('T')[0];
+        Home._dailyLimitReached = data.some(function(p) {
+            return p.isgift !== '1' && p.created_at && p.created_at.startsWith(_today);
+        });
+        if (Home._dailyLimitReached) {
+            var _btn = gn('newproject');
+            if (_btn) _btn.classList.add('daily-limit-reached');
+        }
         
         for (var i = 0; i < data.length; i++) {
             console.log(`[displayProjects] Adicionando projeto ${i + 1}/${data.length}:`, data[i]);

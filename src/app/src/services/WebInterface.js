@@ -241,6 +241,15 @@ class WebInterface {
       if (!response.ok) {
         const body = await response.text().catch(() => '');
         console.error('[WebInterface] Backend error response:', body);
+        if (response.status === 429) {
+          let parsed = {};
+          try { parsed = JSON.parse(body); } catch (_) {}
+          if (parsed.error === 'DAILY_LIMIT_EXCEEDED' || body.includes('DAILY_LIMIT_EXCEEDED')) {
+            const limitErr = new Error('DAILY_LIMIT_EXCEEDED');
+            limitErr.code = 'DAILY_LIMIT_EXCEEDED';
+            throw limitErr;
+          }
+        }
         throw new Error(`HTTP ${response.status}: ${body}`);
       }
 

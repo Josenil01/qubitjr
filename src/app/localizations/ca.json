@@ -377,5 +377,6 @@
     "USAGE_SCHOOL": "Escola",
     "USAGE_HOME": "Casa",
     "USAGE_OTHER": "Altres",
-    "USAGE_NONE": "No preguntar-ho més"
+    "USAGE_NONE": "No preguntar-ho més",
+    "DAILY_LIMIT_MESSAGE": "Només pots crear 1 projecte per dia. Intenta-ho de nou demà!"
 }

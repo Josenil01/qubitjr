@@ -376,5 +376,6 @@
     "USAGE_SCHOOL": "School",
     "USAGE_HOME": "Home",
     "USAGE_OTHER": "Other",
-    "USAGE_NONE": "Don't ask again"
+    "USAGE_NONE": "Don't ask again",
+    "DAILY_LIMIT_MESSAGE": "คุณสร้างได้ 1 โปรเจกต์ต่อวัน ลองใหม่พรุ่งนี้!"
 }

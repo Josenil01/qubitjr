@@ -376,5 +376,6 @@
     "USAGE_SCHOOL": "I skolan",
     "USAGE_HOME": "Hemma",
     "USAGE_OTHER": "Annat",
-    "USAGE_NONE": "Fråga inte igen"
+    "USAGE_NONE": "Fråga inte igen",
+    "DAILY_LIMIT_MESSAGE": "Du kan bara skapa 1 projekt per dag. Försök igen imorgon!"
 }

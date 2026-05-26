@@ -301,6 +301,7 @@
     "CHARACTER_Boat2.svg": "Boot",
     "CHARACTER_Rocket.svg": "Raket",
     "BACKGROUND_Farm.svg": "Boerderij",
+    "BACKGROUND_Farm_1.svg": "Boerderij 1",
     "BACKGROUND_Park.svg": "Park",
     "BACKGROUND_Suburbs.svg": "Woonwijk",
     "BACKGROUND_City.svg": "Stad",
@@ -375,5 +376,6 @@
     "USAGE_SCHOOL": "School",
     "USAGE_HOME": "Thuis",
     "USAGE_OTHER": "Anders",
-    "USAGE_NONE": "Niet opnieuw vragen"
+    "USAGE_NONE": "Niet opnieuw vragen",
+    "DAILY_LIMIT_MESSAGE": "Je kunt maar 1 project per dag aanmaken. Probeer het morgen opnieuw!"
 }
