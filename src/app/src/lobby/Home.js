@@ -146,7 +146,7 @@ export default class Home {
         case 'project':
             ScratchAudio.sndFX('keydown.wav');
             if (md5 && (md5 == 'newproject')) {
-                Home.createNewProject();
+                Home.showNewProjectModal();
             } else if (md5) {
                 iOS.setfile('homescroll.sjr', gn('wrapc').scrollTop, function () {
                     doNext(md5);
@@ -185,6 +185,72 @@ export default class Home {
         obj.version = version;
         obj.mtime = (new Date()).getTime().toString();
         IO.createProject(obj, Home.gotoEditor);
+    }
+
+    static showNewProjectModal () {
+        var suggested = Home.getNextName(Localization.localize('NEW_PROJECT_PREFIX'));
+        var modal    = document.getElementById('sjr-naming-modal');
+        var input    = document.getElementById('sjr-naming-input');
+        var backdrop = document.getElementById('sjr-naming-backdrop');
+        var btnOk    = document.getElementById('sjr-naming-confirm');
+        var btnCancel = document.getElementById('sjr-naming-cancel');
+
+        if (!modal || !input) {
+            // fallback: criar diretamente se o modal não estiver no DOM
+            Home.createNewProject();
+            return;
+        }
+
+        // Guarda o nome sugerido para uso no _confirmNewProject
+        Home._namingSuggested = suggested;
+
+        input.value = suggested;
+        modal.classList.remove('hidden');
+        // Seleciona o texto para que a criança possa digitar direto
+        setTimeout(function () { input.select(); input.focus(); }, 50);
+
+        // Listeners de confirmação/cancelamento (once: evita duplicatas)
+        function onConfirm () {
+            cleanup();
+            Home._confirmNewProject();
+        }
+        function onCancel () {
+            cleanup();
+            Home._hideNewProjectModal();
+        }
+        function onKey (e) {
+            if (e.key === 'Enter') { cleanup(); Home._confirmNewProject(); }
+            if (e.key === 'Escape') { cleanup(); Home._hideNewProjectModal(); }
+        }
+        function cleanup () {
+            btnOk.removeEventListener('click', onConfirm);
+            btnCancel.removeEventListener('click', onCancel);
+            backdrop.removeEventListener('click', onCancel);
+            input.removeEventListener('keydown', onKey);
+        }
+
+        btnOk.addEventListener('click', onConfirm);
+        btnCancel.addEventListener('click', onCancel);
+        backdrop.addEventListener('click', onCancel);
+        input.addEventListener('keydown', onKey);
+    }
+
+    static _confirmNewProject () {
+        var input = document.getElementById('sjr-naming-input');
+        var name = (input && input.value.trim()) || Home._namingSuggested ||
+                   Home.getNextName(Localization.localize('NEW_PROJECT_PREFIX'));
+        Home._hideNewProjectModal();
+        iOS.analyticsEvent('lobby', 'project_created');
+        var obj = {};
+        obj.name = name;
+        obj.version = version;
+        obj.mtime = (new Date()).getTime().toString();
+        IO.createProject(obj, Home.gotoEditor);
+    }
+
+    static _hideNewProjectModal () {
+        var modal = document.getElementById('sjr-naming-modal');
+        if (modal) { modal.classList.add('hidden'); }
     }
 
     static gotoEditor (md5) {
