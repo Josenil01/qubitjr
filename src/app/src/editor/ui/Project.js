@@ -609,7 +609,14 @@ export default class Project {
                 var bgimg = page.div.firstElementChild.firstElementChild;
                 pcnv = Project.drawPNGInCanvas(bgimg, 480, 360);
             } else {
-                pcnv = Project.drawSVGinCanvas(page.svg, 480, 360);
+                // Prefer the already-loaded background img (handles complex SVG with
+                // gradients/masks/<use> that SVG2Canvas cannot render).
+                var bkgImg = page.bkg && (page.bkg.img || page.bkg.originalImg);
+                if (bkgImg && bkgImg.complete && bkgImg.naturalWidth > 0) {
+                    pcnv = Project.drawPNGInCanvas(bkgImg, 480, 360);
+                } else {
+                    pcnv = Project.drawSVGinCanvas(page.svg, 480, 360);
+                }
             }
             ctx.drawImage(pcnv, 0, 0, 480, 360, 0, 0, w, h);
             Project.drawSprites(page, scale, c, w, h, fcn);
