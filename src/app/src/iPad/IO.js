@@ -129,6 +129,12 @@ export default class IO {
             }
             var images = IO.getImages(extxml, []);
             var imageCount = images.length;
+            if (imageCount < 1) {
+                extxml = null;
+                xmlDoc = null;
+                whenDone();
+                return;
+            }
             for (var i = 0; i < images.length; i++) {
                 var dataurl = images[i].getAttribute('xlink:href');
                 var svgimg = document.createElement('img');
