@@ -882,7 +882,10 @@ export default class Paint {
             Paint.addImageUrl(sf, splashshade);
             colour.onmousedown = Paint.selectSwatch;
         }
-        Paint.setSwatchColor(gn('swatches').childNodes[swatchlist.indexOf('#1C1C1C')]);
+        var initIdx = swatchlist.indexOf('#1C1C1C');
+        if (initIdx === -1) initIdx = swatchlist.indexOf('#1c1c1c');
+        var initSwatch = gn('swatches') && gn('swatches').childNodes[initIdx];
+        if (initSwatch) Paint.setSwatchColor(initSwatch);
     }
 
     static setSplashColor (p, str, color) {
@@ -925,17 +928,22 @@ export default class Paint {
     }
 
     static setSwatchColor (t) {
+        if (!t || !t.childNodes || !t.childNodes[0] || !t.childNodes[0].childNodes || !t.childNodes[0].childNodes[0]) return;
         var tools = ['select', 'wand', 'stamper', 'scissors', 'rotate'];
-        if (t && (tools.indexOf(mode) > -1)) {
+        if (tools.indexOf(mode) > -1) {
             Paint.selectButton('paintbucket');
         }
         var c = t.childNodes[0].childNodes[0].style.backgroundColor;
-        for (var i = 0; i < gn('swatches').childElementCount; i++) {
-            var mycolor = gn('swatches').childNodes[i].childNodes[0].childNodes[0].style.backgroundColor;
+        var swatches = gn('swatches');
+        if (!swatches || !swatches.childNodes) return;
+        for (var i = 0; i < swatches.childElementCount; i++) {
+            var node = swatches.childNodes[i];
+            if (!node || !node.childNodes[0] || !node.childNodes[0].childNodes || !node.childNodes[0].childNodes[0] || !node.childNodes[1]) continue;
+            var mycolor = node.childNodes[0].childNodes[0].style.backgroundColor;
             if (c == mycolor) {
-                gn('swatches').childNodes[i].childNodes[1].setAttribute('class', 'splasharea on');
+                node.childNodes[1].setAttribute('class', 'splasharea on');
             } else {
-                gn('swatches').childNodes[i].childNodes[1].setAttribute('class', 'splasharea off');
+                node.childNodes[1].setAttribute('class', 'splasharea off');
             }
         }
         fillcolor = c;
