@@ -232,7 +232,7 @@ export default class SVG2Canvas {
             if (!fill) {
                 return true;
             }
-            if ((fill == '#080808') || (fill == '#000000')) {
+            if ((fill == '#48076a') || (fill == '#080808') || (fill == '#000000')) {
                 return true;
             }
             if (fill == 'rgba(0, 0, 0, 0)') {

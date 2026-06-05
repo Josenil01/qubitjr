@@ -667,7 +667,7 @@ export default class Sprite {
         
         // Validação de fallback
         if (!BlockSpecs.balloon || typeof BlockSpecs.balloon !== 'string' || BlockSpecs.balloon.length === 0) {
-            BlockSpecs.balloon = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="44px" viewBox="0 0 30 44"><path fill="#28A5DA" stroke="#FFFFFF" stroke-miterlimit="10" d="M0.5,6.5c0-3.313,2.687-6,6-6h17c3.312,0,6,2.687,6,6v24c0,3.312-2.688,6-6,6h-2l-7,7l-7-7h-1c-3.313,0-6-2.688-6-6z"/></svg>';
+            BlockSpecs.balloon = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="44px" viewBox="0 0 30 44"><path fill="#48076a" stroke="#FFFFFF" stroke-miterlimit="10" d="M0.5,6.5c0-3.313,2.687-6,6-6h17c3.312,0,6,2.687,6,6v24c0,3.312-2.688,6-6,6h-2l-7,7l-7-7h-1c-3.313,0-6-2.688-6-6z"/></svg>';
         }
         
         var str = BlockSpecs.balloon.concat();

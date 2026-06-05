@@ -65,7 +65,7 @@
     text-align: center;
     font-size: ${css_vh(4.17)};
     /*  font-weight: bold;  */
-    color:  #4682B5;
+    color:  #48076a;
     font-weight: 500 !important;
     text-shadow: 0px -${1 * scaleMultiplier}px #0D1D28;
     font-family: Roboto;

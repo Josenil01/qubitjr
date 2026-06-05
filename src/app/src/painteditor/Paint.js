@@ -26,7 +26,7 @@ import {gn, newHTML, setCanvasSize, isTablet, getIdFor, isAndroid, setProps, hit
 // data needs to be moved, etc. -TM
 let xmlns = 'http://www.w3.org/2000/svg';
 let xmlnslink = 'http://www.w3.org/1999/xlink';
-let fillcolor = '#080808';
+let fillcolor = '#48076a';
 let workspaceWidth = 432;
 let workspaceHeight = 384;
 let mode = 'select';
@@ -945,29 +945,17 @@ export default class Paint {
 
     static initSwatchList () {
         return [
-            //	"#FF5500", // new orange
-            '#FFD2F2', '#FF99D6', '#FF4583', // red pinks
-            '#C30001', '#FF0023', '#FF8300', '#FFB200',
-            '#FFF42E',
-            '#FFF9C2', // pale yellow
-            '#E2FFBD', //  pale green
-            '#CFF500', // lime green
-            '#50D823', // problematic
-            //          "#2BFC49", // less problematic
-            '#29C130',
-            //          "#56C43B",  // ERROR?
-            '#2BBF8A', // new green
-            '#027607', '#114D24', //greens
-            '#FFFFFF', '#CCDDE7', '#61787C', '#1C1C1C', // grays
-            '#D830A3', // sarah's pink shoes border
-            '#FF64E9', // purple pinks
-            '#D999FF', ' #A159D3', // vilote
-            '#722696', // sarah's violet
-            '#141463', '#003399', '#1D40ED',
-            '#0079D3', '#009EFF', '#76C8FF',
-            '#ACE0FD', '#11B7BC', '#21F9F3', '#C3FCFC', '#54311E',
-            '#8E572A', '#E4B69D', '#FFCDA4', '#FFEDD7' // skin colors
-
+            '#48076a', '#6a2d8a', '#8c4fb0', '#b07ad6',
+            '#d046d9', '#e070e3', '#f0a0ed', '#f5c5f3',
+            '#ffa800', '#e69500', '#cc8400', '#ffb833',
+            '#01bebc', '#33cbc9', '#66d8d6', '#99e5e4',
+            '#6ce67d', '#8aec97', '#a8f2b1', '#c6f7cb',
+            '#ffffff', '#f0f0f0', '#d0d0d0', '#999999',
+            '#1c1c1c', '#333333', '#555555', '#777777',
+            '#ffd2f2', '#ff99d6', '#ff4583',
+            '#ff0023', '#ff8300', '#ffb200', '#fff42e',
+            '#027607', '#114d24', '#29c130',
+            '#8e572a', '#e4b69d', '#ffcda4', '#ffedd7'
         ];
     }
 
@@ -1222,7 +1210,7 @@ export default class Paint {
         } else {
             saving = true;
             if (fcn) {
-                Alert.open(paintFrame, gn('donecheck'), Localization.localize('ALERT_SAVING'), '#28A5DA');
+                Alert.open(paintFrame, gn('donecheck'), Localization.localize('ALERT_SAVING'), '#48076a');
                 Alert.balloon.style.zIndex = 12000;
             }
             svgdata = SVGTools.saveBackground(gn('layer1'), workspaceWidth, workspaceHeight);
@@ -1292,7 +1280,7 @@ export default class Paint {
         if (worthsaving) {
             saving = true;
             if (fcn) {
-                Alert.open(paintFrame, gn('donecheck'), 'Saving...', '#28A5DA');
+                Alert.open(paintFrame, gn('donecheck'), 'Saving...', '#48076a');
                 Alert.balloon.style.zIndex = 12000;
             }
             svgdata = SVGTools.saveShape(gn('layer1'), workspaceWidth, workspaceHeight);

@@ -17,7 +17,7 @@ html {
 #inappAbout h1 {
   font-size: ${css_vh(5.3)};
   margin-bottom: ${css_vh(0.65)};
-  color: #f5a322;
+  color: #ffa800;
 }
 
 #inappAbout h2 {

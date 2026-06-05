@@ -410,7 +410,7 @@ export default class BlockArg {
         var mainctx = canvas.getContext('2d');
         mainctx.fillStyle = '#AE1F24';
         mainctx.fillRect(0, 0, canvas.width, canvas.height);
-        mainctx.fillStyle = '#28A5DA';
+        mainctx.fillStyle = '#48076a';
         mainctx.fillRect(1 * dpr, 1 * dpr, 50 * dpr, 40 * dpr);
         var c = document.createElement('canvas');
         var w = (52 - 6) * dpr;
@@ -442,8 +442,8 @@ export default class BlockArg {
         ictx.fill();
         ictx.drawImage(canvas, 14 * dpr, 16 * dpr);
         ictx.beginPath();
-        ictx.fillStyle = '#28A5DA';
-        ictx.strokeStyle = '#355E7C';
+        ictx.fillStyle = '#48076a';
+        ictx.strokeStyle = '#48076a';
         ictx.arc(63 * dpr, 19 * dpr, 8 * dpr, 0 * dpr, Math.PI * 2, true);
         ictx.closePath();
         ictx.stroke();

@@ -218,7 +218,7 @@ export default class Project {
         gn('progressbar').style.height = h + 'px';
         if (h == 0) {
             gn('progressbar2').style.height = '0px';
-            gn('topcover').style.background = '#F9A737';
+            gn('topcover').style.background = '#ffa800';
         }
 
     }
@@ -431,10 +431,10 @@ export default class Project {
 
     static prepareToSave (id, whenDone) {
         if (saving) {
-            Alert.open(frame, gn('flip'), 'Waiting', '#28A5DA');
+            Alert.open(frame, gn('flip'), 'Waiting', '#48076a');
             Project.waitUntilSaved(id, whenDone);
         } else {
-            Alert.open(frame, gn('flip'), 'Saving', '#28A5DA');
+            Alert.open(frame, gn('flip'), 'Saving', '#48076a');
             Project.save(id, whenDone);
         }
     }

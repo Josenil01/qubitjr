@@ -247,7 +247,7 @@ export default class Palette {
             ['q', -curve, 0, -curve, -curve], ['z']
         ];
         ctx.clearRect(0, 0, Math.max(ctx.canvas.width, w), Math.max(ctx.canvas.height, h));
-        ctx.fillStyle = '#4682B5';
+        ctx.fillStyle = '#48076a';
         ctx.lineWidth = 2;
         //ctx.strokeStyle = 'rgba(242,243,242,0.4)';
         ctx.beginPath();

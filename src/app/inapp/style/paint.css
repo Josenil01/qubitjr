@@ -65,8 +65,8 @@ html {
 }
 
 #inappPaintEditorGuide .paint-button-selected {
-    border: 1px solid #2898CD;
-    color: #2898CD;
+    border: 1px solid #01bebc;
+    color: #01bebc;
 }
 
 /* 1. Undo */
@@ -411,7 +411,7 @@ html {
     padding-top: ${css_vh(1.64)};
     padding-left: ${css_vh(1.64)};
     height: ${css_vh(5.10)};
-    color: #2898CD;
+    color: #01bebc;
 }
 
 #inappPaintEditorGuide #paint-key-description {

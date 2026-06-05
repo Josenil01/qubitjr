@@ -164,7 +164,7 @@ export default class Grid {
         }
         var ctx = cnv.getContext('2d');
         ctx.globalAlpha = 0.5;
-        ctx.fillStyle = '#28A5DA';
+        ctx.fillStyle = '#48076a';
         ctx.strokeStyle = '#656e73';
         ctx.lineWidth = 3;
         ctx.strokeRect(3, 3, size - 6, size - 6);

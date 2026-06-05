@@ -241,7 +241,7 @@ div.frame {
     position: relative;
     width: ${708 * scaleMultiplier}px;
     height: ${128 * scaleMultiplier}px;
-    background: #E9ECF0;
+    background: #f0e8f5;
     overflow: hidden;
     zoom: 50%;
 }
@@ -264,12 +264,12 @@ div.frame {
     /*overflow: hidden;*/
 }
 
-#blockspalette .yellow { background: #FFE75A;}    /* #ffe100;}{ background: #FFFA5A;} */
-#blockspalette .blue { background: #4B8CC2;}
-#blockspalette .pink { background: #CD7CD1;}
-#blockspalette .orange { background: #FFBE57;}
-#blockspalette .green { background: #48CC7E;}
-#blockspalette .red { background: #D62222;}
+#blockspalette .yellow { background: #6ce67d;}
+#blockspalette .blue { background: #01bebc;}
+#blockspalette .pink { background: #d046d9;}
+#blockspalette .orange { background: #ffa800;}
+#blockspalette .green { background: #6ce67d;}
+#blockspalette .red { background: #48076a;}
 
 #blockspalette .editorversion {
     float: right;
@@ -543,7 +543,7 @@ z-index: 5;
     height: 100%;
     overflow: hidden;
     border: 0px solid #ccc;
-    background-color: #F9CF37;
+    background-color: #ffa800;
     z-index: 12000;
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255, 255, 255, 0.2)), color-stop(35%,rgba(255, 255, 255, 0)), color-stop(100%,rgba(255, 255, 255, 0)));
 }
@@ -568,7 +568,7 @@ z-index: 5;
     height: ${css_vh(5.21)};
     padding-top: ${css_vh(1.56)};
     border-radius: 15px;
-    border: 2px solid #c19f21;
+    border: 2px solid #48076a;
     float: left;
     margin-left: 6%;
 }
@@ -592,7 +592,7 @@ z-index: 5;
     height: 100%;
     overflow: hidden;
     border: 0px solid #ccc;
-    background-color: #F9CF37;
+    background-color: #ffa800;
     z-index: 11000;
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255, 255, 255, 0.2)), color-stop(35%,rgba(255, 255, 255, 0)), color-stop(100%,rgba(255, 255, 255, 0)));
 }
@@ -617,7 +617,7 @@ div.infoboxShareButton {
    padding-left: ${css_vw(.5)};
    padding-right: ${css_vw(.5)};
    border-radius: 15px;
-   border: 2px solid #c19f21;
+   border: 2px solid #48076a;
    margin: auto;
 }
 
@@ -683,8 +683,8 @@ form.projectname {
     height: ${css_vh(6.51)};
     margin: ${css_vh(0)} ${css_vh(0)} ${css_vh(0)};
     top: ${css_vh(18.88)};
-    background: #D6AF36;
-    border: 2px solid #D6AF36;
+    background: #48076a;
+    border: 2px solid #48076a;
     -webkit-box-shadow: inset 0 ${2 * scaleMultiplier}px 0 rgba(255, 255, 255, 1), 0 ${scaleMultiplier}px ${2 * scaleMultiplier}px rgba(255, 255, 255,0);
     -webkit-border-radius: ${32 * scaleMultiplier}px;
     -webkit-box-shadow: 0px ${scaleMultiplier}px 0px #ffffff;
@@ -725,7 +725,7 @@ form.projectname {
     width:  100%;
     height: ${css_vh(4.17)};
     line-height: ${css_vh(2.86)};
-    text-shadow: ${css_vh(0.00)} ${css_vh(-0.13)} #D6AF36;
+    text-shadow: ${css_vh(0.00)} ${css_vh(-0.13)} #48076a;
     color: #fff;
     text-align: center;
     font-size: 15pt;
@@ -739,7 +739,7 @@ form.projectname {
     font-size: ${css_vh(3.13)};
     font-weight: bold;
     margin: ${css_vh(-1.30)} ${css_vh(0.00)} ${css_vh(0.00)};
-    color: #28A5DA;
+    color: #48076a;
     vertical-align: middle;
     font-family: Roboto;
 
@@ -782,17 +782,17 @@ form.projectname {
 }
 
 *.menustyle.orange {
-	background-color: #FFB62B;
+	background-color: #ffa800;
 	border: 2px solid #F7931E;
-  border-color: #FFB62B #FFB62B hsl(35, 79%, 60%);
+  border-color: #ffa800 #ffa800 hsl(35, 79%, 60%);
 }
 
 *.menustyle.yellow {
   -webkit-box-shadow: inset 0 2px 0 rgba(255, 255, 0, 1), 0 1px 2px rgba(0, 0, 0,0);
   box-shadow: inset 0 2px 0 rgba(255, 255, 0,1), 0 1px 2px rgba(0, 0, 0, 0);
-	background-color: #FFEA00;
+	background-color: #ffa800;
 	border: 2px solid #D6BD05;
-  border-color: #FFEA00 #FFEA00 hsl(59, 79%, 60%);
+  border-color: #ffa800 #ffa800 hsl(59, 79%, 60%);
 }
 
 *.ddchoice{
@@ -808,15 +808,15 @@ form.projectname {
 *.menustyle.yellow > *.ddchoice{
 	-webkit-box-shadow: inset 0 2px 0 rgba(255, 255, 0, 1), 0 -1px 0px -1px  rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 2px 0 rgba(255, 255, 0, 1), 0 -1px 0px -1px  rgba(0, 0, 0, 0.2);
-	background-color: #FCDD03;
+	background-color: #ffa800;
 	border: 2px solid #D6BD05;
-  border-color: #FCDD03 #FCDD03 hsl(52, 79%, 40%);
+  border-color: #ffa800 #ffa800 hsl(52, 79%, 40%);
 }
 
 *.menustyle.orange > *.ddchoice{
   -webkit-box-shadow: inset 0 2px 0 rgba(255, 255, 0, 0.5), 0 -1px 0px -1px  rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 2px 0 rgba(255, 255, 0, 0.5), 0 -1px 0px -1px  rgba(0, 0, 0, 0.2);
-	background-color: #FFA10B;
+	background-color: #ffa800;
 	border: 2px solid #C67100;
   border-color: #C67100 #C67100 hsl(35, 79%, 40%);
 }
@@ -832,9 +832,9 @@ form.projectname {
 *.menustyle.orange > *.ddchoice{
   -webkit-box-shadow: inset 0 2px 0 rgba(255, 255, 0, 0.5), 0 -1px 0px -1px  rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 2px 0 rgba(255, 255, 0, 0.5), 0 -1px 0px -1px  rgba(0, 0, 0, 0.2);
-	background-color: #FFA10B;
+	background-color: #ffa800;
 	border: 2px solid #F7931E;
-  border-color: #FFB62B #FFB62B hsl(35, 75%, 60%);
+  border-color: #ffa800 #ffa800 hsl(35, 75%, 60%);
 }
 
 *.ddchoice > canvas{
@@ -968,14 +968,14 @@ Blocks text fields and input fields
     color: #77787b;
     font-family: Verdana;
     cursor: default;
-    border: 2px solid  #28A5DA;
+    border: 2px solid  #48076a;
     width: ${css_vh(62.51)};
     height: ${css_vh(6.25)};
     font-size: ${css_vh(3.13)};
 }
 
 .textinput:focus{
-    border: 2px solid  #28A5DA;
+    border: 2px solid  #48076a;
     -moz-border-radius: ${5 * scaleMultiplier}px;
     -webkit-border-radius: ${5 * scaleMultiplier}px;
     outline-color: rgba(0, 0, 0, 0);
@@ -1098,9 +1098,9 @@ Blocks text fields and input fields
 }
 
 .numfield.on {
-    -webkit-box-shadow: 0px ${scaleMultiplier}px ${scaleMultiplier}px rgba(40, 165, 218, 0.5);
+    -webkit-box-shadow: 0px ${scaleMultiplier}px ${scaleMultiplier}px rgba(72, 7, 106, 0.5);
     border: ${2 * scaleMultiplier}px solid  #9dc7d5;
-    background: #28A5DA;
+    background: #48076a;
     color: #ffffff;
 }
 

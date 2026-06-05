@@ -955,7 +955,7 @@ export default class SVGTools {
             if (elem.id.indexOf('Draw') > -1) {
                 return false;
             }
-            if ((fill == '#080808') || (fill == '#000000') || (fill == 'rgba(0, 0, 0, 0)')) {
+            if ((fill == '#48076a') || (fill == '#080808') || (fill == '#000000') || (fill == 'rgba(0, 0, 0, 0)')) {
                 return true;
             } //  shades of black
             // you can take this out if you rename dark layers xyzBorder

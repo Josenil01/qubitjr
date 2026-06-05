@@ -68,8 +68,8 @@ html {
 }
 
 #inappInterfaceGuide  .interface-button-selected {
-	border: 1px solid #2898CD;
-	color: #2898CD;
+	border: 1px solid #01bebc;
+	color: #01bebc;
 }
 
 /* Guide 1 - Interface Guide */
@@ -472,7 +472,7 @@ html {
 	font-size: ${css_vh(3)};
 	padding-top: ${css_vh(1.64)};
 	padding-left: ${css_vh(1.64)};
-	color: #2898CD;
+	color: #01bebc;
 }
 
 #inappInterfaceGuide  #interface-key-description {

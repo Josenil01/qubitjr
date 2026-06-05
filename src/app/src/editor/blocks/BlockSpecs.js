@@ -4,16 +4,16 @@ import IO from '../../iPad/IO.js';
 let loadCount = 0;
 
 let loadassets = {};
-let fontwhite = '#f2f3f2';
-let fontpink = '#ff8ae9';
-let fontdarkgray = '#6d6e6c';
-let fontblack = '#1b2a34';
-let fontyellow = '#ffdd33';
-let fontdarkgreen = '#287f46';
-let fontpurple = '#8f56e3';
-let fontblue = '#0d50ab';
-let fontred = '#c4281b';
-let fontorange = '#da8540';
+let fontwhite = '#ffffff';
+let fontpink = '#d046d9';
+let fontdarkgray = '#888888';
+let fontblack = '#1b1b1b';
+let fontyellow = '#ffa800';
+let fontdarkgreen = '#6ce67d';
+let fontpurple = '#48076a';
+let fontblue = '#01bebc';
+let fontred = '#48076a';
+let fontorange = '#ffa800';
 
 let fontcolors = [fontred, fontorange, fontyellow,
     fontdarkgreen, fontblue, fontpink, fontpurple,
@@ -65,7 +65,7 @@ export default class BlockSpecs {
         }
         
         // FALLBACK: SVG do balão embutido (caso o fetch falhe)
-        BlockSpecs.balloon = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="44px" viewBox="0 0 30 44"><path fill="#28A5DA" stroke="#FFFFFF" stroke-miterlimit="10" d="M0.5,6.5c0-3.313,2.687-6,6-6h17c3.312,0,6,2.687,6,6v24c0,3.312-2.688,6-6,6h-2l-7,7l-7-7h-1c-3.313,0-6-2.688-6-6z"/></svg>';
+        BlockSpecs.balloon = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="44px" viewBox="0 0 30 44"><path fill="#48076a" stroke="#FFFFFF" stroke-miterlimit="10" d="M0.5,6.5c0-3.313,2.687-6,6-6h17c3.312,0,6,2.687,6,6v24c0,3.312-2.688,6-6,6h-2l-7,7l-7-7h-1c-3.313,0-6-2.688-6-6z"/></svg>';
         
         IO.requestFromServer('assets/balloon.svg', BlockSpecs.setBalloon);
         loadCount++;
