@@ -149,8 +149,8 @@ export default class BlockSpecs {
     static setupCategories () {
         return [
             [
-                BlockSpecs.getImageFrom('assets/categories/StartOn', 'svg'),
-                BlockSpecs.getImageFrom('assets/categories/StartOff', 'svg'),
+                BlockSpecs.getImageFrom('assets/categories/StartOn', 'png'),
+                BlockSpecs.getImageFrom('assets/categories/StartOff', 'png'),
                 window.Settings.categoryStartColor
             ],
             [
