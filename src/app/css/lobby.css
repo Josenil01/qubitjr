@@ -79,8 +79,8 @@ ul#settings.reference {
 
 #topbar ul.topbar-nav .logo .logo-icon {
     display: block;
-    width: ${css_vh(12.63)};
-    height: ${css_vh(10.03)};
+    width: ${css_vh(20.63)};
+    height: ${css_vh(18.03)};
     background: url('../assets/lobby/Qubit_JR.png') no-repeat center center;
     background-size: contain;
     padding: 0;
