@@ -49,25 +49,19 @@ async function ensureBucketExists(supabase) {
   return { ok: true, created: true };
 }
 
-/**
- * GET /api/media/:filename
- * Baixar/obter URL do arquivo de mídia
- */
 router.get('/:filename', async (req, res) => {
   const supabase = getSupabase();
   if (!supabase) return res.status(503).json({ error: 'Database not configured' });
   try {
     const { filename } = req.params;
 
-    // Validação de segurança: não permitir path traversal
     if (filename.includes('..')) {
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    const storagePath = `${req.userId}/${filename}`;
+    const storagePath = `aluno/${req.userId}/${filename}`;
     console.log(`[Media] GET ${storagePath}`);
 
-    // Obter URL pública do arquivo
     const { data } = supabase.storage
       .from(BUCKET_NAME)
       .getPublicUrl(storagePath);
@@ -87,11 +81,6 @@ router.get('/:filename', async (req, res) => {
   }
 });
 
-/**
- * POST /api/media
- * Fazer upload de arquivo de mídia
- * Body: { filename: string, data: base64 }
- */
 router.post('/', async (req, res) => {
   const supabase = getSupabase();
   if (!supabase) return res.status(503).json({ error: 'Database not configured' });
@@ -102,18 +91,15 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'filename and data are required' });
     }
 
-    // Validação de segurança: não permitir path traversal
     if (filename.includes('..')) {
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    const storagePath = `${req.userId}/${filename}`;
+    const storagePath = `aluno/${req.userId}/${filename}`;
     console.log(`[Media] POST ${storagePath}`);
 
-    // Converter base64 para buffer
     const buffer = Buffer.from(data, 'base64');
 
-    // Upload para Supabase Storage (prefixado por userId)
     let { data: uploadData, error } = await supabase.storage
       .from(BUCKET_NAME)
       .upload(storagePath, buffer, {
@@ -121,7 +107,6 @@ router.post('/', async (req, res) => {
         upsert: true
       });
 
-    // If bucket is missing, create it and retry once.
     if (error && /bucket.*not found/i.test(error.message || '')) {
       const ensureResult = await ensureBucketExists(supabase);
       if (!ensureResult.ok) {
@@ -148,10 +133,9 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // Obter URL pública
     const { data: urlData } = supabase.storage
       .from(BUCKET_NAME)
-      .getPublicUrl(filename);
+      .getPublicUrl(storagePath);
 
     res.json({
       success: true,
@@ -166,22 +150,17 @@ router.post('/', async (req, res) => {
   }
 });
 
-/**
- * DELETE /api/media/:filename
- * Deletar arquivo de mídia
- */
 router.delete('/:filename', async (req, res) => {
   const supabase = getSupabase();
   if (!supabase) return res.status(503).json({ error: 'Database not configured' });
   try {
     const { filename } = req.params;
 
-    // Validação de segurança: não permitir path traversal
     if (filename.includes('..')) {
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    const storagePath = `${req.userId}/${filename}`;
+    const storagePath = `aluno/${req.userId}/${filename}`;
     console.log(`[Media] DELETE ${storagePath}`);
 
     const { error } = await supabase.storage
@@ -203,10 +182,6 @@ router.delete('/:filename', async (req, res) => {
   }
 });
 
-/**
- * POST /api/media/list
- * Listar arquivos de mídia
- */
 router.post('/list', async (req, res) => {
   const supabase = getSupabase();
   if (!supabase) return res.status(503).json({ error: 'Database not configured' });
@@ -217,7 +192,7 @@ router.post('/list', async (req, res) => {
 
     const { data, error } = await supabase.storage
       .from(BUCKET_NAME)
-      .list(req.userId, { limit });
+      .list(`aluno/${req.userId}`, { limit });
 
     if (error) {
       console.error('List error:', error);
