@@ -77,6 +77,16 @@ ul#settings.reference {
     margin: auto auto;
 }
 
+#topbar ul.topbar-nav .logo .logo-icon {
+    display: block;
+    width: ${css_vh(12.63)};
+    height: ${css_vh(10.03)};
+    background: url('../assets/lobby/Qubit_JR.png') no-repeat center center;
+    background-size: contain;
+    padding: 0;
+    margin: auto auto;
+}
+
 #topbar ul.reference .gear.off>span {background: url('../assets/lobby/gearOff.svg'); background-size: 101%; margin: auto;}
 #topbar ul.reference .gear.on>span {background: url('../assets/lobby/gearOn.svg'); background-size: 101%; margin: auto;}
 
