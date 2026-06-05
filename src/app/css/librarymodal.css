@@ -3,7 +3,8 @@
 .libframe {
     position: absolute;
     z-index: 10000;
-    background: url('../assets/libbkg.png');
+    /* background: url('../assets/libbkg.png'); */
+    background-color: #eecfff;
     background-size: 100%;
     display: none;
    
