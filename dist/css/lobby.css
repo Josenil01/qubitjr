@@ -74,10 +74,10 @@ div.frame {
 #topbar ul.topbar-nav .logo .logo-icon {
     display: block;
     cursor: default;
-    width: ${css_vh(28.65)};
-    height: ${css_vh(10.03)};
-    background: url('../assets/lobby/scratchJrlogo.svg');
-    background-size: 101%;
+    width: ${css_vh(20.63)};
+    height: ${css_vh(18.03)};
+    background: url('../assets/lobby/Qubit_JR.png') no-repeat center center;
+    background-size: contain;
     padding: 0;
     margin: auto auto;
 }
