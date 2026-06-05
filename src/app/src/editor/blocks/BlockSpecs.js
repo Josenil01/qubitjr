@@ -154,28 +154,28 @@ export default class BlockSpecs {
                 window.Settings.categoryStartColor
             ],
             [
-                BlockSpecs.getImageFrom('assets/categories/MotionOn', 'svg'),
-                BlockSpecs.getImageFrom('assets/categories/MotionOff', 'svg'),
+                BlockSpecs.getImageFrom('assets/categories/MotionOn', 'png'),
+                BlockSpecs.getImageFrom('assets/categories/MotionOff', 'png'),
                 window.Settings.categoryMotionColor
             ],
             [
-                BlockSpecs.getImageFrom('assets/categories/LooksOn', 'svg'),
-                BlockSpecs.getImageFrom('assets/categories/LooksOff', 'svg'),
+                BlockSpecs.getImageFrom('assets/categories/LooksOn', 'png'),
+                BlockSpecs.getImageFrom('assets/categories/LooksOff', 'png'),
                 window.Settings.categoryLooksColor
             ],
             [
-                BlockSpecs.getImageFrom('assets/categories/SoundOn', 'svg'),
-                BlockSpecs.getImageFrom('assets/categories/SoundOff', 'svg'),
+                BlockSpecs.getImageFrom('assets/categories/SoundOn', 'png'),
+                BlockSpecs.getImageFrom('assets/categories/SoundOff', 'png'),
                 window.Settings.categorySoundColor
             ],
             [
-                BlockSpecs.getImageFrom('assets/categories/FlowOn', 'svg'),
-                BlockSpecs.getImageFrom('assets/categories/FlowOff', 'svg'),
+                BlockSpecs.getImageFrom('assets/categories/FlowOn', 'png'),
+                BlockSpecs.getImageFrom('assets/categories/FlowOff', 'png'),
                 window.Settings.categoryFlowColor
             ],
             [
-                BlockSpecs.getImageFrom('assets/categories/StopOn', 'svg'),
-                BlockSpecs.getImageFrom('assets/categories/StopOff', 'svg'),
+                BlockSpecs.getImageFrom('assets/categories/StopOn', 'png'),
+                BlockSpecs.getImageFrom('assets/categories/StopOff', 'png'),
                 window.Settings.categoryStopColor
             ]
         ];

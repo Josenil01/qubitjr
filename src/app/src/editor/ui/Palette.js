@@ -296,7 +296,7 @@ export default class Palette {
 
     static createSelector (parent, n, dx, dy, spec) {
         var pxWidth = 51 * scaleMultiplier;
-        var pxHeight = 57 * scaleMultiplier;
+        var pxHeight = 51 * scaleMultiplier;
         var div = newDiv(parent, dx, dy, pxWidth, pxHeight, {
             position: 'absolute'
         });

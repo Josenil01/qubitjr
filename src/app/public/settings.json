@@ -9,14 +9,14 @@
     "textSpriteFont": "Helvetica",
     "blockArgFont": "Verdana",
     "paletteBalloonFont": "Roboto",
-    "categoryStartColor": "#e6e46c",
-    "categoryMotionColor": "#01bebc",
-    "categoryLooksColor": "#d046d9",
-    "categorySoundColor": "#ffa800",
-    "categoryFlowColor": "#6ce67d",
-    "categoryStopColor": "#48076a",
+    "categoryStartColor": "#EEEB03",
+    "categoryMotionColor": "#5397F9",
+    "categoryLooksColor": "#9966FF",
+    "categorySoundColor": "#5ADA10",
+    "categoryFlowColor": "#FFB73A",
+    "categoryStopColor": "#FE707A",
     "paletteBlockShadowOpacity": 0.8,
-    "autoSaveInterval": 30000,
+    "autoSaveInterval": 10000,
     "defaultLocale": "en",
     "defaultLocaleShort": "en",
     "supportedLocales": {
@@ -33,5 +33,5 @@
         "ไทย": "th",
         "简体中文": "zh-cn"
     },
-    "settingsPageDisabled": false
+    "settingsPageDisabled": true
 }

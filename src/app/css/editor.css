@@ -265,11 +265,11 @@ div.frame {
 }
 
 #blockspalette .yellow { background: #e6e46c;}
-#blockspalette .blue { background: #01bebc;}
+#blockspalette .blue { background: #0166be;}
 #blockspalette .pink { background: #d046d9;}
-#blockspalette .orange { background: #ffa800;}
-#blockspalette .green { background: #6ce67d;}
-#blockspalette .red { background: #48076a;}
+#blockspalette .orange { background: #6ce67d;}
+#blockspalette .green { background: #ffa800;}
+#blockspalette .red { background: #f03c3c;}
 
 #blockspalette .editorversion {
     float: right;
