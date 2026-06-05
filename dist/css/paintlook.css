@@ -468,7 +468,7 @@ spriteform.off {visibility: hidden; };
     margin: ${css_vh(2.60)} ${css_vh(1.56)} ${css_vh(0.00)};
     width: ${css_vh(7.03)};
     height: ${css_vh(0.13)};
-    background: #080808;
+    background: #48076a;
     -webkit-box-shadow: ${2 * scaleMultiplier}px ${2 * scaleMultiplier}px ${5 * scaleMultiplier}px rgba(0, 0, 0, 0.3);
 }
 

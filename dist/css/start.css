@@ -1,7 +1,7 @@
 html, body, {
     color: #4c4d4f;
     direction: ltr;
-    background: #35A8E0;
+    background: #48076a;
     font: 81.25% Roboto, arial, sans-serif;
     -webkit-user-select: none;
     height: 100%;
@@ -16,7 +16,7 @@ div.frame {
     min-width: 766px;
     min-height: 745px;
     position: relative;
-    background: #35A8E0;
+    background: #48076a;
     overflow: hidden;
     -webkit-overflow-scrolling: none;
 }
@@ -296,7 +296,7 @@ div.frame {
     z-index: 25;
 }
 .usageNoanswerText {
-    color: #35A8E0;
+    color: #01bebc;
     font-size: 1.8em;
 }
 
@@ -310,7 +310,7 @@ div.frame {
     width: 20%;
     height: 15%;
     top: 75%;
-    background-color: #35A8E0;
+    background-color: #48076a;
     border: none;
     color: white;
     font-size: 35px;

@@ -57,7 +57,7 @@
 .projecttitle h4 {
     font-weight: bold;
     text-align: center;
-    color: #355E7C;
+    color: #48076a;
     font-size: ${13 * scaleMultiplier}px;
     width: ${css_vh(25)};
     margin: 0;
@@ -80,7 +80,7 @@
 .samplethumb > p {
     font-weight: bold;
     text-align: center;
-    color: #C18134;
+    color: #48076a;
     width: 100%;
     margin: ${5 * scaleMultiplier}px auto;
     overflow: hidden;
@@ -168,7 +168,7 @@
 }
 
 .ribbonHorizontal {
-    background-color: #1dafed;
+    background-color: #01bebc;
     border: 3px solid #fff;
     height: ${css_vh(1.57)};
     width: ${css_vw(18.75)};
@@ -179,7 +179,7 @@
 }
 
 .ribbonVertical {
-    background-color: #1dafed;
+    background-color: #01bebc;
     border: 3px solid #fff;
     width: ${css_vw(1.17)};
     height: ${css_vh(19)};

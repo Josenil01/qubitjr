@@ -131,8 +131,8 @@
 /* stage text edit */
 
 .pagetext {
-    background: #4682B5;
-    border: 1px solid #355E7C;
+    background: #48076a;
+    border: 1px solid #48076a;
     position: absolute;
     overflow: hidden;
     width: ${css_vh(63.28)};
@@ -162,7 +162,7 @@
     text-align: center;
     font-family: Helvetica;
     font-weight: bold;
-    border: 2px solid #355E7C;
+    border: 2px solid #48076a;
     -webkit-border-radius: ${8 * scaleMultiplier}px;
     cursor: default;
     background: white;
@@ -186,7 +186,7 @@
 
 *.textuicolormenu {
     position: relative;
-    background: #4682B5;
+    background: #48076a;
     display: inline-block;
     position: relative;
     margin: ${css_vh(-0.65)} 0px ${css_vh(0.65)};
@@ -197,7 +197,7 @@
 
 *.textuifont {
     position: relative;
-    background: #4682B5;
+    background: #48076a;
     display: inline-block;
     position: relative;
     margin: ${css_vh(-5.21)} 0px 0px;
@@ -267,7 +267,7 @@
 .textuisize.t7{ font-size: ${css_vh(9.38)};}
 
 .textuisize.t1.on, .textuisize.t2.on, .textuisize.t3.on, .textuisize.t4.on,
-.textuisize.t5.on, .textuisize.t6.on, .textuisize.t7.on { color: #ffcc00;}
+.textuisize.t5.on, .textuisize.t6.on, .textuisize.t7.on { color: #ffa800;}
 
 .textuisize.t1.off, .textuisize.t2.off, .textuisize.t3.off, .textuisize.t4.off,
 .textuisize.t5.off, .textuisize.t6.off, .textuisize.t7.off { color: #ffffff;}

@@ -74,7 +74,7 @@
     top: 27px;
     width: 378px;
     height: 66px;
-    background: #F9A737;
+    background: #ffa800;
 }
 
 .loadicon{
@@ -147,9 +147,9 @@
     overflow: hidden;
     text-shadow: none;
     z-index: 11000;
-    border: 1px solid #4682B5;
-    border-bottom-color: #355D7C;
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%,#67afe5), color-stop(2%,#4682b5),  color-stop(100%,#4682b5));
+    border: 1px solid #48076a;
+    border-bottom-color: #48076a;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%,#6a2d8a), color-stop(2%,#48076a),  color-stop(100%,#48076a));
     -webkit-box-shadow: 0px 1px 0px #fff;
     -webkit-border-top-left-radius: ${6 * scaleMultiplier}px;
     -webkit-border-top-right-radius: ${6 * scaleMultiplier}px;
@@ -274,5 +274,5 @@
     background: #B3B3B3;
 }
 
-.soundlevel.on{ background: #8CC63F;}
+.soundlevel.on{ background: #6ce67d;}
 .soundlevel.off{background: #B3B3B3;}

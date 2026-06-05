@@ -5,7 +5,7 @@ html {
 }
 
 #inappBlocksGuide {
-    background: #F7F6EE;
+    background: #f0e8f5;
      margin-top: 102px;
     margin-bottom: 100px;
 }
@@ -39,27 +39,27 @@ html {
 }
 
 #inappBlocksGuide #yellow-block-category-header {
-    background-color: #F4E025;
+    background-color: #6ce67d;
 }
 
 #inappBlocksGuide #blue-block-category-header {
-    background-color: #4A8CE3;
+    background-color: #01bebc;
 }
 
 #inappBlocksGuide #purple-block-category-header {
-    background-color: #CD7CD1;
+    background-color: #d046d9;
 }
 
 #inappBlocksGuide #green-block-category-header {
-    background-color: #48CC7E;
+    background-color: #6ce67d;
 }
 
 #inappBlocksGuide #orange-block-category-header {
-    background-color: #FFB254;
+    background-color: #ffa800;
 }
 
 #inappBlocksGuide #red-block-category-header {
-    background-color: #EA2424;
+    background-color: #48076a;
 }
 
 #inappBlocksGuide .block-category-header-line {
@@ -69,27 +69,27 @@ html {
 }
 
 #inappBlocksGuide #yellow-block-category-header-line {
-    background-color: #F4E025;
+    background-color: #6ce67d;
 }
 
 #inappBlocksGuide #blue-block-category-header-line {
-    background-color: #4A8CE3;
+    background-color: #01bebc;
 }
 
 #inappBlocksGuide #purple-block-category-header-line {
-    background-color: #CD7CD1;
+    background-color: #d046d9;
 }
 
 #inappBlocksGuide #green-block-category-header-line {
-    background-color: #48CC7E;
+    background-color: #6ce67d;
 }
 
 #inappBlocksGuide #orange-block-category-header-line {
-    background-color: #FFB254;
+    background-color: #ffa800;
 }
 
 #inappBlocksGuide #red-block-category-header-line {
-    background-color: #EA2424;
+    background-color: #48076a;
 }
 
 /*
