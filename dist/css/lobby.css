@@ -11,7 +11,7 @@ div.frame {
     height: 100%;
     min-width: 766px;
     min-height: 745px;
-    background: #eecfff;
+    background: #E8E3CA;
     overflow: hidden;
     -webkit-overflow-scrolling: none;
     -webkit-user-select: none;
@@ -25,14 +25,14 @@ div.frame {
     top: 0;
     left: 0;
     right: 0;
-    height: 10.420vh;
+    height: ${css_vh(10.42)};
     text-shadow: none;
     z-index: 100;
     background-color: #48076a;
     background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
     border-bottom: 1px solid #ADACA6;
     border-top: 1px solid #48076a;
-    -webkit-box-shadow: 0px 1.000px 1.000px #fff;
+    -webkit-box-shadow: 0px ${1 * scaleMultiplier}px ${1 * scaleMultiplier}px #fff;
     width: 100%;
     min-width: 800px;
 }
@@ -41,7 +41,7 @@ div.frame {
     display: inline-block;
     list-style-type: none;
     margin: 0px;
-    width: 78.130vh;
+    width: ${css_vh(78.13)};
     position: absolute;
     left: 0px;
 }
@@ -52,7 +52,7 @@ div.frame {
     padding: 0px;
     cursor: default;
     vertical-align: top;
-    line-height:  10.290vh;
+    line-height:  ${css_vh(10.29)};
     border-right: 1px solid #ADACA6;
 }
 
@@ -60,17 +60,17 @@ div.frame {
 #topbar ul.reference .book.on {
     background-color: #48076a;
     background-image: -webkit-linear-gradient(top,rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-    height: 10.810vh;
+    height: ${css_vh(10.81)};
 }
 
 ul#settings.reference {
-    right: 15.500vh;
+    right: ${css_vh(15.5)};
 }
 
 #topbar ul.reference .gear .gear-icon {
     display: block;
-    width: 12.630vh;
-    height: 10.030vh;
+    width: ${css_vh(12.63)};
+    height: ${css_vh(10.03)};
     background: url('../assets/lobby/gearOff.svg');
     background-size: 101%;
     padding: 0;
@@ -79,8 +79,8 @@ ul#settings.reference {
 
 #topbar ul.topbar-nav .logo .logo-icon {
     display: block;
-    width: 20.630vh;
-    height: 18.030vh;
+    width: ${css_vh(20.63)};
+    height: ${css_vh(18.03)};
     background: url('../assets/lobby/Qubit_JR.png') no-repeat center center;
     background-size: contain;
     padding: 0;
@@ -94,7 +94,7 @@ ul#settings.reference {
 #topbar ul.reference .gear.on {
     background-color: #48076a;
     background-image: -webkit-linear-gradient(top,rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-    height: 10.810vh;
+    height: ${css_vh(10.81)};
 }
 
 
@@ -104,7 +104,7 @@ ul#settings.reference {
     /* position: fixed; */
     left: 0;
     right: 0;
-    margin: 10.810vh auto 0px;
+    margin: ${css_vh(10.81)} auto 0px;
     height: 0px;
     border: 0;
     display: inline-block;
@@ -116,7 +116,7 @@ ul#settings.reference {
 
 .topsection>div{
     color: #fff;
-    font-size: 3.500vh;
+    font-size: ${css_vh(3.5)};
     font-weight: bold;
     text-align: left;
 }
@@ -126,27 +126,27 @@ ul#settings.reference {
 }
 
 .topsection.home > div.tabtitle {
-    height: 5.860vh;
+    height: ${css_vh(5.86)};
     background: #ffa800;
     margin: 0;
     padding: 0;
     padding-left: 2%;
     text-shadow: 0 2px #48076a;
-    line-height: 5.860vh;
+    line-height: ${css_vh(5.86)};
     vertical-align: middle;
     border-bottom: 1px solid #ADACA6;
     width: 100%;
 }
 
 .topsection.help > div.tabtitle {
-    height: 5.860vh;
+    height: ${css_vh(5.86)};
     background: #48076a;
     border-bottom: 1px solid #ADACA6;
     margin: 0;
     padding: 0;
     padding-left: 2%;
     text-shadow: 0 2px #48076a;
-    line-height: 5.860vh;
+    line-height: ${css_vh(5.86)};
     vertical-align: middle;
 }
 
@@ -163,7 +163,7 @@ ul#settings.reference {
 }
 .topsection.help >div.blueband {
     display: block;
-    height: 5.860vh;
+    height: ${css_vh(5.86)};
     background: #48076a;
     border: 0px solid #ADACA6;
     border-top: 1px solid #ffffff;
@@ -172,14 +172,14 @@ ul#settings.reference {
 
 .topsection.help >div.blueband >span {
     color: #fff;
-    font-size: 3.500vh;
+    font-size: ${css_vh(3.5)};
     font-weight: bold;
     text-align: left;
     margin: 0;
     padding-left: 2%;
-    padding-top: 1.000vh;
+    padding-top: ${css_vh(1)};
     text-shadow: 0 2px #48076a;
-    line-height: 5.860vh;
+    line-height: ${css_vh(5.86)};
     vertical-align: top;
 }
 
@@ -193,9 +193,9 @@ ul#settings.reference {
 
 .topsection.help >div.tabicon {
     display: block;
-    margin: 0px auto 1.300vh;
-    width: 39.000vh;
-    height: 19.500vh;
+    margin: 0px auto ${css_vh(1.3)};
+    width: ${css_vh(39)};
+    height: ${css_vh(19.5)};
     background: url('../assets/lobby/movielaunch.svg') no-repeat left top;
     background-size: 100%;
 }
@@ -203,31 +203,31 @@ ul#settings.reference {
 /* Localization menu */
 h1.localizationtitle {
     font-family: Roboto;
-    font-size: 4.500vh;
+    font-size: ${css_vh(4.5)};
     color: #ffa800;
     text-align: center;
 }
 
 div.languagebuttons {
     margin: auto;
-    margin-top: 4.000vh;
+    margin-top: ${css_vh(4)};
     width: 90%;
 }
 
 div.localizationselect {
     border-radius: 15px;
-    width: 23.000vw;
+    width: ${css_vw(23)};
     height: 47pt;
     float: left;
     position: relative; /* for absolute positioning of pseudo :after element */
     background-color: #01bebc;
     color: #fff;
-    /* font-size: 4.500vh; */
+    /* font-size: ${css_vh(4.5)}; */
     /* fontsize based on device vertical height doesn't work on 16:9 aspect Android device, just set fixed size font */
     font-size: 34.5px;
     text-align: center;
-    margin-left: 3.000vw;
-    margin-bottom: 2.000vw;
+    margin-left: ${css_vw(3)};
+    margin-bottom: ${css_vw(2)};
     padding-top: 2%;
     background-image: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.2) 51%);
 }
@@ -255,7 +255,7 @@ div.localizationselect.selected:after {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 10.400vh;
+    height: ${css_vh(10.4)};
     border: 0 solid #ADACA6;
     border-bottom: 1px solid #ADACA6;
     border-top: 1px solid #ADACA6;
@@ -283,54 +283,54 @@ div.localizationselect.selected:after {
     margin: 0px;
     padding: 0px;
     vertical-align: middle;
-    line-height:  10.150vh;
+    line-height:  ${css_vh(10.15)};
     border-right: 1px solid #ADACA6;
 }
 
 #footer ul.footer-nav .tab,.tab2  {
     position: absolute;
-    width: 25.000vw;
-    height: 10.150vh;
+    width: ${css_vw(25)};
+    height: ${css_vh(10.15)};
 }
 
 #footer ul.footer-nav .tab  {
     border-right: 1px solid #ADACA6;
 }
 
-#abouttab       { left: 0.000vw; }
-#interfacetab   { left: 25.000vw; }
-#painttab       { left: 50.000vw; }
-#blockstab      { left: 75.000vw; }
+#abouttab       { left: ${css_vw( 0)}; }
+#interfacetab   { left: ${css_vw(25)}; }
+#painttab       { left: ${css_vw(50)}; }
+#blockstab      { left: ${css_vw(75)}; }
 
 #footer ul.footer-nav .tab.off, ul.footer-nav .tab2.off   {background-image: none; top:0px;}
 
 #footer ul.footer-nav .tab.on,.tab2.on {
     background-image: -webkit-linear-gradient(top, rgba(249, 248, 242, 1), rgba(249, 248, 242, 0));
-    top: -0.130vh;
+    top: ${css_vh(-0.13)};
 }
 
 
 #footer ul.footer-nav .tab>div, ul.footer-nav .tab2>div {
     position: relative;
-    margin: 0.650vh;
-    left: 0.650vh;
-    width: 8.300vh;
-    height: 8.300vh;
+    margin: ${css_vh(0.65)};
+    left: ${css_vh(0.65)};
+    width: ${css_vh(8.3)};
+    height: ${css_vh(8.3)};
 }
 
 /* the footer text */
 /*
 #footer ul.footer-nav .tab>span , ul.footer-nav .tab2>span{
     position: relative;
-    top: -6.000vh;
-    left: 5.000vw;
+    top: ${css_vh(-6)};
+    left: ${css_vw(5)};
     padding: 0px;
-    height: 2.860vh;
-    line-height: 2.860vh;
+    height: ${css_vh(2.86)};
+    line-height: ${css_vh(2.86)};
     cursor: pointer;
-    width: 17.580vw;
+    width: ${css_vw(17.58)};
     overflow: visible;
-    font-size: 2.340vh;
+    font-size: ${css_vh(2.34)};
     margin: auto;
     vertical-align: middle;
     text-shadow: none;
@@ -344,11 +344,11 @@ div.localizationselect.selected:after {
     top: -58px;
     left: 40px;
     padding: 0px;
-    height: 2.860vh;
-    line-height: 2.860vh;
+    height: ${css_vh(2.86)};
+    line-height: ${css_vh(2.86)};
     cursor: pointer;
     overflow: visible;
-    font-size: 2.340vh;
+    font-size: ${css_vh(2.34)};
     margin: auto;
     vertical-align: middle;
     text-shadow: none;
@@ -406,25 +406,25 @@ div.localizationselect.selected:after {
     margin: 0px auto;
     width: 100%;
     border: 0;
-    padding: 80.000px 0px 50.000px;
+    padding: ${80 * scaleMultiplier}px 0px ${50 * scaleMultiplier}px;
     height: auto;
 }
 
 .htmlcontents.home {
-    padding: 17.000vh 0px 6.500vh;
+    padding: ${css_vh(17)} 0px ${css_vh(6.5)};
     height: auto;
 }
 
 .htmlcontents.settings {
-    padding: 14.500vh 0px 2.000vh;
-    margin: 2.600vh auto;
-    width: 87.890vw;
+    padding: ${css_vh(14.5)} 0px ${css_vh(2)};
+    margin: ${css_vh(2.6)} auto;
+    width: ${css_vw(87.89)};
     height: auto;
 }
 
 
 .htmlcontents.help {
-    padding: 10.800vh 0px 0.970vw;
+    padding: ${css_vh(10.8)} 0px ${css_vw(0.97)};
     height: 89.1%;
 }
 
@@ -446,29 +446,29 @@ div.localizationselect.selected:after {
 .htmlcontents.scrolled {
     position: absolute;
     padding: 0px;
-    height: 79.180vh;
-    top: 10.420vh;
+    height: ${css_vh(79.18)};
+    top: ${css_vh(10.42)};
 }
 
 .htmlcontents.fixed {
     position: absolute;
     padding: 0px;
-    height: 79.180vh;
-    top: 10.420vh;
+    height: ${css_vh(79.18)};
+    top: ${css_vh(10.42)};
 }
 
 
 .errormsg {
-    margin: 20.000px 70.000px 0px;
+    margin: ${20 * scaleMultiplier}px ${70 * scaleMultiplier}px 0px;
     padding: 0px;
 }
 
 .errormsg h1 {
     text-align: left;
-    text-shadow: 0 2.000px #fff;
+    text-shadow: 0 ${2 * scaleMultiplier}px #fff;
     color: #48076a;
     vertical-align: middle;
-    font-size: 18.000px;
+    font-size: ${18 * scaleMultiplier}px;
     font-weight: bold;
 }
 
