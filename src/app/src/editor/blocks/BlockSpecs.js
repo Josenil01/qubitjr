@@ -83,22 +83,22 @@ export default class BlockSpecs {
 
     static loadGraphics () {
         BlockSpecs.mic = BlockSpecs.getImageFrom('assets/ui/recordslot', 'svg');
-        BlockSpecs.yellowStart = BlockSpecs.getImageFrom('assets/blocks/start', 'svg');
+        BlockSpecs.yellowStart = BlockSpecs.getImageFrom('assets/blocks/start', 'png');
         BlockSpecs.yellowStartH = BlockSpecs.getImageFrom('assets/blocks/eh/startH');
 
-        BlockSpecs.yellowCmd = BlockSpecs.getImageFrom('assets/blocks/yellowCmd', 'svg');
+        BlockSpecs.yellowCmd = BlockSpecs.getImageFrom('assets/blocks/yellowCmd', 'png');
         BlockSpecs.yellowCmdH = BlockSpecs.getImageFrom('assets/blocks/eh/yellowCmdH');
 
-        BlockSpecs.redEnd = BlockSpecs.getImageFrom('assets/blocks/endshort', 'svg');
+        BlockSpecs.redEnd = BlockSpecs.getImageFrom('assets/blocks/endshort', 'png');
         BlockSpecs.redEndH = BlockSpecs.getImageFrom('assets/blocks/eh/stopH');
 
-        BlockSpecs.orangeCmd = BlockSpecs.getImageFrom('assets/blocks/flow', 'svg');
+        BlockSpecs.orangeCmd = BlockSpecs.getImageFrom('assets/blocks/flow', 'png');
         BlockSpecs.orangeCmdH = BlockSpecs.getImageFrom('assets/blocks/eh/flowH');
 
-        BlockSpecs.limeCmd = BlockSpecs.getImageFrom('assets/blocks/sounds', 'svg');
+        BlockSpecs.limeCmd = BlockSpecs.getImageFrom('assets/blocks/sounds', 'png');
         BlockSpecs.limeCmdH = BlockSpecs.getImageFrom('assets/blocks/eh/soundsH');
 
-        BlockSpecs.pinkCmd = BlockSpecs.getImageFrom('assets/blocks/looks', 'svg');
+        BlockSpecs.pinkCmd = BlockSpecs.getImageFrom('assets/blocks/looks', 'png');
         BlockSpecs.pinkCmdH = BlockSpecs.getImageFrom('assets/blocks/eh/looksH');
 
         BlockSpecs.redEndLong = BlockSpecs.getImageFrom('assets/blocks/endlong', 'svg');
@@ -107,7 +107,7 @@ export default class BlockSpecs {
         BlockSpecs.cShape = BlockSpecs.getImageFrom('assets/blocks/repeat');
         BlockSpecs.cShapeH = BlockSpecs.getImageFrom('assets/blocks/eh/repeatH');
 
-        BlockSpecs.blueCmd = BlockSpecs.getImageFrom('assets/blocks/blueCmd', 'svg');
+        BlockSpecs.blueCmd = BlockSpecs.getImageFrom('assets/blocks/blueCmd', 'png');
         BlockSpecs.blueCmdH = BlockSpecs.getImageFrom('assets/blocks/eh/blueCmdH');
 
         BlockSpecs.textfieldimg = BlockSpecs.getImageFrom('assets/misc/Text-01');
@@ -115,9 +115,9 @@ export default class BlockSpecs {
         BlockSpecs.pressbutton = BlockSpecs.getImageFrom('assets/misc/pushbutton-01', 'svg');
         BlockSpecs.pressbuttonSmall = BlockSpecs.getImageFrom('assets/misc/pushbutton', 'svg');
         BlockSpecs.caretrepeat = BlockSpecs.getImageFrom('assets/blocks/caretrepeat');
-        BlockSpecs.cmdS = BlockSpecs.getImageFrom('assets/blocks/shadowCmd', 'svg');
-        BlockSpecs.startS = BlockSpecs.getImageFrom('assets/blocks/shadowStart', 'svg');
-        BlockSpecs.endS = BlockSpecs.getImageFrom('assets/blocks/shadowEndShort', 'svg');
+        BlockSpecs.cmdS = BlockSpecs.getImageFrom('assets/blocks/shadowCmd', 'png');
+        BlockSpecs.startS = BlockSpecs.getImageFrom('assets/blocks/shadowStart', 'png');
+        BlockSpecs.endS = BlockSpecs.getImageFrom('assets/blocks/shadowEndShort', 'png');
         BlockSpecs.endLongS = BlockSpecs.getImageFrom('assets/blocks/shadowEndLong', 'svg');
         BlockSpecs.repeatS = BlockSpecs.getImageFrom('assets/blocks/shadowRepeat');
 
@@ -274,13 +274,13 @@ export default class BlockSpecs {
             'gotopage': ['gotopage', null,
                 BlockSpecs.redEndLong, 'p', '2', BlockSpecs.redEndLongH, null, null, BlockSpecs.endLongS],
             'caretstart': ['caretstart', null,
-                BlockSpecs.getImageFrom('assets/blocks/caretstart', 'svg'), null, null, null, null, null],
+                BlockSpecs.getImageFrom('assets/blocks/caretstart', 'png'), null, null, null, null, null],
             'caretend': ['caretend', null,
-                BlockSpecs.getImageFrom('assets/blocks/caretend', 'svg'), null, null, null, null, null],
+                BlockSpecs.getImageFrom('assets/blocks/caretend', 'png'), null, null, null, null, null],
             'caretrepeat': ['caretrepeat', null,
-                BlockSpecs.getImageFrom('assets/blocks/caretrepeat'), null, null, null, null, null],
+                BlockSpecs.getImageFrom('assets/blocks/caretrepeat', 'png'), null, null, null, null, null],
             'caretcmd': ['caretcmd', null,
-                BlockSpecs.getImageFrom('assets/blocks/caretcmd', 'svg'), null, null, null, null, null]
+                BlockSpecs.getImageFrom('assets/blocks/caretcmd', 'png'), null, null, null, null, null]
 
         };
     }

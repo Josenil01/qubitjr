@@ -181,7 +181,13 @@ export default class Block {
 
     drawBlockType () {
         var ctx = this.blockshape.getContext('2d');
-        ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0,
+        var x_img =0;
+        var y_img = 0;
+        if (this.blocktype == 'onflag' || this.blocktype == 'ontouch' || this.blocktype == 'onclick' || this.blocktype == 'onmessage') {
+            x_img = 9;
+            y_img = 0;
+        }
+        ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, x_img, y_img,
             this.image.width * this.scale * window.devicePixelRatio,
             this.image.height * this.scale * window.devicePixelRatio);
         var icnv = document.createElement('canvas');
