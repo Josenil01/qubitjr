@@ -8,6 +8,48 @@ This project adapts the original native mobile app to browser environments using
 
 ---
 
+## ⚠️ Agent Reminders
+
+These notes exist to prevent recurring mistakes. Read them before making any change.
+
+### Active Entry Point
+The only active entry point is `src/app/appEntry-vite.js`.
+Do NOT touch or reference `appEntry.js` or `appEntry-web.js` — they are in `_legacy/`.
+
+### Development vs. Build
+- `npm run dev` serves files directly from source via Vite's dev server.
+  **No build step needed** to test changes locally — edits are reflected immediately.
+- `npm run build` is only required for Vercel deployment (and Vercel runs it automatically on deploy).
+  Never instruct the user to run `npm run build` to test local changes.
+
+### Legacy Folder
+`_legacy/` contains files from previous generations of the project (Electron app, old CI).
+Do NOT import, modify, or reference anything inside `_legacy/`.
+To revert a file, copy it back from `_legacy/<original-path>` to `<original-path>`.
+
+### Database
+This project uses **Supabase (PostgreSQL)** via `@supabase/supabase-js`.
+The `pg` package is also a dependency but Supabase is the primary data layer.
+Do NOT assume or suggest Neon.tech, PlanetScale, or any other provider.
+
+### Image Assets (Static Paths)
+Images in `src/app/assets/` are loaded via static string paths (e.g., `"assets/blocks/blueCmd.png"`),
+NOT via Vite imports. The `copyStaticAssetsPlugin` in `vite.config.js` copies the entire
+`assets/` directory to `dist/assets/` at build time. Do not refactor to `import` statements
+unless explicitly requested — it would break the existing loading mechanism.
+
+### Mixed PNG/SVG Usage
+Most block images use `.svg`, but some (e.g., `blueCmd`) use `.png`. This is intentional.
+Do not "fix" the inconsistency unless explicitly asked.
+
+### CSS Template Literals
+CSS files use JavaScript template expressions (`${css_vh(N)}`, `${scaleMultiplier}`).
+These are evaluated at runtime by `preprocess()` in `lib.js` (uses `eval()`).
+Vite processes them at build time via `handleTemplateLiteralCss` plugin.
+Do not remove or convert these to standard CSS values.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology |
@@ -47,17 +89,12 @@ This project adapts the original native mobile app to browser environments using
 │   ├── .env / .env.example       # Backend environment variables
 │   └── package.json
 ├── src/
-│   ├── main.js                   # Legacy Electron main process (do not modify)
-│   ├── electronClient.js         # Legacy Electron renderer (do not modify)
 │   └── app/                      # ** Main frontend application (Vite root) **
 │       ├── index.html            # HTML entry: splash screen
 │       ├── home.html             # HTML entry: project lobby
 │       ├── editor.html           # HTML entry: block editor
 │       ├── gettingstarted.html   # HTML entry: getting started guide
-│       ├── index-vite.html       # Alternative Vite entry (without CSS <link> tags)
-│       ├── appEntry.js           # Original synchronous entry point
-│       ├── appEntry-vite.js      # ** Active Vite/ES6 entry point ** (imports, CSS processing, router)
-│       ├── appEntry-web.js       # Native ES6 module entry point (no bundler)
+│       ├── appEntry-vite.js      # ** ÚNICO entry point ativo ** (imports, CSS processing, router)
 │       ├── bootstrap.js          # Fallback polyfills (IO, Localization, iOS mocks)
 │       ├── sync-wrapper.js       # Bridging async WebInterface Promises → callback-based iOS.js API
 │       ├── settings.json         # App configuration (sprites, colors, locales, intervals)
@@ -122,17 +159,25 @@ This project adapts the original native mobile app to browser environments using
 │           └── snap/             # Snap.svg library (minified, do not edit)
 │               └── snap.svg-min.js
 ├── dist/                         # Build output (Vite build)
+├── _legacy/                      # Files from previous project generations (Electron, old CI)
+│   ├── src/
+│   │   ├── main.js               #   Electron main process (archived)
+│   │   ├── electronClient.js     #   Electron renderer (archived)
+│   │   └── app/
+│   │       ├── appEntry.js       #   Original synchronous entry point (archived)
+│   │       ├── appEntry-web.js   #   ES6 module entry without bundler (archived)
+│   │       └── index-vite.html   #   Alternative HTML without CSS <link> tags (archived)
+│   ├── .compilerc                #   Legacy Babel config for Electron (archived)
+│   ├── .travis.yml               #   Legacy CI pipeline (archived)
+│   └── docs/                     #   Electron documentation (archived)
 ├── scripts/                      # (empty)
-├── docs/                         # Legacy Electron documentation
 ├── vite.config.js                # Vite configuration (plugins, proxy, aliases, CSS processing)
 ├── vercel.json                   # Vercel deployment config (routes, functions)
 ├── .vercelignore
 ├── package.json                  # Root package.json (scripts, eslintConfig, dependencies)
 ├── .env.local                    # Frontend env vars (VITE_MOCK_TOKEN)
-├── .compilerc                    # Legacy Babel config for Electron
 ├── eslint_rc                     # Alternative ESLint config file
 ├── .eslintignore
-├── .travis.yml                   # Legacy CI config
 ├── fix-imports.js                # Utility script to add .js extensions to relative imports
 └── CONTRIBUTING.md
 ```
@@ -252,7 +297,7 @@ Never introduce new globals. Always use module imports.
 - Add expository comments explaining what code does — code should be self-documenting.
 - Add JSDoc or documentation comments unless explicitly requested.
 - Introduce new npm dependencies without explicit user request.
-- Modify `src/main.js` or `src/electronClient.js` (legacy Electron code).
+- Modify anything inside `_legacy/` (archived Electron code).
 - Modify `src/app/src/snap/snap.svg-min.js` (third-party minified library).
 - Create new global variables on `window`.
 - Use `console.log` for temporary debugging in production paths — use structured logging or remove before commit.
