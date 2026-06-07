@@ -37,7 +37,7 @@ div.frame {
     bottom: 0px;
     width: 100%;
  height: 400px;
-    background: url('../assets/start/bottom.png');
+    /* background: url('../assets/start/bottom.png'); */
     background-position: center bottom;
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -49,7 +49,7 @@ div.frame {
     bottom: 10px;
     width: 100%;
     height: 350px;
-    background: url('../assets/start/creditsText.png');
+    /* background: url('../assets/start/creditsText.png'); */
     background-position: center center;
     background-repeat: no-repeat;
     z-index: 21;
@@ -80,7 +80,7 @@ div.frame {
     margin: 0px;
     width: 100%;
     height: 26%;
-    background: url('../assets/start/FunkyPurple.svg');
+    /* background: url('../assets/start/FunkyPurple.svg'); */
     background-repeat: no-repeat;
     background-size: auto 100%;
 }
@@ -96,7 +96,7 @@ div.frame {
     width: 100%;
     height: 54%;
     z-index: 2;
-    background: url('../assets/start/FunkyRed.svg');
+    /* background: url('../assets/start/FunkyRed.svg'); */
     background-repeat: no-repeat;
     background-size: auto 100%;
 }
@@ -111,7 +111,7 @@ div.frame {
     margin: 0px;
     width: 100%;
     height: 23%;
-    background: url('../assets/start/FunkyBlue.svg');
+    /* background: url('../assets/start/FunkyBlue.svg'); */
     background-repeat: no-repeat;
     background-size: auto 100%;
     z-index: 21;
@@ -129,7 +129,7 @@ div.frame {
     height: 22%;
     min-width: 150px;
     min-height: 150px;
-    background: url('../assets/start/helpOn.svg');
+    /* background: url('../assets/start/helpOn.svg'); */
     background-repeat: no-repeat;
     background-size: auto 100%;
     background-position-x: center;
@@ -166,8 +166,8 @@ div.frame {
 
 .startcode {
     position: absolute;
-    top: 65%;
-    left: 24%;
+    top: 50%;
+    left: 40%;
     margin: 0px;
     width: 17%;
     height: 22%;
