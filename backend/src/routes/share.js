@@ -131,7 +131,7 @@ publicRouter.get('/project/:token', async (req, res) => {
     try {
         const { data: project, error: projErr } = await supabase
             .from('projects')
-            .select('id, name, json, thumbnail')
+            .select('id, name, json, thumbnail, owner')
             .eq('share_token', token)
             .eq('deleted', 'NO')
             .single();
@@ -152,7 +152,24 @@ publicRouter.get('/project/:token', async (req, res) => {
             if (ALLOWED_EMOJIS.includes(r.emoji)) reactions[r.emoji] = r.count;
         });
 
-        res.json({ name: project.name, json: project.json, thumbnail: project.thumbnail, reactions });
+        // Resolve thumbnail filename to a full public Supabase Storage URL
+        let thumbnailUrl = null;
+        try {
+            const th = project.thumbnail;
+            const parsed = typeof th === 'string' ? JSON.parse(th) : th;
+            const filename = parsed && parsed.md5 ? parsed.md5 : null;
+            if (filename && !filename.startsWith('data:') && !filename.startsWith('http')) {
+                const bucket = process.env.SUPABASE_MEDIA_BUCKET || 'media';
+                const { data: urlData } = supabase.storage
+                    .from(bucket)
+                    .getPublicUrl(`aluno/${project.owner}/${filename}`);
+                thumbnailUrl = urlData && urlData.publicUrl ? urlData.publicUrl : null;
+            } else if (filename) {
+                thumbnailUrl = filename;
+            }
+        } catch (_) { /* thumbnail inválido, ok */ }
+
+        res.json({ name: project.name, json: project.json, thumbnailUrl, reactions });
     } catch (err) {
         console.error('[public] GET project error:', err);
         res.status(500).json({ error: err.message });

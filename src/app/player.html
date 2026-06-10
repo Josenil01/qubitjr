@@ -286,22 +286,8 @@
     // Renderizar thumbnail
     elLoading.style.display = 'none';
 
-    let thumbData = null;
-    try {
-        const th = project.thumbnail;
-        const parsed = typeof th === 'string' ? JSON.parse(th) : th;
-        thumbData = parsed && parsed.md5 ? parsed.md5 : null;
-    } catch (_) { /* sem thumbnail válido */ }
-
-    if (thumbData) {
-        // thumbData é o md5 da imagem; tentar carregar via /api/media ou inline base64
-        // Se for base64 direto, usar como src
-        if (thumbData.startsWith('data:') || thumbData.startsWith('http')) {
-            elThumb.src = thumbData;
-        } else {
-            // md5 → buscar asset público (pode não estar acessível sem auth)
-            elThumb.src = thumbData;
-        }
+    if (project.thumbnailUrl) {
+        elThumb.src = project.thumbnailUrl;
         elThumb.style.display = 'block';
         elHolder.style.display = 'none';
         elThumb.onerror = function () {
