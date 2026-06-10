@@ -173,7 +173,7 @@
     top: ${css_vh(-54.17)};
     left: ${css_vw(1.5)};
     z-index: 5;
-    visibility: hidden;
+    visibility: visible;
     width: ${css_vh(5.73)};
     height: ${css_vh(5.73)};
     border-radius: 50%;

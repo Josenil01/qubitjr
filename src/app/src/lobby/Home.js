@@ -312,22 +312,17 @@ export default class Home {
         if (!Home.actionTarget) {
             return 'none';
         }
+        var t = (window.event ? window.event.srcElement : e && e.target);
+        if (t) {
+            var cls = t.getAttribute('class');
+            if (cls === 'sharex') return 'share';
+        }
         var shown = (Home.actionTarget.childElementCount > 2) ?
             Home.actionTarget.childNodes[Home.actionTarget.childElementCount - 1].style.visibility == 'visible' :
             false;
-        if (e && shown) {
-            var t;
-            if (window.event) {
-                t = window.event.srcElement;
-
-            } else {
-                t = e.target;
-            }
+        if (e && shown && t) {
             if (t.getAttribute('class') == 'closex') {
                 return 'delete';
-            }
-            if (t.getAttribute('class') == 'sharex') {
-                return 'share';
             }
         }
         return 'project';
@@ -457,7 +452,6 @@ export default class Home {
         var shareBtn = newHTML('div', 'sharex', tb);
         shareBtn.title = 'Compartilhar';
         shareBtn.textContent = '📤';
-        shareBtn.style.visibility = 'hidden';
 
         newHTML('div', 'closex', tb);
     }
@@ -475,7 +469,7 @@ export default class Home {
 
     static _setActionBtnsVisibility (target, visibility) {
         if (!target) return;
-        var btns = target.querySelectorAll('.closex, .sharex');
+        var btns = target.querySelectorAll('.closex');
         btns.forEach(function (btn) { btn.style.visibility = visibility; });
     }
 
