@@ -100,7 +100,30 @@ export async function playerMain() {
         };
     }
 
-    // ── 5. Patch Project.liftCurtain — ao projeto terminar de carregar ───────
+    // ── 5a. Patch UI.enterFullScreen — limita o stage a 80% do viewport ─────
+    const _origEnterFullScreen = UI.enterFullScreen.bind(UI);
+    UI.enterFullScreen = function () {
+        _origEnterFullScreen();
+        // Reaplica a escala limitada a 80% do viewport, centralizada
+        try {
+            const stage = ScratchJr.stage;
+            if (!stage) return;
+            const MAX = 0.80;
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const scale = Math.min((w * MAX) / stage.width, (h * MAX) / stage.height);
+            const dx = Math.floor((w - stage.width * scale) / 2);
+            const dy = Math.floor((h - stage.height * scale) / 2);
+            stage.setStageScaleAndPosition(scale, dx / scale, dy / scale);
+            stage.currentZoom = Math.floor(scale * 100) / 100;
+            const stageEl = document.getElementById('stage');
+            if (stageEl) stageEl.style.webkitTextSizeAdjust = Math.floor(scale * 100) + '%';
+        } catch (e) {
+            console.warn('[player] enterFullScreen 80% patch error:', e);
+        }
+    };
+
+    // ── 5b. Patch Project.liftCurtain — ao projeto terminar de carregar ──────
     const _origLiftCurtain = Project.liftCurtain.bind(Project);
     Project.liftCurtain = function () {
         _origLiftCurtain();
