@@ -185,6 +185,7 @@ export default defineConfig({
         home: path.resolve(process.cwd(), 'src/app/home.html'),
         editor: path.resolve(process.cwd(), 'src/app/editor.html'),
         gettingstarted: path.resolve(process.cwd(), 'src/app/gettingstarted.html'),
+        player: path.resolve(process.cwd(), 'src/app/player.html'),
       }
     }
   },

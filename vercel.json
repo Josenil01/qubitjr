@@ -36,6 +36,10 @@
       "dest": "/gettingstarted.html"
     },
     {
+      "src": "/player.html",
+      "dest": "/player.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }

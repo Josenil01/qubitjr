@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="mobile-web-app-capable" content="yes">
+<meta http-equiv="cache-control" content="no-cache">
+<meta charset="utf-8">
+<title>QubitJr — Ver Projeto</title>
+<link rel="stylesheet" href="./css/font.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #1a1a2e;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    padding: 16px;
+  }
+
+  #player-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    width: 100%;
+    max-width: 520px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #player-header {
+    background: linear-gradient(135deg, #6c63ff, #48c9b0);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #player-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  #player-title {
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #player-subtitle {
+    color: rgba(255,255,255,0.75);
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  #player-stage-wrap {
+    position: relative;
+    width: 100%;
+    background: #000;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  #player-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: none;
+  }
+
+  #player-placeholder {
+    color: rgba(255,255,255,0.4);
+    font-size: 48px;
+    text-align: center;
+  }
+
+  #player-loading {
+    position: absolute;
+    inset: 0;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    gap: 8px;
+  }
+
+  .spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,0.2);
+    border-top-color: #6c63ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  #player-error {
+    display: none;
+    padding: 32px;
+    text-align: center;
+    color: #e74c3c;
+    font-size: 15px;
+  }
+
+  #player-reactions {
+    padding: 14px 20px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .reaction-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #f5f5f5;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    line-height: 1;
+  }
+
+  .reaction-btn:hover {
+    background: #ede9ff;
+    border-color: #6c63ff;
+    transform: scale(1.08);
+  }
+
+  .reaction-btn.reacted {
+    background: #ede9ff;
+    border-color: #6c63ff;
+  }
+
+  .reaction-btn.pop {
+    animation: pop 0.3s ease;
+  }
+  @keyframes pop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+  }
+
+  .reaction-count {
+    font-size: 13px;
+    font-weight: 700;
+    color: #444;
+    min-width: 14px;
+    text-align: center;
+  }
+
+  #player-footer {
+    padding: 10px 20px 14px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  #player-brand {
+    font-size: 12px;
+    color: #aaa;
+  }
+
+  #player-brand a {
+    color: #6c63ff;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  #player-open-btn {
+    background: #6c63ff;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+
+  #player-open-btn:hover { background: #5a52d5; }
+</style>
+<script>
+    window.scratchJrPage = 'player';
+    var _isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    window.API_URL = window.API_URL || (_isLocal ? 'http://localhost:5000/api' : (location.origin + '/api'));
+</script>
+</head>
+<body>
+
+<div id="player-card">
+  <div id="player-header">
+    <div id="player-logo">🎨</div>
+    <div>
+      <div id="player-title">Carregando...</div>
+      <div id="player-subtitle">Feito com QubitJr</div>
+    </div>
+  </div>
+
+  <div id="player-stage-wrap">
+    <div id="player-loading"><div class="spinner"></div> Carregando projeto...</div>
+    <img id="player-thumbnail" alt="Thumbnail do projeto" />
+    <div id="player-placeholder">🎨</div>
+    <div id="player-error"></div>
+  </div>
+
+  <div id="player-reactions">
+    <!-- Preenchido pelo player.js -->
+  </div>
+
+  <div id="player-footer">
+    <span id="player-brand">Criado com <a href="/" target="_blank">QubitJr</a></span>
+    <a id="player-open-btn" href="/" target="_blank">Abrir no QubitJr</a>
+  </div>
+</div>
+
+<script type="module">
+(async function () {
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token');
+    const apiBase = window.API_URL;
+
+    const elLoading   = document.getElementById('player-loading');
+    const elThumb     = document.getElementById('player-thumbnail');
+    const elHolder    = document.getElementById('player-placeholder');
+    const elError     = document.getElementById('player-error');
+    const elTitle     = document.getElementById('player-title');
+    const elReactions = document.getElementById('player-reactions');
+
+    const EMOJIS = ['❤️', '😄', '👏', '🌟', '🎉'];
+    const LABELS = { '❤️': 'Amei', '😄': 'Divertido', '👏': 'Parabéns', '🌟': 'Incrível', '🎉': 'Que show!' };
+
+    function showError(msg) {
+        elLoading.style.display = 'none';
+        elHolder.style.display = 'none';
+        elError.style.display = 'block';
+        elError.textContent = msg;
+    }
+
+    if (!token) {
+        showError('Link inválido. Nenhum token encontrado na URL.');
+        return;
+    }
+
+    let project;
+    try {
+        const res = await fetch(apiBase + '/public/project/' + encodeURIComponent(token));
+        if (!res.ok) throw new Error('Projeto não encontrado ou link expirado.');
+        project = await res.json();
+    } catch (e) {
+        showError(e.message || 'Erro ao carregar projeto.');
+        return;
+    }
+
+    elTitle.textContent = project.name || 'Projeto';
+
+    // Renderizar thumbnail
+    elLoading.style.display = 'none';
+
+    let thumbData = null;
+    try {
+        const th = project.thumbnail;
+        const parsed = typeof th === 'string' ? JSON.parse(th) : th;
+        thumbData = parsed && parsed.md5 ? parsed.md5 : null;
+    } catch (_) { /* sem thumbnail válido */ }
+
+    if (thumbData) {
+        // thumbData é o md5 da imagem; tentar carregar via /api/media ou inline base64
+        // Se for base64 direto, usar como src
+        if (thumbData.startsWith('data:') || thumbData.startsWith('http')) {
+            elThumb.src = thumbData;
+        } else {
+            // md5 → buscar asset público (pode não estar acessível sem auth)
+            elThumb.src = thumbData;
+        }
+        elThumb.style.display = 'block';
+        elHolder.style.display = 'none';
+        elThumb.onerror = function () {
+            elThumb.style.display = 'none';
+            elHolder.style.display = 'block';
+        };
+    } else {
+        elHolder.style.display = 'block';
+    }
+
+    // Renderizar reações
+    const reactions = project.reactions || {};
+
+    // Recuperar reações já feitas nesta sessão
+    let sessionReacted = {};
+    try {
+        sessionReacted = JSON.parse(sessionStorage.getItem('sjr_reactions_' + token) || '{}');
+    } catch (_) { sessionReacted = {}; }
+
+    function saveSession() {
+        try { sessionStorage.setItem('sjr_reactions_' + token, JSON.stringify(sessionReacted)); } catch (_) {}
+    }
+
+    function renderReactions() {
+        elReactions.innerHTML = '';
+        EMOJIS.forEach(function (emoji) {
+            const btn = document.createElement('button');
+            btn.className = 'reaction-btn' + (sessionReacted[emoji] ? ' reacted' : '');
+            btn.title = LABELS[emoji] || emoji;
+
+            const emojiSpan = document.createElement('span');
+            emojiSpan.textContent = emoji;
+
+            const countSpan = document.createElement('span');
+            countSpan.className = 'reaction-count';
+            countSpan.textContent = reactions[emoji] || 0;
+
+            btn.appendChild(emojiSpan);
+            btn.appendChild(countSpan);
+            elReactions.appendChild(btn);
+
+            btn.addEventListener('click', async function () {
+                if (sessionReacted[emoji]) return;
+                sessionReacted[emoji] = true;
+                reactions[emoji] = (reactions[emoji] || 0) + 1;
+                saveSession();
+                renderReactions();
+
+                // Efeito visual no botão recém-clicado
+                const newBtn = elReactions.querySelector('.reaction-btn.reacted:last-of-type') ||
+                               Array.from(elReactions.querySelectorAll('.reaction-btn'))[EMOJIS.indexOf(emoji)];
+                if (newBtn) {
+                    newBtn.classList.add('pop');
+                    newBtn.addEventListener('animationend', function () { newBtn.classList.remove('pop'); }, { once: true });
+                }
+
+                try {
+                    await fetch(apiBase + '/public/project/' + encodeURIComponent(token) + '/react', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ emoji })
+                    });
+                } catch (_) { /* silencia erros de rede */ }
+            });
+        });
+    }
+
+    renderReactions();
+}());
+</script>
+
+</body>
+</html>

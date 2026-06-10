@@ -167,6 +167,27 @@
     visibility: hidden;
 }
 
+.sharex {
+    position: relative;
+    float: left;
+    top: ${css_vh(-54.17)};
+    left: ${css_vw(1.5)};
+    z-index: 5;
+    visibility: hidden;
+    width: ${css_vh(5.73)};
+    height: ${css_vh(5.73)};
+    border-radius: 50%;
+    background: #6c63ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: ${css_vh(2.8)};
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    line-height: 1;
+    text-align: center;
+}
+
 .ribbonHorizontal {
     background-color: #01bebc;
     border: 3px solid #fff;

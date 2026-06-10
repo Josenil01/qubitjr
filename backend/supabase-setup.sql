@@ -79,6 +79,18 @@ CREATE INDEX IF NOT EXISTS idx_media_project_id ON media(project_id);
 -- Migração: adicionar coluna isgift (caso a tabela já exista no Supabase)
 ALTER TABLE projects ADD COLUMN IF NOT EXISTS isgift TEXT DEFAULT '0';
 
+-- Migração: token de compartilhamento por projeto
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS share_token UUID DEFAULT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_projects_share_token ON projects(share_token) WHERE share_token IS NOT NULL;
+
+-- Tabela: reactions (reações emoji por projeto compartilhado)
+CREATE TABLE IF NOT EXISTS reactions (
+  project_id  INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  emoji       TEXT    NOT NULL,
+  count       INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (project_id, emoji)
+);
+
 -- ============================================
 -- Cole o conteúdo acima no Supabase SQL Editor
 -- ============================================
