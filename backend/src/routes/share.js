@@ -152,6 +152,8 @@ publicRouter.get('/project/:token', async (req, res) => {
             if (ALLOWED_EMOJIS.includes(r.emoji)) reactions[r.emoji] = r.count;
         });
 
+        const bucket = process.env.SUPABASE_MEDIA_BUCKET || 'media';
+
         // Resolve thumbnail filename to a full public Supabase Storage URL
         let thumbnailUrl = null;
         try {
@@ -159,7 +161,6 @@ publicRouter.get('/project/:token', async (req, res) => {
             const parsed = typeof th === 'string' ? JSON.parse(th) : th;
             const filename = parsed && parsed.md5 ? parsed.md5 : null;
             if (filename && !filename.startsWith('data:') && !filename.startsWith('http')) {
-                const bucket = process.env.SUPABASE_MEDIA_BUCKET || 'media';
                 const { data: urlData } = supabase.storage
                     .from(bucket)
                     .getPublicUrl(`aluno/${project.owner}/${filename}`);
@@ -169,7 +170,18 @@ publicRouter.get('/project/:token', async (req, res) => {
             }
         } catch (_) { /* thumbnail inválido, ok */ }
 
-        res.json({ name: project.name, json: project.json, thumbnailUrl, reactions });
+        // Public base URL for user media assets (sprites, backgrounds, sounds)
+        let mediaBaseUrl = null;
+        try {
+            const { data: baseUrlData } = supabase.storage
+                .from(bucket)
+                .getPublicUrl(`aluno/${project.owner}/__x__`);
+            if (baseUrlData && baseUrlData.publicUrl) {
+                mediaBaseUrl = baseUrlData.publicUrl.replace('/__x__', '/');
+            }
+        } catch (_) {}
+
+        res.json({ name: project.name, json: project.json, thumbnailUrl, mediaBaseUrl, reactions });
     } catch (err) {
         console.error('[public] GET project error:', err);
         res.status(500).json({ error: err.message });

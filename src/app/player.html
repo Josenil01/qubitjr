@@ -1,363 +1,136 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <meta name="mobile-web-app-capable" content="yes">
 <meta http-equiv="cache-control" content="no-cache">
 <meta charset="utf-8">
 <title>QubitJr — Ver Projeto</title>
+
+<!-- Mesmos CSS do editor (necessários para o engine renderizar corretamente) -->
 <link rel="stylesheet" href="./css/font.css">
+<link rel="stylesheet" href="./css/base.css">
+<link rel="stylesheet" href="./css/start.css">
+<link rel="stylesheet" href="./css/thumbs.css">
+<link rel="stylesheet" href="./css/editor.css">
+<link rel="stylesheet" href="./css/editorleftpanel.css">
+<link rel="stylesheet" href="./css/editorstage.css">
+<link rel="stylesheet" href="./css/editormodal.css">
+<link rel="stylesheet" href="./css/librarymodal.css">
+<link rel="stylesheet" href="./css/lobby.css">
+<link rel="stylesheet" href="./css/paintlook.css">
+<link rel="stylesheet" href="./css/gs.css">
+
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: #1a1a2e;
-    min-height: 100vh;
+/* ── Player overlay: header fixo no topo ── */
+#player-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 36px;
+    background: linear-gradient(90deg, #6c63ff, #48c9b0);
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    gap: 8px;
+    padding: 0 14px;
+    z-index: 99999;
+    pointer-events: none;
     font-family: 'Helvetica Neue', Arial, sans-serif;
-    padding: 16px;
-  }
-
-  #player-card {
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
-    width: 100%;
-    max-width: 520px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-
-  #player-header {
-    background: linear-gradient(135deg, #6c63ff, #48c9b0);
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  #player-logo {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-  }
-
-  #player-title {
+}
+#player-header-logo { font-size: 18px; line-height: 1; }
+#player-header-title {
     color: #fff;
-    font-size: 17px;
+    font-size: 14px;
     font-weight: 700;
     flex: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  #player-subtitle {
+}
+#player-header-brand {
     color: rgba(255,255,255,0.75);
     font-size: 11px;
-    margin-top: 2px;
-  }
+    white-space: nowrap;
+}
 
-  #player-stage-wrap {
-    position: relative;
-    width: 100%;
-    background: #000;
-    aspect-ratio: 4 / 3;
-    display: flex;
+/* ── Barra de reações fixo na parte inferior ── */
+#player-reactions-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 52px;
+    background: rgba(10, 10, 30, 0.82);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: none; /* mostrado via JS após carregamento */
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-  }
-
-  #player-thumbnail {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: none;
-  }
-
-  #player-placeholder {
-    color: rgba(255,255,255,0.4);
-    font-size: 48px;
-    text-align: center;
-  }
-
-  #player-loading {
-    position: absolute;
-    inset: 0;
-    background: #111;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255,255,255,0.6);
-    font-size: 14px;
-    gap: 8px;
-  }
-
-  .spinner {
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255,255,255,0.2);
-    border-top-color: #6c63ff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  #player-error {
-    display: none;
-    padding: 32px;
-    text-align: center;
-    color: #e74c3c;
-    font-size: 15px;
-  }
-
-  #player-reactions {
-    padding: 14px 20px;
-    border-top: 1px solid #f0f0f0;
-    display: flex;
-    align-items: center;
     gap: 6px;
-    flex-wrap: wrap;
-  }
+    z-index: 99999;
+    padding: 0 12px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
 
-  .reaction-btn {
+.prx-btn {
     display: flex;
     align-items: center;
-    gap: 5px;
-    background: #f5f5f5;
-    border: 2px solid transparent;
-    border-radius: 20px;
-    padding: 6px 12px;
-    font-size: 20px;
+    gap: 4px;
+    background: rgba(255,255,255,0.12);
+    border: 1.5px solid transparent;
+    border-radius: 18px;
+    padding: 5px 11px;
+    font-size: 19px;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.15s;
     user-select: none;
     line-height: 1;
-  }
-
-  .reaction-btn:hover {
-    background: #ede9ff;
-    border-color: #6c63ff;
-    transform: scale(1.08);
-  }
-
-  .reaction-btn.reacted {
-    background: #ede9ff;
-    border-color: #6c63ff;
-  }
-
-  .reaction-btn.pop {
-    animation: pop 0.3s ease;
-  }
-  @keyframes pop {
-    0%   { transform: scale(1); }
-    50%  { transform: scale(1.35); }
-    100% { transform: scale(1); }
-  }
-
-  .reaction-count {
-    font-size: 13px;
-    font-weight: 700;
-    color: #444;
-    min-width: 14px;
-    text-align: center;
-  }
-
-  #player-footer {
-    padding: 10px 20px 14px;
-    border-top: 1px solid #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  #player-brand {
-    font-size: 12px;
-    color: #aaa;
-  }
-
-  #player-brand a {
-    color: #6c63ff;
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  #player-open-btn {
-    background: #6c63ff;
     color: #fff;
-    border: none;
-    border-radius: 20px;
-    padding: 7px 16px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.15s;
-  }
+    -webkit-tap-highlight-color: transparent;
+}
+.prx-btn:hover { background: rgba(108,99,255,0.4); border-color: #6c63ff; transform: scale(1.08); }
+.prx-btn.reacted { background: rgba(108,99,255,0.35); border-color: #6c63ff; }
+.prx-btn.pop { animation: prx-pop 0.3s ease; }
+@keyframes prx-pop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.4); }
+    100% { transform: scale(1); }
+}
+.prx-count { font-size: 12px; font-weight: 700; min-width: 14px; text-align: center; }
 
-  #player-open-btn:hover { background: #5a52d5; }
+/* ── Esconder qualquer UI do editor que apareça ── */
+/* O engine já vai ocultar via displayStatus('none'), mas garante visualmente */
+body.player-mode #topsection,
+body.player-mode #blockspalette,
+body.player-mode #scripts,
+body.player-mode #flip,
+body.player-mode #projectinfo { display: none !important; }
+
+/* Garantir fundo preto para o stage fullscreen */
+html, body { background: #000 !important; overflow: hidden; }
 </style>
+
 <script>
     window.scratchJrPage = 'player';
     var _isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
     window.API_URL = window.API_URL || (_isLocal ? 'http://localhost:5000/api' : (location.origin + '/api'));
 </script>
+<!-- Engine completo do ScratchJr via Vite -->
+<script type="module" src="./appEntry-vite.js"></script>
 </head>
-<body>
+<body style="background: #000;">
 
-<div id="player-card">
-  <div id="player-header">
-    <div id="player-logo">🎨</div>
-    <div>
-      <div id="player-title">Carregando...</div>
-      <div id="player-subtitle">Feito com QubitJr</div>
-    </div>
-  </div>
-
-  <div id="player-stage-wrap">
-    <div id="player-loading"><div class="spinner"></div> Carregando projeto...</div>
-    <img id="player-thumbnail" alt="Thumbnail do projeto" />
-    <div id="player-placeholder">🎨</div>
-    <div id="player-error"></div>
-  </div>
-
-  <div id="player-reactions">
-    <!-- Preenchido pelo player.js -->
-  </div>
-
-  <div id="player-footer">
-    <span id="player-brand">Criado com <a href="/" target="_blank">QubitJr</a></span>
-    <a id="player-open-btn" href="/" target="_blank">Abrir no QubitJr</a>
-  </div>
+<!-- Header overlay (título do projeto) -->
+<div id="player-header">
+    <div id="player-header-logo">🎨</div>
+    <div id="player-header-title">Carregando...</div>
+    <div id="player-header-brand">QubitJr</div>
 </div>
 
-<script type="module">
-(async function () {
-    const params = new URLSearchParams(location.search);
-    const token = params.get('token');
-    const apiBase = window.API_URL;
+<!-- Divs requeridos pelo engine ScratchJr -->
+<div class="frame" id="frame"></div>
+<div class="libframe" id="libframe"></div>
+<div class="paintframe" id="paintframe"></div>
 
-    const elLoading   = document.getElementById('player-loading');
-    const elThumb     = document.getElementById('player-thumbnail');
-    const elHolder    = document.getElementById('player-placeholder');
-    const elError     = document.getElementById('player-error');
-    const elTitle     = document.getElementById('player-title');
-    const elReactions = document.getElementById('player-reactions');
-
-    const EMOJIS = ['❤️', '😄', '👏', '🌟', '🎉'];
-    const LABELS = { '❤️': 'Amei', '😄': 'Divertido', '👏': 'Parabéns', '🌟': 'Incrível', '🎉': 'Que show!' };
-
-    function showError(msg) {
-        elLoading.style.display = 'none';
-        elHolder.style.display = 'none';
-        elError.style.display = 'block';
-        elError.textContent = msg;
-    }
-
-    if (!token) {
-        showError('Link inválido. Nenhum token encontrado na URL.');
-        return;
-    }
-
-    let project;
-    try {
-        const res = await fetch(apiBase + '/public/project/' + encodeURIComponent(token));
-        if (!res.ok) throw new Error('Projeto não encontrado ou link expirado.');
-        project = await res.json();
-    } catch (e) {
-        showError(e.message || 'Erro ao carregar projeto.');
-        return;
-    }
-
-    elTitle.textContent = project.name || 'Projeto';
-
-    // Renderizar thumbnail
-    elLoading.style.display = 'none';
-
-    if (project.thumbnailUrl) {
-        elThumb.src = project.thumbnailUrl;
-        elThumb.style.display = 'block';
-        elHolder.style.display = 'none';
-        elThumb.onerror = function () {
-            elThumb.style.display = 'none';
-            elHolder.style.display = 'block';
-        };
-    } else {
-        elHolder.style.display = 'block';
-    }
-
-    // Renderizar reações
-    const reactions = project.reactions || {};
-
-    // Recuperar reações já feitas nesta sessão
-    let sessionReacted = {};
-    try {
-        sessionReacted = JSON.parse(sessionStorage.getItem('sjr_reactions_' + token) || '{}');
-    } catch (_) { sessionReacted = {}; }
-
-    function saveSession() {
-        try { sessionStorage.setItem('sjr_reactions_' + token, JSON.stringify(sessionReacted)); } catch (_) {}
-    }
-
-    function renderReactions() {
-        elReactions.innerHTML = '';
-        EMOJIS.forEach(function (emoji) {
-            const btn = document.createElement('button');
-            btn.className = 'reaction-btn' + (sessionReacted[emoji] ? ' reacted' : '');
-            btn.title = LABELS[emoji] || emoji;
-
-            const emojiSpan = document.createElement('span');
-            emojiSpan.textContent = emoji;
-
-            const countSpan = document.createElement('span');
-            countSpan.className = 'reaction-count';
-            countSpan.textContent = reactions[emoji] || 0;
-
-            btn.appendChild(emojiSpan);
-            btn.appendChild(countSpan);
-            elReactions.appendChild(btn);
-
-            btn.addEventListener('click', async function () {
-                if (sessionReacted[emoji]) return;
-                sessionReacted[emoji] = true;
-                reactions[emoji] = (reactions[emoji] || 0) + 1;
-                saveSession();
-                renderReactions();
-
-                // Efeito visual no botão recém-clicado
-                const newBtn = elReactions.querySelector('.reaction-btn.reacted:last-of-type') ||
-                               Array.from(elReactions.querySelectorAll('.reaction-btn'))[EMOJIS.indexOf(emoji)];
-                if (newBtn) {
-                    newBtn.classList.add('pop');
-                    newBtn.addEventListener('animationend', function () { newBtn.classList.remove('pop'); }, { once: true });
-                }
-
-                try {
-                    await fetch(apiBase + '/public/project/' + encodeURIComponent(token) + '/react', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ emoji })
-                    });
-                } catch (_) { /* silencia erros de rede */ }
-            });
-        });
-    }
-
-    renderReactions();
-}());
-</script>
+<!-- Barra de reações overlay (preenchida via player.js após carregamento) -->
+<div id="player-reactions-bar"></div>
 
 </body>
 </html>
