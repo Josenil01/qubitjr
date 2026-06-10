@@ -60,15 +60,26 @@ router.post('/:projectId', async (req, res) => {
         let token = project.share_token;
         if (!token) {
             token = crypto.randomUUID();
-            const { error: updateErr } = await supabase
+            const { data: updated, error: updateErr } = await supabase
                 .from('projects')
                 .update({ share_token: token })
                 .eq('id', projectId)
-                .eq('owner', req.userId);
-            if (updateErr) throw updateErr;
+                .eq('owner', req.userId)
+                .select('share_token');
+
+            if (updateErr) {
+                console.error('[share] UPDATE error:', updateErr);
+                return res.status(500).json({ error: 'Erro ao salvar token: ' + updateErr.message });
+            }
+            if (!updated || updated.length === 0) {
+                console.error('[share] UPDATE affected 0 rows — projectId:', projectId, 'userId:', req.userId);
+                return res.status(500).json({ error: 'Projeto não encontrado ou permissão negada ao salvar token.' });
+            }
+            token = updated[0].share_token;
         }
 
         const baseUrl = req.headers.origin || (req.protocol + '://' + req.get('host'));
+        console.log('[share] Token gerado para projeto', projectId, ':', token);
         res.json({ shareToken: token, shareUrl: baseUrl + '/player.html?token=' + token });
     } catch (err) {
         console.error('[share] POST error:', err);
@@ -125,7 +136,10 @@ publicRouter.get('/project/:token', async (req, res) => {
             .eq('deleted', 'NO')
             .single();
 
-        if (projErr || !project) return res.status(404).json({ error: 'Project not found' });
+        if (projErr || !project) {
+            console.error('[public] Project not found for token:', token, 'supabase error:', projErr);
+            return res.status(404).json({ error: 'Projeto não encontrado. Verifique se o link é válido.' });
+        }
 
         const { data: reactionRows } = await supabase
             .from('reactions')
