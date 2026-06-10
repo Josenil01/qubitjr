@@ -186,6 +186,14 @@ export default defineConfig({
         editor: path.resolve(process.cwd(), 'src/app/editor.html'),
         gettingstarted: path.resolve(process.cwd(), 'src/app/gettingstarted.html'),
         player: path.resolve(process.cwd(), 'src/app/player.html'),
+      },
+      // Separa o player em chunk próprio para não misturar com o bundle do editor
+      output: {
+        manualChunks(id) {
+          if (id.includes('playerEntry-vite') || id.includes('entry/player')) {
+            return 'player-runtime';
+          }
+        }
       }
     }
   },

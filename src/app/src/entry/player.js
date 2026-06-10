@@ -12,6 +12,10 @@ import iOS from '../iPad/iOS.js';
 import IO from '../iPad/IO.js';
 import Project from '../editor/ui/Project.js';
 import UI from '../editor/ui/UI.js';
+import Library from '../editor/ui/Library.js';
+import Paint from '../painteditor/Paint.js';
+import Record from '../editor/ui/Record.js';
+import Undo from '../editor/ui/Undo.js';
 
 const EMOJIS = ['❤️', '😄', '👏', '🌟', '🎉'];
 const LABELS = { '❤️': 'Amei', '😄': 'Divertido', '👏': 'Parabéns', '🌟': 'Incrível', '🎉': 'Que show!' };
@@ -150,11 +154,31 @@ export async function playerMain() {
         }, 150);
     };
 
-    // ── 6. Configurar modo e projeto atual ────────────────────────────────────
+    // ── 6. No-op dos módulos de editor (não usados no player) ────────────────
+    // Impede que Paint, Library, Record e Undo executem inicialização pesada
+    Library.init = () => {};
+    Paint.init   = () => {};
+    Record.init  = () => {};
+    Undo.init    = () => {};
+    // UI.layout cria todos os painéis do editor — substituímos por uma versão
+    // mínima que cria apenas o stage + controles de fullscreen necessários
+    const _origUILayout = UI.layout.bind(UI);
+    UI.layout = function () {
+        try {
+            UI.stageArea(document.getElementById('topsection') || document.getElementById('frame'));
+        } catch (_) {
+            // Se stageArea falhar (topsection ainda não existe), usa layout completo
+            // mas silencia erros de painéis ausentes
+            try { _origUILayout(); } catch (__) {}
+        }
+        try { UI.fullscreenControls(); } catch (_) {}
+    };
+
+    // ── 7. Configurar modo e projeto atual ────────────────────────────────────
     window.currentEditorMode = 'look';
     window.currentProjectMd5 = 'player';
 
-    // ── 7. Inicializar o engine (mesmo fluxo que editorMain) ─────────────────
+    // ── 8. Inicializar o engine ────────────────────────────────────────────────
     iOS.getsettings(function (str) {
         const list = str.split(',');
         iOS.path = list[1] === '0' ? list[0] + '/' : undefined;
