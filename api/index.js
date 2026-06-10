@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const dbRoutes = require('../backend/src/routes/db');
 const mediaRoutes = require('../backend/src/routes/media');
+const { shareRouter, publicRouter } = require('../backend/src/routes/share');
 
 const app = express();
 
@@ -115,6 +116,9 @@ function identityMiddleware(req, res, next) {
   return res.status(500).json({ error: 'Invalid AUTH_MODE configuration' });
 }
 
+// Rotas públicas ANTES do identity middleware (sem auth)
+app.use('/api/public', publicRouter);
+
 app.use(identityMiddleware);
 
 // ============================================
@@ -139,6 +143,7 @@ app.get(['/health', '/api/health'], (req, res) => {
 
 app.use('/api/db', dbRoutes);
 app.use('/api/media', mediaRoutes);
+app.use('/api/share', shareRouter);
 
 // ============================================
 // Error Handler

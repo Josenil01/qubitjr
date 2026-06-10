@@ -484,7 +484,13 @@ export default class Home {
                 'Authorization': 'Bearer ' + token
             }
         })
-            .then(function (res) { return res.json(); })
+            .then(function (res) {
+                var contentType = res.headers.get('content-type') || '';
+                if (!contentType.includes('application/json')) {
+                    throw new Error('Backend indisponível (status ' + res.status + '). Reinicie o servidor.');
+                }
+                return res.json();
+            })
             .then(function (data) {
                 if (data.shareUrl) {
                     Home._showShareModal(data.shareUrl);
@@ -493,7 +499,7 @@ export default class Home {
                 }
             })
             .catch(function (err) {
-                Home._showShareModal(null, 'Erro de rede: ' + err.message);
+                Home._showShareModal(null, err.message);
             });
     }
 
