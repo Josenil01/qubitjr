@@ -234,9 +234,14 @@ function _waitAndPlay(token, apiBase) {
                 if (stageEl) {
                     const vw = window.innerWidth;
                     const vh = window.innerHeight;
-                    const scale = Math.min(vw * 0.85 / 480, vh * 0.85 / 360);
+                    // Descontar o header fixo (36px) e a barra de reações (52px) do
+                    // espaço disponível para que o stage não fique oculto sob eles.
+                    const headerH = 36;
+                    const reactH  = 52;
+                    const usableH = vh - headerH - reactH;
+                    const scale = Math.min(vw * 0.85 / 480, usableH * 0.85 / 360);
                     const left = Math.round((vw - 480 * scale) / 2);
-                    const top  = Math.round((vh - 360 * scale) / 2);
+                    const top  = Math.round(headerH + (usableH - 360 * scale) / 2);
                     stageEl.style.position        = 'fixed';
                     stageEl.style.left            = left + 'px';
                     stageEl.style.top             = top + 'px';

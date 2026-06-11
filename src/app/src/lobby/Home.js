@@ -166,6 +166,9 @@ export default class Home {
             });
             iOS.setfield(iOS.database, Home.actionTarget.id, 'deleted', 'YES', Home.removeProjThumb);
             break;
+        case 'share':
+            Home.shareProject(Home.actionTarget.id);
+            break;
         default:
             if (Home.actionTarget && (Home.actionTarget.childElementCount > 2)) {
                 Home.actionTarget.childNodes[Home.actionTarget.childElementCount - 1].style.visibility = 'hidden';
@@ -310,16 +313,14 @@ export default class Home {
         if (!Home.actionTarget) {
             return 'none';
         }
+        var t = (window.event ? window.event.srcElement : e && e.target);
+        if (t && t.getAttribute('class') === 'sharex') {
+            return 'share';
+        }
         var shown = (Home.actionTarget.childElementCount > 2) ?
             Home.actionTarget.childNodes[Home.actionTarget.childElementCount - 1].style.visibility == 'visible' :
             false;
-        if (e && shown) {
-            var t;
-            if (window.event) {
-                t = window.event.srcElement;
-            } else {
-                t = e.target;
-            }
+        if (e && shown && t) {
             if (t.getAttribute('class') == 'closex') {
                 return 'delete';
             }
@@ -449,6 +450,10 @@ export default class Home {
             ribbonVertical.style.visibility = 'visible';
         }
 
+        var shareBtn = newHTML('div', 'sharex', tb);
+        shareBtn.title = 'Compartilhar';
+        shareBtn.textContent = '📤';
+
         newHTML('div', 'closex', tb);
     }
 
@@ -461,6 +466,116 @@ export default class Home {
         function drawMe (url) {
             img.src = url;
         }
+    }
+
+    static shareProject (projectId) {
+        var token = '';
+        try { token = window.__AUTH_TOKEN__ || sessionStorage.getItem('scratchjr_auth_token') || ''; } catch (_) {}
+        var apiBase = window.API_URL || '/api';
+        fetch(apiBase + '/share/' + projectId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(function (res) {
+                var contentType = res.headers.get('content-type') || '';
+                if (!contentType.includes('application/json')) {
+                    throw new Error('Backend indisponível (status ' + res.status + '). Reinicie o servidor.');
+                }
+                return res.json();
+            })
+            .then(function (data) {
+                if (data.shareUrl) {
+                    Home._showShareModal(data.shareUrl);
+                } else {
+                    Home._showShareModal(null, data.error || 'Erro ao gerar link.');
+                }
+            })
+            .catch(function (err) {
+                Home._showShareModal(null, err.message);
+            });
+    }
+
+    static _ensureShareModal () {
+        if (document.getElementById('sjr-share-modal')) return;
+        var backdrop = document.createElement('div');
+        backdrop.id = 'sjr-share-backdrop';
+        backdrop.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9998;display:none;';
+
+        var modal = document.createElement('div');
+        modal.id = 'sjr-share-modal';
+        modal.style.cssText = [
+            'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);',
+            'background:#fff;border-radius:16px;padding:24px;width:min(90vw,420px);',
+            'z-index:9999;display:none;box-shadow:0 8px 40px rgba(0,0,0,0.3);',
+            'font-family:Helvetica Neue,Arial,sans-serif;'
+        ].join('');
+
+        modal.innerHTML = [
+            '<div style="font-size:22px;font-weight:700;color:#333;margin-bottom:8px;">📤 Compartilhar Projeto</div>',
+            '<div id="sjr-share-msg" style="font-size:14px;color:#555;margin-bottom:14px;">',
+            'Envie este link para alguém assistir à sua animação!</div>',
+            '<div id="sjr-share-link-wrap" style="display:flex;gap:8px;margin-bottom:8px;">',
+            '<input id="sjr-share-link-input" readonly style="flex:1;padding:9px 12px;border:1.5px solid #ddd;',
+            'border-radius:10px;font-size:13px;color:#333;background:#f9f9f9;outline:none;" />',
+            '<button id="sjr-share-copy-btn" style="background:#6c63ff;color:#fff;border:none;border-radius:10px;',
+            'padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">Copiar</button>',
+            '</div>',
+            '<div id="sjr-share-copied" style="font-size:12px;color:#48c9b0;height:16px;"></div>',
+            '<div id="sjr-share-error" style="font-size:13px;color:#e74c3c;display:none;"></div>',
+            '<div style="margin-top:16px;text-align:right;">',
+            '<button id="sjr-share-close-btn" style="background:#f0f0f0;color:#555;border:none;border-radius:10px;',
+            'padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;">Fechar</button>',
+            '</div>'
+        ].join('');
+
+        document.body.appendChild(backdrop);
+        document.body.appendChild(modal);
+
+        document.getElementById('sjr-share-copy-btn').onclick = function () {
+            var input = document.getElementById('sjr-share-link-input');
+            input.select();
+            try { document.execCommand('copy'); } catch (_) {
+                navigator.clipboard && navigator.clipboard.writeText(input.value);
+            }
+            var copied = document.getElementById('sjr-share-copied');
+            copied.textContent = '✓ Link copiado!';
+            setTimeout(function () { copied.textContent = ''; }, 2000);
+        };
+
+        function closeModal() {
+            document.getElementById('sjr-share-modal').style.display = 'none';
+            document.getElementById('sjr-share-backdrop').style.display = 'none';
+        }
+        document.getElementById('sjr-share-close-btn').onclick = closeModal;
+        backdrop.onclick = closeModal;
+    }
+
+    static _showShareModal (shareUrl, errorMsg) {
+        Home._ensureShareModal();
+        var modal    = document.getElementById('sjr-share-modal');
+        var backdrop = document.getElementById('sjr-share-backdrop');
+        var linkWrap = document.getElementById('sjr-share-link-wrap');
+        var input    = document.getElementById('sjr-share-link-input');
+        var errDiv   = document.getElementById('sjr-share-error');
+        var copied   = document.getElementById('sjr-share-copied');
+
+        copied.textContent = '';
+
+        if (errorMsg) {
+            linkWrap.style.display = 'none';
+            errDiv.style.display = 'block';
+            errDiv.textContent = errorMsg;
+        } else {
+            linkWrap.style.display = 'flex';
+            errDiv.style.display = 'none';
+            input.value = shareUrl;
+        }
+
+        modal.style.display = 'block';
+        backdrop.style.display = 'block';
     }
 }
 
