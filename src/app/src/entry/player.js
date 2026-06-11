@@ -16,6 +16,7 @@ import Library from '../editor/ui/Library.js';
 import Paint from '../painteditor/Paint.js';
 import Record from '../editor/ui/Record.js';
 import Undo from '../editor/ui/Undo.js';
+import Alert from '../editor/ui/Alert.js';
 
 const EMOJIS = ['❤️', '😄', '👏', '🌟', '🎉'];
 const LABELS = { '❤️': 'Amei', '😄': 'Divertido', '👏': 'Parabéns', '🌟': 'Incrível', '🎉': 'Que show!' };
@@ -155,11 +156,13 @@ export async function playerMain() {
     };
 
     // ── 6. No-op dos módulos de editor (não usados no player) ────────────────
-    // Impede que Paint, Library, Record e Undo executem inicialização pesada
     Library.init = () => {};
     Paint.init   = () => {};
     Record.init  = () => {};
     Undo.init    = () => {};
+    // Alert.open tenta acessar gn('flip') que não existe no player — silenciar
+    Alert.open = () => {};
+    Alert.close = () => {};
     // UI.layout cria todos os painéis do editor — substituímos por uma versão
     // mínima que cria apenas o stage + controles de fullscreen necessários
     const _origUILayout = UI.layout.bind(UI);
