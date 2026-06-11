@@ -200,40 +200,38 @@ function _waitAndPlay(token, apiBase) {
                 console.warn('[player] stage não carregou após timeout');
                 return;
             }
+            // Ativa fullscreen via engine (dispara analytics + inFullscreen=true)
             try {
                 const fakeEvt = { preventDefault(){}, stopPropagation(){}, target: null };
                 ScratchJr.fullScreen(fakeEvt);
             } catch (e) { console.warn('[player] fullScreen error:', e); }
 
-            // Diagnóstico completo do stage
+            // Força posicionamento correto do stage via CSS direto.
+            // O mecanismo de transform do engine (setStageScaleAndPosition) gera
+            // width/height incorretos no contexto do player — bypassamos aqui.
             try {
                 const stageEl = document.getElementById('stage');
                 if (stageEl) {
-                    const r = stageEl.getBoundingClientRect();
-                    console.log('[player] stage rect:', Math.round(r.x), Math.round(r.y), Math.round(r.width), 'x', Math.round(r.height));
-                    console.log('[player] stage class:', stageEl.className);
-                    console.log('[player] stage parent:', stageEl.parentElement && stageEl.parentElement.id);
-                    console.log('[player] stage children:', stageEl.childElementCount);
-                    // Listar filhos diretos do stage
-                    for (let i = 0; i < Math.min(stageEl.childElementCount, 5); i++) {
-                        const c = stageEl.children[i];
-                        const cr = c.getBoundingClientRect();
-                        console.log(`[player] stage.children[${i}]:`, c.className, c.id, 'visibility:', c.style.visibility, 'rect:', Math.round(cr.x), Math.round(cr.y), Math.round(cr.width), 'x', Math.round(cr.height));
-                    }
-                    // Listar filhos da primeira página (sprites)
-                    const pageDiv = stageEl.querySelector('.page');
-                    if (pageDiv) {
-                        console.log('[player] page children:', pageDiv.childElementCount, 'visibility:', pageDiv.style.visibility);
-                        for (let i = 0; i < Math.min(pageDiv.childElementCount, 5); i++) {
-                            const c = pageDiv.children[i];
-                            const cr = c.getBoundingClientRect();
-                            console.log(`[player] page.children[${i}]:`, c.className, c.id, 'visibility:', c.style.visibility, 'transform:', c.style.webkitTransform || c.style.transform, 'rect:', Math.round(cr.x), Math.round(cr.y), Math.round(cr.width), 'x', Math.round(cr.height));
-                        }
-                    }
-                } else {
-                    console.warn('[player] #stage não encontrado no DOM');
+                    const vw = window.innerWidth;
+                    const vh = window.innerHeight;
+                    const scale = Math.min(vw * 0.85 / 480, vh * 0.85 / 360);
+                    const left = Math.round((vw - 480 * scale) / 2);
+                    const top  = Math.round((vh - 360 * scale) / 2);
+                    stageEl.style.position        = 'fixed';
+                    stageEl.style.left            = left + 'px';
+                    stageEl.style.top             = top + 'px';
+                    stageEl.style.width           = '480px';
+                    stageEl.style.height          = '360px';
+                    stageEl.style.transform       = `scale(${scale})`;
+                    stageEl.style.webkitTransform = `scale(${scale})`;
+                    stageEl.style.transformOrigin = '0 0';
+                    stageEl.style.webkitTransformOrigin = '0 0';
+                    stageEl.style.overflow        = 'hidden';
+                    stageEl.style.visibility      = 'visible';
+                    stageEl.style.zIndex          = '1000';
+                    console.log('[player] stage posicionado:', left, top, 'scale:', scale.toFixed(3));
                 }
-            } catch (e) { console.warn('[player] diagnóstico error:', e); }
+            } catch (e) { console.warn('[player] stage CSS error:', e); }
 
             try {
                 ScratchJr.startGreenFlagThreads();
