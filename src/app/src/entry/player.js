@@ -158,7 +158,7 @@ export async function playerMain() {
 
     // ── 6. No-op dos módulos de editor (não usados no player) ────────────────
     Library.init = () => {};
-    Paint.init   = () => {};
+    // Paint.init carrega splash.svg/splashshade.svg usados por UI.createColorMenu — deixar rodar
     Record.init  = () => {};
     Undo.init    = () => {};
     // Silenciar módulos de UI do editor que acessam DOM inexistente no player
