@@ -250,6 +250,26 @@ function _waitAndPlay(token, apiBase) {
                     // Atualiza currentZoom para que openBalloon calcule posições corretas
                     if (ScratchJr.stage) {
                         ScratchJr.stage.currentZoom = Math.floor(scale * 100) / 100;
+                        // Patcha getStagePt para usar getBoundingClientRect() em vez de
+                        // globalx/globaly + stageScale. O engine assume transform-origin:50%50%
+                        // mas usamos transform-origin:0 0, o que faz globalx retornar offset
+                        // errado e quebra o hit-test de clique nos sprites.
+                        const _playerScale = scale;
+                        ScratchJr.stage.getStagePt = function (evt) {
+                            const rect = this.div.getBoundingClientRect();
+                            let cx = evt.clientX, cy = evt.clientY;
+                            if (evt.touches && evt.touches.length > 0) {
+                                cx = evt.touches[0].clientX;
+                                cy = evt.touches[0].clientY;
+                            } else if (evt.changedTouches && evt.changedTouches.length > 0) {
+                                cx = evt.changedTouches[0].clientX;
+                                cy = evt.changedTouches[0].clientY;
+                            }
+                            return {
+                                x: (cx - rect.left) / _playerScale,
+                                y: (cy - rect.top)  / _playerScale
+                            };
+                        };
                     }
                     console.log('[player] stage posicionado:', left, top, 'scale:', scale.toFixed(3));
                 }
