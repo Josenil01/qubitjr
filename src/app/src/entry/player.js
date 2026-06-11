@@ -158,6 +158,15 @@ export async function playerMain() {
     iOS.getsettings(function (str) {
         const list = str.split(',');
         iOS.path = list[1] === '0' ? list[0] + '/' : undefined;
+
+        // Em modo player, sobrescreve iOS.path com a base URL pública do Supabase.
+        // Page.setBackground constrói url = iOS.path + nome para PNGs de usuário.
+        // Sem isso, url fica 'undefinednome.png' → img falha → onerror ausente →
+        // fcn() nunca chamado → mediaCount preso → doneProjectLoad nunca roda.
+        if (window.__playerMediaBaseUrl) {
+            iOS.path = window.__playerMediaBaseUrl;
+        }
+
         ScratchJr.appinit(
             (window.Settings && window.Settings.scratchJrVersion) || 'iOSv01'
         );
@@ -172,7 +181,10 @@ function _waitAndPlay(token, apiBase) {
     const id = setInterval(() => {
         attempts++;
         const stage = ScratchJr.stage;
-        const ready = stage && stage.pages && stage.pages.length > 0;
+        // Verifica que o projeto carregou completamente: setLoadPage marca a
+        // página corrente como visibility='visible' após todas as mídias serem carregadas.
+        const page = stage && stage.currentPage;
+        const ready = page && page.div && page.div.style.visibility === 'visible';
         if (ready || attempts >= MAX) {
             clearInterval(id);
             if (!ready) {
