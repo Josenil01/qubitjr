@@ -17,6 +17,7 @@ import Paint from '../painteditor/Paint.js';
 import Record from '../editor/ui/Record.js';
 import Undo from '../editor/ui/Undo.js';
 import Alert from '../editor/ui/Alert.js';
+import Palette from '../editor/ui/Palette.js';
 
 const EMOJIS = ['❤️', '😄', '👏', '🌟', '🎉'];
 const LABELS = { '❤️': 'Amei', '😄': 'Divertido', '👏': 'Parabéns', '🌟': 'Incrível', '🎉': 'Que show!' };
@@ -160,9 +161,12 @@ export async function playerMain() {
     Paint.init   = () => {};
     Record.init  = () => {};
     Undo.init    = () => {};
-    // Alert.open tenta acessar gn('flip') que não existe no player — silenciar
+    // Silenciar módulos de UI do editor que acessam DOM inexistente no player
     Alert.open = () => {};
     Alert.close = () => {};
+    Palette.selectCategory = () => {};
+    Palette.show = () => {};
+    Palette.hide = () => {};
     // UI.layout cria todos os painéis do editor — substituímos por uma versão
     // mínima que cria apenas o stage + controles de fullscreen necessários
     const _origUILayout = UI.layout.bind(UI);
