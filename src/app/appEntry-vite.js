@@ -33,6 +33,10 @@ window.MediaLib = MediaLib;
 window.PNGCache = PNGCache;
 console.log('[AppEntry] ✅ PNGCache exposto globalmente:', !!window.PNGCache);
 
+// Resolve quando todo o CSS tiver sido processado (ou após timeout de 3 s)
+let _cssReadyResolve;
+const cssReady = new Promise(resolve => { _cssReadyResolve = resolve; });
+
 // Processar CSS carregado via <link> para substituir template literals
 function processAllCss() {
   const styleLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
@@ -44,55 +48,52 @@ function processAllCss() {
     window.css_vw = css_vw;
     window.scaleMultiplier = scaleMultiplier;
     
-    styleLinks.forEach((link) => {
+    const validLinks = styleLinks.filter(link => {
       const href = link.getAttribute('href');
-      
-      // Verificar se é arquivo .css
-      if (!href || !href.endsWith('.css')) {
-        return;
-      }
+      return href && href.endsWith('.css');
+    });
 
-      // Usar fetch para carregar o CSS
+    if (validLinks.length === 0) {
+      _cssReadyResolve();
+      return;
+    }
+
+    let pending = validLinks.length;
+    const done = () => { if (--pending === 0) _cssReadyResolve(); };
+
+    validLinks.forEach((link) => {
+      const href = link.getAttribute('href');
       fetch(href)
         .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-          }
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
           return response.text();
         })
         .then(cssText => {
-          // Processa o CSS substituindo template literals
           try {
             const processedCss = preprocess(cssText);
-            
-            // Criar um <style> com o CSS processado
             const style = document.createElement('style');
             style.setAttribute('data-processed-css', href);
             style.setAttribute('id', `style-${href.replace(/[^a-z0-9]/gi, '_')}`);
             style.textContent = processedCss;
             document.head.appendChild(style);
-            
-            // Remover o <link> original
             link.remove();
           } catch (err) {
             console.error(`Erro ao processar CSS ${href}:`, err);
           }
+          done();
         })
         .catch(err => {
           console.error(`Erro ao carregar CSS ${href}:`, err);
+          done();
         });
     });
   }).catch(err => {
     console.error('Erro ao carregar preprocess:', err);
+    _cssReadyResolve(); // nunca bloquear a inicialização em caso de erro
   });
-  
-  // Verificar CSS processado após 1 segundo
-  setTimeout(() => {
-    const styles = document.querySelectorAll('style[data-processed-css]');
-    if (styles.length === 0) {
-      console.warn('Nenhum CSS foi processado');
-    }
-  }, 1000);
+
+  // Fallback: resolve após 3 s independente do resultado
+  setTimeout(_cssReadyResolve, 3000);
 }
 
 // Executar processamento de CSS quando a página carregar
@@ -279,6 +280,12 @@ async function loadPage(page) {
       window.AppUsage.initUsage();
     }
     
+    // Para a página home, aguarda o CSS ser processado antes de renderizar
+    // para evitar que o topsection apareça com alturas css_vh() em 0px.
+    if (page === 'home') {
+      await cssReady;
+    }
+
     console.log('[AppEntry] 8️⃣ Chamando entryFunction para ' + page);
     // Executar função de entrada
     if (entryFunction) {
