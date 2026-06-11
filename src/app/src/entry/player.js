@@ -204,6 +204,26 @@ function _waitAndPlay(token, apiBase) {
                 const fakeEvt = { preventDefault(){}, stopPropagation(){}, target: null };
                 ScratchJr.fullScreen(fakeEvt);
             } catch (e) { console.warn('[player] fullScreen error:', e); }
+
+            // Diagnóstico: mostrar estado do stage após fullScreen
+            try {
+                const stageEl = document.getElementById('stage');
+                if (stageEl) {
+                    const r = stageEl.getBoundingClientRect();
+                    console.log('[player] stage DOM:', {
+                        class: stageEl.className,
+                        visibility: stageEl.style.visibility,
+                        display: stageEl.style.display,
+                        transform: stageEl.style.webkitTransform || stageEl.style.transform,
+                        left: stageEl.style.left,
+                        top: stageEl.style.top,
+                        rect: { x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height) }
+                    });
+                } else {
+                    console.warn('[player] #stage não encontrado no DOM');
+                }
+            } catch (e) { console.warn('[player] diagnóstico error:', e); }
+
             try {
                 ScratchJr.startGreenFlagThreads();
             } catch (e) { console.warn('[player] startGreenFlagThreads error:', e); }
