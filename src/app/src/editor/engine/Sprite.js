@@ -127,6 +127,14 @@ export default class Sprite {
             img.onload = function () {
                 sprite.displaySprite(fcn);
             };
+            img.onerror = function () {
+                // Imagem falhou (404 ou CORS) — define dimensões mínimas e continua
+                sprite.w = sprite.w || 1;
+                sprite.h = sprite.h || 1;
+                sprite.cx = sprite.cx || 0;
+                sprite.cy = sprite.cy || 0;
+                if (fcn) { fcn(sprite); }
+            };
         } else {
             sprite.displaySprite(fcn);
         }

@@ -187,6 +187,9 @@ export default class Page {
                     fcn();
                 }
             };
+            img.onerror = function () {
+                if (fcn) { fcn(); }
+            };
         } else {
             if (gn('backdrop').className == 'modal-backdrop fade in') {
                 Project.setProgress(Project.getMediaLoadRatio(70));
