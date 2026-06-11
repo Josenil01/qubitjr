@@ -129,32 +129,10 @@ export async function playerMain() {
         }
     };
 
-    // ── 5b. Patch Project.liftCurtain — ao projeto terminar de carregar ──────
-    const _origLiftCurtain = Project.liftCurtain.bind(Project);
-    Project.liftCurtain = function () {
-        _origLiftCurtain();
-
-        // Entrar em fullscreen para exibir somente a animação
-        setTimeout(() => {
-            try {
-                const fakeEvt = { preventDefault() {}, stopPropagation() {}, target: null };
-                // fullScreen verifica className do botão 'full'; ao iniciar é 'fullscreen' → entra FS
-                ScratchJr.fullScreen(fakeEvt);
-            } catch (e) {
-                console.warn('[player] fullScreen error:', e);
-            }
-
-            // Iniciar animação automaticamente
-            try {
-                ScratchJr.startGreenFlagThreads();
-            } catch (e) {
-                console.warn('[player] startGreenFlagThreads error:', e);
-            }
-
-            // Exibir barra de reações
-            _renderReactions(token, apiBase);
-        }, 150);
-    };
+    // ── 5b. Polling: aguarda stage carregar e inicia animação ────────────────
+    // Mais robusto que patch em liftCurtain — não depende de referência de classe
+    // ou de BlockSpecs.loadCount chegar a zero antes do timeout.
+    _waitAndPlay(token, apiBase);
 
     // ── 6. No-op dos módulos de editor (não usados no player) ────────────────
     Library.init = () => {};
@@ -187,6 +165,31 @@ export async function playerMain() {
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
+
+function _waitAndPlay(token, apiBase) {
+    let attempts = 0;
+    const MAX = 60; // até 6 segundos
+    const id = setInterval(() => {
+        attempts++;
+        const stage = ScratchJr.stage;
+        const ready = stage && stage.pages && stage.pages.length > 0;
+        if (ready || attempts >= MAX) {
+            clearInterval(id);
+            if (!ready) {
+                console.warn('[player] stage não carregou após timeout');
+                return;
+            }
+            try {
+                const fakeEvt = { preventDefault(){}, stopPropagation(){}, target: null };
+                ScratchJr.fullScreen(fakeEvt);
+            } catch (e) { console.warn('[player] fullScreen error:', e); }
+            try {
+                ScratchJr.startGreenFlagThreads();
+            } catch (e) { console.warn('[player] startGreenFlagThreads error:', e); }
+            _renderReactions(token, apiBase);
+        }
+    }, 100);
+}
 
 function _showFatalError(msg) {
     document.body.innerHTML =
