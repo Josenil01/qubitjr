@@ -87,15 +87,16 @@ async function loadSettings () {
 window.onload = async () => {
     await loadSettings();
 
-    // MediaLib.path é necessário para que sprites de biblioteca resolvam corretamente
-    // Carrega só o path, sem o JSON completo de assets (evita download pesado)
-    try {
-        if (window.MediaLib && window.MediaLib.setPath) {
-            window.MediaLib.setPath('./');
-        } else if (window.MediaLib) {
-            window.MediaLib.path = './';
+    // Carregar MediaLib para popular MediaLib.keys — necessário para sprites de
+    // biblioteca (Ruby, Boy, etc.) resolverem via IO.requestFromServer em vez de
+    // ios.getmedia (localStorage). Sem isso, sprites de biblioteca ficam em branco.
+    await new Promise(resolve => {
+        try {
+            MediaLib.loadMediaLib('./', resolve);
+        } catch (_) {
+            resolve();
         }
-    } catch (_) {}
+    });
 
     // Aguarda tabletInterface (WebInterface) estar pronto
     iOS.waitForInterface(playerMain);

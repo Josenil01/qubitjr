@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="mobile-web-app-capable" content="yes">
+<meta http-equiv="cache-control" content="no-cache">
+<meta charset="utf-8">
+<title>QubitJr — Ver Projeto</title>
+
+<!-- Apenas CSS essenciais para o stage renderizar corretamente -->
+
+<style>
+/* ── Player overlay: header fixo no topo ── */
+#player-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 36px;
+    background: linear-gradient(90deg, #6c63ff, #48c9b0);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 14px;
+    z-index: 99999;
+    pointer-events: none;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+#player-header-logo { font-size: 18px; line-height: 1; }
+#player-header-title {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#player-header-brand { color: rgba(255,255,255,0.75); font-size: 11px; }
+
+/* ── Barra de reações fixa na parte inferior ── */
+#player-reactions-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 52px;
+    background: rgba(10, 10, 30, 0.82);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    z-index: 99999;
+    padding: 0 12px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+.prx-btn {
+    display: flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.12);
+    border: 1.5px solid transparent; border-radius: 18px;
+    padding: 5px 11px; font-size: 19px; cursor: pointer;
+    transition: all 0.15s; user-select: none; line-height: 1; color: #fff;
+    -webkit-tap-highlight-color: transparent;
+}
+.prx-btn:hover { background: rgba(108,99,255,0.4); border-color: #6c63ff; transform: scale(1.08); }
+.prx-btn.reacted { background: rgba(108,99,255,0.35); border-color: #6c63ff; }
+.prx-btn.pop { animation: prx-pop 0.3s ease; }
+@keyframes prx-pop { 0%{transform:scale(1)} 50%{transform:scale(1.4)} 100%{transform:scale(1)} }
+.prx-count { font-size: 12px; font-weight: 700; min-width: 14px; text-align: center; }
+
+html, body { background: #000 !important; overflow: hidden; margin: 0; padding: 0; }
+</style>
+
+<script>
+    window.scratchJrPage = 'player';
+    var _isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    window.API_URL = window.API_URL || (_isLocal ? 'http://localhost:5000/api' : (location.origin + '/api'));
+</script>
+<!-- Entry point leve: sem MediaLib, PNGCache, Localization -->
+  <script type="module" crossorigin src="/assets/editorstage-Zdp6t2lR.js"></script>
+  <script type="module" crossorigin src="/assets/player-runtime-Cz09FjQB.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/editorstage-o1iUhixc.css">
+</head>
+<body style="background: #000;">
+
+<div id="player-header">
+    <div id="player-header-logo">🎨</div>
+    <div id="player-header-title">Carregando...</div>
+    <div id="player-header-brand">QubitJr</div>
+</div>
+
+<!-- Divs requeridos pelo engine ScratchJr -->
+<div class="frame" id="frame"></div>
+<div class="libframe" id="libframe"></div>
+<div class="paintframe" id="paintframe"></div>
+
+<!-- Reações overlay (preenchido via player.js) -->
+<div id="player-reactions-bar"></div>
+
+</body>
+</html>

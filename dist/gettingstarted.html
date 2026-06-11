@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="mobile-web-app-capable" content="yes">
+<meta http-equiv="cache-control" content="no-cache">
+<meta charset="utf-8">
+<title>QubitJr</title>
+
+<!-- CSS carregado direto (sem processamento Vite) para suportar template literals -->
+
+<script>
+    window.scratchJrPage = 'gettingStarted';
+    var _isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    window.API_URL = window.API_URL || (_isLocal ? 'http://localhost:5000/api' : (location.origin + '/api'));
+</script>
+<!-- Vite bundler: resolve todas as dependências npm e ES6 modules -->
+
+  <script type="module" crossorigin src="/assets/editorstage-Zdp6t2lR.js"></script>
+  <script type="module" crossorigin src="/assets/player-runtime-Cz09FjQB.js"></script>
+  <script type="module" crossorigin src="/assets/appEntry-vite-D3rYBKzL.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/editorstage-o1iUhixc.css">
+  <link rel="stylesheet" crossorigin href="/assets/appEntry-vite-BMbxJrSv.css">
+</head>
+<body>
+<div class="tutorial" id="tutorialmode">
+  <div class="closehelp" id="closeHelp"></div>
+  <div class="introvideocontainer">
+      <video class="introvideo" id="myVideo" controls></video>
+  </div>
+</div>
+</body>
+</html>

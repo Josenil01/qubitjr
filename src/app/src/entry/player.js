@@ -65,6 +65,13 @@ export async function playerMain() {
     window.__playerToken = token;
     window.__playerReactions = projectData.reactions || {};
 
+    // ── 2b. Pré-popular localStorage com SVGs dos sprites ────────────────────
+    // iOS.getmedia lê de localStorage (io_getmedialen sincrono). Viewers sem cache
+    // recebem conteúdo vazio → sprites ficam em branco. Pré-buscar corrige isso.
+    if (projectData.mediaBaseUrl) {
+        await _prefetchMedia(window.__playerProject.json, projectData.mediaBaseUrl);
+    }
+
     // ── 3. Patch IO.getObjectinDB — retorna projeto injetado sem chamar backend ──
     const _origGetObjectinDB = IO.getObjectinDB;
     IO.getObjectinDB = function (db, md5, fcn) {
@@ -203,6 +210,43 @@ function _waitAndPlay(token, apiBase) {
             _renderReactions(token, apiBase);
         }
     }, 100);
+}
+
+async function _prefetchMedia(projectJsonStr, mediaBaseUrl) {
+    let parsed;
+    try {
+        parsed = typeof projectJsonStr === 'string' ? JSON.parse(projectJsonStr) : projectJsonStr;
+    } catch (_) { return; }
+
+    const filenames = new Set();
+    const pages = parsed.pages || [];
+    for (const pageId of pages) {
+        const page = parsed[pageId];
+        if (!page) continue;
+        const sprites = page.sprites || [];
+        for (const spriteId of sprites) {
+            const sprite = page[spriteId];
+            if (sprite && sprite.md5) filenames.add(sprite.md5);
+        }
+    }
+
+    const base = mediaBaseUrl.endsWith('/') ? mediaBaseUrl : mediaBaseUrl + '/';
+    await Promise.all([...filenames].map(async (filename) => {
+        const key = `scratchjr_media_${filename}`;
+        try { if (localStorage.getItem(key)) return; } catch (_) {}
+        try {
+            const resp = await fetch(base + filename);
+            if (!resp.ok) return;
+            const buf = await resp.arrayBuffer();
+            const bytes = new Uint8Array(buf);
+            let binary = '';
+            for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+            localStorage.setItem(key, btoa(binary));
+            console.log('[player] prefetch OK:', filename);
+        } catch (e) {
+            console.warn('[player] prefetch failed:', filename, e);
+        }
+    }));
 }
 
 function _showFatalError(msg) {
