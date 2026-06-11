@@ -275,9 +275,11 @@ export default class Page {
         }
         if (this.bkg.childElementCount > 0) {
             var img = this.bkg.originalImg;
-            var imgw = img.naturalWidth ? img.naturalWidth : img.width;
-            var imgh = img.naturalHeight ? img.naturalHeight : img.height;
-            ctx.drawImage(img, 0, 0, imgw, imgh, 0, 0, w, h);
+            var imgw = img ? (img.naturalWidth || img.width) : 0;
+            var imgh = img ? (img.naturalHeight || img.height) : 0;
+            if (img && imgw > 0 && imgh > 0 && img.complete && img.naturalWidth > 0) {
+                ctx.drawImage(img, 0, 0, imgw, imgh, 0, 0, w, h);
+            }
         }
         var scale = w / 480;
         for (var i = 0; i < this.div.childElementCount; i++) {
