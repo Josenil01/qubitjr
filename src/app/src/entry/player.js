@@ -167,19 +167,10 @@ export async function playerMain() {
     Palette.selectCategory = () => {};
     Palette.show = () => {};
     Palette.hide = () => {};
-    // UI.layout cria todos os painéis do editor — substituímos por uma versão
-    // mínima que cria apenas o stage + controles de fullscreen necessários
-    const _origUILayout = UI.layout.bind(UI);
-    UI.layout = function () {
-        try {
-            UI.stageArea(document.getElementById('topsection') || document.getElementById('frame'));
-        } catch (_) {
-            // Se stageArea falhar (topsection ainda não existe), usa layout completo
-            // mas silencia erros de painéis ausentes
-            try { _origUILayout(); } catch (__) {}
-        }
-        try { UI.fullscreenControls(); } catch (_) {}
-    };
+    // UI.layout precisa rodar completo para criar scriptsarea e demais containers
+    // que o Sprite/Scripts constructor exige; o ganho de performance vem do
+    // playerEntry-vite.js (MediaLib/PNGCache/Localization pulados), não daqui.
+    // Apenas silenciamos erros de painéis que referenciam elementos ausentes.
 
     // ── 7. Configurar modo e projeto atual ────────────────────────────────────
     window.currentEditorMode = 'look';
