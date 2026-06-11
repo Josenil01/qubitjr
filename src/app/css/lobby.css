@@ -123,6 +123,14 @@ ul#settings.reference {
 
 .topsection.home {
     display: block;
+    /* Especificidade 0,0,2 — sobrescreve *.topsection{height:61.2vh} do editor.css (0,0,1) */
+    height: auto;
+}
+
+.topsection.help,
+.topsection.book,
+.topsection.gear {
+    height: auto;
 }
 
 .topsection.home > div.tabtitle {
