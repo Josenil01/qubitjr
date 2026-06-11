@@ -58,10 +58,16 @@ function processPlayerCss () {
     }).catch(() => {});
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', processPlayerCss);
-} else {
-    setTimeout(processPlayerCss, 0);
+// Guarda global: só executa lógica do player se esta página for realmente o player.
+// player.html define window.scratchJrPage = 'player' antes de carregar este script.
+// Se este bundle for carregado por outra página (ex: editor) via chunk sharing do
+// Vite, nenhuma ação colateral é executada.
+if (window.scratchJrPage === 'player') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', processPlayerCss);
+    } else {
+        setTimeout(processPlayerCss, 0);
+    }
 }
 
 // ── Settings ──────────────────────────────────────────────────────────────
@@ -84,20 +90,22 @@ async function loadSettings () {
 }
 
 // ── Inicialização mínima ───────────────────────────────────────────────────
-window.onload = async () => {
-    await loadSettings();
+if (window.scratchJrPage === 'player') {
+    window.onload = async () => {
+        await loadSettings();
 
-    // Carregar MediaLib para popular MediaLib.keys — necessário para sprites de
-    // biblioteca (Ruby, Boy, etc.) resolverem via IO.requestFromServer em vez de
-    // ios.getmedia (localStorage). Sem isso, sprites de biblioteca ficam em branco.
-    await new Promise(resolve => {
-        try {
-            MediaLib.loadMediaLib('./', resolve);
-        } catch (_) {
-            resolve();
-        }
-    });
+        // Carregar MediaLib para popular MediaLib.keys — necessário para sprites de
+        // biblioteca (Ruby, Boy, etc.) resolverem via IO.requestFromServer em vez de
+        // ios.getmedia (localStorage). Sem isso, sprites de biblioteca ficam em branco.
+        await new Promise(resolve => {
+            try {
+                MediaLib.loadMediaLib('./', resolve);
+            } catch (_) {
+                resolve();
+            }
+        });
 
-    // Aguarda tabletInterface (WebInterface) estar pronto
-    iOS.waitForInterface(playerMain);
-};
+        // Aguarda tabletInterface (WebInterface) estar pronto
+        iOS.waitForInterface(playerMain);
+    };
+}

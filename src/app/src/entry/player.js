@@ -11,10 +11,9 @@ import ScratchJr from '../editor/ScratchJr.js';
 import iOS from '../iPad/iOS.js';
 import IO from '../iPad/IO.js';
 
-// Patches exclusivos do player — aplicados sobre os originais sem modificá-los
-import '../editor/ScratchJr_player.js';
-import '../editor/engine/Page_player.js';
-import '../editor/engine/Sprite_player.js';
+import { applyScratchJrPlayerPatches } from '../editor/ScratchJr_player.js';
+import { applyPagePlayerPatches } from '../editor/engine/Page_player.js';
+import { applySpritePlayerPatches } from '../editor/engine/Sprite_player.js';
 import Project from '../editor/ui/Project.js';
 import UI from '../editor/ui/UI.js';
 import Library from '../editor/ui/Library.js';
@@ -28,6 +27,11 @@ const EMOJIS = ['❤️', '😄', '👏', '🌟', '🎉'];
 const LABELS = { '❤️': 'Amei', '😄': 'Divertido', '👏': 'Parabéns', '🌟': 'Incrível', '🎉': 'Que show!' };
 
 export async function playerMain() {
+    // Aplicar patches do player sobre os prototypes do engine
+    applyScratchJrPlayerPatches();
+    applyPagePlayerPatches();
+    applySpritePlayerPatches();
+
     const params = new URLSearchParams(location.search);
     const token = params.get('token');
     const apiBase = window.API_URL || (location.origin + '/api');

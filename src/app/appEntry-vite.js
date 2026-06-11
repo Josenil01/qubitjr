@@ -21,7 +21,6 @@ import { homeMain } from './src/entry/home.js';
 import { editorMain } from './src/entry/editor.js';
 import { gettingStartedMain } from './src/entry/gettingstarted.js';
 import { inappInterfaceGuide, inappAbout, inappBlocksGuide, inappPaintEditorGuide } from './src/entry/inapp.js';
-import { playerMain } from './src/entry/player.js';
 import PNGCache from './src/painteditor/PNGCache.js';
 
 // Expor globalmente
@@ -143,8 +142,6 @@ window.inappInterfaceGuide = inappInterfaceGuide;
 window.inappAbout = inappAbout;
 window.inappBlocksGuide = inappBlocksGuide;
 window.inappPaintEditorGuide = inappPaintEditorGuide;
-window.playerMain = playerMain;
-
 // Router simples para navegar entre páginas
 // Propaga o token de auth na URL para que cada página o receba mesmo sem sessionStorage
 function _getAuthTokenForNav() {
@@ -220,9 +217,6 @@ async function loadPage(page) {
     break;
   case 'gettingstarted':
     entryFunction = () => iOS.waitForInterface(gettingStartedMain);
-    break;
-  case 'player':
-    entryFunction = () => iOS.waitForInterface(playerMain);
     break;
   }
 
