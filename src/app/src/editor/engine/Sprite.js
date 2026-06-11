@@ -127,14 +127,6 @@ export default class Sprite {
             img.onload = function () {
                 sprite.displaySprite(fcn);
             };
-            img.onerror = function () {
-                // Imagem falhou (404 ou CORS) — define dimensões mínimas e continua
-                sprite.w = sprite.w || 1;
-                sprite.h = sprite.h || 1;
-                sprite.cx = sprite.cx || 0;
-                sprite.cy = sprite.cy || 0;
-                if (fcn) { fcn(sprite); }
-            };
         } else {
             sprite.displaySprite(fcn);
         }
@@ -226,10 +218,6 @@ export default class Sprite {
 
     drawMyImage (cnv, w, h) {
         if (!this.img) {
-            return;
-        }
-        if (!this.border) {
-            // border não está pronto ainda (player: imagem falhou) — pula sem erro
             return;
         }
         setCanvasSize(cnv, w, h);
@@ -1006,15 +994,12 @@ export default class Sprite {
 
     getSVGimage (svg) {
         var img = document.createElement('img');
-
+        
         // Verificar se é um canvas (retornado pelo PNGCache)
         if (svg && svg.tagName === 'CANVAS') {
             img.src = svg.toDataURL('image/png');
         } else {
-            // Processar como SVG — svg pode ser null/parseerror se a imagem falhou ao carregar
-            if (!svg || typeof svg.tagName === 'undefined') {
-                return img;
-            }
+            // Processar como SVG
             var str = (new XMLSerializer()).serializeToString(svg);
             str = str.replace(/ href="data:image/g, ' xlink:href="data:image');
             img.src = 'data:image/svg+xml;base64,' + btoa(str);

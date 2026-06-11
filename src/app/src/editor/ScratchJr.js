@@ -823,7 +823,6 @@ export default class ScratchJr {
     static numEditKey (e) {
         e.preventDefault();
         e.stopPropagation();
-        if (!activeFocus) { return; }
         var t = e.target;
         if (!t) {
             return;

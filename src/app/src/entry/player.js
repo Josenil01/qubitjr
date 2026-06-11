@@ -10,6 +10,11 @@
 import ScratchJr from '../editor/ScratchJr.js';
 import iOS from '../iPad/iOS.js';
 import IO from '../iPad/IO.js';
+
+// Patches exclusivos do player — aplicados sobre os originais sem modificá-los
+import '../editor/ScratchJr_player.js';
+import '../editor/engine/Page_player.js';
+import '../editor/engine/Sprite_player.js';
 import Project from '../editor/ui/Project.js';
 import UI from '../editor/ui/UI.js';
 import Library from '../editor/ui/Library.js';
