@@ -32,8 +32,12 @@ export function applyStagePlayerPatches () {
                 ' pt=(' + pt.x.toFixed(0) + ',' + pt.y.toFixed(0) + ')' +
                 ' box=(' + localLeft.toFixed(0) + ',' + localTop.toFixed(0) +
                 ')-(' + localRight.toFixed(0) + ',' + localBottom.toFixed(0) + ')' +
-                ' stageTop=' + stageDivRect.top.toFixed(0) +
-                ' rectTop=' + rect.top.toFixed(0));
+                ' | xcoor=' + (spr.xcoor|0) + ' ycoor=' + (spr.ycoor|0) +
+                ' cx=' + (spr.cx|0) + ' cy=' + (spr.cy|0) +
+                ' scale=' + (spr.scale||1).toFixed(2) +
+                ' | stageTop=' + stageDivRect.top.toFixed(0) +
+                ' rectTop=' + rect.top.toFixed(0) +
+                ' rectH=' + rect.height.toFixed(0));
             if (pt.x >= localLeft && pt.x <= localRight &&
                 pt.y >= localTop  && pt.y <= localBottom) {
                 return spr;
