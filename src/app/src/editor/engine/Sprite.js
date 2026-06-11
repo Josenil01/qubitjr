@@ -1002,12 +1002,15 @@ export default class Sprite {
 
     getSVGimage (svg) {
         var img = document.createElement('img');
-        
+
         // Verificar se é um canvas (retornado pelo PNGCache)
         if (svg && svg.tagName === 'CANVAS') {
             img.src = svg.toDataURL('image/png');
         } else {
-            // Processar como SVG
+            // Processar como SVG — svg pode ser null/parseerror se a imagem falhou ao carregar
+            if (!svg || typeof svg.tagName === 'undefined') {
+                return img;
+            }
             var str = (new XMLSerializer()).serializeToString(svg);
             str = str.replace(/ href="data:image/g, ' xlink:href="data:image');
             img.src = 'data:image/svg+xml;base64,' + btoa(str);
