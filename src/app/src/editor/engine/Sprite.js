@@ -225,7 +225,11 @@ export default class Sprite {
     }
 
     drawMyImage (cnv, w, h) {
-        if (!this.img || !this.border) {
+        if (!this.img) {
+            return;
+        }
+        if (!this.border) {
+            // border não está pronto ainda (player: imagem falhou) — pula sem erro
             return;
         }
         setCanvasSize(cnv, w, h);
