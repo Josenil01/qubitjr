@@ -309,7 +309,7 @@ export default class Page {
         if (!spr.shown) {
             return;
         }
-        if (!img) {
+        if (!img || img.naturalWidth === 0) {
             return;
         }
         var imgw = img.naturalWidth ? img.naturalWidth : img.width;
