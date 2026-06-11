@@ -68,6 +68,22 @@
 
 html, body { background: #000 !important; overflow: hidden; margin: 0; padding: 0; }
 
+/* Ocultar TODOS os elementos do editor no player — mais confiável que JS */
+#topsection,
+#blockspalette,
+#scripts,
+#textbox,
+#paintframe,
+#libframe,
+#flip,
+#projectinfo,
+.textform,
+.pagetext,
+#go,
+#full {
+    display: none !important;
+}
+
 /* Garante visibilidade do texto dos balões de fala no player.
    dist/css/editor.css tem ${css_vh(0.65)} não processado — browser pode
    descartar a regra inteira. Este override garante que p.balloon funcione. */
