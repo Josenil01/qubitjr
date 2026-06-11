@@ -205,20 +205,31 @@ function _waitAndPlay(token, apiBase) {
                 ScratchJr.fullScreen(fakeEvt);
             } catch (e) { console.warn('[player] fullScreen error:', e); }
 
-            // Diagnóstico: mostrar estado do stage após fullScreen
+            // Diagnóstico completo do stage
             try {
                 const stageEl = document.getElementById('stage');
                 if (stageEl) {
                     const r = stageEl.getBoundingClientRect();
-                    console.log('[player] stage DOM:', {
-                        class: stageEl.className,
-                        visibility: stageEl.style.visibility,
-                        display: stageEl.style.display,
-                        transform: stageEl.style.webkitTransform || stageEl.style.transform,
-                        left: stageEl.style.left,
-                        top: stageEl.style.top,
-                        rect: { x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height) }
-                    });
+                    console.log('[player] stage rect:', Math.round(r.x), Math.round(r.y), Math.round(r.width), 'x', Math.round(r.height));
+                    console.log('[player] stage class:', stageEl.className);
+                    console.log('[player] stage parent:', stageEl.parentElement && stageEl.parentElement.id);
+                    console.log('[player] stage children:', stageEl.childElementCount);
+                    // Listar filhos diretos do stage
+                    for (let i = 0; i < Math.min(stageEl.childElementCount, 5); i++) {
+                        const c = stageEl.children[i];
+                        const cr = c.getBoundingClientRect();
+                        console.log(`[player] stage.children[${i}]:`, c.className, c.id, 'visibility:', c.style.visibility, 'rect:', Math.round(cr.x), Math.round(cr.y), Math.round(cr.width), 'x', Math.round(cr.height));
+                    }
+                    // Listar filhos da primeira página (sprites)
+                    const pageDiv = stageEl.querySelector('.page');
+                    if (pageDiv) {
+                        console.log('[player] page children:', pageDiv.childElementCount, 'visibility:', pageDiv.style.visibility);
+                        for (let i = 0; i < Math.min(pageDiv.childElementCount, 5); i++) {
+                            const c = pageDiv.children[i];
+                            const cr = c.getBoundingClientRect();
+                            console.log(`[player] page.children[${i}]:`, c.className, c.id, 'visibility:', c.style.visibility, 'transform:', c.style.webkitTransform || c.style.transform, 'rect:', Math.round(cr.x), Math.round(cr.y), Math.round(cr.width), 'x', Math.round(cr.height));
+                        }
+                    }
                 } else {
                     console.warn('[player] #stage não encontrado no DOM');
                 }
