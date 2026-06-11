@@ -28,6 +28,12 @@ export function applyStagePlayerPatches () {
             var localTop    = (rect.top    - stageDivRect.top)  * scaleY;
             var localRight  = (rect.right  - stageDivRect.left) * scaleX;
             var localBottom = (rect.bottom - stageDivRect.top)  * scaleY;
+            console.log('[whoIsIt] spr=' + (spr.name || spr.id) +
+                ' pt=(' + pt.x.toFixed(0) + ',' + pt.y.toFixed(0) + ')' +
+                ' box=(' + localLeft.toFixed(0) + ',' + localTop.toFixed(0) +
+                ')-(' + localRight.toFixed(0) + ',' + localBottom.toFixed(0) + ')' +
+                ' stageTop=' + stageDivRect.top.toFixed(0) +
+                ' rectTop=' + rect.top.toFixed(0));
             if (pt.x >= localLeft && pt.x <= localRight &&
                 pt.y >= localTop  && pt.y <= localBottom) {
                 return spr;
