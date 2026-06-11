@@ -113,27 +113,34 @@ export async function playerMain() {
         };
     }
 
-    // ── 5a. Patch UI.enterFullScreen — limita o stage a 80% do viewport ─────
-    const _origEnterFullScreen = UI.enterFullScreen.bind(UI);
+    // ── 5a. Patch UI.enterFullScreen — move stage para #frame e oculta stageframe
+    // NÃO chama o original: setStageScaleAndPosition produz width=2788/height=0 no
+    // contexto do player. Fazemos apenas o que é necessário: mover o stage para fora
+    // do stageframe e ocultar o stageframe (miniaturas, painéis do editor).
     UI.enterFullScreen = function () {
-        _origEnterFullScreen();
-        // Reaplica a escala limitada a 80% do viewport, centralizada
         try {
-            const stage = ScratchJr.stage;
-            if (!stage) return;
-            const MAX = 0.80;
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            const scale = Math.min((w * MAX) / stage.width, (h * MAX) / stage.height);
-            const dx = Math.floor((w - stage.width * scale) / 2);
-            const dy = Math.floor((h - stage.height * scale) / 2);
-            stage.setStageScaleAndPosition(scale, dx / scale, dy / scale);
-            stage.currentZoom = Math.floor(scale * 100) / 100;
+            const frameEl = document.getElementById('frame');
             const stageEl = document.getElementById('stage');
-            if (stageEl) stageEl.style.webkitTextSizeAdjust = Math.floor(scale * 100) + '%';
+            if (stageEl && frameEl) {
+                frameEl.appendChild(stageEl);
+                stageEl.setAttribute('class', 'stage fullscreen');
+            }
+            // Mover botões go/full para presentationmode (requerido pelo engine)
+            ['go', 'full'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el && frameEl) {
+                    el.className = (el.className + ' presentationmode').trim();
+                    frameEl.appendChild(el);
+                }
+            });
+            // Ocultar stageframe (miniaturas de sprites/páginas e painéis do editor)
+            const sf = document.getElementById('stageframe');
+            if (sf) sf.style.display = 'none';
+            document.body.style.background = 'black';
         } catch (e) {
-            console.warn('[player] enterFullScreen 80% patch error:', e);
+            console.warn('[player] UI.enterFullScreen patch error:', e);
         }
+        // currentZoom é definido em _waitAndPlay após o CSS fix
     };
 
     // ── 5b. Polling: aguarda stage carregar e inicia animação ────────────────
@@ -200,11 +207,13 @@ function _waitAndPlay(token, apiBase) {
                 console.warn('[player] stage não carregou após timeout');
                 return;
             }
-            // Ativa fullscreen via engine (dispara analytics + inFullscreen=true)
+            // Ativa fullscreen via engine: define inFullscreen=true e oculta UI do editor.
+            // Usamos enterFullScreen diretamente (não fullScreen) para evitar verificação
+            // do className do botão #full que pode estar em estado inesperado.
             try {
                 const fakeEvt = { preventDefault(){}, stopPropagation(){}, target: null };
-                ScratchJr.fullScreen(fakeEvt);
-            } catch (e) { console.warn('[player] fullScreen error:', e); }
+                ScratchJr.enterFullScreen(fakeEvt);
+            } catch (e) { console.warn('[player] enterFullScreen error:', e); }
 
             // Força posicionamento correto do stage via CSS direto.
             // O mecanismo de transform do engine (setStageScaleAndPosition) gera
@@ -229,6 +238,10 @@ function _waitAndPlay(token, apiBase) {
                     stageEl.style.overflow        = 'hidden';
                     stageEl.style.visibility      = 'visible';
                     stageEl.style.zIndex          = '1000';
+                    // Atualiza currentZoom para que openBalloon calcule posições corretas
+                    if (ScratchJr.stage) {
+                        ScratchJr.stage.currentZoom = Math.floor(scale * 100) / 100;
+                    }
                     console.log('[player] stage posicionado:', left, top, 'scale:', scale.toFixed(3));
                 }
             } catch (e) { console.warn('[player] stage CSS error:', e); }

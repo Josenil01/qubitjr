@@ -67,6 +67,25 @@
 .prx-count { font-size: 12px; font-weight: 700; min-width: 14px; text-align: center; }
 
 html, body { background: #000 !important; overflow: hidden; margin: 0; padding: 0; }
+
+/* Garante visibilidade do texto dos balões de fala no player.
+   dist/css/editor.css tem ${css_vh(0.65)} não processado — browser pode
+   descartar a regra inteira. Este override garante que p.balloon funcione. */
+#stage p.balloon {
+    position: absolute !important;
+    top: 4px !important;
+    left: 0 !important;
+    text-align: center !important;
+    margin: 4px !important;
+    color: #ffffff !important;
+    font-family: Verdana, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    overflow: visible !important;
+    z-index: 10 !important;
+    -webkit-text-size-adjust: auto !important;
+    pointer-events: none;
+}
 </style>
 
 <script>
@@ -76,7 +95,7 @@ html, body { background: #000 !important; overflow: hidden; margin: 0; padding: 
 </script>
 <!-- Entry point leve: sem MediaLib, PNGCache, Localization -->
   <script type="module" crossorigin src="/assets/editorstage-Zdp6t2lR.js"></script>
-  <script type="module" crossorigin src="/assets/player-runtime-Bw808oFS.js"></script>
+  <script type="module" crossorigin src="/assets/player-runtime-BcCmUCzw.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/editorstage-o1iUhixc.css">
 </head>
 <body style="background: #000;">
