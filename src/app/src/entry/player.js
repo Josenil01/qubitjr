@@ -14,6 +14,7 @@ import IO from '../iPad/IO.js';
 import { applyScratchJrPlayerPatches } from '../editor/ScratchJr_player.js';
 import { applyPagePlayerPatches } from '../editor/engine/Page_player.js';
 import { applySpritePlayerPatches } from '../editor/engine/Sprite_player.js';
+import { applyStagePlayerPatches } from '../editor/engine/Stage_player.js';
 import Project from '../editor/ui/Project.js';
 import UI from '../editor/ui/UI.js';
 import Library from '../editor/ui/Library.js';
@@ -31,6 +32,7 @@ export async function playerMain() {
     applyScratchJrPlayerPatches();
     applyPagePlayerPatches();
     applySpritePlayerPatches();
+    applyStagePlayerPatches();
 
     const params = new URLSearchParams(location.search);
     const token = params.get('token');
