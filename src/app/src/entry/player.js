@@ -145,6 +145,8 @@ export async function playerMain() {
     Palette.selectCategory = () => {};
     Palette.show = () => {};
     Palette.hide = () => {};
+    // IO.setProjectIsGift tenta gravar no banco com auth do projeto — 401 no player
+    IO.setProjectIsGift = () => {};
     // UI.layout precisa rodar completo para criar scriptsarea e demais containers
     // que o Sprite/Scripts constructor exige; o ganho de performance vem do
     // playerEntry-vite.js (MediaLib/PNGCache/Localization pulados), não daqui.

@@ -225,7 +225,7 @@ export default class Sprite {
     }
 
     drawMyImage (cnv, w, h) {
-        if (!this.img) {
+        if (!this.img || !this.border) {
             return;
         }
         setCanvasSize(cnv, w, h);
