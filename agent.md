@@ -12,8 +12,20 @@ This project adapts the original native mobile app to browser environments using
 
 These notes exist to prevent recurring mistakes. Read them before making any change.
 
-### Active Entry Point
-The only active entry point is `src/app/appEntry-vite.js`.
+### Active Entry Points
+There are now **five** active HTML pages, each with its own JS entry:
+
+| HTML | Entry Function | Description |
+|------|---------------|-------------|
+| `index.html` | `indexMain` | Splash/login screen |
+| `home.html` | `homeMain` | Project lobby |
+| `editor.html` | `editorMain` | Block editor |
+| `gettingstarted.html` | `gettingstartedMain` | Getting started guide |
+| `player.html` | `playerMain` | Public read-only project viewer |
+
+`src/app/appEntry-vite.js` is the module entry for the editor/home/splash pages.
+`src/app/src/entry/player.js` is the **separate** entry module for the player page — it is loaded directly by `player.html` and NOT bundled through `appEntry-vite.js`.
+
 Do NOT touch or reference `appEntry.js` or `appEntry-web.js` — they are in `_legacy/`.
 
 ### Development vs. Build
@@ -21,6 +33,32 @@ Do NOT touch or reference `appEntry.js` or `appEntry-web.js` — they are in `_l
   **No build step needed** to test changes locally — edits are reflected immediately.
 - `npm run build` is only required for Vercel deployment (and Vercel runs it automatically on deploy).
   Never instruct the user to run `npm run build` to test local changes.
+
+### Player Mode — Patch Architecture
+
+The player (`player.html` / `src/app/src/entry/player.js`) reuses the full editor engine but overrides dangerous or editor-only behaviors using **prototype patches** applied at startup. Each patch file is isolated and has no side effects when not called:
+
+| Patch file | What it patches |
+|-----------|----------------|
+| `src/app/src/editor/ScratchJr_player.js` | `ScratchJr.numEditKey` — guards against null `activeFocus` |
+| `src/app/src/editor/engine/Page_player.js` | Page-level engine patches |
+| `src/app/src/editor/engine/Sprite_player.js` | `whoIsIt` — BoundingClientRect-based hit-test (replaces stamp-based) |
+| `src/app/src/editor/engine/Stage_player.js` | Stage-level player patches |
+
+**Rules for player patches:**
+- Each patch file exports a single `applyXxxPlayerPatches()` function. Call it in `player.js` only.
+- Never import `*_player.js` files from the editor pages (`editor.js`, `home.js`).
+- When the player needs different behavior from an engine method, add it to the relevant `*_player.js` — do NOT modify the original engine file.
+
+### Public Share System
+
+The project has a share/public-player feature added after the initial architecture:
+
+- **Backend:** `backend/src/routes/share.js` — adds authenticated endpoints (`POST/DELETE /api/share/:projectId`) and **public** endpoints (`GET/POST /api/public/project/:token`) for the player.
+- The `projects` table now has a `share_token` column and a `reactions` column (JSON, emoji counters).
+- Public routes are registered **before** the auth middleware in `backend/src/index.js` — they intentionally require no JWT.
+- **Frontend:** `player.js` fetches `/api/public/project/:token` (no auth header). Emoji reactions are posted to `/api/public/project/:token/react`.
+- Allowed emojis: `❤️ 😄 👏 🌟 🎉` — hardcoded in both `share.js` and `player.js`. Change in both if you need to add/remove.
 
 ### Legacy Folder
 `_legacy/` contains files from previous generations of the project (Electron app, old CI).
@@ -84,7 +122,8 @@ Do not remove or convert these to standard CSS values.
 │   │   ├── index.js              # Express server startup (CORS, auth, routes)
 │   │   └── routes/
 │   │       ├── db.js             # /api/db — SQL-to-Supabase translator, CRUD for projects
-│   │       └── media.js          # /api/media — Supabase Storage upload/download/delete
+│   │       ├── media.js          # /api/media — Supabase Storage upload/download/delete
+│   │       └── share.js          # /api/share + /api/public — project sharing & emoji reactions
 │   ├── supabase-setup.sql        # PostgreSQL schema (projects, usershapes, userbkgs, projectfiles, media)
 │   ├── .env / .env.example       # Backend environment variables
 │   └── package.json
@@ -94,6 +133,7 @@ Do not remove or convert these to standard CSS values.
 │       ├── home.html             # HTML entry: project lobby
 │       ├── editor.html           # HTML entry: block editor
 │       ├── gettingstarted.html   # HTML entry: getting started guide
+│       ├── player.html           # HTML entry: public read-only project player (share links)
 │       ├── appEntry-vite.js      # ** ÚNICO entry point ativo ** (imports, CSS processing, router)
 │       ├── bootstrap.js          # Fallback polyfills (IO, Localization, iOS mocks)
 │       ├── sync-wrapper.js       # Bridging async WebInterface Promises → callback-based iOS.js API
@@ -118,13 +158,18 @@ Do not remove or convert these to standard CSS values.
 │           │   ├── editor.js     #   Editor entry (editorMain)
 │           │   ├── gettingstarted.js  # Getting started entry
 │           │   ├── inapp.js      #   In-app help entry
-│           │   └── index-mock.js #   Mock for offline development
+│           │   ├── index-mock.js #   Mock for offline development
+│           │   └── player.js     #   ** Player entry (playerMain) — public share viewer **
 │           ├── editor/           # Core block-based editor engine
-│           │   ├── ScratchJr.js  #   App controller / global state (1023 lines)
+│           │   ├── ScratchJr.js  #   App controller / global state
+│           │   ├── ScratchJr_player.js  # Player patches for ScratchJr (apply via applyScratchJrPlayerPatches)
 │           │   ├── blocks/       #   Block definitions
 │           │   │   ├── Block.js, BlockArg.js, BlockSpecs.js, Menu.js
 │           │   ├── engine/       #   Execution engine
-│           │   │   ├── Runtime.js, Thread.js, Stage.js, Sprite.js, Page.js, Prims.js
+│           │   │   ├── Runtime.js, Thread.js, Prims.js
+│           │   │   ├── Stage.js, Stage_player.js   # Stage + player patches
+│           │   │   ├── Sprite.js, Sprite_player.js # Sprite + player patches (BoundingClientRect hit-test)
+│           │   │   └── Page.js, Page_player.js     # Page + player patches
 │           │   └── ui/           #   User interface
 │           │       ├── UI.js, Project.js, Scripts.js, ScriptsPane.js
 │           │       ├── Palette.js, Library.js, Thumbs.js, Scroll.js
@@ -184,17 +229,25 @@ Do not remove or convert these to standard CSS values.
 
 ### How Pages Load
 
+**Editor / Lobby / Splash / Getting Started:**
 1. Browser loads `index.html`, `home.html`, `editor.html`, or `gettingstarted.html`
 2. Each HTML sets `window.scratchJrPage` to the page name and loads `appEntry-vite.js` as a `<script type="module">`
-3. `appEntry-vite.js` imports all modules via ES6 imports, exposes them on `window`, then calls the appropriate entry function (e.g., `indexMain`, `homeMain`, `editorMain`)
+3. `appEntry-vite.js` imports all modules via ES6 imports, exposes them on `window`, then calls the appropriate entry function (`indexMain`, `homeMain`, `editorMain`, etc.)
 4. Entry functions call `iOS.waitForInterface()` which polls for `window.tabletInterface` (the `WebInterface` instance)
 5. The `WebInterface` constructor reads auth tokens from URL parameters or sessionStorage
 6. All database/file operations go through `window.tabletInterface` methods → HTTP fetch → Express backend → Supabase
 
+**Player (public share viewer):**
+1. Browser loads `player.html?token=<share_token>`
+2. `player.html` loads `src/entry/player.js` directly as `<script type="module">` — does NOT use `appEntry-vite.js`
+3. `playerMain()` applies engine patches (`applyScratchJrPlayerPatches`, `applyPagePlayerPatches`, etc.) then fetches `/api/public/project/:token` — **no auth required**
+4. Project JSON and assets are loaded from Supabase Storage public URLs; `iOS.path` is set to the Supabase base URL so PNG assets resolve correctly
+5. The stage auto-starts the project animation on load
+
 ### Data Flow
 
 ```
-Browser (WebInterface.js)
+Browser (WebInterface.js)                     [Editor / Lobby / Authenticated pages]
   → HTTP fetch to /api/db/query or /api/db/stmt
     → Express backend (backend/src/index.js)
       → Auth middleware (JWT or mock token)
@@ -208,6 +261,21 @@ Browser (WebInterface.js)
       → Auth middleware
         → Route handler (backend/src/routes/media.js)
           → Supabase Storage (files namespaced by userId)
+
+Browser (Lobby share button)                  [Authenticated — generate share link]
+  → POST /api/share/:projectId
+    → Auth middleware → share.js
+      → Generates/returns share_token on projects row → Supabase
+
+Browser (player.js)                           [Public — no auth]
+  → GET /api/public/project/:token            (registered BEFORE auth middleware)
+    → share.js publicRouter
+      → Reads project row by share_token from Supabase → returns name, json, thumbnail, reactions
+
+Browser (player.js emoji reaction)
+  → POST /api/public/project/:token/react  { emoji: "❤️" }
+    → share.js publicRouter
+      → Increments reactions JSON counter in Supabase
 ```
 
 ---
@@ -302,6 +370,9 @@ Never introduce new globals. Always use module imports.
 - Create new global variables on `window`.
 - Use `console.log` for temporary debugging in production paths — use structured logging or remove before commit.
 - Add `.DS_Store` files (gitignored).
+- Import `*_player.js` files from editor/lobby pages — they are player-only patches.
+- Add auth requirements to `/api/public/*` routes — they are intentionally public.
+- Use `appEntry-vite.js` as a reference for the player page — `player.html` has its own separate entry.
 
 ### DO:
 
@@ -398,13 +469,15 @@ The Supabase schema is defined in `backend/supabase-setup.sql`. Tables:
 
 | Table | Columns | Purpose |
 |-------|---------|---------|
-| `projects` | id, ctime, mtime, name, json, thumbnail, owner, gallery, isgift, deleted, version, created_at, updated_at | User projects (multi-tenant via `owner`) |
+| `projects` | id, ctime, mtime, name, json, thumbnail, owner, gallery, isgift, deleted, version, created_at, updated_at, **share_token**, **reactions** | User projects (multi-tenant via `owner`); `share_token` enables public links; `reactions` is a JSON object of emoji→count |
 | `usershapes` | id, md5, width, height, ext, name, owner, scale | Custom sprites/shapes |
 | `userbkgs` | id, md5, width, height, ext, owner | Custom backgrounds |
 | `projectfiles` | md5 (PK), contents | Project file assets (binary content as text) |
 | `media` | id, project_id (FK), name, type, data (BYTEA) | Media associated with projects |
 
 Multi-tenant tables (require `owner` for all operations): `projects`, `usershapes`, `userbkgs`.
+
+> **`share_token`** is a random UUID stored on the `projects` row. It is returned by `POST /api/share/:projectId` and revoked by `DELETE /api/share/:projectId`. A null `share_token` means the project is not shared.
 
 ### Legacy SQL API
 
