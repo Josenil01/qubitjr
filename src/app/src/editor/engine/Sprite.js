@@ -704,11 +704,10 @@ export default class Sprite {
         var dx = deltax ? deltax : 0;
         var dy = deltay ? deltay : 0;
         ctx.save();
-        // Transladar para o centro, mas compensar diferença entre cy (imagem visual) e outline height/2
         var outlineCx = this.outline.width / 2;
         var outlineCy = this.outline.height / 2;
-        var offsetX = (this.cx - outlineCx) * this.scale;
-        var offsetY = -80;  // Offset calibrado para modo editor (stageScale 0.5)
+        var offsetX = outlineCx - this.cx;
+        var offsetY = outlineCy - this.cy;
         ctx.translate(this.xcoor + offsetX + dx, this.ycoor + offsetY + dy);
         ctx.rotate(this.angle * DEGTOR);
         if (this.flip) {
