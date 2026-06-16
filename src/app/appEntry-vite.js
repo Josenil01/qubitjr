@@ -37,17 +37,18 @@ console.log('[AppEntry] ✅ PNGCache exposto globalmente:', !!window.PNGCache);
 let _cssReadyResolve;
 const cssReady = new Promise(resolve => { _cssReadyResolve = resolve; });
 
+// Cache do CSS fonte original (evita re-fetch do servidor no resize)
+var _cssSourceCache = {};
+
 // Processar CSS carregado via <link> para substituir template literals
 function processAllCss() {
   const styleLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
-  
-  // Importar preprocess do lib.js aqui dentro da função
+
   import('./src/utils/lib.js').then(({ preprocess, css_vh, css_vw, scaleMultiplier }) => {
-    // Expor funções globalmente para que eval() as encontre
     window.css_vh = css_vh;
     window.css_vw = css_vw;
     window.scaleMultiplier = scaleMultiplier;
-    
+
     const validLinks = styleLinks.filter(link => {
       const href = link.getAttribute('href');
       return href && href.endsWith('.css');
@@ -70,6 +71,7 @@ function processAllCss() {
         })
         .then(cssText => {
           try {
+            _cssSourceCache[href] = cssText;
             const processedCss = preprocess(cssText);
             const style = document.createElement('style');
             style.setAttribute('data-processed-css', href);
@@ -89,60 +91,58 @@ function processAllCss() {
     });
   }).catch(err => {
     console.error('Erro ao carregar preprocess:', err);
-    _cssReadyResolve(); // nunca bloquear a inicialização em caso de erro
+    _cssReadyResolve();
   });
 
-  // Fallback: resolve após 3 s independente do resultado
   setTimeout(_cssReadyResolve, 3000);
 }
 
-// Executar processamento de CSS quando a página carregar
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', processAllCss);
 } else {
-  // Se o DOM já está pronto, chamar após um pequeno delay
   setTimeout(processAllCss, 100);
 }
 
 // Recalcular CSS quando a janela muda de tamanho ou zoom (Ctrl+/-)
-let _resizeTimer = null;
+var _resizeTimer = null;
+var _lastInnerWidth = window.innerWidth;
+var _lastInnerHeight = window.innerHeight;
 window.addEventListener('resize', function () {
   if (_resizeTimer) clearTimeout(_resizeTimer);
   _resizeTimer = setTimeout(function () {
+    if (window.innerWidth === _lastInnerWidth && window.innerHeight === _lastInnerHeight) {
+      return;
+    }
+    _lastInnerWidth = window.innerWidth;
+    _lastInnerHeight = window.innerHeight;
     if (window.recalculateCSSValues) {
       window.recalculateCSSValues();
     }
     if (typeof window._onLayoutResize === 'function') {
       try { window._onLayoutResize(); } catch (e) { /* best-effort */ }
     }
-  }, 150);
+  }, 300);
 });
 
-// Função para recalcular valores CSS dinâmicos (css_vh, css_vw)
-// Útil quando o layout muda (ex: fullscreen para normal)
+// Reprocessa CSS usando cache local (zero fetches ao servidor)
 window.recalculateCSSValues = function() {
   import('./src/utils/lib.js').then(({ preprocess, css_vh, css_vw, scaleMultiplier }) => {
-    // Expor funções globalmente para que eval() as encontre
     window.css_vh = css_vh;
     window.css_vw = css_vw;
     window.scaleMultiplier = scaleMultiplier;
-    
-    // Reprocessar todos os styles que foram marcados como data-processed-css
-    const styles = document.querySelectorAll('style[data-processed-css]');
-    styles.forEach((style) => {
-      const href = style.getAttribute('data-processed-css');
-      
-      // Recarregar o arquivo CSS original
-      fetch(href)
-        .then(response => response.text())
-        .then(cssText => {
-          // Reprocessar com novos valores de viewport
-          const processedCss = preprocess(cssText);
-          style.textContent = processedCss;
-        })
-        .catch(err => console.error(`Erro ao recalcular CSS ${href}:`, err));
+
+    var styles = document.querySelectorAll('style[data-processed-css]');
+    styles.forEach(function (style) {
+      var href = style.getAttribute('data-processed-css');
+      var cssText = _cssSourceCache[href];
+      if (!cssText) return;
+      try {
+        style.textContent = preprocess(cssText);
+      } catch (err) {
+        console.error('Erro ao recalcular CSS ' + href + ':', err);
+      }
     });
-  }).catch(err => {
+  }).catch(function (err) {
     console.error('Erro ao carregar lib.js para recalculateCSSValues:', err);
   });
 };
