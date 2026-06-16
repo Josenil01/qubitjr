@@ -708,6 +708,16 @@ export default class Sprite {
         var outlineCy = this.outline.height / 2;
         var offsetX = outlineCx - this.cx;
         var offsetY = outlineCy - this.cy;
+        if (!deltax && !deltay) {
+            console.log('[DEBUG stamp]', this.name,
+                '| xcoor/ycoor:', this.xcoor, this.ycoor,
+                '| cx/cy:', this.cx, this.cy,
+                '| outlineCx/Cy:', outlineCx, outlineCy,
+                '| offsetX/Y:', offsetX, offsetY,
+                '| outline WxH:', this.outline.width, this.outline.height,
+                '| scale:', this.scale,
+                '| stampCenter:', this.xcoor + offsetX, this.ycoor + offsetY);
+        }
         ctx.translate(this.xcoor + offsetX + dx, this.ycoor + offsetY + dy);
         ctx.rotate(this.angle * DEGTOR);
         if (this.flip) {

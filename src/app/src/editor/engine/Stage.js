@@ -413,6 +413,13 @@ export default class Stage {
         var mc = this.div;
         var dx = globalx(mc);
         var dy = globaly(mc);
+        var rect = mc.getBoundingClientRect();
+        console.log('[DEBUG getStagePt] clientX/Y:', pt.x, pt.y,
+            '| globalx/y:', dx, dy,
+            '| rect.left/top:', rect.left, rect.top,
+            '| stageScale:', this.stageScale,
+            '| pt after globalxy:', pt.x - dx, pt.y - dy,
+            '| pt after rect:', (pt.x - rect.left) / this.stageScale, (pt.y - rect.top) / this.stageScale);
         pt.x -= dx;
         pt.y -= dy;
         pt.x /= this.stageScale;
