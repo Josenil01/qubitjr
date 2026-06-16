@@ -42,6 +42,10 @@ export default class UI {
         ScratchJr.setupKeypad();
         ScratchJr.setupEditableField();
         UI.aspectRatioAdjustment();
+        window._onLayoutResize = function () {
+            UI.aspectRatioAdjustment();
+            UI.refreshLayoutAfterFullscreen();
+        };
     }
 
     // Helps debug on Android 4.2 by enabling the user to type in a
@@ -625,7 +629,7 @@ export default class UI {
         ScratchJr.blur();
         t.focus();
         if (t.className == 'brush') {
-            UI.putInPaintEditor(e); return;
+            return;
         }
         var tb = Thumbs.getType(t, 'spritethumb');
         if (!tb) {
@@ -703,9 +707,7 @@ export default class UI {
             t = e.target;
         }
         if (ScratchJr.isEditable() && ScratchJr.getSprite() &&
-            (((t.className == 'sname') && (el.owner == ScratchJr.getSprite().id))
-            || (t.className == 'brush'))) {
-            UI.putInPaintEditor(e);
+            ((t.className == 'sname') && (el.owner == ScratchJr.getSprite().id))) {
             return;
         }
         if (el.className.indexOf('shakeme') < 0) {

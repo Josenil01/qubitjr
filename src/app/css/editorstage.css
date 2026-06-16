@@ -281,6 +281,7 @@
     margin-right: auto;
     width: ${css_vh(70.57)};
     height: ${css_vh(61.20)};
+    pointer-events: auto;
 }
 
 #stageframe .stage {

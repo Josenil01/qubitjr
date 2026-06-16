@@ -214,17 +214,10 @@
 }
 
 .spritethumb .brush {
-    position: absolute;
-    background:  url('../assets/paint/paintbrush.svg');
-    background-size: ${css_vh(7.03)} ${css_vh(7.03)};
-    width: ${css_vh(7.03)};
-    height: ${css_vh(7.03)};
-    top: ${css_vh(1.30)};
-    left: ${css_vh(21.75)};
-    margin: 0px;
-    padding: 0px;
+    display: none;
+    pointer-events: none;
 }
 
-.spritethumb .brush:active { background:  url('../assets/paint/paintbrushPressed.svg'); background-size: 100%; }
+.spritethumb .brush:active { display: none; }
 .spritethumb.off .brush{ display: none;}
 .spritethumb.noneditable .brush{ display: none;}

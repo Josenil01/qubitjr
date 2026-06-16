@@ -104,6 +104,20 @@ if (document.readyState === 'loading') {
   setTimeout(processAllCss, 100);
 }
 
+// Recalcular CSS quando a janela muda de tamanho ou zoom (Ctrl+/-)
+let _resizeTimer = null;
+window.addEventListener('resize', function () {
+  if (_resizeTimer) clearTimeout(_resizeTimer);
+  _resizeTimer = setTimeout(function () {
+    if (window.recalculateCSSValues) {
+      window.recalculateCSSValues();
+    }
+    if (typeof window._onLayoutResize === 'function') {
+      try { window._onLayoutResize(); } catch (e) { /* best-effort */ }
+    }
+  }, 150);
+});
+
 // Função para recalcular valores CSS dinâmicos (css_vh, css_vw)
 // Útil quando o layout muda (ex: fullscreen para normal)
 window.recalculateCSSValues = function() {

@@ -67,8 +67,9 @@ export default class Library {
         document.onmousemove = undefined;
         window.onresize = undefined;
 
-        gn('library_paintme').style.opacity = 1;
-        gn('library_paintme').onmousedown = Library.editResource;
+        gn('library_paintme').style.opacity = 0;
+        gn('library_paintme').style.pointerEvents = 'none';
+        gn('library_paintme').onmousedown = null;
 
         // Set the back button callback
         ScratchJr.onBackButtonCallback.push(function () {
@@ -101,7 +102,9 @@ export default class Library {
         var buttons = newHTML('div', 'bkgbuttons', gn('libactions'));
         var paintme = newHTML('div', 'painticon', buttons);
         paintme.id = 'library_paintme';
-        paintme.onmousedown = Library.editResource;
+        paintme.style.opacity = 0;
+        paintme.style.pointerEvents = 'none';
+        paintme.onmousedown = null;
         var okbut = newHTML('div', 'okicon', buttons);
         okbut.setAttribute('id', 'okbut');
         var cancelbut = newHTML('div', 'cancelicon', buttons);
@@ -444,13 +447,9 @@ export default class Library {
             // Disable paint editor for PNG sprites
             var thumbID = tb.id;
             var thumbType = thumbID.substr(thumbID.length - 3);
-            if (thumbType == 'png') {
-                gn('library_paintme').style.opacity = 0;
-                gn('library_paintme').onmousedown = null;
-            } else {
-                gn('library_paintme').style.opacity = 1;
-                gn('library_paintme').onmousedown = Library.editResource;
-            }
+            gn('library_paintme').style.opacity = 0;
+            gn('library_paintme').style.pointerEvents = 'none';
+            gn('library_paintme').onmousedown = null;
 
             tb.className = 'assetbox on';
             selectedOne = tb.id;
