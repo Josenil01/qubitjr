@@ -1,11 +1,11 @@
 # Graph Report - .  (2026-06-23)
 
 ## Corpus Check
-- 68 files · ~87,745 words
+- 68 files · ~87,753 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1766 nodes · 4461 edges · 81 communities (36 shown, 45 thin omitted)
+- 1766 nodes · 4459 edges · 84 communities (38 shown, 46 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 18 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
@@ -47,8 +47,9 @@
 - [[_COMMUNITY_Editor Frame Helpers|Editor Frame Helpers]]
 - [[_COMMUNITY_Undo|Undo]]
 - [[_COMMUNITY_snapsvg.js|snapsvg.js]]
-- [[_COMMUNITY_ScratchJr_player.js|ScratchJr_player.js]]
+- [[_COMMUNITY_BlockArg|BlockArg]]
 - [[_COMMUNITY_ScriptsPane|ScriptsPane]]
+- [[_COMMUNITY_ScratchJr_player.js|ScratchJr_player.js]]
 - [[_COMMUNITY_Scroll|Scroll]]
 - [[_COMMUNITY_Rectangle|Rectangle]]
 - [[_COMMUNITY_addSidePalette|addSidePalette]]
@@ -58,6 +59,7 @@
 - [[_COMMUNITY_SVGImage|SVGImage]]
 - [[_COMMUNITY_Matrix.js|Matrix.js]]
 - [[_COMMUNITY_Camera|Camera]]
+- [[_COMMUNITY_dropBlockFromPalette|dropBlockFromPalette]]
 - [[_COMMUNITY_ScratchAudio|ScratchAudio]]
 - [[_COMMUNITY_Samples|Samples]]
 - [[_COMMUNITY_Thread|Thread]]
@@ -66,7 +68,6 @@
 - [[_COMMUNITY_stream.js|stream.js]]
 - [[_COMMUNITY_Sound|Sound]]
 - [[_COMMUNITY_DrawPath|DrawPath]]
-- [[_COMMUNITY_getpadding|getpadding]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `gn()` - 320 edges
@@ -93,96 +94,96 @@
   src/app/src/entry/inapp.js → src/app/src/utils/lib.js
 
 ## Import Cycles
-- 3-file cycle: `src/app/src/editor/ScratchJr.js -> src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Thumbs.js -> src/app/src/editor/ScratchJr.js`
-- 3-file cycle: `src/app/src/editor/ui/Palette.js -> src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Thumbs.js -> src/app/src/editor/ui/Palette.js`
+- 3-file cycle: `src/app/src/editor/ui/Project.js -> src/app/src/editor/ui/UI.js -> src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Project.js`
 - 3-file cycle: `src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Thumbs.js -> src/app/src/editor/ui/UI.js -> src/app/src/editor/ui/ScriptsPane.js`
+- 3-file cycle: `src/app/src/editor/ui/Project.js -> src/app/src/editor/ui/UI.js -> src/app/src/editor/ui/Undo.js -> src/app/src/editor/ui/Project.js`
+- 3-file cycle: `src/app/src/editor/ScratchJr.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/editor/ScratchJr.js`
+- 3-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
+- 3-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
+- 3-file cycle: `src/app/src/painteditor/Layer.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Layer.js`
+- 3-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
+- 3-file cycle: `src/app/src/painteditor/Paint.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/SVGImage.js -> src/app/src/painteditor/Paint.js`
 - 3-file cycle: `src/app/src/editor/ScratchJr.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/Path.js -> src/app/src/editor/ScratchJr.js`
 - 3-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
 - 3-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
-- 3-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
 - 3-file cycle: `src/app/src/painteditor/Paint.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/SVGImage.js -> src/app/src/painteditor/Paint.js`
-- 3-file cycle: `src/app/src/editor/ui/Palette.js -> src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Project.js -> src/app/src/editor/ui/Palette.js`
-- 3-file cycle: `src/app/src/editor/ui/Palette.js -> src/app/src/editor/ui/Undo.js -> src/app/src/editor/ui/Project.js -> src/app/src/editor/ui/Palette.js`
-- 3-file cycle: `src/app/src/editor/ui/Project.js -> src/app/src/editor/ui/UI.js -> src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Project.js`
-- 3-file cycle: `src/app/src/editor/ui/Project.js -> src/app/src/editor/ui/UI.js -> src/app/src/editor/ui/Undo.js -> src/app/src/editor/ui/Project.js`
-- 3-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
-- 3-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
-- 3-file cycle: `src/app/src/editor/ScratchJr.js -> src/app/src/editor/ui/Palette.js -> src/app/src/editor/blocks/Block.js -> src/app/src/editor/ScratchJr.js`
-- 3-file cycle: `src/app/src/painteditor/Paint.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/SVGImage.js -> src/app/src/painteditor/Paint.js`
-- 3-file cycle: `src/app/src/editor/ScratchJr.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/editor/ScratchJr.js`
 - 3-file cycle: `src/app/src/editor/ScratchJr.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/PaintUndo.js -> src/app/src/editor/ScratchJr.js`
-- 3-file cycle: `src/app/src/painteditor/Layer.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Layer.js`
+- 3-file cycle: `src/app/src/editor/ScratchJr.js -> src/app/src/editor/ui/Palette.js -> src/app/src/editor/blocks/Block.js -> src/app/src/editor/ScratchJr.js`
+- 3-file cycle: `src/app/src/editor/ScratchJr.js -> src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Thumbs.js -> src/app/src/editor/ScratchJr.js`
+- 3-file cycle: `src/app/src/editor/ui/Palette.js -> src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Project.js -> src/app/src/editor/ui/Palette.js`
+- 3-file cycle: `src/app/src/editor/ui/Palette.js -> src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Thumbs.js -> src/app/src/editor/ui/Palette.js`
+- 3-file cycle: `src/app/src/editor/ui/Palette.js -> src/app/src/editor/ui/Undo.js -> src/app/src/editor/ui/Project.js -> src/app/src/editor/ui/Palette.js`
 - 3-file cycle: `src/app/src/iPad/IO.js -> src/app/src/iPad/MediaLib.js -> src/app/src/utils/Localization.js -> src/app/src/iPad/IO.js`
 
-## Communities (81 total, 45 thin omitted)
+## Communities (84 total, 46 thin omitted)
 
 ### Community 5 - "Runtime & Interpreter"
-Cohesion: 0.09
-Nodes (21): hopList, Vector, maskCanvas, maskData, offscreen, targetOffscreen, deltaPoint, initialPoint (+13 more)
+Cohesion: 0.10
+Nodes (20): Vector, maskCanvas, maskData, offscreen, targetOffscreen, deltaPoint, initialPoint, pensizes (+12 more)
 
-### Community 6 - "Block Specs & Rendering"
-Cohesion: 0.13
-Nodes (22): fontcolors, fontsizes, getshapes, loadassets, sendshapes, speeds, onBackButtonCallback, workingCanvas (+14 more)
-
-### Community 12 - "Home / IO / MediaLib"
+### Community 13 - "Scripts (block layout)"
 Cohesion: 0.10
 Nodes (8): keys, MediaLib, Cookie, Localization, localizationMessages, defaultSounds, projectSounds, uiSounds
 
+### Community 14 - "ScratchJr Core"
+Cohesion: 0.18
+Nodes (17): fontcolors, fontsizes, getshapes, loadassets, sendshapes, speeds, buffer, pinchcenter (+9 more)
+
 ### Community 19 - "Block Arguments"
-Cohesion: 0.10
-Nodes (3): BlockArg, Grid, newP()
-
-### Community 23 - "BlockArg / Menu"
-Cohesion: 0.14
-Nodes (10): Menu, Alert, drawThumbnail(), getDocumentHeight(), getStringSize(), globalx(), globaly(), newCanvas() (+2 more)
-
-### Community 25 - "In-app Guides"
-Cohesion: 0.15
+Cohesion: 0.13
 Nodes (8): homeMain(), homeStrings(), inappAbout(), inappBlocksGuide(), inappInterfaceGuide(), inappPaintEditorGuide(), Lobby, gn()
 
-### Community 27 - "Snap.svg Library"
+### Community 24 - "Page Model"
+Cohesion: 0.15
+Nodes (9): Menu, Alert, drawThumbnail(), getDocumentHeight(), getStringSize(), globalx(), globaly(), newCanvas() (+1 more)
+
+### Community 26 - "Transform Matrix"
 Cohesion: 0.32
 Nodes (26): a(), b(), c(), d(), e(), f(), g(), h() (+18 more)
 
+### Community 28 - "Sound Recording"
+Cohesion: 0.14
+Nodes (6): onBackButtonCallback, workingCanvas, workingCanvas2, hopList, Grid, newP()
+
 ### Community 32 - "Getting Started / Index"
 Cohesion: 0.12
-Nodes (10): gettingStartedMain(), indexFirstTime(), indexLoadOptions(), indexLoadStart(), indexLoadUsage(), indexMain(), indexSetUsage(), setClassOfElementById() (+2 more)
+Nodes (17): colorToRGBA(), drawScaled(), ensureEditorFrames(), fitInRect(), getFit(), getHex(), getRGB(), hitRect() (+9 more)
 
-### Community 34 - "Editor Frame Helpers"
-Cohesion: 0.13
-Nodes (16): colorToRGBA(), drawScaled(), ensureEditorFrames(), fitInRect(), getFit(), getHex(), getRGB(), hitRect() (+8 more)
+### Community 33 - "IO Asset Loading"
+Cohesion: 0.12
+Nodes (10): gettingStartedMain(), indexFirstTime(), indexLoadOptions(), indexLoadStart(), indexLoadUsage(), indexMain(), indexSetUsage(), setClassOfElementById() (+2 more)
 
 ### Community 36 - "snapsvg.js"
 Cohesion: 0.09
 Nodes (3): SnapElement, SnapPaper, SnapShim
 
-### Community 38 - "ScratchJr_player.js"
+### Community 40 - "ScratchJr_player.js"
 Cohesion: 0.22
 Nodes (10): applyScratchJrPlayerPatches(), applyPagePlayerPatches(), applySpritePlayerPatches(), applyStagePlayerPatches(), EMOJIS, LABELS, playerMain(), _prefetchMedia() (+2 more)
 
-### Community 68 - "stream.js"
+### Community 70 - "stream.js"
 Cohesion: 0.29
 Nodes (3): Readable, Transform, Writable
 
 ## Knowledge Gaps
 - **38 isolated node(s):** `workingCanvas`, `workingCanvas2`, `onBackButtonCallback`, `loadassets`, `fontcolors` (+33 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **45 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **46 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `gn()` connect `In-app Guides` to `Paint Editor Actions`, `Sprite Model`, `UI Layout`, `SVG Tools`, `Runtime & Interpreter`, `Block Specs & Rendering`, `Stage`, `iOS Native Bridge`, `Project Management`, `Thumbnails / Pages UI`, `Home / IO / MediaLib`, `Scripts (block layout)`, `ScratchJr Core`, `Primitive Commands`, `Paint Controller`, `Path Geometry`, `Block Arguments`, `Asset Library`, `Ghost Layer`, `Block Palette`, `BlockArg / Menu`, `Page Model`, `Transform Matrix`, `Sound Recording`, `Home / Events`, `Drag & Drop Events`, `Paint Layers`, `Getting Started / Index`, `Editor Frame Helpers`, `Undo`, `atEdge`, `ScriptsPane`, `blur`, `closeNumberEdit`, `addSidePalette`, `adjustShapePosition`, `chopSection`, `PaintUndo`, `deleteDot`, `SVGImage`, `adjustPos`, `clearWorkspace`, `Camera`, `Samples`, `addImageUrl`, `backToProject`, `addPoints`, `breakRelationship`, `addDot`, `displayStatus`, `getpadding`?**
-  _High betweenness centrality (0.298) - this node is a cross-community bridge._
-- **Why does `Path` connect `Path Geometry` to `addPoints`, `breakRelationship`, `atEdge`, `addDot`, `Runtime & Interpreter`, `chopSection`, `deleteDot`, `In-app Guides`?**
+- **Why does `gn()` connect `Block Arguments` to `Paint Editor Actions`, `Sprite Model`, `UI Layout`, `SVG Tools`, `Runtime & Interpreter`, `Block Specs & Rendering`, `Stage`, `iOS Native Bridge`, `Thumbnails / Pages UI`, `SVG-to-Canvas`, `Home / IO / MediaLib`, `Scripts (block layout)`, `ScratchJr Core`, `Primitive Commands`, `Path Geometry`, `Block Connection`, `Asset Library`, `Ghost Layer`, `Block Palette`, `BlockArg / Menu`, `Page Model`, `In-app Guides`, `Snap.svg Library`, `Sound Recording`, `Home / Events`, `Drag & Drop Events`, `Paint Layers`, `Getting Started / Index`, `IO Asset Loading`, `Undo`, `atEdge`, `ScriptsPane`, `blur`, `closeNumberEdit`, `addSidePalette`, `chopSection`, `addToBkgLib`, `PaintUndo`, `deleteDot`, `SVGImage`, `adjustPos`, `adjustShapePosition`, `clearWorkspace`, `Camera`, `dropBlockFromPalette`, `Samples`, `addImageUrl`, `addPoints`, `breakRelationship`, `addDot`, `displayStatus`, `clickOnPage`?**
+  _High betweenness centrality (0.299) - this node is a cross-community bridge._
+- **Why does `Path` connect `Primitive Commands` to `addPoints`, `breakRelationship`, `atEdge`, `Runtime & Interpreter`, `addDot`, `chopSection`, `deleteDot`, `Block Arguments`?**
   _High betweenness centrality (0.074) - this node is a cross-community bridge._
-- **Why does `ScratchJr` connect `ScratchJr Core` to `Runtime & Interpreter`, `ScratchJr_player.js`, `Block Specs & Rendering`, `blur`, `closeNumberEdit`, `displayStatus`, `isNumberPadKeyCode`, `Home / IO / MediaLib`, `BlockArg / Menu`, `appinit`?**
+- **Why does `ScratchJr` connect `SVG-to-Canvas` to `Runtime & Interpreter`, `ScratchJr_player.js`, `blur`, `closeNumberEdit`, `displayStatus`, `isNumberPadKeyCode`, `ScratchJr Core`, `Scripts (block layout)`, `Page Model`, `Sound Recording`, `appinit`?**
   _High betweenness centrality (0.073) - this node is a cross-community bridge._
 - **What connects `workingCanvas`, `workingCanvas2`, `onBackButtonCallback` to the rest of the system?**
   _38 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Paint Editor Actions` be split into smaller, more focused modules?**
   _Cohesion score 0.058823529411764705 - nodes in this community are weakly interconnected._
 - **Should `Sprite Model` be split into smaller, more focused modules?**
-  _Cohesion score 0.07188778492109878 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.053551912568306013 - nodes in this community are weakly interconnected._
 - **Should `UI Layout` be split into smaller, more focused modules?**
-  _Cohesion score 0.05764411027568922 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07188778492109878 - nodes in this community are weakly interconnected._

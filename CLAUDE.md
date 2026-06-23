@@ -8,6 +8,13 @@
 > [graphify-out/](graphify-out/) (veja a seção **Mapa do conhecimento (graphify)**)
 > **antes** de varrer o código manualmente. Só depois disso comece a trabalhar.
 
+> **REGRA Nº 2 — APÓS CADA ATUALIZAÇÃO OU ALTERAÇÃO SIGNIFICATIVA, ATUALIZE O GRAPHIFY.**
+> Sempre que concluir uma mudança relevante no código (nova função, refatoração,
+> correção de bug que mexa na estrutura, novos arquivos), rode
+> `/graphify src/app/src --update` para reconstruir o grafo de conhecimento em
+> [graphify-out/](graphify-out/), mantendo `graph.json`, `GRAPH_REPORT.md` e
+> `graph.html` em dia com o código. Faça isso antes de finalizar a tarefa.
+
 ---
 
 ## O que é este projeto
