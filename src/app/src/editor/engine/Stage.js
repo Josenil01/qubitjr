@@ -410,20 +410,13 @@ export default class Stage {
 
     getStagePt (evt) {
         var pt = Events.getTargetPoint(evt);
-        var mc = this.div;
-        var dx = globalx(mc);
-        var dy = globaly(mc);
-        var rect = mc.getBoundingClientRect();
-        console.log('[DEBUG getStagePt] clientX/Y:', pt.x, pt.y,
-            '| globalx/y:', dx, dy,
-            '| rect.left/top:', rect.left, rect.top,
-            '| stageScale:', this.stageScale,
-            '| pt after globalxy:', pt.x - dx, pt.y - dy,
-            '| pt after rect:', (pt.x - rect.left) / this.stageScale, (pt.y - rect.top) / this.stageScale);
-        pt.x -= dx;
-        pt.y -= dy;
-        pt.x /= this.stageScale;
-        pt.y /= this.stageScale;
+        // getBoundingClientRect() gives the stage's real on-screen position in the
+        // same viewport coordinate space as the event's clientX/clientY. The old
+        // globalx/globaly walk summed offsetTop over every parentNode, double-counting
+        // the toolbar above the stage and pushing the hit point ~75px off vertically.
+        var rect = this.div.getBoundingClientRect();
+        pt.x = (pt.x - rect.left) / this.stageScale;
+        pt.y = (pt.y - rect.top) / this.stageScale;
         return pt;
     }
 

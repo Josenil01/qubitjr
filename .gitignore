@@ -12,3 +12,8 @@ src/app/src/editor/.DS_Store
 .DS_Store
 buglist.txt
 src/debug.log
+
+# graphify internal/machine-specific state (absolute local paths)
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+graphify-out/.graphify_labels.json
