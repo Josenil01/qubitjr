@@ -353,7 +353,7 @@ export default class ScratchJr {
         window.clearInterval(autoSaveSetInterval);
     }
 
-    static saveProject (e, onDone) {
+    static saveProject (e, onDone, force) {
         if (ScratchJr.isEditable() && editmode == 'storyStarter' && storyStarted && !Project.error) {
             iOS.analyticsEvent('samples', 'story_starter_edited', Project.metadata.name);
             // Localize sample project names
@@ -377,8 +377,8 @@ export default class ScratchJr {
                     Project.prepareToSave(currentProject, onDone);
                 });
             }, true);
-        } else if (ScratchJr.isEditable() && currentProject && !Project.error && changed) {
-            console.log('[ScratchJr.saveProject] Salvando... currentProject:', currentProject, 'changed:', changed);
+        } else if (ScratchJr.isEditable() && currentProject && !Project.error && (changed || force)) {
+            console.log('[ScratchJr.saveProject] Salvando... currentProject:', currentProject, 'changed:', changed, 'force:', !!force);
             Project.prepareToSave(currentProject, onDone);
         } else {
             console.log('[ScratchJr.saveProject] Skip — isEditable:', ScratchJr.isEditable(), 'currentProject:', currentProject, 'error:', Project.error, 'changed:', changed);
@@ -388,11 +388,11 @@ export default class ScratchJr {
         }
     }
 
-    static saveAndFlip (e){
+    static saveAndFlip (e, force){
         onHold = true;
         ScratchJr.stopStripsFromTop(e);
         ScratchJr.unfocus(e);
-        ScratchJr.saveProject(e, ScratchJr.flippage);
+        ScratchJr.saveProject(e, ScratchJr.flippage, force);
     }
 
     static flippage () {

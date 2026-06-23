@@ -94,30 +94,17 @@ export default class UI {
         flip.onmousedown = function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
-            
-            // Verifica se há suporte (localStorage/backend disponível)
+
+            // Sempre salva o projeto e atualiza a thumbnail antes de voltar ao lobby.
+            // O segundo argumento `true` força o save mesmo sem alterações (changed),
+            // garantindo que a thumb seja regenerada a cada clique no flip.
+            // saveAndFlip -> saveProject -> Project.save gera o PNG da thumb (getThumbnailPNG),
+            // persiste via IO.saveProject e só então navega (flippage -> goToLobby).
             try {
-                const hasBackend = typeof iOS !== 'undefined' && iOS && 
-                                  (localStorage.getItem('scratchjr_path') || 
-                                   window.location.hostname === 'localhost' ||
-                                   window.location.hostname === '127.0.0.1');
-                
-                if (hasBackend) {
-                    console.log('✓ Backend/banco disponível. Salvando projeto...');
-                    ScratchJr.saveAndFlip(evt);
-                } else {
-                    console.warn('⚠ Backend/banco NÃO configurado. Navegando sem salvar...');
-                    // Navega direto para home
-                    if (window.ScratchJrRouter) {
-                        window.currentLobbyPlace = 'home';
-                        window.ScratchJrRouter.navigateTo('lobby');
-                    } else {
-                        window.location.href = 'home.html';
-                    }
-                }
+                ScratchJr.saveAndFlip(evt, true);
             } catch (err) {
-                console.error('Erro ao verificar backend:', err);
-                // Mesmo com erro, tenta navegar
+                console.error('Erro ao salvar antes de voltar:', err);
+                // Fallback: se o save lançar erro síncrono, ainda navega para o lobby.
                 if (window.ScratchJrRouter) {
                     window.currentLobbyPlace = 'home';
                     window.ScratchJrRouter.navigateTo('lobby');
