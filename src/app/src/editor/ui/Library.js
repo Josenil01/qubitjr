@@ -139,7 +139,7 @@ export default class Library {
         Library.addEmptyThumb(div, (type == 'costumes') ? (118 * scaleMultiplier) : (120 * scaleMultiplier),
             (type == 'costumes') ? (90 * scaleMultiplier) : (90 * scaleMultiplier));
         Library.addHR(div);
-        Library.displayLibAssets((type == 'costumes') ? MediaLib.sprites : MediaLib.backgrounds);
+        Library.displayLibAssets((type == 'costumes') ? Library.currentSprites() : MediaLib.backgrounds);
     }
 
     static getpadding (div) {
@@ -177,8 +177,17 @@ export default class Library {
         }
         Library.addHR(div);
         nativeJr = false;
-        data = (type == 'costumes') ? MediaLib.sprites : MediaLib.backgrounds;
+        data = (type == 'costumes') ? Library.currentSprites() : MediaLib.backgrounds;
         Library.displayLibAssets(data);
+    }
+
+    // Characters flagged "legacy" in media.json stay resolvable (existing projects
+    // still load them via MediaLib.keys) but are no longer offered when picking a
+    // new character - only the current art pack shows up here.
+    static currentSprites () {
+        return MediaLib.sprites.filter(function (spr) {
+            return !spr.legacy;
+        });
     }
 
     static displayLibAssets (data) {
