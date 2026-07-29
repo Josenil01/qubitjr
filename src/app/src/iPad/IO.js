@@ -280,6 +280,13 @@ export default class IO {
             } else if (result && result.lastID) {
                 id = String(result.lastID);
             }
+            if (!id) {
+                // Backend call failed (network/auth/server error) - do not report success
+                // with a null id, which would otherwise leak into URLs as "pmd5=null".
+                console.error('[IO.createProject] Falha ao criar projeto - resposta sem id:', result);
+                if (errorFcn) errorFcn('CREATE_PROJECT_FAILED');
+                return;
+            }
             if (fcn) fcn(id);
         });
         function addValue (key, str) {

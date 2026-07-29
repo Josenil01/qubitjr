@@ -156,7 +156,19 @@ export default class Library {
     static displayAssets (str) {
         nativeJr = true;
         var div = gn('scrollarea');
-        var data = JSON.parse(str);
+        var data;
+        try {
+            data = JSON.parse(str);
+        } catch (e) {
+            data = null;
+        }
+        if (!Array.isArray(data)) {
+            // Fetching the student's own assets failed (backend/auth/network error) -
+            // still show the built-in character library below instead of leaving the
+            // picker empty.
+            console.error('[Library.displayAssets] Falha ao carregar assets do usuário:', str);
+            data = [];
+        }
         if (data.length > 0) {
             for (var i = 0; i < data.length; i++) {
                 Library.addAssetThumbChoose(div, data[i], 120 * scaleMultiplier, 90 * scaleMultiplier,

@@ -191,7 +191,7 @@ export default class Home {
         obj.name = Home.getNextName(Localization.localize('NEW_PROJECT_PREFIX'));
         obj.version = version;
         obj.mtime = (new Date()).getTime().toString();
-        IO.createProject(obj, Home.gotoEditor);
+        IO.createProject(obj, Home.gotoEditor, Home._handleCreateProjectError);
     }
 
     static showNewProjectModal () {
@@ -252,7 +252,7 @@ export default class Home {
         obj.name = name;
         obj.version = version;
         obj.mtime = (new Date()).getTime().toString();
-        IO.createProject(obj, Home.gotoEditor, function() { Home._showDailyLimitModal(); });
+        IO.createProject(obj, Home.gotoEditor, Home._handleCreateProjectError);
     }
 
     static _hideNewProjectModal () {
@@ -261,16 +261,35 @@ export default class Home {
     }
 
     static _showDailyLimitModal () {
+        Home._showActionErrorModal(Localization.localize('DAILY_LIMIT_MESSAGE'), '⏰');
+    }
+
+    // Reused for any "couldn't create project" failure - not just the daily limit
+    // (backend/auth/network errors), so the child gets feedback instead of a silent
+    // no-op click.
+    static _showActionErrorModal (message, icon) {
         var modal = document.getElementById('sjr-daily-limit-modal');
         var text  = document.getElementById('sjr-daily-limit-text');
+        var iconEl = document.getElementById('sjr-daily-limit-icon');
         if (!modal) return;
-        if (text) text.textContent = Localization.localize('DAILY_LIMIT_MESSAGE');
+        if (text) text.textContent = message;
+        if (iconEl) iconEl.textContent = icon || '⏰';
         modal.classList.remove('hidden');
         function close () { modal.classList.add('hidden'); }
         var btnOk    = document.getElementById('sjr-daily-limit-ok');
         var backdrop = document.getElementById('sjr-daily-limit-backdrop');
         if (btnOk)    btnOk.onclick    = close;
         if (backdrop) backdrop.onclick = close;
+    }
+
+    // errorFcn passed to IO.createProject - branches on the error code so the
+    // daily-limit case keeps its own message instead of showing a generic one.
+    static _handleCreateProjectError (code) {
+        if (code === 'DAILY_LIMIT_EXCEEDED') {
+            Home._showDailyLimitModal();
+        } else {
+            Home._showActionErrorModal('Não foi possível criar o projeto. Tente novamente.', '⚠️');
+        }
     }
 
     static gotoEditor (md5) {
