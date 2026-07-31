@@ -707,12 +707,25 @@ export function colorToRGBA (color, opacity) {
  * here we introduce functioncs (called from the preprocessed css) that emulate their behavior by
  * turning them into pixel values.
  */
+// window.innerHeight/innerWidth don't reliably update on mobile when the
+// browser's address bar collapses/expands (iOS Safari / Android Chrome).
+// visualViewport tracks the actually-visible area and is the right source
+// on any browser that supports it; innerHeight/innerWidth remain the
+// fallback for the ones that don't.
+export function getViewportHeight () {
+    return (window.visualViewport ? window.visualViewport.height : window.innerHeight);
+}
+
+export function getViewportWidth () {
+    return (window.visualViewport ? window.visualViewport.width : window.innerWidth);
+}
+
 export function css_vh (y) {
-    return (y * window.innerHeight  / 100.0) + 'px';
+    return (y * getViewportHeight()  / 100.0) + 'px';
 }
 
 export function css_vw (x) {
-    return (x *  window.innerWidth / 100.0) + 'px';
+    return (x *  getViewportWidth() / 100.0) + 'px';
 }
 
 Number.prototype.mod = function (n) {  // eslint-disable-line no-extend-native

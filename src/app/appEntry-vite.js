@@ -104,17 +104,23 @@ if (document.readyState === 'loading') {
 }
 
 // Recalcular CSS quando a janela muda de tamanho ou zoom (Ctrl+/-)
+// Usa visualViewport quando disponível: em mobile, window.innerHeight nem
+// sempre atualiza quando a barra de endereço do navegador recolhe/aparece,
+// deixando o layout "preso" no tamanho de antes (vão vazio no rodapé).
 var _resizeTimer = null;
-var _lastInnerWidth = window.innerWidth;
-var _lastInnerHeight = window.innerHeight;
-window.addEventListener('resize', function () {
+var _viewport = window.visualViewport;
+var _lastInnerWidth = _viewport ? _viewport.width : window.innerWidth;
+var _lastInnerHeight = _viewport ? _viewport.height : window.innerHeight;
+function _scheduleLayoutRecalc () {
   if (_resizeTimer) clearTimeout(_resizeTimer);
   _resizeTimer = setTimeout(function () {
-    if (window.innerWidth === _lastInnerWidth && window.innerHeight === _lastInnerHeight) {
+    var w = _viewport ? _viewport.width : window.innerWidth;
+    var h = _viewport ? _viewport.height : window.innerHeight;
+    if (w === _lastInnerWidth && h === _lastInnerHeight) {
       return;
     }
-    _lastInnerWidth = window.innerWidth;
-    _lastInnerHeight = window.innerHeight;
+    _lastInnerWidth = w;
+    _lastInnerHeight = h;
     if (window.recalculateCSSValues) {
       window.recalculateCSSValues();
     }
@@ -122,7 +128,11 @@ window.addEventListener('resize', function () {
       try { window._onLayoutResize(); } catch (e) { /* best-effort */ }
     }
   }, 300);
-});
+}
+window.addEventListener('resize', _scheduleLayoutRecalc);
+if (_viewport) {
+  _viewport.addEventListener('resize', _scheduleLayoutRecalc);
+}
 
 // Reprocessa CSS usando cache local (zero fetches ao servidor)
 window.recalculateCSSValues = function() {

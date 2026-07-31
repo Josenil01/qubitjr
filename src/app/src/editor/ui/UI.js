@@ -21,7 +21,8 @@ import Events from '../../utils/Events.js';
 import Localization from '../../utils/Localization.js';
 import ScratchAudio from '../../utils/ScratchAudio.js';
 import {frame, gn, CSSTransition, localx, newHTML, scaleMultiplier, getIdFor, isTablet, newDiv,
-    newTextInput, isAndroid, getDocumentWidth, getDocumentHeight, setProps, globalx} from '../../utils/lib.js';
+    newTextInput, isAndroid, getDocumentWidth, getDocumentHeight, getViewportHeight,
+    setProps, globalx} from '../../utils/lib.js';
 
 let projectNameTextInput = null;
 let info = null;
@@ -886,9 +887,9 @@ export default class UI {
         if (!scripts) return;
         
         // Calcular altura do topsection manualmente (usa css_vh(61.2) no CSS)
-        // css_vh(61.2) = (61.2 * window.innerHeight / 100.0) + 'px'
+        // css_vh(61.2) = (61.2 * getViewportHeight() / 100.0) + 'px'
         if (topsection) {
-            var topsectionHeight = Math.round(61.2 * window.innerHeight / 100.0);
+            var topsectionHeight = Math.round(61.2 * getViewportHeight() / 100.0);
             topsection.style.height = topsectionHeight + 'px';
         }
         
