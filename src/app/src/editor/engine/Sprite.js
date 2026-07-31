@@ -231,7 +231,7 @@ export default class Sprite {
         }
         var imgw = img.naturalWidth ? img.naturalWidth : img.width;
         var imgh = img.naturalHeight ? img.naturalHeight : img.height;
-        var scale = Math.min(w / imgw, h / imgh);
+        var scale = Math.min(w / imgw, h / imgh) * 0.7;
         var ctx = cnv.getContext('2d');
         var iw = Math.floor(scale * imgw);
         var ih = Math.floor(scale * imgh);
