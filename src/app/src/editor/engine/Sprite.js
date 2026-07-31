@@ -985,6 +985,11 @@ export default class Sprite {
 
     activate () {
         var list = fitInRect(this.w, this.h, ScriptsPane.watermark.offsetWidth, ScriptsPane.watermark.offsetHeight);
+        var inset = 0.7;
+        var wi = list[2] * inset;
+        var he = list[3] * inset;
+        var dx = list[0] + (list[2] - wi) / 2;
+        var dy = list[1] + (list[3] - he) / 2;
         var div = ScriptsPane.watermark;
         while (div.childElementCount > 0) {
             div.removeChild(div.childNodes[0]);
@@ -994,9 +999,9 @@ export default class Sprite {
         var attr = {
             width: this.w + 'px',
             height: this.h + 'px',
-            left: list[0] + 'px',
-            top: list[1] + 'px',
-            zoom: Math.floor((list[2] / this.w) * 100) + '%'
+            left: dx + 'px',
+            top: dy + 'px',
+            zoom: Math.floor((wi / this.w) * 100) + '%'
         };
         setProps(img.style, attr);
     }
