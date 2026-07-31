@@ -201,7 +201,7 @@
 }
 
 .spritethumb.on .sname{
-    color: #48076a;
+    color: #01bebc;
     top: ${css_vh(3.91)};
     left: ${css_vh(9.24)};
     width: ${css_vh(11.97)};
