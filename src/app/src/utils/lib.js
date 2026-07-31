@@ -5,16 +5,22 @@ export const isTablet = (window.orientation != 'undefined');
 export const DEGTOR = Math.PI / 180;
 //export const WINDOW_INNER_HEIGHT = window.innerHeight;
 //export const WINDOW_INNER_WIDTH = window.innerWidth;
-export const scaleMultiplier = 1.0;  //WINDOW_INNER_HEIGHT / 768.0;
+// Mutable on purpose: updateScaleMultiplier() adjusts this live binding so
+// every ${N * scaleMultiplier} in the CSS (evaluated via preprocess()'s
+// direct eval, same module scope) shrinks proportionally on viewports
+// shorter than the 768px this layout was originally tuned for. Never grows
+// past 1.0, so any screen at/above that height renders exactly as before.
+export let scaleMultiplier = 1.0;  // eslint-disable-line import/no-mutable-exports
 
 export const isiOS = (typeof AndroidInterface == 'undefined');
 export const isAndroid = (typeof AndroidInterface != 'undefined');
 
 export function libInit () {
+    updateScaleMultiplier();
     // Em SPA context, o frame principal é #frame-editor
     // Em versão multi-página clássica, é #frame
     frame = document.getElementById('frame-editor') || document.getElementById('frame');
-    
+
     if (!frame) {
         console.error('[libInit] ❌ Nenhum frame encontrado (#frame-editor ou #frame)');
         return;
@@ -718,6 +724,18 @@ export function getViewportHeight () {
 
 export function getViewportWidth () {
     return (window.visualViewport ? window.visualViewport.width : window.innerWidth);
+}
+
+// This layout's fixed-pixel elements (block palette, category selector,
+// page thumbnails, etc.) were sized for a 768px-tall reference screen.
+// Below that height they don't shrink on their own and start overlapping/
+// overflowing (that's what the old min-height:745px floor was papering
+// over). Recomputing scaleMultiplier on resize lets them scale down
+// proportionally instead. Capped at 1.0 so nothing changes on any screen
+// already at or above the reference height.
+export function updateScaleMultiplier () {
+    scaleMultiplier = Math.min(1.0, getViewportHeight() / 768.0);
+    return scaleMultiplier;
 }
 
 export function css_vh (y) {

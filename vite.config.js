@@ -4,13 +4,22 @@ import path from 'path'
 
 /**
  * Processa template literals CSS em tempo de build.
- * ${css_vh(N)} → Nvh  |  ${css_vw(N)} → Nvw
+ * ${css_vh(N)} → Ndvh  |  ${css_vw(N)} → Ndvw
  * ${N * scaleMultiplier} → Npx  |  ${scaleMultiplier} → 1
+ *
+ * dvh/dvw (dynamic viewport units) instead of plain vh/vw: native vh does
+ * not reliably track the visible area on mobile when the browser's address
+ * bar collapses/expands (iOS Safari / Android Chrome), leaving layout sized
+ * for whichever viewport state was active on first paint. dvh/dvw are the
+ * standard fix, well supported since iOS Safari 15.4 / Chrome 108 (2022).
+ * This runs at build time - runtime JS (css_vh/css_vw in lib.js) never
+ * actually reaches the shipped CSS, since these ${} placeholders are fully
+ * substituted here before the browser ever sees them.
  */
 function processTemplateLiteralCss(content) {
-  // ${css_vh(N)}px? → Nvh  (consume trailing px if present)
-  content = content.replace(/\$\{css_vh\(([^)]+)\)\}(px)?/g, (_, n) => parseFloat(n).toFixed(3) + 'vh')
-  content = content.replace(/\$\{css_vw\(([^)]+)\)\}(px)?/g, (_, n) => parseFloat(n).toFixed(3) + 'vw')
+  // ${css_vh(N)}px? → Ndvh  (consume trailing px if present)
+  content = content.replace(/\$\{css_vh\(([^)]+)\)\}(px)?/g, (_, n) => parseFloat(n).toFixed(3) + 'dvh')
+  content = content.replace(/\$\{css_vw\(([^)]+)\)\}(px)?/g, (_, n) => parseFloat(n).toFixed(3) + 'dvw')
   // ${N * scaleMultiplier}px? → Npx  (consume trailing px to avoid pxpx)
   content = content.replace(/\$\{([0-9.]+)\s*\*\s*scaleMultiplier\}(px)?/g, (_, n) => parseFloat(n).toFixed(3) + 'px')
   // -${scaleMultiplier}px → -1px  (handles negative prefix)
