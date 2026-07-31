@@ -616,7 +616,7 @@ div.infoboxShareButton {
    padding-left: ${css_vw(.5)};
    padding-right: ${css_vw(.5)};
    border-radius: 15px;
-   border: 2px solid #48076a;
+   border: 2px solid #01bebc;
    margin: auto;
 }
 
@@ -682,8 +682,8 @@ form.projectname {
     height: ${css_vh(6.51)};
     margin: ${css_vh(0)} ${css_vh(0)} ${css_vh(0)};
     top: ${css_vh(18.88)};
-    background: #48076a;
-    border: 2px solid #48076a;
+    background: #01bebc;
+    border: 2px solid #01bebc;
     -webkit-box-shadow: inset 0 ${2 * scaleMultiplier}px 0 rgba(255, 255, 255, 1), 0 ${scaleMultiplier}px ${2 * scaleMultiplier}px rgba(255, 255, 255,0);
     -webkit-border-radius: ${32 * scaleMultiplier}px;
     -webkit-box-shadow: 0px ${scaleMultiplier}px 0px #ffffff;
@@ -724,7 +724,7 @@ form.projectname {
     width:  100%;
     height: ${css_vh(4.17)};
     line-height: ${css_vh(2.86)};
-    text-shadow: ${css_vh(0.00)} ${css_vh(-0.13)} #48076a;
+    text-shadow: ${css_vh(0.00)} ${css_vh(-0.13)} #01bebc;
     color: #fff;
     text-align: center;
     font-size: 15pt;
@@ -738,7 +738,7 @@ form.projectname {
     font-size: ${css_vh(3.13)};
     font-weight: bold;
     margin: ${css_vh(-1.30)} ${css_vh(0.00)} ${css_vh(0.00)};
-    color: #48076a;
+    color: #01bebc;
     vertical-align: middle;
     font-family: Roboto;
 
@@ -759,8 +759,10 @@ form.projectname {
     left: ${css_vh(43.23)};
     width: ${css_vh(46.75)};
     height: ${css_vh(16.67)};
-    background: url('../assets/pinfologo.png');
-    background-size: 100%;
+    background: url('../assets/lobby/Qubit_JR.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
     margin-left: auto;
     margin-right: auto;
 }
