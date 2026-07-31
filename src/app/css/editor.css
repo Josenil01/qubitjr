@@ -435,7 +435,7 @@ z-index: 5;
     position: absolute;
     overflow: hidden;
     width: 100% !important;
-    height: 38.8vh !important;
+    height: ${css_vh(38.8)} !important;
 }
 
 #scriptscontainer {}
