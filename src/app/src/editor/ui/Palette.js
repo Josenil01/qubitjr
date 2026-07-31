@@ -51,6 +51,12 @@ export default class Palette {
         div.onmousedown = function (evt) {
             Palette.paletteMouseDown(evt);
         };
+        // touchstart fires immediately; a mobile browser's synthetic
+        // mousedown derived from touch can arrive too late to bind
+        // touchmove before the finger has already started moving.
+        div.ontouchstart = function (evt) {
+            Palette.paletteMouseDown(evt);
+        };
         var pc = newHTML('div', 'papercut', parent);
         newHTML('div', 'withstyle', pc);
     }

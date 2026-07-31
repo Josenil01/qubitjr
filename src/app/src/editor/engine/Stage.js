@@ -31,7 +31,13 @@ export default class Stage {
         this.div.onmousedown = function (evt) {
             me.mouseDown(evt);
         };
-        
+        // touchstart fires immediately; the synthetic mousedown a mobile
+        // browser derives from a touch can arrive late (sometimes only
+        // after touchend), which is too late to bind touchmove in time.
+        this.div.ontouchstart = function (evt) {
+            me.mouseDown(evt);
+        };
+
         
         this.div.owner = this;
         this.currentZoom = 1;

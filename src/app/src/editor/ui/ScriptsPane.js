@@ -44,6 +44,15 @@ export default class ScriptsPane {
         currentsc.parentNode.onmousedown = function (evt) {
             currentsc.owner.scriptsMouseDown(evt);
         };
+        // touchstart fires immediately; a mobile browser's synthetic
+        // mousedown derived from touch can arrive too late to bind
+        // touchmove before the finger has already started moving.
+        currentsc.parentNode.ontouchstart = function (evt) {
+            if (evt.cancelable) {
+                evt.preventDefault();
+            }
+            currentsc.owner.scriptsMouseDown(evt);
+        };
         scroll.update();
     }
 
