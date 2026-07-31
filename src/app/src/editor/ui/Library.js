@@ -230,6 +230,7 @@ export default class Library {
         img.style.left = (9 * scaleMultiplier) + 'px';
         img.style.top = (7 * scaleMultiplier) + 'px';
         img.style.position = 'relative';
+        img.style.display = 'block';
         img.style.height = (data.height * scale) + 'px';
         if (data.altmd5) {
             IO.getAsset(data.altmd5, drawMe);
@@ -258,9 +259,16 @@ export default class Library {
         img.style.height = tb.h * scale + 'px';
         img.style.width = tb.w * scale + 'px';
 
-        img.style.left = Math.floor(((w - (scale * tb.w)) / 2) + (9 * scaleMultiplier)) + 'px';
-        img.style.top = Math.floor(((h - (scale * tb.h)) / 2) + (9 * scaleMultiplier)) + 'px';
+        // Center against the card's real content box (tb.clientWidth/Height,
+        // e.g. 140x140 from .assetbox), not against w/h - those are only the
+        // fit-to box the image is scaled down into, smaller than the card
+        // itself, so centering against them left the image off to one side.
+        var boxW = tb.clientWidth || w;
+        var boxH = tb.clientHeight || h;
+        img.style.left = Math.floor((boxW - (scale * tb.w)) / 2) + 'px';
+        img.style.top = Math.floor((boxH - (scale * tb.h)) / 2) + 'px';
         img.style.position = 'relative';
+        img.style.display = 'block';
 
         // Cached downsized-thumbnails are in pnglibrary
         var pngPath = MediaLib.path.replace('svg', 'png');
