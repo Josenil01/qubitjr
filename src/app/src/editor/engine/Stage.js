@@ -428,6 +428,14 @@ export default class Stage {
         window.onmouseup = function (evt) {
             me.mouseUp(evt);
         };
+        // Touch devices don't reliably synthesize a continuous mousemove
+        // stream during a drag - only real touchmove/touchend give us that.
+        window.ontouchmove = function (evt) {
+            me.mouseMove(evt);
+        };
+        window.ontouchend = function (evt) {
+            me.mouseUp(evt);
+        };
     }
 
     startShaking (b) {
@@ -465,6 +473,8 @@ export default class Stage {
         if (!Events.dragthumbnail) {
             return;
         }
+        // Stop touch-drag from also scrolling the page underneath the stage.
+        e.preventDefault();
         var pt = this.getStagePt(e);
         var delta = Vector.diff(pt, this.initialPoint);
         var dist = ScratchJr.inFullscreen ? 15 : 5;

@@ -120,27 +120,29 @@ export default class Events {
         updatefcn = atdrag;
         if (isTablet) { // startDrag event setting
             delta = 10 * scaleMultiplier;
-            window.onmousemove = function (evt) {
-                Events.mouseMove(evt);
-            };
-            window.onmouseup = function (evt) {
-                Events.mouseUp(evt);
-            };
-            window.ontouchleave = function (evt) {
-                Events.mouseUp(evt);
-            };
-            window.ontouchcancel = function (evt) {
-                Events.mouseUp(evt);
-            };
         } else {
             delta = 7;
-            window.onmousemove = function (evt) {
-                Events.mouseMove(evt);
-            };
-            window.onmouseup = function (evt) {
-                Events.mouseUp(evt);
-            };
         }
+        window.onmousemove = function (evt) {
+            Events.mouseMove(evt);
+        };
+        window.onmouseup = function (evt) {
+            Events.mouseUp(evt);
+        };
+        // Touch devices don't reliably synthesize a continuous mousemove
+        // stream during a drag - only real touchmove/touchend give us that.
+        window.ontouchmove = function (evt) {
+            Events.mouseMove(evt);
+        };
+        window.ontouchend = function (evt) {
+            Events.mouseUp(evt);
+        };
+        window.ontouchleave = function (evt) {
+            Events.mouseUp(evt);
+        };
+        window.ontouchcancel = function (evt) {
+            Events.mouseUp(evt);
+        };
     }
 
     static holdit (c, fcn) {
@@ -164,6 +166,10 @@ export default class Events {
     }
 
     static mouseMove (e) {
+        // Stop touch-drag from also scrolling the page underneath.
+        if (e.cancelable) {
+            e.preventDefault();
+        }
         // be forgiving about the click
         var pt = Events.getTargetPoint(e);
         if (!dragged && (Events.distance(dragmousex - pt.x, dragmousey - pt.y) < delta)) {
@@ -220,6 +226,10 @@ export default class Events {
             };
             window.onmouseup = undefined;
         }
+        window.ontouchmove = undefined;
+        window.ontouchend = undefined;
+        window.ontouchleave = undefined;
+        window.ontouchcancel = undefined;
     }
 
     static performMouseUpAction (e) {
