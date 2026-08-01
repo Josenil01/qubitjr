@@ -259,12 +259,13 @@ export default class Library {
         img.style.height = tb.h * scale + 'px';
         img.style.width = tb.w * scale + 'px';
 
-        // Center against the card's real content box (tb.clientWidth/Height,
-        // e.g. 140x140 from .assetbox), not against w/h - those are only the
-        // fit-to box the image is scaled down into, smaller than the card
-        // itself, so centering against them left the image off to one side.
-        var boxW = tb.clientWidth || w;
-        var boxH = tb.clientHeight || h;
+        // Center against the card's CONTENT box (getComputedStyle width/height,
+        // e.g. 140x140 from .assetbox's declared width/height) - NOT
+        // clientWidth/clientHeight, which include the 12px padding on each side
+        // and double-count it against position:relative's content-box-relative
+        // offset, pushing the image toward one corner instead of centering it.
+        var boxW = parseFloat(getComputedStyle(tb).width) || w;
+        var boxH = parseFloat(getComputedStyle(tb).height) || h;
         img.style.left = Math.floor((boxW - (scale * tb.w)) / 2) + 'px';
         img.style.top = Math.floor((boxH - (scale * tb.h)) / 2) + 'px';
         img.style.position = 'relative';
