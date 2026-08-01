@@ -640,11 +640,16 @@ export default class ScratchJr {
         div = sc.parentNode;
         var w = div.offsetWidth;
         var h = div.offsetHeight;
-        var dx = ((pt.x + 480 * scaleMultiplier) > w) ? (w - 486 * scaleMultiplier) : pt.x - 6 * scaleMultiplier;
+        // Pinned to scaleMultiplier=1 (not the dynamic value from lib.js):
+        // this positions the editable-field box against pt/w/h, which are
+        // real DOM measurements already independent of viewport size, so
+        // scaling just these offsets would misalign the box instead of
+        // adapting it.
+        var dx = ((pt.x + 480 * 1.0) > w) ? (w - 486 * 1.0) : pt.x - 6 * 1.0;
         var ti = document.forms.editable.field;
         ti.style.textAlign = 'center';
         document.forms.editable.style.left = dx + 'px';
-        var top = pt.y + 55 * scaleMultiplier;
+        var top = pt.y + 55 * 1.0;
         document.forms.editable.style.top = top + 'px';
         if (isAndroid) {
             AndroidInterface.scratchjr_setsoftkeyboardscrolllocation(

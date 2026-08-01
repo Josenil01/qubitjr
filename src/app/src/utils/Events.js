@@ -119,7 +119,10 @@ export default class Events {
         }
         updatefcn = atdrag;
         if (isTablet) { // startDrag event setting
-            delta = 10 * scaleMultiplier;
+            // Pinned to 1.0, not the dynamic scaleMultiplier - see the note
+            // in Palette.setup() for why: this must stay in sync with the
+            // CSS drag targets, which are permanently frozen at scale 1.
+            delta = 10 * 1.0;
         } else {
             delta = 7;
         }
