@@ -41,17 +41,9 @@ export default class Palette {
     }
 
     static setup (parent) {
-        // Block sizing/position here must stay in lockstep with the CSS
-        // (#blockspalette etc.), which is permanently frozen at
-        // scaleMultiplier=1 by the build-time ${N * scaleMultiplier} ->
-        // Npx substitution (vite.config.js). scaleMultiplier itself is
-        // still dynamic (updateScaleMultiplier(), lib.js) for the couple
-        // of places that aren't tied to that frozen CSS, so pin it to 1
-        // here explicitly rather than letting it drift and misalign
-        // blocks from their (CSS-sized, never-shrinking) container.
-        blockscale *= 1.0;
-        blockdy *= 1.0;
-        Palette.blockdx *= 1.0; // XXX
+        blockscale *= scaleMultiplier;
+        blockdy *= scaleMultiplier;
+        Palette.blockdx *= scaleMultiplier; // XXX
         betweenblocks = 90 * blockscale;
         Palette.createCategorySelectors(parent);
         var div = newHTML('div', 'palette', parent);
