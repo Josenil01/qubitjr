@@ -187,10 +187,10 @@ hr.bigdivide{
 
 .assetbox.off {
     background: url('../assets/paint/thumbOff.png') no-repeat center top;
-    background-size: 100%;
+    background-size: 100% 100%;
 }
 
 .assetbox.on {
     background: url('../assets/paint/thumbOn.png') no-repeat center top;
-    background-size: 100%;
+    background-size: 100% 100%;
 }
