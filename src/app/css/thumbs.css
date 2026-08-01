@@ -1,11 +1,13 @@
 .projectthumb {
-    display: inline-block;
+    display: block;
     position: relative;
     margin: 0px;
     padding: 0px;
-    width: ${css_vw(21.68)};
+    /* Same unit (vh) as .aproject below - a previous vw/vh mismatch here
+       made this wrapper wider than the card it holds on wide screens,
+       reserving empty space between cards and forcing too few columns. */
+    width: ${css_vh(28.91)};
     height: ${css_vh(26.04)};
-    vertical-align: top;
 }
 
 .aproject {
@@ -223,4 +225,16 @@
     margin: 0px;
     width: 100%;
     min-width: 800px;
+}
+
+/* Real wrapping grid for the project cards on the Home/Lobby page.
+   Scoped with :has() so this never touches librarymodal.css's own
+   #scrollarea (the character-picker modal), which reuses the same
+   id/class but never has .projectthumb children. */
+#scrollarea:has(.projectthumb) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    gap: ${css_vh(2)};
 }
