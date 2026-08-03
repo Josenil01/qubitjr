@@ -13,7 +13,7 @@ import Matrix from '../../geom/Matrix.js';
 import Vector from '../../geom/Vector.js';
 import {newHTML, newDiv, gn,
     setCanvasSizeScaledToWindowDocumentHeight,
-    DEGTOR, getIdFor, setProps, isTablet} from '../../utils/lib.js';
+    DEGTOR, getIdFor, setProps} from '../../utils/lib.js';
 
 export default class Page {
     constructor (id, data, fcn) {
@@ -235,15 +235,14 @@ export default class Page {
         var pq = newHTML('p', undefined, num);
         pq.textContent = this.num;
         newHTML('div', 'deletethumb', tb);
-        if (isTablet) {
-            tb.onmousedown = function (evt) {
-                Thumbs.pageMouseDown(evt);
-            };
-        } else {
-            tb.onmousedown = function (evt) {
-                Thumbs.pageMouseDown(evt);
-            };
-        }
+        tb.onmousedown = function (evt) {
+            Thumbs.pageMouseDown(evt);
+        };
+        // Hold-to-delete needs a real touchstart: a synthesized mousedown
+        // only arrives after the touch ends, too late for the hold timer.
+        tb.ontouchstart = function (evt) {
+            Thumbs.pageMouseDown(evt);
+        };
         this.thumbnail = tb;
         return tb;
     }

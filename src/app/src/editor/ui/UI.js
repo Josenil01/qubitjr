@@ -479,6 +479,10 @@ export default class UI {
         var div = newHTML('div', 'spritecc', p);
         div.setAttribute('id', 'spritecc');
         div.onmousedown = UI.spriteThumbsActions;
+        // Without this, hold-to-delete on the actor list never starts on
+        // touch: mousedown is only synthesized after the touch ends, by
+        // which point the hold timer never got a chance to fire.
+        div.ontouchstart = UI.spriteThumbsActions;
 
         // scrollbar
         var sb = newHTML('div', 'scrollbar', sprites);
