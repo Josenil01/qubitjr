@@ -25,7 +25,48 @@ export default class Home {
         div.setAttribute('id', 'scrollarea');
         frame.onmousedown = Home.handleTouchStart;
         frame.onmouseup = Home.handleTouchEnd;
+        Home.showLoading();
         Home.displayYourProjects();
+    }
+
+    ////////////////////////////
+    // Loading overlay
+    ////////////////////////////
+
+    // Shown from init() until the project list has been fetched AND every
+    // project's thumbnail has resolved (or failed) - so the grid never
+    // flashes blank/broken thumbnails while io_getmediaAsync's network
+    // fallback is still in flight for cards synced from another device.
+    static showLoading () {
+        Home._pendingThumbs = 0;
+        Home._stillEnumerating = true;
+        if (gn('homeloading')) {
+            return;
+        }
+        var overlay = newHTML('div', 'homeloading', document.body);
+        overlay.setAttribute('id', 'homeloading');
+        newHTML('div', 'homeloading-spinner', overlay);
+        Home._loadingTimeout = setTimeout(Home.hideLoading, 6000);
+    }
+
+    static hideLoading () {
+        clearTimeout(Home._loadingTimeout);
+        var overlay = gn('homeloading');
+        if (!overlay) {
+            return;
+        }
+        overlay.className = 'homeloading fade';
+        setTimeout(function () {
+            if (overlay.parentNode) {
+                overlay.parentNode.removeChild(overlay);
+            }
+        }, 300);
+    }
+
+    static maybeHideLoading () {
+        if (!Home._stillEnumerating && (Home._pendingThumbs <= 0)) {
+            Home.hideLoading();
+        }
     }
 
     ////////////////////////////
@@ -395,15 +436,19 @@ export default class Home {
             console.log('[displayProjects] div.childElementCount APÓS emptyProjectThumbnail:', div.childElementCount);
             console.log('[displayProjects] div.innerHTML:', div.innerHTML);
             Home._dailyLimitReached = false;
+            Home._stillEnumerating = false;
+            Home.maybeHideLoading();
             return;
         }
-        
+
         try {
             var data = JSON.parse(str);
         } catch (e) {
             console.error('[Home] ❌ Erro ao parsear projetos:', e);
             console.error('[Home] Stack:', e.stack);
             Home.emptyProjectThumbnail(gn('scrollarea'));
+            Home._stillEnumerating = false;
+            Home.maybeHideLoading();
             return;
         }
         
@@ -432,7 +477,9 @@ export default class Home {
             console.log(`[displayProjects] Adicionando projeto ${i + 1}/${data.length}:`, data[i]);
             Home.addProjectLink(div, data[i]);
         }
-        
+        Home._stillEnumerating = false;
+        Home.maybeHideLoading();
+
         setTimeout(function () {
             Lobby.busy = false;
         }, 1000);
@@ -480,10 +527,13 @@ export default class Home {
         var md5 = data.md5;
         var img = newHTML('img', undefined, p);
         if (md5 && typeof md5 === 'string') {
+            Home._pendingThumbs++;
             IO.getAsset(md5, drawMe);
         }
         function drawMe (url) {
             img.src = url;
+            Home._pendingThumbs--;
+            Home.maybeHideLoading();
         }
     }
 

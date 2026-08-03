@@ -584,6 +584,36 @@ div.localizationselect.selected:after {
     opacity: 0.88;
 }
 
+/* === Home loading overlay: waits for the project list + thumbnails === */
+#homeloading {
+    position: fixed;
+    inset: 0;
+    z-index: 15000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eecfff;
+}
+
+#homeloading.fade {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-out;
+}
+
+.homeloading-spinner {
+    width: 64px;
+    height: 64px;
+    border: 6px solid rgba(1, 190, 188, 0.25);
+    border-top-color: #01bebc;
+    border-radius: 50%;
+    animation: homeloading-spin 0.8s linear infinite;
+}
+
+@keyframes homeloading-spin {
+    to { transform: rotate(360deg); }
+}
+
 /* === Botão Novo Projeto: Limite Diário Atingido === */
 #newproject.daily-limit-reached .aproject.empty {
     opacity: 0.35;

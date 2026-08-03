@@ -144,11 +144,20 @@ export default class iOS {
 
     static getmedia (file, fcn) {
         mediacounter++;
-        var nextStep = function (file, key, whenDone) {
-            var result = window.tabletInterface.io_getmedialen(file, key);
-            iOS.processdata(key, 0, result, '', whenDone);
-        };
-        nextStep(file, mediacounter, fcn);
+        var key = mediacounter;
+        var result = window.tabletInterface.io_getmedialen(file, key);
+        if (result > 0) {
+            iOS.processdata(key, 0, result, '', fcn);
+            return;
+        }
+        // Not cached locally - ask the backend before giving up silently.
+        if (window.tabletInterface.io_getmediaAsync) {
+            window.tabletInterface.io_getmediaAsync(file, function (dataurl) {
+                fcn(dataurl || '');
+            });
+        } else {
+            fcn('');
+        }
     }
 
     static getmediadata (key, offset, len, fcn) {

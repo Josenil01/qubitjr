@@ -710,6 +710,54 @@ class WebInterface {
     return true;
   }
 
+  // Fallback used by iOS.getmedia() when io_getmedialen() finds nothing in
+  // localStorage - e.g. a project/page/sprite thumbnail that was synced from
+  // another device (or created before this browser cached it) and so was
+  // never written locally. Fetches it from the backend once and caches it
+  // the same way io_setmedia does, so every read after this one is a normal
+  // synchronous localStorage hit.
+  async io_getmediaAsync(filename, callback) {
+    try {
+      const metaResp = await fetch(`${API_BASE_URL}/media/${filename}`, {
+        headers: { ...this._authHeader() }
+      });
+      if (!metaResp.ok) {
+        callback('');
+        return;
+      }
+      const meta = await metaResp.json();
+      if (!meta || !meta.url) {
+        callback('');
+        return;
+      }
+      const fileResp = await fetch(meta.url);
+      if (!fileResp.ok) {
+        callback('');
+        return;
+      }
+      const blob = await fileResp.blob();
+      const base64 = await this._blobToBase64(blob);
+      localStorage.setItem(this._mediaKey(filename), base64);
+      callback(base64);
+    } catch (error) {
+      console.warn('[WebInterface] io_getmediaAsync fallback failed:', filename, error?.message || error);
+      callback('');
+    }
+  }
+
+  _blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result || '';
+        const commaIdx = result.indexOf(',');
+        resolve(commaIdx > -1 ? result.substring(commaIdx + 1) : '');
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
   io_setmedianame(data, name, ext) {
     try {
       const filename = `${name}.${ext}`;
