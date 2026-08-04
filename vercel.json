@@ -17,6 +17,7 @@
     },
     {
       "src": "/assets/(.*)",
+      "headers": { "Cache-Control": "public, max-age=86400" },
       "dest": "/assets/$1"
     },
     {
@@ -26,6 +27,7 @@
     },
     {
       "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|json|txt|mp3|wav|ogg))",
+      "headers": { "Cache-Control": "public, max-age=86400" },
       "dest": "/$1"
     },
     {
