@@ -20,6 +20,11 @@
       "dest": "/assets/$1"
     },
     {
+      "src": "/(svglibrary|pnglibrary|sounds|samples)/(.*)",
+      "headers": { "Cache-Control": "public, max-age=86400" },
+      "dest": "/$1/$2"
+    },
+    {
       "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|json|txt|mp3|wav|ogg))",
       "dest": "/$1"
     },
