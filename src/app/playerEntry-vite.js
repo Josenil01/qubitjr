@@ -25,9 +25,15 @@ window.IO = IO;
 window.MediaLib = MediaLib;
 window.playerMain = playerMain;
 
-// ── CSS: processa apenas os arquivos necessários para o stage ──────────────
+// ── CSS: processa todo <link rel="stylesheet"> presente na página ──────────
+// Antes isto filtrava por nome de arquivo de origem (ex.: 'editor.css'), mas
+// em produção o Vite funde os CSS de origem em poucos arquivos com hash
+// (ex.: gs-Cks85t-d.css) — href.endsWith('editor.css') nunca bate contra
+// isso, então TODO link acabava sendo removido e a página ficava sem CSS
+// nenhum. player.html só referencia os CSS que já precisa (font/editorstage
+// /editor), então não há nada "desnecessário" a filtrar mesmo — processa
+// tudo, igual ao processAllCss() do appEntry-vite.js.
 function processPlayerCss () {
-    const needed = ['./css/font.css', './css/editorstage.css', './css/editor.css'];
     import('./src/utils/lib.js').then(({ preprocess, css_vh, css_vw, scaleMultiplier }) => {
         window.css_vh = css_vh;
         window.css_vw = css_vw;
@@ -36,12 +42,6 @@ function processPlayerCss () {
         document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
             const href = link.getAttribute('href');
             if (!href || !href.endsWith('.css')) return;
-
-            // Processar somente os CSS essenciais; remover os demais imediatamente
-            if (!needed.some(n => href.endsWith(n.replace('./', '')))) {
-                link.remove();
-                return;
-            }
 
             fetch(href)
                 .then(r => r.ok ? r.text() : '')

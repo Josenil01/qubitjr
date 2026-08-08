@@ -32,12 +32,16 @@ window.teacherMain = teacherMain;
 function processTeacherCss () {
     // Igual ao editor.html completo — "assumir controle" precisa da UI de
     // edição inteira, não só do palco (diferente do player.html, que só exibe).
-    const needed = [
-        './css/font.css', './css/base.css', './css/start.css', './css/thumbs.css',
-        './css/editor.css', './css/editorleftpanel.css', './css/editorstage.css',
-        './css/editormodal.css', './css/librarymodal.css', './css/lobby.css',
-        './css/paintlook.css', './css/gs.css',
-    ];
+    //
+    // Antes isto filtrava por nome de arquivo de origem (ex.: 'editor.css',
+    // 'gs.css') contra um allowlist "needed". Em produção o Vite funde os 11
+    // CSS de origem em só ~2 arquivos com hash (ex.: gs-Cks85t-d.css) —
+    // href.endsWith('gs.css') nunca bate contra isso (o hash fica entre o
+    // nome e a extensão), então TODOS os <link> eram removidos e a tela de
+    // "assumir controle" renderizava sem nenhum CSS. teacher.html só
+    // referencia os 11 CSS que já precisa, então não há nada "desnecessário"
+    // a filtrar mesmo — processa tudo, igual ao processAllCss() do
+    // appEntry-vite.js.
     import('./src/utils/lib.js').then(({ preprocess, css_vh, css_vw, scaleMultiplier }) => {
         window.css_vh = css_vh;
         window.css_vw = css_vw;
@@ -46,10 +50,6 @@ function processTeacherCss () {
         document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
             const href = link.getAttribute('href');
             if (!href || !href.endsWith('.css')) return;
-            if (!needed.some(n => href.endsWith(n.replace('./', '')))) {
-                link.remove();
-                return;
-            }
             fetch(href)
                 .then(r => r.ok ? r.text() : '')
                 .then(cssText => {
