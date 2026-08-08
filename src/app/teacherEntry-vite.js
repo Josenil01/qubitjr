@@ -1,11 +1,12 @@
 /**
  * src/app/teacherEntry-vite.js
  *
- * Entry point da tela de turma do professor (teacher.html). Espelha o
- * playerEntry-vite.js: bootstrap leve (settings + MediaLib, sem
- * Localization/AppUsage), pra estar pronto caso o professor assuma o
- * controle do editor de um aluno (precisa de MediaLib pros sprites de
- * biblioteca resolverem corretamente).
+ * Entry point da tela de turma do professor (teacher.html). O lobby em si é
+ * leve, mas "assumir controle" monta a UI de edição completa (não só o
+ * palco, como no player.html) — por isso a sequência de boot espelha a do
+ * appEntry-vite.js completo (settings → locales → MediaLib → watermarks →
+ * AppUsage), ao contrário do playerEntry-vite.js (mais enxuto de propósito,
+ * o player nunca edita).
  */
 
 import WebInterface from './src/services/WebInterface.js';
@@ -13,6 +14,9 @@ import { preprocessAndLoadCss } from './src/utils/lib.js';
 import iOS from './src/iPad/iOS.js';
 import IO from './src/iPad/IO.js';
 import MediaLib from './src/iPad/MediaLib.js';
+import Localization from './src/utils/Localization.js';
+import AppUsage from './src/utils/AppUsage.js';
+import PNGCache from './src/painteditor/PNGCache.js';
 
 import { teacherMain } from './src/entry/teacher.js';
 
@@ -20,10 +24,20 @@ window.preprocessAndLoadCss = preprocessAndLoadCss;
 window.iOS = iOS;
 window.IO = IO;
 window.MediaLib = MediaLib;
+window.Localization = Localization;
+window.AppUsage = AppUsage;
+window.PNGCache = PNGCache;
 window.teacherMain = teacherMain;
 
 function processTeacherCss () {
-    const needed = ['./css/font.css', './css/editorstage.css', './css/editor.css'];
+    // Igual ao editor.html completo — "assumir controle" precisa da UI de
+    // edição inteira, não só do palco (diferente do player.html, que só exibe).
+    const needed = [
+        './css/font.css', './css/base.css', './css/start.css', './css/thumbs.css',
+        './css/editor.css', './css/editorleftpanel.css', './css/editorstage.css',
+        './css/editormodal.css', './css/librarymodal.css', './css/lobby.css',
+        './css/paintlook.css', './css/gs.css',
+    ];
     import('./src/utils/lib.js').then(({ preprocess, css_vh, css_vw, scaleMultiplier }) => {
         window.css_vh = css_vh;
         window.css_vw = css_vw;
@@ -77,9 +91,36 @@ async function loadSettings () {
     });
 }
 
+// Pré-carrega os PNGs de watermark dos sprites de biblioteca — sem isso,
+// sprites de biblioteca ficam sem a marca d'água correta no editor de
+// verdade. Mesma lógica de appEntry-vite.js, resumida.
+async function preloadWatermarks () {
+    if (!(MediaLib.sprites && PNGCache)) return;
+    const spriteItems = MediaLib.sprites.filter(item => item.md5);
+    const spriteFileNames = spriteItems.map(item => item.md5.replace(/\.[^.]+$/, '')).filter(Boolean);
+    if (spriteFileNames.length === 0) return;
+    try {
+        await PNGCache.preload(spriteFileNames);
+        spriteItems.forEach(item => {
+            const fileKey = item.md5.replace(/\.[^.]+$/, '');
+            if (item.name && item.name !== fileKey && PNGCache.cache[fileKey]) {
+                PNGCache.cache[item.name] = PNGCache.cache[fileKey];
+            }
+        });
+    } catch (_) { /* watermark não é crítico pro editor funcionar */ }
+}
+
 if (window.scratchJrPage === 'teacher') {
     window.onload = async () => {
         await loadSettings();
+
+        await new Promise(resolve => {
+            try {
+                Localization.includeLocales('./', resolve);
+            } catch (_) {
+                resolve();
+            }
+        });
 
         await new Promise(resolve => {
             try {
@@ -88,6 +129,10 @@ if (window.scratchJrPage === 'teacher') {
                 resolve();
             }
         });
+
+        await preloadWatermarks();
+
+        if (AppUsage.initUsage) AppUsage.initUsage();
 
         iOS.waitForInterface(teacherMain);
     };
