@@ -19,15 +19,14 @@ import ScratchJr from '../editor/ScratchJr.js';
 import iOS from '../iPad/iOS.js';
 import IO from '../iPad/IO.js';
 import Project from '../editor/ui/Project.js';
-import Library from '../editor/ui/Library.js';
-import Record from '../editor/ui/Record.js';
-import Undo from '../editor/ui/Undo.js';
 import Palette from '../editor/ui/Palette.js';
 import { connectChannel } from '../services/RealtimeClient.js';
 import { newHTML, gn } from '../utils/lib.js';
 
 const HEARTBEAT_MS = 20000;
 const DEVICE_ID_KEY = 'scratchjr_teacher_device_id';
+const TEACHER_PREVIEW_INTERVAL_MS = 500; // igual ao LiveWatch.js do lado do aluno
+const PREVIEW_SIZE = { w: 384, h: 288 };
 
 let apiBase;
 let turmaId;
@@ -37,6 +36,7 @@ let presenceChannel = null;
 let sessionChannel = null;
 let currentSession = null; // { sessionId, studentId, realtimeChannel, expiresAt }
 let heartbeatTimer = null;
+let previewTimer = null; // broadcast do que o PROFESSOR está fazendo, pro aluno ver
 let hasControl = false; // true quando o PROFESSOR está no controle
 
 function authHeader() {
@@ -199,6 +199,17 @@ async function _startObserving(student) {
             if (btn) { btn.disabled = false; btn.textContent = 'Assumir controle'; }
             window.alert('O aluno recusou o pedido de controle.');
         })
+        .on('broadcast', { event: 'control_request' }, (msg) => {
+            // Aluno pedindo o controle de volta — diferente do pedido do
+            // professor, este NUNCA precisa de aprovação (o aluno é o dono
+            // da conta, ver LiveWatch.js). Faltava esse listener inteiro:
+            // o aluno mandava o broadcast e nada acontecia do lado do
+            // professor — "pedido não aparecia na tela".
+            if (msg.payload?.from === 'student' && hasControl) {
+                window.alert('O aluno pediu para retomar o controle. Salvando e devolvendo agora...');
+                _releaseControl();
+            }
+        })
         .subscribe();
 
     // Avisa o aluno (via canal de presença da turma) que uma sessão começou.
@@ -278,10 +289,12 @@ function _mountControllingEngine() {
             .catch(() => (fcn ? fcn({ success: false }) : null));
     };
 
-    // No-op de módulos de UI de editor não usados aqui — mesmo padrão do player.js.
-    Library.init = () => {};
-    Record.init = () => {};
-    Undo.init = () => {};
+    // Library/Record/Undo precisam rodar de verdade aqui — diferente do
+    // player.js (que é só leitura), o professor no controle precisa poder
+    // adicionar atores/cenários (Library) e desfazer (Undo). Estavam
+    // stubados como no-op copiando o padrão do player.js sem pensar que
+    // "assumir controle" É edição de verdade — por isso os botões de
+    // adicionar ator/cenário não faziam nada.
 
     document.body.classList.add('teacherControlling');
     window.currentProjectMd5 = currentSession.projectId;
@@ -299,6 +312,21 @@ function _mountControllingEngine() {
     const lobbyRoot = gn('teacher-root');
     if (lobbyRoot) lobbyRoot.style.display = 'none';
 
+    // #teacher-topbar (44px) precisa sumir também, não só o #teacher-root.
+    // editor.html (onde todo o código de coordenadas foi calibrado) tem
+    // #frame como PRIMEIRO filho do <body>, sem nada antes. Em teacher.html
+    // o topbar fica antes de #frame no fluxo normal do documento, então
+    // globalx()/globaly() (utils/lib.js) — que somam offsetTop subindo por
+    // cada parentNode — contavam esses 44px extras que não existem em
+    // editor.html. Isso desalinha TODA conta relativa a #frame: arrastar
+    // bloco até um bloco de evento (ScriptsPane.js:95-96, usa
+    // Events.dragmousex/y menos globalx/globaly(Events.dragDiv)) calculava
+    // o ponto de solta 44px abaixo de onde o bloco realmente estava,
+    // fazendo o encaixe falhar. Mesma classe de bug documentada em
+    // Stage.js:421 pro clique no palco — aqui pega o editor inteiro.
+    const topbar = gn('teacher-topbar');
+    if (topbar) topbar.style.display = 'none';
+
     iOS.getsettings(function (str) {
         const list = str.split(',');
         iOS.path = list[1] === '0' ? list[0] + '/' : undefined;
@@ -306,11 +334,55 @@ function _mountControllingEngine() {
         ScratchJr.appinit(window.Settings.scratchJrVersion);
     });
 
-    const btn = document.querySelector('.teacherControlBtn');
-    if (btn) { btn.textContent = 'Soltar controle'; btn.disabled = false; btn.onclick = _releaseControl; }
+    // O botão "Soltar controle" de _renderObserving() vive dentro de
+    // #teacher-root, que acabamos de esconder — ficava inacessível assim
+    // que o motor montava. Um botão flutuante fixo, fora de #teacher-root,
+    // resolve isso e também não interfere no offsetTop de #frame (position:
+    // fixed é removido do fluxo normal do documento).
+    _addReleaseButton();
+
+    // Espelha LiveWatch.js do lado do aluno: sem isso, o aluno via a tela
+    // "Seu professor está no controle agora" e nada mais — não tinha como
+    // ver o que estava sendo editado.
+    previewTimer = setInterval(_broadcastTeacherPreview, TEACHER_PREVIEW_INTERVAL_MS);
+}
+
+function _broadcastTeacherPreview() {
+    if (!sessionChannel || !hasControl) return;
+    try {
+        if (!ScratchJr.stage || !ScratchJr.stage.pages || !ScratchJr.stage.pages[0]) return;
+        const page = ScratchJr.stage.pages[0];
+        Project.getThumbnailPNG(page, PREVIEW_SIZE.w, PREVIEW_SIZE.h, function (dataUrl) {
+            if (sessionChannel) {
+                sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { dataUrl } });
+            }
+        });
+    } catch (err) {
+        console.error('[teacher] preview error:', err);
+    }
+}
+
+function _addReleaseButton() {
+    _removeReleaseButton();
+    const btn = newHTML('button', 'teacherFloatingRelease', document.body);
+    btn.id = 'teacher-floating-release';
+    btn.textContent = 'Soltar controle';
+    Object.assign(btn.style, {
+        position: 'fixed', top: '8px', right: '8px', zIndex: '99999',
+        padding: '8px 14px', border: 'none', borderRadius: '8px',
+        background: '#6c63ff', color: '#fff', fontWeight: '700', cursor: 'pointer',
+    });
+    btn.onclick = _releaseControl;
+}
+
+function _removeReleaseButton() {
+    const btn = gn('teacher-floating-release');
+    if (btn && btn.parentNode) btn.parentNode.removeChild(btn);
 }
 
 function _releaseControl() {
+    if (previewTimer) { clearInterval(previewTimer); previewTimer = null; }
+    _removeReleaseButton();
     ScratchJr.saveProject(null, function () {
         if (sessionChannel) sessionChannel.send({ type: 'broadcast', event: 'control_ready', payload: {} });
         hasControl = false;
@@ -336,6 +408,11 @@ function _startHeartbeat() {
 async function _endSession(reason) {
     if (heartbeatTimer) clearInterval(heartbeatTimer);
     heartbeatTimer = null;
+    if (previewTimer) clearInterval(previewTimer);
+    previewTimer = null;
+    _removeReleaseButton();
+
+    const wasControlling = hasControl;
 
     // Avisa o aluno PRIMEIRO (broadcast sobre um websocket já aberto sai
     // quase na hora) — sem isso o aviso "professor vendo" fica preso na tela
@@ -355,6 +432,17 @@ async function _endSession(reason) {
     sessionChannel = null;
     currentSession = null;
     hasControl = false;
+
+    if (wasControlling) {
+        // Sessão encerrada (ex.: estourou os 50min) enquanto o motor do
+        // editor já estava montado em memória — só re-renderizar
+        // #teacher-root não desfaz isso (#frame/#libframe/#paintframe
+        // continuariam visíveis por cima, com o motor ainda rodando).
+        // Recarregar é o mesmo caminho seguro já usado por _releaseControl().
+        location.reload();
+        return;
+    }
+
     _renderLobby();
 }
 

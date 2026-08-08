@@ -49,6 +49,7 @@ let sessionChannel = null;
 let currentSessionId = null;
 let previewTimer = null;
 let bannerEl = null;
+let previewEl = null;
 let hasControl = false; // true quando o ALUNO está no controle (estado normal)
 
 function authHeader() {
@@ -97,6 +98,28 @@ function showBanner(text, buttons = []) {
 function hideBanner() {
     if (bannerEl && bannerEl.parentNode) bannerEl.parentNode.removeChild(bannerEl);
     bannerEl = null;
+}
+
+/**
+ * Espelho do que o teacher.js faz em _renderObserving()/_updatePreview() —
+ * antes não existia nenhuma UI do lado do aluno pra mostrar a prévia que o
+ * professor passa a transmitir (teacher.js:_broadcastTeacherPreview) assim
+ * que ele assume o controle; o aluno só via o aviso de texto e não tinha
+ * como ver o que estava sendo editado no projeto dele.
+ */
+function showPreview() {
+    if (previewEl) return;
+    previewEl = newHTML('img', 'liveWatchPreview', document.body);
+    Object.assign(previewEl.style, {
+        position: 'fixed', top: '36px', right: '8px', width: '220px',
+        border: '2px solid #4a90d9', borderRadius: '6px', zIndex: '4999',
+        background: '#000',
+    });
+}
+
+function hidePreview() {
+    if (previewEl && previewEl.parentNode) previewEl.parentNode.removeChild(previewEl);
+    previewEl = null;
 }
 
 function requestControlBack() {
@@ -157,6 +180,7 @@ function denyControlRequest() {
 
 function grantControlToStudent() {
     hasControl = true;
+    hidePreview();
     showBanner('Seu professor está vendo 👀');
     reloadProjectFromBackend();
 }
@@ -194,6 +218,17 @@ async function joinSession(sessionId) {
             // O professor salvou e está liberando de volta pro aluno.
             if (!hasControl) grantControlToStudent();
         })
+        .on('broadcast', { event: 'preview_frame' }, (msg) => {
+            // Só faz sentido mostrar enquanto o PROFESSOR está no controle
+            // (hasControl aqui é do lado do aluno). Quando o aluno está no
+            // controle, esse mesmo evento é o que o aluno ENVIA lá embaixo
+            // em broadcastPreview() — ignorar pra não mostrar a própria
+            // prévia de volta pra ele mesmo.
+            if (!hasControl && msg.payload?.dataUrl) {
+                showPreview();
+                previewEl.src = msg.payload.dataUrl;
+            }
+        })
         .on('broadcast', { event: 'session_ended' }, () => {
             // Professor saiu da tela (botão "voltar" ou fechou/navegou pra
             // outro lugar) — sem isso o aviso "professor vendo" fica preso
@@ -229,6 +264,7 @@ function endLocalSession() {
     currentSessionId = null;
     hasControl = false;
     hideBanner();
+    hidePreview();
 }
 
 /**
