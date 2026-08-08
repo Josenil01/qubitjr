@@ -15,6 +15,14 @@ require('dotenv').config();
 const dbRoutes = require('./routes/db');
 const mediaRoutes = require('./routes/media');
 const { shareRouter, publicRouter } = require('./routes/share');
+const teacherRoutes = require('./routes/teacher');
+const realtimeRoutes = require('./routes/realtime');
+const {
+  verifyAndDecode,
+  getUserIdFromClaims,
+  getTurmaIdFromClaims,
+  getPresenceStatusFromClaims,
+} = require('./services/identity');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -96,28 +104,19 @@ const JWT_USER_HEADER = (process.env.JWT_USER_HEADER || 'x-user-id').toLowerCase
 const MOCK_TOKENS = {
   'dev-user-a': 'usr_001',
   'dev-user-b': 'usr_002',
+  'dev-teacher-a': 'prof_001',
 };
 
-function decodeJwtPayloadUnsafe(token) {
-  try {
-    if (!token || typeof token !== 'string') return null;
-    const parts = token.split('.');
-    if (parts.length < 2) return null;
-    const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-    const padded = b64 + '='.repeat((4 - (b64.length % 4 || 4)) % 4);
-    const json = Buffer.from(padded, 'base64').toString('utf8');
-    return JSON.parse(json);
-  } catch (_) {
-    return null;
-  }
-}
+// Contexto extra (turma_id, status) que um JWT real traria nas claims —
+// simulado aqui pra dev poder testar o fluxo de presença sem a HelloYotta.
+// turma-mock-001 bate com o roster mockado em services/helloyotta.js.
+const MOCK_CONTEXT = {
+  usr_001: { turmaId: 'turma-mock-001', presenceStatus: 'presente' },
+  usr_002: { turmaId: 'turma-mock-001', presenceStatus: 'presente' },
+  prof_001: { turmaId: 'turma-mock-001', presenceStatus: null },
+};
 
-function getUserIdFromJwtClaims(claims) {
-  if (!claims || typeof claims !== 'object') return null;
-  return claims.user_id || claims.sub || claims.studentId || null;
-}
-
-function identityMiddleware(req, res, next) {
+async function identityMiddleware(req, res, next) {
   // Health check não exige autenticação
   if (req.path === '/health') return next();
 
@@ -127,15 +126,23 @@ function identityMiddleware(req, res, next) {
   }
 
   const token = authHeader.slice(7);
+  req.rawToken = token; // repassado como Bearer pra HelloYotta em chamadas server-to-server (ver routes/teacher.js)
 
   // 1. JWT real tem prioridade em qualquer AUTH_MODE.
-  //    Extrai user_id / sub / studentId das claims sem verificar assinatura.
-  //    A assinatura é validada pelo emissor (Firebase) no frontend; aqui apenas
-  //    confiamos que o claim identifica o usuário corretamente.
-  const claims = decodeJwtPayloadUnsafe(token);
-  const jwtUserId = getUserIdFromJwtClaims(claims);
+  //    Professor: verificado localmente (HMAC). Aluno: verificado remotamente
+  //    junto à HelloYotta (chamada de rede — por isso o try/catch: falha de
+  //    rede não pode travar/derrubar o processo). Ver services/identity.js.
+  let claims;
+  try {
+    claims = await verifyAndDecode(token);
+  } catch (err) {
+    return next(err);
+  }
+  const jwtUserId = getUserIdFromClaims(claims);
   if (jwtUserId) {
     req.userId = jwtUserId;
+    req.turmaId = getTurmaIdFromClaims(claims);
+    req.presenceStatus = getPresenceStatusFromClaims(claims);
     console.log(`[Auth] JWT userId: ${jwtUserId} (iss: ${claims?.iss || 'unknown'})`);
     return next();
   }
@@ -147,6 +154,9 @@ function identityMiddleware(req, res, next) {
       return res.status(401).json({ error: 'Invalid token. Expected a JWT or a mock token (dev-user-a / dev-user-b).' });
     }
     req.userId = userId;
+    const mockContext = MOCK_CONTEXT[userId] || {};
+    req.turmaId = mockContext.turmaId || null;
+    req.presenceStatus = mockContext.presenceStatus || null;
     console.log(`[Auth] Mock userId: ${userId}`);
     return next();
   }
@@ -190,6 +200,8 @@ app.get('/health', (req, res) => {
 app.use('/api/db', dbRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/share', shareRouter);
+app.use('/api/teacher', teacherRoutes);
+app.use('/api/realtime', realtimeRoutes);
 
 // ============================================
 // Error Handler

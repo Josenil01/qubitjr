@@ -195,12 +195,17 @@ export default defineConfig({
         editor: path.resolve(process.cwd(), 'src/app/editor.html'),
         gettingstarted: path.resolve(process.cwd(), 'src/app/gettingstarted.html'),
         player: path.resolve(process.cwd(), 'src/app/player.html'),
+        teacher: path.resolve(process.cwd(), 'src/app/teacher.html'),
       },
-      // Separa o player em chunk próprio para não misturar com o bundle do editor
+      // Separa o player e a tela do professor em chunks próprios para não
+      // misturar com o bundle do editor
       output: {
         manualChunks(id) {
           if (id.includes('playerEntry-vite') || id.includes('entry/player')) {
             return 'player-runtime';
+          }
+          if (id.includes('teacherEntry-vite') || id.includes('entry/teacher')) {
+            return 'teacher-runtime';
           }
         }
       }

@@ -91,6 +91,38 @@ CREATE TABLE IF NOT EXISTS reactions (
   PRIMARY KEY (project_id, emoji)
 );
 
+-- Tabela: live_sessions (auditoria de sessões de observação professor→aluno)
+-- Autorização (quem pode ver qual turma/aluno) vive na HelloYotta; esta tabela
+-- é só o registro local de quando cada sessão ao vivo aconteceu e por quê terminou.
+--
+-- channel_token: UUID aleatório que vira o nome do canal Realtime da sessão
+-- (teacher-session:<channel_token>). Canal Realtime é público (anon key, sem
+-- RLS) — a proteção é o UUID ser impossível de adivinhar, mesmo padrão já
+-- usado em projects.share_token. Decidido depois de esbarrar num limite real
+-- do Supabase: projetos no sistema novo de chaves assimétricas não permitem
+-- importar uma chave de assinatura própria nem extrair o secret legado, o
+-- que inviabilizava canal privado com RLS via auth.jwt().
+CREATE TABLE IF NOT EXISTS live_sessions (
+  id             SERIAL PRIMARY KEY,
+  teacher_id     TEXT    NOT NULL,
+  student_id     TEXT    NOT NULL,
+  turma_id       TEXT    NOT NULL,
+  project_id     INTEGER REFERENCES projects(id) ON DELETE SET NULL,
+  device_id      TEXT    NOT NULL, -- identifica a conexão/aba do professor (regra de 1 dispositivo por vez)
+  channel_token  UUID    NOT NULL DEFAULT gen_random_uuid(),
+  started_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  ended_at       TIMESTAMP,
+  end_reason     TEXT, -- 'teacher_left' | 'switched_student' | 'student_disconnected' | 'timeout_50min' | 'kicked_new_device' | null (ainda ativa)
+  created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Migração: caso live_sessions já exista de uma tentativa anterior sem esta coluna.
+ALTER TABLE live_sessions ADD COLUMN IF NOT EXISTS channel_token UUID NOT NULL DEFAULT gen_random_uuid();
+
+CREATE INDEX IF NOT EXISTS idx_live_sessions_teacher_active ON live_sessions(teacher_id) WHERE ended_at IS NULL;
+CREATE INDEX IF NOT EXISTS idx_live_sessions_student ON live_sessions(student_id);
+CREATE INDEX IF NOT EXISTS idx_live_sessions_turma ON live_sessions(turma_id);
+
 -- ============================================
 -- Cole o conteúdo acima no Supabase SQL Editor
 -- ============================================

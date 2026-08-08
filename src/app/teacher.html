@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="mobile-web-app-capable" content="yes">
+<meta http-equiv="cache-control" content="no-cache">
+<meta charset="utf-8">
+<title>QubitJr — Turma</title>
+
+<link rel="stylesheet" href="./css/font.css">
+<link rel="stylesheet" href="./css/editorstage.css">
+<link rel="stylesheet" href="./css/editor.css">
+
+<style>
+html, body { background: #f4f6fb; margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; }
+
+#teacher-topbar {
+    height: 44px;
+    background: linear-gradient(90deg, #6c63ff, #48c9b0);
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 16px; color: #fff;
+}
+#teacher-turma-name { font-weight: 700; font-size: 15px; }
+
+#teacher-root { padding: 20px; }
+
+.teacherFatal { text-align: center; padding: 60px 20px; color: #b00020; font-size: 16px; }
+
+.teacherGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+}
+.teacherCard {
+    background: #fff; border-radius: 12px; padding: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    border: 2px solid transparent;
+}
+.teacherCard.online { border-color: #48c9b0; }
+.teacherCardStatus { font-size: 12px; font-weight: 700; align-self: flex-start; }
+.teacherCard.online .teacherCardStatus { color: #1a9c7c; }
+.teacherCard.offline .teacherCardStatus { color: #999; }
+.teacherCardThumb {
+    width: 100%; aspect-ratio: 4 / 3; object-fit: cover;
+    border-radius: 8px; background: #e4e8f0;
+}
+.teacherCardThumbEmpty { display: block; }
+.teacherCardName { font-weight: 600; font-size: 14px; text-align: center; }
+.teacherCardBtn {
+    width: 100%; padding: 8px; border: none; border-radius: 8px;
+    background: #6c63ff; color: #fff; font-weight: 700; cursor: pointer;
+}
+.teacherCard.offline .teacherCardBtn { background: #b0b6c3; }
+
+#teacher-observing { display: none; }
+.teacherObserveBar {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+}
+.teacherBackBtn, .teacherControlBtn {
+    padding: 8px 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700;
+}
+.teacherBackBtn { background: #e4e8f0; }
+.teacherControlBtn { background: #6c63ff; color: #fff; margin-left: auto; }
+.teacherObserveTitle { font-weight: 700; font-size: 15px; }
+.teacherPreviewWrap {
+    display: flex; justify-content: center; padding: 20px;
+    background: #000; border-radius: 12px;
+}
+.teacherPreviewImg { max-width: 480px; width: 100%; border-radius: 4px; }
+</style>
+
+<script>
+    window.scratchJrPage = 'teacher';
+    var _isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    window.API_URL = window.API_URL || (_isLocal ? 'http://localhost:5000/api' : (location.origin + '/api'));
+</script>
+<script type="module" src="./teacherEntry-vite.js"></script>
+</head>
+<body>
+
+<div id="teacher-topbar">
+    <span>🧑‍🏫</span>
+    <span id="teacher-turma-name">Carregando turma...</span>
+</div>
+
+<div id="teacher-root"></div>
+
+<!-- Divs requeridos pelo engine ScratchJr, só usados quando o professor assume o controle -->
+<div class="frame" id="frame" style="display:none"></div>
+<div class="libframe" id="libframe" style="display:none"></div>
+<div class="paintframe" id="paintframe" style="display:none"></div>
+
+</body>
+</html>

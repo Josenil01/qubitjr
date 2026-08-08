@@ -2,6 +2,7 @@ import ScratchJr from '../editor/ScratchJr.js';
 import iOS from '../iPad/iOS.js';
 import Camera from '../painteditor/Camera.js';
 import Record from '../editor/ui/Record.js';
+import { initLiveWatch } from '../editor/LiveWatch.js';
 
 export function editorMain () { // eslint-disable-line import/prefer-default-export
     iOS.getsettings(doNext);
@@ -15,5 +16,8 @@ export function editorMain () { // eslint-disable-line import/prefer-default-exp
             Camera.available = (list[3] == 'YES');
         }
         ScratchJr.appinit(window.Settings.scratchJrVersion);
+        // No-op silencioso se o aluno não estiver num contexto HelloYotta
+        // (token sem turma_id) — ver LiveWatch.js.
+        initLiveWatch();
     }
 }
