@@ -15,14 +15,17 @@
  * Project.recreate() (por baixo de dataRecieved) só roda nos instantes
  * pontuais de troca de controle — nunca em loop.
  *
- * Protocolo de handoff:
- *  1. Quem VAI PERDER o controle recebe 'control_request', força um save
- *     (ScratchJr.saveProject) e só depois de confirmado emite 'control_ready'.
- *  2. Quem VAI GANHAR o controle, ao ver 'control_ready', recarrega o
- *     projeto do backend (IO.getObject) — pega os dados já salvos no passo 1.
+ * Protocolo de handoff (professor → aluno é a única direção com aprovação —
+ * aluno pedindo de volta é sempre aceito na hora, ele é o dono da conta):
+ *  1. Professor manda 'control_request'. Aluno vê um aviso com
+ *     Aceitar/Recusar — nada acontece até ele decidir.
+ *  2a. Aceitar: força um save (ScratchJr.saveProject) e só depois de
+ *      confirmado emite 'control_ready'.
+ *  2b. Recusar: emite 'control_denied', aluno continua no controle.
+ *  3. Quem VAI GANHAR o controle, ao ver 'control_ready', recarrega o
+ *     projeto do backend (IO.getObject) — pega os dados já salvos no passo 2a.
  *
- * ⚠️ Escopo desta primeira versão, não testado contra Supabase/HelloYotta
- * reais:
+ * ⚠️ Escopo desta primeira versão:
  *  - A prévia pro lado passivo é uma imagem periódica (não op-sync), com
  *    alguns segundos de atraso — não é um espelho pixel-perfect instantâneo.
  *  - O handoff troca o estado local (hasControl) e o aviso na tela, mas NÃO
@@ -38,8 +41,8 @@ import Project from './ui/Project.js';
 import IO from '../iPad/IO.js';
 
 const SESSION_HEARTBEAT_MS = 20000;
-const PREVIEW_INTERVAL_MS = 3500;
-const PREVIEW_SIZE = { w: 192, h: 144 };
+const PREVIEW_INTERVAL_MS = 500;
+const PREVIEW_SIZE = { w: 384, h: 288 };
 
 let presenceChannel = null;
 let sessionChannel = null;
@@ -68,7 +71,11 @@ async function apiPost(path, body) {
     }
 }
 
-function showBanner(text, { withRequestControl } = {}) {
+/**
+ * @param {string} text
+ * @param {Array<{label: string, onClick: Function}>} [buttons]
+ */
+function showBanner(text, buttons = []) {
     if (!bannerEl) {
         bannerEl = newHTML('div', 'liveWatchBanner', document.body);
         Object.assign(bannerEl.style, {
@@ -79,11 +86,12 @@ function showBanner(text, { withRequestControl } = {}) {
     }
     bannerEl.innerHTML = '';
     bannerEl.appendChild(document.createTextNode(text + '  '));
-    if (withRequestControl) {
-        const btn = newHTML('button', 'liveWatchRequestControl', bannerEl);
-        btn.textContent = 'Pedir controle';
-        btn.onclick = requestControlBack;
-    }
+    buttons.forEach(({ label, onClick }) => {
+        const btn = newHTML('button', 'liveWatchBannerBtn', bannerEl);
+        btn.textContent = label;
+        btn.style.marginLeft = '6px';
+        btn.onclick = onClick;
+    });
 }
 
 function hideBanner() {
@@ -100,9 +108,16 @@ function requestControlBack() {
  * Reload do projeto a partir do backend — chamado só nos instantes de troca
  * de controle (nunca em loop). Reaproveita o mesmo caminho que o resto do
  * app usa pra abrir/recarregar um projeto.
+ *
+ * Project.recreate() (por baixo de dataRecieved) só zera o array
+ * ScratchJr.stage.pages em JS — não remove os elementos DOM dos sprites/
+ * páginas antigas. Sem Stage.clear() antes, os sprites do professor ficam
+ * duplicados na tela (órfãos antigos + os recriados). Ver Stage.js:685
+ * (clear) vs Project.js:364 (recreate).
  */
 function reloadProjectFromBackend() {
     if (!ScratchJr.currentProject) return;
+    if (ScratchJr.stage) ScratchJr.stage.clear();
     IO.getObject(ScratchJr.currentProject, Project.dataRecieved);
 }
 
@@ -118,10 +133,26 @@ function saveThenSignalReady() {
     }, true);
 }
 
-function takeControlFromStudent() {
+function promptControlRequest() {
+    showBanner('Seu professor quer assumir o controle da tela', [
+        { label: 'Aceitar', onClick: acceptControlRequest },
+        { label: 'Recusar', onClick: denyControlRequest },
+    ]);
+}
+
+function acceptControlRequest() {
     hasControl = false;
-    showBanner('Seu professor está no controle agora', { withRequestControl: true });
+    showBanner('Seu professor está no controle agora', [
+        { label: 'Pedir controle', onClick: requestControlBack },
+    ]);
     saveThenSignalReady();
+}
+
+function denyControlRequest() {
+    if (sessionChannel) {
+        sessionChannel.send({ type: 'broadcast', event: 'control_denied', payload: {} });
+    }
+    showBanner('Seu professor está vendo 👀');
 }
 
 function grantControlToStudent() {
@@ -157,11 +188,17 @@ async function joinSession(sessionId) {
     hasControl = true;
     sessionChannel
         .on('broadcast', { event: 'control_request' }, (msg) => {
-            if (msg.payload?.from === 'teacher' && hasControl) takeControlFromStudent();
+            if (msg.payload?.from === 'teacher' && hasControl) promptControlRequest();
         })
         .on('broadcast', { event: 'control_ready' }, () => {
             // O professor salvou e está liberando de volta pro aluno.
             if (!hasControl) grantControlToStudent();
+        })
+        .on('broadcast', { event: 'session_ended' }, () => {
+            // Professor saiu da tela (botão "voltar" ou fechou/navegou pra
+            // outro lugar) — sem isso o aviso "professor vendo" fica preso
+            // na tela do aluno pra sempre (só sumiria no timeout de 50min).
+            endLocalSession();
         })
         .subscribe((status) => {
             if (status === 'SUBSCRIBED') showBanner('Seu professor está vendo 👀');

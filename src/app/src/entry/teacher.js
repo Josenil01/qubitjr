@@ -193,6 +193,12 @@ async function _startObserving(student) {
         .on('broadcast', { event: 'control_ready' }, () => {
             if (hasControl) _mountControllingEngine();
         })
+        .on('broadcast', { event: 'control_denied' }, () => {
+            hasControl = false;
+            const btn = document.querySelector('.teacherControlBtn');
+            if (btn) { btn.disabled = false; btn.textContent = 'Assumir controle'; }
+            window.alert('O aluno recusou o pedido de controle.');
+        })
         .subscribe();
 
     // Avisa o aluno (via canal de presença da turma) que uma sessão começou.
@@ -317,6 +323,15 @@ function _startHeartbeat() {
 async function _endSession(reason) {
     if (heartbeatTimer) clearInterval(heartbeatTimer);
     heartbeatTimer = null;
+
+    // Avisa o aluno PRIMEIRO (broadcast sobre um websocket já aberto sai
+    // quase na hora) — sem isso o aviso "professor vendo" fica preso na tela
+    // dele pra sempre se o professor só fechar a aba/navegar embora em vez
+    // de clicar em "voltar pra turma".
+    if (sessionChannel) {
+        sessionChannel.send({ type: 'broadcast', event: 'session_ended', payload: {} });
+    }
+
     if (currentSession) {
         await apiFetch(`/teacher/session/${currentSession.sessionId}/end`, {
             method: 'POST',
@@ -329,3 +344,10 @@ async function _endSession(reason) {
     hasControl = false;
     _renderLobby();
 }
+
+// Fechar a aba / navegar pra outro lugar sem clicar em "voltar" não deveria
+// deixar a sessão pendurada (nem o aviso preso na tela do aluno) até o
+// timeout de 50min. pagehide é mais confiável que beforeunload pra isso.
+window.addEventListener('pagehide', () => {
+    if (currentSession) _endSession('teacher_left');
+});

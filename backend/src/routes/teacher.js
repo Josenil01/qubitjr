@@ -35,6 +35,26 @@ function getSupabase() {
     return _supabase;
 }
 
+/**
+ * projects.thumbnail é um JSON cru (ex.: {"pagecount":1,"md5":"foo.png"}),
+ * não uma URL — precisa resolver contra o Supabase Storage. Mesma lógica de
+ * backend/src/routes/share.js (rota pública do player), duplicada aqui
+ * porque os dois módulos não compartilham um helper comum ainda.
+ */
+function resolveThumbnailUrl(supabase, ownerId, thumbnailRaw) {
+    try {
+        const parsed = typeof thumbnailRaw === 'string' ? JSON.parse(thumbnailRaw) : thumbnailRaw;
+        const filename = parsed && parsed.md5 ? parsed.md5 : null;
+        if (!filename) return null;
+        if (filename.startsWith('data:') || filename.startsWith('http')) return filename;
+        const bucket = process.env.SUPABASE_MEDIA_BUCKET || 'media';
+        const { data } = supabase.storage.from(bucket).getPublicUrl(`aluno/${ownerId}/${filename}`);
+        return data && data.publicUrl ? data.publicUrl : null;
+    } catch (_) {
+        return null; // thumbnail ausente/inválido — card mostra o placeholder vazio
+    }
+}
+
 function sessionExpiresAt(startedAt) {
     return new Date(new Date(startedAt).getTime() + SESSION_DURATION_MS);
 }
@@ -110,7 +130,13 @@ router.get('/classroom/:turmaId/students', async (req, res) => {
             return {
                 id: s.id,
                 name: s.name,
-                project: project ? { id: project.id, name: project.name, thumbnail: project.thumbnail } : null,
+                project: project
+                    ? {
+                        id: project.id,
+                        name: project.name,
+                        thumbnail: resolveThumbnailUrl(supabase, s.id, project.thumbnail),
+                    }
+                    : null,
             };
         });
 
