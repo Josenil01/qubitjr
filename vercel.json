@@ -47,6 +47,10 @@
       "dest": "/player.html"
     },
     {
+      "src": "/teacher.html",
+      "dest": "/teacher.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }

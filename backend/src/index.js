@@ -215,10 +215,14 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start Server
-app.listen(PORT, () => {
-  const allowedForLog = Array.from(allowedOrigins);
-  console.log(`
+// Start Server — só quando este arquivo é executado diretamente (npm run
+// backend / npm run dev). Quando importado como módulo (api/index.js, no
+// deploy serverless da Vercel), pular o listen(): a função serverless não
+// precisa (nem pode) segurar uma porta TCP aberta, só exportar o app.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    const allowedForLog = Array.from(allowedOrigins);
+    console.log(`
 ╔════════════════════════════════════════════╗
 ║  🎨 ScratchJr Web Backend                  ║
 ╠════════════════════════════════════════════╣
@@ -227,7 +231,8 @@ app.listen(PORT, () => {
 ║  🌐 CORS mode: ${isProduction ? 'production' : 'development'}${' '.repeat(Math.max(0, 20 - (isProduction ? 10 : 11)))}║
 ║  🔒 Allowed origins: ${allowedForLog.length}${' '.repeat(Math.max(0, 14 - String(allowedForLog.length).length))}║
 ╚════════════════════════════════════════════╝
-  `);
-});
+    `);
+  });
+}
 
 module.exports = app;
