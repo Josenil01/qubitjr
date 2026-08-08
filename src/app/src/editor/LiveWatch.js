@@ -147,7 +147,7 @@ function broadcastPreview() {
 
 async function joinSession(sessionId) {
     currentSessionId = sessionId;
-    const res = await apiPost(`/api/teacher/session/${sessionId}/join`, {});
+    const res = await apiPost(`/teacher/session/${sessionId}/join`, {});
     if (!res || !res.ok) return;
     const data = await res.json();
 
@@ -174,7 +174,7 @@ async function joinSession(sessionId) {
 function startHeartbeat() {
     const tick = async () => {
         if (!currentSessionId) return;
-        const res = await apiPost(`/api/teacher/session/${currentSessionId}/heartbeat`, {});
+        const res = await apiPost(`/teacher/session/${currentSessionId}/heartbeat`, {});
         if (!res || res.status === 410) {
             endLocalSession();
             return;
@@ -200,7 +200,7 @@ function endLocalSession() {
  * (usuário fora do contexto HelloYotta — a maioria).
  */
 async function initLiveWatch() {
-    const res = await apiPost('/api/realtime/presence-token', {});
+    const res = await apiPost('/realtime/presence-token', {});
     if (!res || res.status === 400 || !res.ok) return;
 
     const data = await res.json();
