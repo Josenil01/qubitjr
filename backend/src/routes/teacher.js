@@ -412,9 +412,13 @@ router.put('/session/:sessionId/project', async (req, res) => {
     if (auth.error) return res.status(auth.error).json({ error: auth.message });
 
     try {
+        // projects.mtime é TIMESTAMP de verdade no Postgres — precisa de ISO
+        // 8601, não da string de epoch em ms que o IO.saveProject legado usa
+        // (aquele caminho passa por db.js, que faz essa conversão; esta rota
+        // fala direto com o Supabase, sem passar por lá).
         const { error } = await supabase
             .from('projects')
-            .update({ json, mtime: Date.now().toString() })
+            .update({ json, mtime: new Date().toISOString() })
             .eq('id', auth.session.project_id);
 
         if (error) throw error;
