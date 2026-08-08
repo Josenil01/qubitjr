@@ -286,6 +286,19 @@ function _mountControllingEngine() {
     document.body.classList.add('teacherControlling');
     window.currentProjectMd5 = currentSession.projectId;
 
+    // #frame/#libframe/#paintframe ficam com display:none enquanto é só o
+    // lobby (div.frame tem position:relative + min-height:745px no CSS —
+    // sem escondê-los, sobrariam 745px de espaço em branco na tela da
+    // turma). Precisam ficar visíveis ANTES do appinit, senão o motor
+    // calcula tamanho/posição do palco em cima de um elemento com
+    // display:none (getBoundingClientRect() zerado) e o editor não aparece.
+    ['frame', 'libframe', 'paintframe'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = '';
+    });
+    const lobbyRoot = gn('teacher-root');
+    if (lobbyRoot) lobbyRoot.style.display = 'none';
+
     iOS.getsettings(function (str) {
         const list = str.split(',');
         iOS.path = list[1] === '0' ? list[0] + '/' : undefined;
