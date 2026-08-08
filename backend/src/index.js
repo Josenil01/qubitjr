@@ -117,8 +117,10 @@ const MOCK_CONTEXT = {
 };
 
 async function identityMiddleware(req, res, next) {
-  // Health check não exige autenticação
-  if (req.path === '/health') return next();
+  // Health check não exige autenticação. Local direto (npm run dev) recebe
+  // '/health' sem prefixo; via Vercel (api/index.js) o caminho chega como
+  // '/api/health', já que o roteamento não remove o /api.
+  if (req.path === '/health' || req.path === '/api/health') return next();
 
   const authHeader = req.headers['authorization'];
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -185,9 +187,9 @@ app.use(identityMiddleware);
 // Health Check
 // ============================================
 
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+app.get(['/health', '/api/health'], (req, res) => {
+  res.json({
+    status: 'OK',
     timestamp: new Date().toISOString(),
     version: '1.0.0'
   });
