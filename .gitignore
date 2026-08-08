@@ -1,5 +1,12 @@
 node_modules
 out
+
+# Segredos — nunca versionar. .env.example continua rastreado (é o template).
+.env
+.env.local
+.env.*.local
+backend/.env
+backend/.env.local
 **/.DS_Store
 src/.DS_Store
 src/.DS_Store
