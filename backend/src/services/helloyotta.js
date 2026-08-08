@@ -72,7 +72,11 @@ async function getClassroomRoster(teacherToken, teacherId, turmaId) {
     }
 
     const body = await response.json();
-    return { turmaId, turmaName: body.turmaName, students: body.students || [] };
+    // Resposta real vem envelopada: { success: true, data: { turmaName, students } }
+    // — o e-mail original mostrou o formato sem o envelope, confirmado agora
+    // testando direto contra produção.
+    const data = body.data || body;
+    return { turmaId, turmaName: data.turmaName, students: data.students || [] };
 }
 
 /**

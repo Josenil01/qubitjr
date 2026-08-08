@@ -71,6 +71,35 @@ describe('helloyotta.getClassroomRoster (HELLOYOTTA_MODE=live)', () => {
             global.fetch = originalFetch;
         }
     });
+
+    // Formato real confirmado testando direto contra produção (2026-08): a
+    // resposta vem envelopada em {success, data}, diferente do exemplo plano
+    // do e-mail original — causava lista de alunos sempre vazia em produção.
+    it('unwraps the real {success, data} envelope HelloYotta actually returns', async () => {
+        process.env.HELLOYOTTA_API_URL = 'https://helloyotta.example.com';
+        const { getClassroomRoster } = require('./helloyotta');
+
+        const originalFetch = global.fetch;
+        global.fetch = jest.fn().mockResolvedValue({
+            ok: true,
+            status: 200,
+            json: async () => ({
+                success: true,
+                data: { turmaName: 'Turma X', students: [{ id: 'usr_777', name: 'Zé' }] },
+            }),
+        });
+
+        try {
+            const roster = await getClassroomRoster('teacher-token-abc', 'prof_001', 'turma-x');
+            expect(roster).toEqual({
+                turmaId: 'turma-x',
+                turmaName: 'Turma X',
+                students: [{ id: 'usr_777', name: 'Zé' }],
+            });
+        } finally {
+            global.fetch = originalFetch;
+        }
+    });
 });
 
 describe('helloyotta.verifyStudentToken', () => {
