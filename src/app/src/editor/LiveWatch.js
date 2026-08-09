@@ -68,6 +68,7 @@
 import { connectChannel } from '../services/RealtimeClient.js';
 import { newHTML, gn } from '../utils/lib.js';
 import ScratchJr from './ScratchJr.js';
+import Page from './engine/Page.js';
 import Project from './ui/Project.js';
 import Thumbs from './ui/Thumbs.js';
 import Palette from './ui/Palette.js';
@@ -212,6 +213,25 @@ function reloadProjectFromBackend() {
 }
 
 /**
+ * Cópia rasa de um stageData (topo + cada sub-objeto de sprite) antes de
+ * passar pra `new Page(id, data)` — Page.loadPageData chama
+ * Project.recreateObject por baixo pra cada sprite, e recreateObject muta
+ * `data.page = page` (Project.js:393). Sem copiar, isso poluiria o
+ * stageData ORIGINAL — o mesmo objeto guardado em _lastAppliedStage pro
+ * diff do próximo tick — com uma referência viva à Page (não serializável,
+ * ciclo de DOM). Mesmo cuidado que já existe no passo 3 de applyStageState
+ * pra sprite novo em página já conhecida, agora reaproveitado pra página
+ * nova inteira.
+ */
+function _shallowCopyStageData(stageData) {
+    const copy = Object.assign({}, stageData);
+    (stageData.sprites || []).forEach((id) => {
+        if (copy[id]) copy[id] = Object.assign({}, copy[id]);
+    });
+    return copy;
+}
+
+/**
  * Aplica o estado de palco recebido do professor (payload.stage de
  * preview_frame) diretamente nos objetos Sprite/Page JÁ VIVOS na tela do
  * aluno — sem fotografar nada, sem recriar o motor. Só usa os caminhos
@@ -247,12 +267,16 @@ function applyStageState(stageData) {
     if (!stageData || !ScratchJr.stage) return;
     if (_reloadInFlight) return; // recarga completa já em curso, ignora este tick
 
-    // --- Detectar página nunca vista → só isso ainda cai pra recarga completa
-    // Sprite novo em página já conhecida NÃO cai mais aqui — ver passo 3
-    // abaixo (criação cirúrgica via Project.recreateObject). Página nova
-    // continua caindo pra recarga completa: criar uma Page inteira do zero
-    // é um caso mais raro e maior (fora do escopo desta rodada — ver
-    // declarative-wobbling-penguin.md, seção "Fora de escopo").
+    // --- 0. Página nunca vista → criar cirurgicamente, sem recarga completa
+    // Mesmo caminho que Project.recreatePage() (Project.js:376-379) já usa
+    // pra CADA página durante um load normal (Project.recreate, chamado de
+    // Project.dataRecieved): new Page(id, data, fcn) monta a <div>, o
+    // cenário (this.setBackground) e cada sprite (Project.recreateObject —
+    // o mesmo já auditado/usado no passo 3 abaixo) tudo de uma vez, sem
+    // gravar Undo em nenhum ponto (confirmado lendo o construtor de Page e
+    // loadPageData por completo). Fica invisível (visibility:hidden) até o
+    // Stage.setPage do passo 1 revelar — igual Project.recreatePage faz
+    // manualmente (`page.div.style.visibility = 'hidden';`) logo após criar.
     // ⚠️ stageData.sprites é um array de STRINGS (ids), não de objetos —
     // exatamente como Page.encodePage() (Page.js:350-377) devolve: os dados
     // de cada sprite ficam em chaves separadas no próprio stageData
@@ -261,25 +285,74 @@ function applyStageState(stageData) {
     // sempre undefined, fazendo TODO sprite parecer "nunca visto" pra
     // sempre, mesmo depois de recarregar (a recarga nunca resolvia porque
     // o problema não era o aluno não ter o sprite — era essa leitura errada).
+    //
+    // Bug real confirmado em produção (antes desta correção): página nova
+    // sempre caía na recarga completa (Stage.clear() + reload do backend),
+    // e o timer de settle (RELOAD_SETTLE_MS) reativava _reloadInFlight
+    // antes do reload de verdade terminar, disparando reload de novo — 8+
+    // vezes seguidas no log, cada uma piscando a tela inteira. Isso
+    // acontecia toda vez que o professor adicionava um cenário/página nova,
+    // e ficou mais visível depois que a criação de ATOR novo parou de usar
+    // esse mesmo caminho (correção anterior) — sobrou só página nova usando
+    // a recarga, então o problema que já existia ficou mais evidente.
+    const incomingSpriteIds = stageData.sprites || [];
+    const createdThisTick = new Set();
+    let page;
+    // ⚠️ Capturar ANTES de new Page() — o construtor de Page seta
+    // ScratchJr.stage.currentPage = this SEM PASSAR por Stage.setPage()
+    // (Page.js:26), então depois de criar a página nova, comparar contra
+    // ScratchJr.stage.currentPage já daria "sem mudança nenhuma" (o
+    // construtor já trocou por baixo) — Stage.setPage nunca seria chamado,
+    // e a página nova ficaria visível por padrão (.stagepage não tem
+    // `visibility` no CSS) por cima da que deveria estar escondida, ou
+    // escondida pra sempre se o CSS default fosse o contrário. Guardar o
+    // valor de ANTES resolve isso.
+    const pageWasCurrentBefore = ScratchJr.stage.currentPage;
     const pageKnown = ScratchJr.stage.pages.some((p) => p.id === stageData.id);
+    const isNewPage = !pageKnown; // usado lá embaixo no passo 6 (ver comentário lá)
     if (!pageKnown) {
-        console.log('[DEBUG TEMPORÁRIO][applyStageState] RELOAD disparado — página desconhecida', stageData.id, ScratchJr.stage.pages.map((p) => p.id));
-        _reloadInFlight = true;
-        if (_reloadResetTimer) clearTimeout(_reloadResetTimer);
-        _reloadResetTimer = setTimeout(() => {
-            _reloadInFlight = false;
-            _reloadResetTimer = null;
-        }, RELOAD_SETTLE_MS);
-        _lastAppliedStage = null;
-        _lastSpriteIds = new Set();
-        reloadProjectFromBackend();
-        return; // não aplicar updates parciais em cima de algo que ainda não existe
+        try {
+            page = new Page(stageData.id, _shallowCopyStageData(stageData));
+            // Project.recreatePage() (Project.js:376-379) faz esse mesmo
+            // passo manualmente logo após `new Page(...)` — o construtor
+            // sozinho não esconde a própria <div> (nenhum `visibility` no
+            // CSS .stagepage também), então sem isso a página nova ficaria
+            // visível por cima da atual até o Stage.setPage abaixo assumir.
+            page.div.style.visibility = 'hidden';
+            // Esconder a página ANTERIOR manualmente aqui: Stage.setPage
+            // (passo 1 abaixo) normalmente faz isso sozinho lendo
+            // `this.currentPage` — mas como o construtor de Page já trocou
+            // esse ponteiro pra página NOVA (comentário acima), Stage.setPage
+            // não tem mais como saber qual era a de verdade e nunca a
+            // esconderia — as duas ficariam visíveis sobrepostas no palco.
+            if (pageWasCurrentBefore && pageWasCurrentBefore !== page) {
+                pageWasCurrentBefore.div.style.visibility = 'hidden';
+                pageWasCurrentBefore.setPageSprites('hidden');
+            }
+            incomingSpriteIds.forEach((id) => createdThisTick.add(id));
+        } catch (err) {
+            console.error('[applyStageState] falha ao criar página nova cirurgicamente, caindo pra recarga completa:', err);
+            page = null;
+        }
+        if (!page) {
+            _reloadInFlight = true;
+            if (_reloadResetTimer) clearTimeout(_reloadResetTimer);
+            _reloadResetTimer = setTimeout(() => {
+                _reloadInFlight = false;
+                _reloadResetTimer = null;
+            }, RELOAD_SETTLE_MS);
+            _lastAppliedStage = null;
+            _lastSpriteIds = new Set();
+            reloadProjectFromBackend();
+            return; // não aplicar updates parciais em cima de algo que ainda não existe
+        }
+    } else {
+        page = ScratchJr.stage.getPage(stageData.id);
+        if (!page) return; // defensivo
     }
 
     // --- 1. Página ativa (resolver ANTES de mexer em sprites) -------------
-    const page = ScratchJr.stage.getPage(stageData.id);
-    if (!page) return; // defensivo; pageKnown já garantiu isso acima
-    const pageChanged = !ScratchJr.stage.currentPage || ScratchJr.stage.currentPage.id !== stageData.id;
+    const pageChanged = !pageWasCurrentBefore || pageWasCurrentBefore.id !== stageData.id;
     if (pageChanged) {
         ScratchJr.stage.setPage(page, false); // NUNCA true — ver comentário do topo
     }
@@ -293,11 +366,10 @@ function applyStageState(stageData) {
     // cenário, só pra trocar por outro. Comparar sempre, e mandar 'none'
     // quando o cenário some — Page.setBackground já trata 'none' como caso
     // especial (Page.js:117-121, só limpa e sai, sem asset pra buscar).
+    // Pra página recém-criada no passo 0, isso já bate (setBackground já
+    // rodou dentro de new Page()) e vira um no-op aqui, como esperado.
     if (stageData.md5 !== page.md5) {
-        console.log('[DEBUG TEMPORÁRIO][applyStageState] cenário mudando', { stageDataMd5: stageData.md5, pageMd5Antes: page.md5 });
-        page.setBackground(stageData.md5 || 'none', () => {
-            console.log('[DEBUG TEMPORÁRIO][applyStageState] setBackground callback (carregou) — pageMd5Depois:', page.md5);
-        }); // callback vazio de propósito — nunca updateBkg
+        page.setBackground(stageData.md5 || 'none', () => {}); // callback vazio de propósito — nunca updateBkg
     }
 
     // --- 3. Sprites novos: criar cirurgicamente, sem recarregar a página ---
@@ -314,9 +386,11 @@ function applyStageState(stageData) {
     // page` — sem a cópia, isso poluiria o stageData original (guardado em
     // _lastAppliedStage pra diff do próximo tick) com uma referência viva
     // à Page (não serializável, ciclo de DOM).
-    const incomingSpriteIds = stageData.sprites || [];
-    const createdThisTick = new Set();
+    // Sprites de uma página recém-criada no passo 0 (createdThisTick já
+    // populado lá em cima) caem no `return` logo abaixo — já foram criados
+    // via new Page()/loadPageData(), que usa o mesmo Project.recreateObject.
     incomingSpriteIds.forEach((spriteId) => {
+        if (createdThisTick.has(spriteId)) return; // já criado no passo 0 (página nova) ou nesta própria iteração
         if (gn(spriteId)) return; // já existe no DOM, passo 5 cuida de atualizar
         const sData = stageData[spriteId];
         if (!sData) return; // defensivo — sem dados, nada a criar (tenta de novo no próximo tick)
@@ -410,7 +484,18 @@ function applyStageState(stageData) {
     // desativado de novo). Thumbs.selectThisSprite já chama
     // ScriptsPane.setActiveScript por baixo (via Thumbs.highlighSprite),
     // então isso substitui a chamada antiga por completo, não só complementa.
-    if (stageData.lastSprite && page.currentSpriteName !== stageData.lastSprite) {
+    //
+    // isNewPage força a chamada mesmo se page.currentSpriteName já bater
+    // com stageData.lastSprite: pra página recém-criada no passo 0,
+    // loadPageData já seta currentSpriteName = lastSprite ANTES do
+    // Stage.setPage do passo 1 rodar — e o próprio Stage.setPage desativa
+    // (Scripts.prototype.deactivate) a <div> de scripts de
+    // currentPage.currentSpriteName logo no início dele (Stage.js:118-120),
+    // podendo desfazer a ativação que Project.recreateObject já tinha
+    // feito pro sprite certo. Sem forçar aqui, a checagem de "mudou?"
+    // achava que não tinha nada a fazer (currentSpriteName já era o
+    // esperado) e nunca reativava.
+    if (stageData.lastSprite && (isNewPage || page.currentSpriteName !== stageData.lastSprite)) {
         const selEl = gn(stageData.lastSprite);
         if (selEl && selEl.owner) Thumbs.selectThisSprite(selEl.owner);
     }
@@ -474,7 +559,6 @@ function applyUiState(ui) {
     const wantOpen = !!ui.library;
     if (wantOpen) {
         if (!Library.isOpen || Library.currentType !== ui.library) {
-            console.log('[DEBUG TEMPORÁRIO][applyUiState] biblioteca abrindo/trocando', { uiLibrary: ui.library, isOpenAntes: Library.isOpen, currentTypeAntes: Library.currentType });
             if (Library.isOpen) Library.close(fakeTouchEvent()); // troca de tipo: fecha e reabre com o tipo certo
             Library.open(ui.library);
         }
@@ -494,7 +578,6 @@ function applyUiState(ui) {
             }
         }
     } else if (Library.isOpen) {
-        console.log('[DEBUG TEMPORÁRIO][applyUiState] biblioteca fechando', { uiLibrary: ui.library, currentTypeAntes: Library.currentType });
         Library.close(fakeTouchEvent());
     }
 
