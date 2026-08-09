@@ -30,10 +30,15 @@
  *
  * Além do palco em si, o "chrome" da UI do professor também é espelhado
  * (applyUiState, no mesmo tick de preview_frame): biblioteca de atores/
- * cenários aberta, tela cheia, categoria de bloco selecionada na paleta.
- * A biblioteca espelhada é a MESMA UI clicável do professor — só é segura
- * de mostrar porque showLockOverlay() (abaixo) tem zIndex acima dela
- * também, não só do palco.
+ * cenários aberta (+ rolagem), tela cheia, categoria de bloco selecionada
+ * na paleta, e qual miniatura (biblioteca/tira de atores/tira de páginas)
+ * o mouse do professor está sobrevoando (applyHoverTarget) — destacada com
+ * um box-shadow simples na miniatura correspondente do aluno, não um
+ * cursor/ponteiro seguindo coordenadas de pixel (isso reintroduziria o
+ * problema de viewport que já descartamos lá no desenho original do
+ * "robô"). A biblioteca espelhada é a MESMA UI clicável do professor — só
+ * é segura de mostrar porque showLockOverlay() (abaixo) tem zIndex acima
+ * dela também, não só do palco.
  *
  * Protocolo de handoff (professor → aluno é a única direção com aprovação —
  * aluno pedindo de volta é sempre aceito na hora, ele é o dono da conta):
@@ -81,6 +86,7 @@ let previewTimer = null;
 let bannerEl = null;
 let lockOverlayEl = null;
 let hasControl = false; // true quando o ALUNO está no controle (estado normal)
+let _hoverEl = null; // elemento atualmente destacado por applyHoverState (ver mais abaixo)
 
 // Estado de aplicação incremental de preview_frame (ver applyStageState
 // mais abaixo) — o professor manda o estado do palco inteiro a cada tick,
@@ -473,6 +479,57 @@ function applyUiState(ui) {
     } else if (Library.isOpen) {
         Library.close(fakeTouchEvent());
     }
+
+    applyHoverTarget(ui.hover);
+}
+
+/**
+ * Acha a miniatura (DOM) correspondente a um {kind, id} de _hoverTarget
+ * (teacher.js). Biblioteca: id = md5, e o próprio DOM id do .assetbox já É
+ * o md5 (Library.addAssetThumbChoose/addLocalThumbChoose) — gn() direto
+ * serve. Sprite/página: o DOM id da miniatura é gerado descartável
+ * (getIdFor('spritethumb'/'pagethumb')) — o id de verdade fica na
+ * propriedade JS `.owner` (Sprite.js:189-191/Page.js:228-229), por isso
+ * precisa percorrer os filhos do container em vez de usar gn().
+ */
+function _findHoverElement(hover) {
+    if (!hover) return null;
+    if (hover.kind === 'library') {
+        return gn(hover.id) || null;
+    }
+    const containerId = hover.kind === 'sprite' ? 'spritecc' : hover.kind === 'page' ? 'pagecc' : null;
+    const container = containerId && gn(containerId);
+    if (!container) return null;
+    for (let i = 0; i < container.childElementCount; i++) {
+        if (container.childNodes[i].owner === hover.id) return container.childNodes[i];
+    }
+    return null;
+}
+
+/**
+ * Reflete onde o mouse do professor está passando (biblioteca, tira de
+ * atores, tira de páginas) — NÃO como um cursor/ponteiro flutuante seguindo
+ * pixel a pixel (isso reintroduziria o problema de coordenadas dependentes
+ * de viewport já descartado lá no desenho original), e sim reaproveitando
+ * as próprias miniaturas identificáveis que já existem dos dois lados:
+ * destaca a que corresponde ao {kind, id} recebido com um box-shadow
+ * simples (estilo inline, sem precisar de classe CSS nova) e limpa a
+ * anterior. Autocorretivo por natureza — se o elemento de antes já não
+ * existir mais (ex.: biblioteca fechou, tira foi reconstruída), o pior caso
+ * é escrever num nó órfão, inofensivo.
+ */
+function applyHoverTarget(hover) {
+    if (_hoverEl) {
+        _hoverEl.style.boxShadow = '';
+        _hoverEl.style.borderRadius = '';
+        _hoverEl = null;
+    }
+    const el = _findHoverElement(hover);
+    if (el) {
+        el.style.boxShadow = '0 0 0 4px #ffcc00, 0 0 12px 4px rgba(255, 204, 0, 0.85)';
+        el.style.borderRadius = '8px';
+        _hoverEl = el;
+    }
 }
 
 /**
@@ -485,6 +542,7 @@ function applyUiState(ui) {
 function resetMirroredUi() {
     if (Library.isOpen) Library.close(fakeTouchEvent());
     if (ScratchJr.inFullscreen) ScratchJr.quitFullScreen(fakeTouchEvent());
+    applyHoverTarget(null); // limpa o destaque de hover, se algum ainda estiver aceso
 }
 
 /**

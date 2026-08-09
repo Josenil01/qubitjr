@@ -40,6 +40,7 @@ let sessionChannel = null;
 let currentSession = null; // { sessionId, studentId, realtimeChannel, expiresAt }
 let heartbeatTimer = null;
 let previewTimer = null; // broadcast do que o PROFESSOR está fazendo, pro aluno ver
+let _hoverTarget = null; // { kind: 'library'|'sprite'|'page', id } | null — ver _updateHoverTarget
 let hasControl = false; // true quando o PROFESSOR está no controle
 
 function authHeader() {
@@ -379,6 +380,45 @@ function _libraryScrollFraction() {
     return max > 0 ? area.scrollTop / max : 0;
 }
 
+/**
+ * Rastreia sobre qual miniatura identificável (biblioteca, tira de atores,
+ * tira de páginas) o mouse do professor está passando — NÃO coordenadas de
+ * pixel. Guardamos só um {kind, id} pequeno em _hoverTarget, lido a cada
+ * tick de _broadcastTeacherPreview. Rodar por delegação num único listener
+ * de 'mouseover' (dispara só ao ENTRAR num elemento novo, bem mais barato
+ * que 'mousemove') é seguro chamar sempre, mesmo fora de controle — só
+ * escreve uma variável local, o broadcast em si já é condicionado a
+ * hasControl.
+ *
+ * .assetbox tem o DOM id = o próprio md5 do asset (Library.js:
+ * addAssetThumbChoose/addLocalThumbChoose) — dá pra usar direto. Já
+ * .spritethumb/.pagethumb têm um DOM id gerado descartável; o id de
+ * verdade do sprite/página fica em `.owner` (propriedade JS, não atributo
+ * — Sprite.js:189-191/Page.js:228-229), por isso o aluno também precisa
+ * procurar por `.owner`, não por gn(id) direto (ver applyHoverState).
+ */
+function _updateHoverTarget(e) {
+    const el = e.target;
+    if (!el || !el.closest) return;
+    const assetbox = el.closest('.assetbox');
+    if (assetbox && assetbox.id) {
+        _hoverTarget = { kind: 'library', id: assetbox.id };
+        return;
+    }
+    const spriteThumb = el.closest('.spritethumb');
+    if (spriteThumb && spriteThumb.owner) {
+        _hoverTarget = { kind: 'sprite', id: spriteThumb.owner };
+        return;
+    }
+    const pageThumb = el.closest('.pagethumb');
+    if (pageThumb && pageThumb.owner) {
+        _hoverTarget = { kind: 'page', id: pageThumb.owner };
+        return;
+    }
+    _hoverTarget = null;
+}
+document.addEventListener('mouseover', _updateHoverTarget);
+
 function _broadcastTeacherPreview() {
     if (!sessionChannel || !hasControl) return;
     if (!ScratchJr.stage || !ScratchJr.stage.currentPage) return; // projeto ainda não carregou de verdade
@@ -392,6 +432,7 @@ function _broadcastTeacherPreview() {
             libraryScroll: libraryOpen ? _libraryScrollFraction() : null,
             fullscreen: ScratchJr.inFullscreen,
             category: Palette.numcat,
+            hover: _hoverTarget,
         };
         sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { stage, ui } })
             .catch((err) => {
