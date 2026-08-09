@@ -24,7 +24,11 @@ import { newHTML, gn } from '../utils/lib.js';
 
 const HEARTBEAT_MS = 20000;
 const DEVICE_ID_KEY = 'scratchjr_teacher_device_id';
-const TEACHER_PREVIEW_INTERVAL_MS = 500; // igual ao LiveWatch.js do lado do aluno
+// Payload agora é dado (JSON, ~1KB típico), não mais imagem — sobra muita
+// margem de banda comparado ao limite de payload do Realtime (que rejeitava
+// só a partir de ~330KB). 200ms deixa o movimento no palco do aluno mais
+// próximo de tempo real sem custo relevante de mensagens extras.
+const TEACHER_PREVIEW_INTERVAL_MS = 200;
 
 let apiBase;
 let turmaId;

@@ -190,7 +190,8 @@ function applyStageState(stageData) {
     // --- 1. Página ativa (resolver ANTES de mexer em sprites) -------------
     const page = ScratchJr.stage.getPage(stageData.id);
     if (!page) return; // defensivo; pageKnown já garantiu isso acima
-    if (!ScratchJr.stage.currentPage || ScratchJr.stage.currentPage.id !== stageData.id) {
+    const pageChanged = !ScratchJr.stage.currentPage || ScratchJr.stage.currentPage.id !== stageData.id;
+    if (pageChanged) {
         ScratchJr.stage.setPage(page, false); // NUNCA true — ver comentário do topo
     }
 
@@ -218,12 +219,26 @@ function applyStageState(stageData) {
         if (!el || !el.owner) return; // defensivo; spriteMissing já garantiu isso acima
         const sprite = el.owner;
 
-        if (sprite.xcoor !== sData.xcoor || sprite.ycoor !== sData.ycoor) {
+        // DEBUG TEMPORÁRIO — investigando "tela piscando". Loga só quando
+        // ALGUMA coisa dispara, pra achar o que está re-aplicando a cada
+        // tick mesmo sem mudança real. Remover depois de confirmado.
+        const posChanged = sprite.xcoor !== sData.xcoor || sprite.ycoor !== sData.ycoor;
+        const transformChanged = sprite.scale !== sData.scale
+            || sprite.angle !== sData.angle || sprite.flip !== sData.flip;
+        const shownChanged = sprite.shown !== sData.shown;
+        const costumeChanged = !!sData.md5 && sprite.md5 !== sData.md5;
+        const prevScripts = _lastAppliedStage
+            && (_lastAppliedStage.sprites || []).find((s) => s.id === sData.id);
+        const scriptsChanged = !prevScripts
+            || JSON.stringify(prevScripts.scripts) !== JSON.stringify(sData.scripts);
+        if (pageChanged || posChanged || transformChanged || shownChanged || costumeChanged || scriptsChanged) {
+            console.log('[applyStageState]', sData.id, { pageChanged, posChanged, transformChanged, shownChanged, costumeChanged, scriptsChanged });
+        }
+
+        if (posChanged) {
             sprite.setPos(sData.xcoor, sData.ycoor); // ABSOLUTO — nunca subtrair/calcular delta
         }
 
-        const transformChanged = sprite.scale !== sData.scale
-            || sprite.angle !== sData.angle || sprite.flip !== sData.flip;
         if (transformChanged) {
             sprite.scale = sData.scale;
             sprite.angle = sData.angle;
@@ -231,22 +246,18 @@ function applyStageState(stageData) {
             sprite.render();
         }
 
-        if (sprite.shown !== sData.shown) {
+        if (shownChanged) {
             sprite.shown = sData.shown;
             sprite.div.style.opacity = sprite.shown ? 1 : 0; // render() não mexe em opacidade
         }
 
-        if (sData.md5 && sprite.md5 !== sData.md5) {
+        if (costumeChanged) {
             sprite.md5 = sData.md5;
             sprite.getAsset((dataurl) => {
                 sprite.setCostume(dataurl, () => {}); // callback vazio — bypassa Page.modifySprite de propósito
             });
         }
 
-        const prevScripts = _lastAppliedStage
-            && (_lastAppliedStage.sprites || []).find((s) => s.id === sData.id);
-        const scriptsChanged = !prevScripts
-            || JSON.stringify(prevScripts.scripts) !== JSON.stringify(sData.scripts);
         if (scriptsChanged) {
             const scriptsDiv = gn(sData.id + '_scripts');
             if (scriptsDiv) {
