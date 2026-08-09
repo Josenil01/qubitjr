@@ -18,7 +18,6 @@
 import ScratchJr from '../editor/ScratchJr.js';
 import iOS from '../iPad/iOS.js';
 import IO from '../iPad/IO.js';
-import Project from '../editor/ui/Project.js';
 import Palette from '../editor/ui/Palette.js';
 import { connectChannel } from '../services/RealtimeClient.js';
 import { newHTML, gn } from '../utils/lib.js';
@@ -26,15 +25,6 @@ import { newHTML, gn } from '../utils/lib.js';
 const HEARTBEAT_MS = 20000;
 const DEVICE_ID_KEY = 'scratchjr_teacher_device_id';
 const TEACHER_PREVIEW_INTERVAL_MS = 500; // igual ao LiveWatch.js do lado do aluno
-const PREVIEW_SIZE = { w: 384, h: 288 }; // só usado no fallback (palco sozinho)
-// Confirmado via ack:true (RealtimeClient.js) que o Supabase Realtime
-// rejeita ("error") um broadcast de ~334KB — mensagens pequenas (controle)
-// sempre passaram. 960px de largura gerava PNGs de 200-340KB; 480px+PNG
-// coube no limite mas ficou ilegível. Trocado pra JPEG (bem mais eficiente
-// pra sprite/cenário, que tem gradiente/sombreado) e a resolução subiu de
-// novo — se ainda estourar o limite ou a qualidade continuar baixa, o log
-// de status (_broadcastTeacherPreview) mostra o tamanho real pra ajustar.
-const FULL_PREVIEW_MAX_WIDTH = 720; // captura de #frame inteiro (paleta+scripts+palco), não só o palco
 
 let apiBase;
 let turmaId;
@@ -356,265 +346,35 @@ function _mountControllingEngine() {
 }
 
 /**
- * Pinta um nó (e sua subárvore) no canvas de saída, na mesma ordem em que o
- * navegador pintaria na tela: fundo do próprio elemento primeiro, depois
- * cada filho, em ordem de documento. Sem isso, um <div> com background-color
- * (os painéis lilás da paleta/área de scripts, o fundo da página antes de
- * ter cenário — CSS puro, não <img>/<canvas>) simplesmente não aparecia:
- * a primeira versão só copiava pixels de <canvas>/<img>, ignorando qualquer
- * contêiner só-CSS por baixo deles.
+ * Broadcast do estado do palco pro aluno — não mais uma foto (canvas/
+ * imagem), e sim os DADOS do projeto (posição/costume/scripts de cada
+ * sprite, cenário, página atual). O aluno (LiveWatch.js:applyStageState)
+ * aplica isso direto nos objetos Sprite/Page que já estão vivos na tela
+ * dele, usando as mesmas funções internas que undo/redo e carregamento de
+ * projeto já usam — o motor de verdade desenha, não uma imagem comprimida.
  *
- * <canvas>/<img> são tratados como folha (o conteúdo interno já está
- * "assado" no bitmap, não tem filho relevante pra descer). Blocos em
- * ScratchJr são <canvas> (Block.js: shadow/shine/blockshape/blockicon via
- * getContext('2d')); sprites e fundo de página são <img> (Sprite.js/Page.js:
- * document.createElement('img') com o costume/cenário em img.src).
- *
- * Fora do escopo aqui, de propósito: bordas, sombras, cantos arredondados e
- * gradientes — pra fidelidade 100% pixel-perfect disso precisaria de algo
- * tipo html2canvas (nova dependência, custo por frame bem maior). O editor
- * de pintura (Paint.js) também fica de fora — é SVG, não canvas/img/CSS
- * simples.
- *
- * background-image (logo QUBIT_JR, botão "+" de adicionar sprite, ícones de
- * categoria/botões da barra) É tratado — via cache de <img> resolvido de
- * forma assíncrona (ver _resolveBgImage), só pro caso simples de imagem
- * única sem repetição (background-repeat: no-repeat). Fundos em ladrilho
- * (ex.: a textura "papercut" da faixa de categoria) ficam de fora — replicar
- * tiling certinho é mais trabalho pra um ganho visual pequeno.
+ * Motivo da mudança (era canvas→JPEG antes): ~13.000 mensagens Realtime
+ * numa única sessão de teste (custo real de escala), e o payload de imagem
+ * precisava reduzir resolução/usar JPEG com perdas pra caber no limite de
+ * ~330KB do broadcast do Supabase (qualidade ruim). JSON de projeto (típico
+ * poucos KB) resolve os dois problemas de uma vez — ver
+ * declarative-wobbling-penguin.md pro desenho completo e a tabela de
+ * funções confirmadas seguras de chamar do lado do aluno.
  */
-const _bgImageCache = new Map();
-
-function _extractBgImageUrl(backgroundImageValue) {
-    if (!backgroundImageValue || backgroundImageValue === 'none') return null;
-    const match = /url\((['"]?)(.*?)\1\)/.exec(backgroundImageValue);
-    return match ? match[2] : null;
-}
-
-function _resolveBgImage(url) {
-    let img = _bgImageCache.get(url);
-    if (!img) {
-        // Primeira vez que essa URL aparece: começa a carregar agora (o
-        // navegador já deve ter isso em cache HTTP, já que está sendo
-        // exibido como background em algum lugar da tela) e devolve null
-        // pra este tick — o próximo broadcastTeacherPreview (500ms depois)
-        // já encontra pronto no cache.
-        img = new Image();
-        img.src = url;
-        _bgImageCache.set(url, img);
-    }
-    return (img.complete && img.naturalWidth) ? img : null;
-}
-function _paintNodeIntoCanvas(el, ctx, frameRect, scale) {
-    if (!el || el.nodeType !== 1) return;
-    const style = window.getComputedStyle(el);
-    const opacity = parseFloat(style.opacity);
-    if (style.display === 'none' || style.visibility === 'hidden' || !(opacity > 0)) return;
-
-    const rect = el.getBoundingClientRect();
-    const hasBox = rect.width > 0 && rect.height > 0;
-
-    const x = (rect.left - frameRect.left) * scale;
-    const y = (rect.top - frameRect.top) * scale;
-    const w = rect.width * scale;
-    const h = rect.height * scale;
-
-    // Opacidade fracionária (ex.: .pagethumb.caret — indicador de posição
-    // ao arrastar página, opacity:0.25, quase invisível de propósito) só
-    // era tratada como "0 = pula" ou "qualquer coisa > 0 = pinta 100%
-    // opaco". Isso transformava elementos sutis em retângulos sólidos no
-    // meio da tela. ctx.globalAlpha resolve isso — e ctx.save()/restore()
-    // (já usado pro recorte de overflow) garante que a opacidade do pai
-    // não vaza pra fora da sua própria subárvore, e some corretamente
-    // (multiplicativo) se um filho também tiver a sua própria opacidade.
-    const needsAlphaScope = opacity < 1;
-    const prevAlpha = ctx.globalAlpha;
-    if (needsAlphaScope) ctx.globalAlpha = prevAlpha * opacity;
-
-    try {
-        if (el.tagName === 'CANVAS' || el.tagName === 'IMG') {
-            if (!hasBox) return; // folha sem área própria não tem o que desenhar
-            const ready = el.tagName === 'CANVAS'
-                ? (el.width && el.height)
-                : (el.complete && el.naturalWidth && el.naturalHeight);
-            if (!ready) return;
-            try {
-                ctx.drawImage(el, x, y, w, h);
-            } catch (err) {
-                // Elemento "sujo" (cross-origin, ex.: img sem CORS) travaria
-                // toDataURL() lá na frente — não deveria acontecer aqui
-                // (tudo é gerado/servido localmente), mas um elemento ruim
-                // não pode derrubar o frame inteiro.
-            }
-            return;
-        }
-
-        // Contêiner com caixa própria de tamanho zero (ex.: #library — o
-        // painel esquerdo com o logo e a lista de sprites: seu único filho
-        // em fluxo normal é .spritethumbs, mas o logo .flipme e os cards de
-        // sprite são position:absolute e não contribuem pra altura do pai,
-        // então #library acaba com height:0 mesmo com filhos bem visíveis
-        // na tela) NÃO pode cortar a recursão aqui — os filhos
-        // absolutamente posicionados têm caixa própria, independente da
-        // caixa (vazia) do pai. Só pula a pintura do PRÓPRIO fundo (não tem
-        // o que preencher) e o recorte (recortar por uma caixa vazia
-        // esconderia tudo dentro, errado).
-        const clips = hasBox && (style.overflow === 'hidden' || style.overflow === 'clip'
-            || style.overflowX === 'hidden' || style.overflowY === 'hidden');
-        if (clips) {
-            // Contêineres com overflow:hidden (ex.: .categoryselector da
-            // paleta, que recorta .catbkg — uma faixa de fundo declarada
-            // MAIOR que a área visível) precisam recortar o que é pintado
-            // dentro deles, senão o filho "vaza" pra fora da caixa do pai —
-            // foi assim que .catbkg (background: #f0e8f5) virou um
-            // retângulo lilás cobrindo boa parte da tela em vez da faixa
-            // fina que deveria ser.
-            ctx.save();
-            ctx.beginPath();
-            ctx.rect(x, y, w, h);
-            ctx.clip();
-        }
-
-        try {
-            if (hasBox) {
-                const bg = style.backgroundColor;
-                if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
-                    ctx.fillStyle = bg;
-                    ctx.fillRect(x, y, w, h);
-                }
-
-                // Ícones/logo definidos via CSS background-image (.flipme =
-                // logo QUBIT_JR, botão "+" de adicionar sprite, molduras
-                // .pagethumb.on/.off, vários botões de categoria/barra) —
-                // desenha também quando background-size cobre a caixa
-                // inteira (ex.: "100% 100%" ou "cover"), já que aí o
-                // repeat declarado (ou o padrão "repeat" do shorthand
-                // `background: url(...)` sem mais nada, caso do
-                // .pagethumb) não tem efeito visual nenhum mesmo — só pula
-                // ladrilhos de verdade (ex.: a textura "papercut").
-                if (style.backgroundRepeat === 'no-repeat' || /^(100%\s+100%|cover)$/.test(style.backgroundSize)) {
-                    const bgUrl = _extractBgImageUrl(style.backgroundImage);
-                    if (bgUrl) {
-                        const bgImg = _resolveBgImage(bgUrl);
-                        if (bgImg) {
-                            try {
-                                ctx.drawImage(bgImg, x, y, w, h);
-                            } catch (err) {
-                                // mesmo tratamento de sempre — um recurso
-                                // ruim não pode derrubar o frame inteiro.
-                            }
-                        }
-                    }
-                }
-            }
-
-            for (const child of el.children) {
-                _paintNodeIntoCanvas(child, ctx, frameRect, scale);
-            }
-        } finally {
-            if (clips) ctx.restore();
-        }
-    } finally {
-        if (needsAlphaScope) ctx.globalAlpha = prevAlpha;
-    }
-}
-
-function _captureFrameSnapshot(maxW) {
-    const frameEl = document.getElementById('frame');
-    if (!frameEl) return null;
-    const frameRect = frameEl.getBoundingClientRect();
-    if (!frameRect.width || !frameRect.height) return null;
-
-    // #stage existe assim que appinit monta a UI, mas o carregamento do
-    // projeto (buscar do backend, decodificar SVG do sprite, gerar
-    // watermark colorido — tudo assíncrono, ver Sprite.doRender/
-    // SVGTools.getWatermark/doneProjectLoad) só termina um pouco depois.
-    // Checar só "existe ALGO dentro de #stage" não basta: confirmado via
-    // log real que, ao trocar de página rápido, a página NOVA já aparece
-    // no DOM (existe) mas seus img/canvas ainda não terminaram de carregar
-    // — a página ANTIGA (escondida) já tinha elementos prontos há tempo,
-    // então a checagem de "não vazio" passava, e o frame saía com o palco
-    // em branco mesmo assim (0 elementos da página atual prontos, todos
-    // "notReady"/"invisible"). Por isso a checagem é sobre READY, não
-    // sobre existência bruta. Pular esse tick (em vez de mandar um frame
-    // em branco pro aluno) resolve sozinho: o próximo tick, 500ms depois,
-    // já encontra o conteúdo pronto.
-    const stageEl = document.getElementById('stage');
-    if (stageEl && _stageElementCounts(stageEl).ready === 0) return null;
-
-    const scale = Math.min(1, maxW / frameRect.width);
-    const outW = Math.max(1, Math.round(frameRect.width * scale));
-    const outH = Math.max(1, Math.round(frameRect.height * scale));
-
-    const out = document.createElement('canvas');
-    out.width = outW;
-    out.height = outH;
-    const ctx = out.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, outW, outH);
-
-    _paintNodeIntoCanvas(frameEl, ctx, frameRect, scale);
-
-    // JPEG em vez de PNG: sprites/cenários têm gradiente/sombreado (tipo
-    // foto), onde PNG (sem perdas) comprime mal — era isso que forçava
-    // reduzir tanto a resolução pra caber no limite do Realtime. JPEG
-    // aproveita melhor esse tipo de conteúdo, sobrando espaço pra aumentar
-    // a resolução de novo sem estourar o limite. O fundo já é preenchido de
-    // branco sólido antes de pintar (linha acima), então não corre risco do
-    // fundo preto padrão que apareceria num canvas com áreas transparentes.
-    return out.toDataURL('image/jpeg', 0.85);
-}
-
-function _stageElementCounts(stageEl) {
-    let ready = 0;
-    let notReady = 0;
-    let invisible = 0;
-    stageEl.querySelectorAll('img, canvas').forEach((el) => {
-        const s = window.getComputedStyle(el);
-        const op = parseFloat(s.opacity);
-        if (s.display === 'none' || s.visibility === 'hidden' || !(op > 0)) {
-            invisible++;
-            return;
-        }
-        const r = el.tagName === 'CANVAS' ? !!(el.width && el.height) : !!(el.complete && el.naturalWidth && el.naturalHeight);
-        if (r) ready++; else notReady++;
-    });
-    return { ready, notReady, invisible };
-}
-
 function _broadcastTeacherPreview() {
     if (!sessionChannel || !hasControl) return;
+    if (!ScratchJr.stage || !ScratchJr.stage.currentPage) return; // projeto ainda não carregou de verdade
     try {
-        const dataUrl = _captureFrameSnapshot(FULL_PREVIEW_MAX_WIDTH);
-        if (dataUrl) {
-            // DEBUG TEMPORÁRIO — a composição em si já foi confirmada certa
-            // (ready/invisible batendo com a página atual), mas o aluno
-            // nunca recebeu um preview_frame sequer, mesmo com o professor
-            // gerando normalmente. Suspeita: o Supabase Realtime está
-            // rejeitando o broadcast por causa do tamanho do payload
-            // (~200-300KB em base64) — mensagens pequenas (control_ready,
-            // etc.) sempre chegaram. sessionChannel agora conecta com
-            // ack:true (RealtimeClient.js), então send() aqui devolve o
-            // status real confirmado pelo servidor em vez de ser
-            // fire-and-forget. Remover depois de confirmado.
-            sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { dataUrl } })
-                .then((status) => {
-                    console.log('[teacher preview send]', 'status', status, 'bytes', dataUrl.length);
-                })
-                .catch((err) => {
-                    console.error('[teacher preview send] falhou:', err, 'bytes', dataUrl.length);
-                });
-            return;
-        }
-        // Fallback: se #frame ainda não tiver nenhum canvas (ex.: logo após
-        // o appinit), manda ao menos o palco sozinho em vez de deixar o
-        // aluno sem prévia nenhuma neste tick.
-        if (!ScratchJr.stage || !ScratchJr.stage.pages || !ScratchJr.stage.pages[0]) return;
-        Project.getThumbnailPNG(ScratchJr.stage.pages[0], PREVIEW_SIZE.w, PREVIEW_SIZE.h, function (thumbUrl) {
-            if (sessionChannel) {
-                sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { dataUrl: thumbUrl } });
-            }
-        });
+        const page = ScratchJr.stage.currentPage;
+        const stage = page.encodePage();
+        stage.id = page.id; // encodePage() não inclui isso — o aluno precisa pra achar a página certa
+        sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { stage } })
+            .then((status) => {
+                console.log('[teacher preview send]', 'status', status, 'bytes', JSON.stringify(stage).length);
+            })
+            .catch((err) => {
+                console.error('[teacher preview send] falhou:', err);
+            });
     } catch (err) {
         console.error('[teacher] preview error:', err);
     }

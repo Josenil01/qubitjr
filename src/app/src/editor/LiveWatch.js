@@ -7,13 +7,20 @@
  * (a maioria dos usuários, fora do contexto HelloYotta), o backend responde
  * 400 no primeiro fetch e este módulo não faz mais nada.
  *
- * Modelo de dados (importante): o canal Realtime NUNCA carrega o projeto em
- * si — só sinalização (pedido/entrega de controle) e uma prévia visual leve
- * (imagem, via Project.getThumbnailPNG, gerada localmente, sem rede). O dado
- * de verdade sempre vem do backend, através do mesmo caminho que o app já
- * usa pra abrir/recarregar um projeto (IO.getObject + Project.dataRecieved).
- * Project.recreate() (por baixo de dataRecieved) só roda nos instantes
- * pontuais de troca de controle — nunca em loop.
+ * Modelo de dados: o canal Realtime nunca transmite imagem — enquanto o
+ * ALUNO está no controle, ele manda uma prévia leve (imagem, via
+ * Project.getThumbnailPNG) pro professor ver; enquanto o PROFESSOR está no
+ * controle, ele manda os DADOS do palco (posição/costume/scripts de cada
+ * sprite, cenário, página atual — ver teacher.js:_broadcastTeacherPreview),
+ * e este módulo aplica isso direto nos objetos Sprite/Page já vivos na tela
+ * do aluno (applyStageState), usando as mesmas funções internas que
+ * undo/redo e carregamento de projeto já usam — nunca monta um segundo
+ * motor, nunca fotografa a tela do professor.
+ *
+ * O reload completo do backend (IO.getObject + Project.dataRecieved) fica
+ * reservado pros instantes pontuais de troca de controle e pro caso raro de
+ * sprite/página novo aparecer no meio da sessão (applyStageState detecta e
+ * cai pra recarga completa nesse caso) — nunca roda em loop.
  *
  * Protocolo de handoff (professor → aluno é a única direção com aprovação —
  * aluno pedindo de volta é sempre aceito na hora, ele é o dono da conta):
@@ -26,8 +33,10 @@
  *     projeto do backend (IO.getObject) — pega os dados já salvos no passo 2a.
  *
  * ⚠️ Escopo desta primeira versão:
- *  - A prévia pro lado passivo é uma imagem periódica (não op-sync), com
- *    alguns segundos de atraso — não é um espelho pixel-perfect instantâneo.
+ *  - Aluno→professor ainda é imagem periódica (broadcastPreview, não
+ *    op-sync), com alguns segundos de atraso. Professor→aluno (o caminho
+ *    mais usado, quando o professor está editando) já é aplicação de
+ *    estado real, não imagem.
  *  - O handoff troca o estado local (hasControl) e o aviso na tela, mas NÃO
  *    bloqueia fisicamente a interação do aluno com os blocos enquanto o
  *    professor está no controle — isso exigiria instrumentar Stage/Sprite/
@@ -35,7 +44,7 @@
  */
 
 import { connectChannel } from '../services/RealtimeClient.js';
-import { newHTML } from '../utils/lib.js';
+import { newHTML, gn } from '../utils/lib.js';
 import ScratchJr from './ScratchJr.js';
 import Project from './ui/Project.js';
 import IO from '../iPad/IO.js';
@@ -49,8 +58,17 @@ let sessionChannel = null;
 let currentSessionId = null;
 let previewTimer = null;
 let bannerEl = null;
-let previewEl = null;
 let hasControl = false; // true quando o ALUNO está no controle (estado normal)
+
+// Estado de aplicação incremental de preview_frame (ver applyStageState
+// mais abaixo) — o professor manda o estado do palco inteiro a cada tick,
+// mas só vale a pena tocar no motor (principalmente Scripts.recreateStrip,
+// que reconstrói DOM) no que realmente mudou desde a última aplicação.
+let _reloadInFlight = false; // true enquanto uma recarga completa está em curso
+let _reloadResetTimer = null; // timeout que rearma _reloadInFlight
+let _lastAppliedStage = null; // último stageData já aplicado (pra comparar o que mudou)
+let _lastSpriteIds = new Set(); // ids de sprite do broadcast anterior (detectar sumidos)
+const RELOAD_SETTLE_MS = 3000; // Project.dataRecieved não expõe callback de conclusão utilizável daqui
 
 function authHeader() {
     const token = window.__AUTH_TOKEN__;
@@ -100,40 +118,6 @@ function hideBanner() {
     bannerEl = null;
 }
 
-/**
- * Espelho do que o teacher.js faz em _renderObserving()/_updatePreview() —
- * antes não existia nenhuma UI do lado do aluno pra mostrar a prévia que o
- * professor passa a transmitir (teacher.js:_broadcastTeacherPreview) assim
- * que ele assume o controle; o aluno só via o aviso de texto e não tinha
- * como ver o que estava sendo editado no projeto dele.
- *
- * Desde que _broadcastTeacherPreview passou a mandar #frame inteiro (paleta
- * + scripts + palco, não só o palco), 220px de largura fica pequeno demais
- * pra ler texto de bloco — por isso o tamanho maior e o clique-pra-ampliar
- * (só troca o CSS do <img>, sem nenhuma interação real com o projeto).
- */
-function showPreview() {
-    if (previewEl) return;
-    previewEl = newHTML('img', 'liveWatchPreview', document.body);
-    let expanded = false;
-    Object.assign(previewEl.style, {
-        position: 'fixed', top: '36px', right: '8px', width: '340px',
-        border: '2px solid #4a90d9', borderRadius: '6px', zIndex: '4999',
-        background: '#000', cursor: 'zoom-in', transition: 'width 0.15s ease',
-    });
-    previewEl.title = 'Clique para ampliar';
-    previewEl.onclick = () => {
-        expanded = !expanded;
-        previewEl.style.width = expanded ? 'min(900px, 90vw)' : '340px';
-        previewEl.style.cursor = expanded ? 'zoom-out' : 'zoom-in';
-    };
-}
-
-function hidePreview() {
-    if (previewEl && previewEl.parentNode) previewEl.parentNode.removeChild(previewEl);
-    previewEl = null;
-}
-
 function requestControlBack() {
     if (!sessionChannel) return;
     sessionChannel.send({ type: 'broadcast', event: 'control_request', payload: { from: 'student' } });
@@ -154,6 +138,133 @@ function reloadProjectFromBackend() {
     if (!ScratchJr.currentProject) return;
     if (ScratchJr.stage) ScratchJr.stage.clear();
     IO.getObject(ScratchJr.currentProject, Project.dataRecieved);
+}
+
+/**
+ * Aplica o estado de palco recebido do professor (payload.stage de
+ * preview_frame) diretamente nos objetos Sprite/Page JÁ VIVOS na tela do
+ * aluno — sem fotografar nada, sem recriar o motor. Só usa os caminhos
+ * confirmados seguros (ver declarative-wobbling-penguin.md pra
+ * justificativa/linhas de origem de cada um):
+ *   - Sprite.setPos(x, y) — recebe posição ABSOLUTA apesar do nome dos
+ *     parâmetros no código-fonte (dx, dy) sugerir delta.
+ *   - sprite.scale/angle/flip setados direto + sprite.render().
+ *   - sprite.shown + sprite.div.style.opacity — linha própria, render()
+ *     não mexe em opacidade.
+ *   - Page.setBackground(md5, fcn) com fcn vazio — NUNCA
+ *     Page.prototype.updateBkg (grava undo/marca o projeto como alterado).
+ *   - Stage.setPage(page, false) — NUNCA true (dispararia de verdade os
+ *     scripts de bandeira verde/toque da página nova).
+ *   - Limpar blocos + Scripts.recreateStrip, no mesmo padrão de
+ *     Undo.redoScripts.
+ *   - Page.setCurrentSprite — garante que a área de scripts do aluno
+ *     mostre o sprite que o professor está editando.
+ * NUNCA Page.modifySprite (grava undo e rouba a seleção do aluno) — troca
+ * de costume é feita chamando sprite.getAsset/setCostume direto.
+ */
+function applyStageState(stageData) {
+    if (!stageData || !ScratchJr.stage) return;
+    if (_reloadInFlight) return; // recarga completa já em curso, ignora este tick
+
+    // --- Detectar "isso é novo" (página ou sprite nunca vistos) -----------
+    // Os caminhos abaixo só sabem ATUALIZAR sprites/páginas que já existem
+    // no DOM do aluno — criar um objeto novo do zero exigiria auditar
+    // Project.recreateObject() pra segurança (não feito nesta passada). Cai
+    // pra recarga completa nesse caso, mesmo caminho já testado na troca de
+    // controle.
+    const pageKnown = ScratchJr.stage.pages.some((p) => p.id === stageData.id);
+    const spriteMissing = (stageData.sprites || []).some((s) => !gn(s.id));
+    if (!pageKnown || spriteMissing) {
+        _reloadInFlight = true;
+        if (_reloadResetTimer) clearTimeout(_reloadResetTimer);
+        _reloadResetTimer = setTimeout(() => {
+            _reloadInFlight = false;
+            _reloadResetTimer = null;
+        }, RELOAD_SETTLE_MS);
+        _lastAppliedStage = null;
+        _lastSpriteIds = new Set();
+        reloadProjectFromBackend();
+        return; // não aplicar updates parciais em cima de algo que ainda não existe
+    }
+
+    // --- 1. Página ativa (resolver ANTES de mexer em sprites) -------------
+    const page = ScratchJr.stage.getPage(stageData.id);
+    if (!page) return; // defensivo; pageKnown já garantiu isso acima
+    if (!ScratchJr.stage.currentPage || ScratchJr.stage.currentPage.id !== stageData.id) {
+        ScratchJr.stage.setPage(page, false); // NUNCA true — ver comentário do topo
+    }
+
+    // --- 2. Cenário ---------------------------------------------------------
+    if (stageData.md5 && page.md5 !== stageData.md5) {
+        page.setBackground(stageData.md5, () => {}); // callback vazio de propósito — nunca updateBkg
+    }
+
+    // --- 3. Sprites que existiam e sumiram desde a última aplicação --------
+    const incomingIds = new Set((stageData.sprites || []).map((s) => s.id));
+    _lastSpriteIds.forEach((id) => {
+        if (!incomingIds.has(id)) {
+            const el = gn(id);
+            if (el && el.owner) {
+                const goneSprite = el.owner;
+                goneSprite.shown = false;
+                goneSprite.div.style.opacity = 0;
+            }
+        }
+    });
+
+    // --- 4. Sprites presentes: aplicar só o que mudou -----------------------
+    (stageData.sprites || []).forEach((sData) => {
+        const el = gn(sData.id);
+        if (!el || !el.owner) return; // defensivo; spriteMissing já garantiu isso acima
+        const sprite = el.owner;
+
+        if (sprite.xcoor !== sData.xcoor || sprite.ycoor !== sData.ycoor) {
+            sprite.setPos(sData.xcoor, sData.ycoor); // ABSOLUTO — nunca subtrair/calcular delta
+        }
+
+        const transformChanged = sprite.scale !== sData.scale
+            || sprite.angle !== sData.angle || sprite.flip !== sData.flip;
+        if (transformChanged) {
+            sprite.scale = sData.scale;
+            sprite.angle = sData.angle;
+            sprite.flip = sData.flip;
+            sprite.render();
+        }
+
+        if (sprite.shown !== sData.shown) {
+            sprite.shown = sData.shown;
+            sprite.div.style.opacity = sprite.shown ? 1 : 0; // render() não mexe em opacidade
+        }
+
+        if (sData.md5 && sprite.md5 !== sData.md5) {
+            sprite.md5 = sData.md5;
+            sprite.getAsset((dataurl) => {
+                sprite.setCostume(dataurl, () => {}); // callback vazio — bypassa Page.modifySprite de propósito
+            });
+        }
+
+        const prevScripts = _lastAppliedStage
+            && (_lastAppliedStage.sprites || []).find((s) => s.id === sData.id);
+        const scriptsChanged = !prevScripts
+            || JSON.stringify(prevScripts.scripts) !== JSON.stringify(sData.scripts);
+        if (scriptsChanged) {
+            const scriptsDiv = gn(sData.id + '_scripts');
+            if (scriptsDiv) {
+                const sc = scriptsDiv.owner;
+                while (scriptsDiv.childElementCount > 0) scriptsDiv.removeChild(scriptsDiv.childNodes[0]);
+                (sData.scripts || []).forEach((scr) => sc.recreateStrip(scr));
+            }
+        }
+    });
+
+    // --- 5. Sprite selecionado (mostrar os blocos certos na área de scripts)
+    if (stageData.lastSprite && page.currentSpriteName !== stageData.lastSprite) {
+        const selEl = gn(stageData.lastSprite);
+        if (selEl && selEl.owner) page.setCurrentSprite(selEl.owner);
+    }
+
+    _lastAppliedStage = stageData;
+    _lastSpriteIds = incomingIds;
 }
 
 /**
@@ -192,7 +303,6 @@ function denyControlRequest() {
 
 function grantControlToStudent() {
     hasControl = true;
-    hidePreview();
     showBanner('Seu professor está vendo 👀');
     reloadProjectFromBackend();
 }
@@ -231,22 +341,13 @@ async function joinSession(sessionId) {
             if (!hasControl) grantControlToStudent();
         })
         .on('broadcast', { event: 'preview_frame' }, (msg) => {
-            // DEBUG TEMPORÁRIO — o log do lado do professor mostra a
-            // composição certa sendo gerada e enviada, mas a tela do aluno
-            // não atualiza. Duas hipóteses: (a) a mensagem nem chega até
-            // aqui (Realtime derrubando/atrasando), ou (b) chega mas
-            // `hasControl` (do ALUNO) está com o valor errado e o guard
-            // abaixo descarta o frame silenciosamente. Esse log distingue
-            // as duas. Remover depois.
-            console.log('[LiveWatch preview_frame]', 'recebido, bytes', msg.payload?.dataUrl ? msg.payload.dataUrl.length : 'sem dataUrl', 'hasControl(aluno)', hasControl, 'vai aplicar?', !hasControl && !!msg.payload?.dataUrl);
-            // Só faz sentido mostrar enquanto o PROFESSOR está no controle
+            // Só faz sentido aplicar enquanto o PROFESSOR está no controle
             // (hasControl aqui é do lado do aluno). Quando o aluno está no
-            // controle, esse mesmo evento é o que o aluno ENVIA lá embaixo
-            // em broadcastPreview() — ignorar pra não mostrar a própria
-            // prévia de volta pra ele mesmo.
-            if (!hasControl && msg.payload?.dataUrl) {
-                showPreview();
-                previewEl.src = msg.payload.dataUrl;
+            // controle, esse mesmo evento é o que ELE envia em
+            // broadcastPreview() (formato {dataUrl}, não {stage}) — ignorar
+            // pra não reaplicar o próprio estado nele mesmo.
+            if (!hasControl && msg.payload?.stage) {
+                applyStageState(msg.payload.stage);
             }
         })
         .on('broadcast', { event: 'session_ended' }, () => {
@@ -284,7 +385,6 @@ function endLocalSession() {
     currentSessionId = null;
     hasControl = false;
     hideBanner();
-    hidePreview();
 }
 
 /**
