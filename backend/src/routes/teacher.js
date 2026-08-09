@@ -264,10 +264,22 @@ router.post('/session/:sessionId/join', async (req, res) => {
 
 /**
  * POST /api/teacher/session/:sessionId/heartbeat
- * Confirma que a sessão ainda pertence ao professor e ainda está dentro do
- * limite de 50min. Se já expirou, fecha (end_reason='timeout_50min') e
- * devolve 410 — é o único lugar onde a expiração é aplicada no servidor,
- * já que não há timer em background no modelo serverless.
+ * Confirma que a sessão ainda existe e está dentro do limite de 50min. Se
+ * já expirou, fecha (end_reason='timeout_50min') e devolve 410 — é o único
+ * lugar onde a expiração é aplicada no servidor, já que não há timer em
+ * background no modelo serverless.
+ *
+ * Chamada tanto pelo professor (teacher.js) quanto pelo aluno (LiveWatch.js)
+ * — os dois batem nesta mesma rota a cada 20s pra manter a sessão viva do
+ * seu próprio lado. A checagem de dono por isso aceita QUALQUER um dos
+ * dois (teacher_id OU student_id), não só o professor: com a checagem
+ * antiga (só teacher_id), todo heartbeat do ALUNO dava 404 sempre — não
+ * quebrava nada visivelmente porque o código antigo de LiveWatch.js
+ * ignorava esse status e ficava tentando de novo pra sempre, mas depois
+ * que esse 404 passou a ser tratado como "sessão morta" (pra parar de
+ * bater numa sessão zumbi de verdade), o heartbeat do aluno — que SEMPRE
+ * batia 404 aqui — passou a encerrar a sessão sozinho ~20s depois de toda
+ * observação começar. Confirmado em produção.
  */
 router.post('/session/:sessionId/heartbeat', async (req, res) => {
     const supabase = getSupabase();
@@ -283,7 +295,8 @@ router.post('/session/:sessionId/heartbeat', async (req, res) => {
             .eq('id', sessionId)
             .single();
 
-        if (error || !session || session.teacher_id !== req.userId) {
+        const isOwner = session && (session.teacher_id === req.userId || session.student_id === req.userId);
+        if (error || !session || !isOwner) {
             return res.status(404).json({ error: 'Sessão não encontrada' });
         }
 
