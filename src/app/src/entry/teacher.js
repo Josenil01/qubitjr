@@ -399,14 +399,34 @@ function _paintNodeIntoCanvas(el, ctx, frameRect, scale) {
         return;
     }
 
-    const bg = style.backgroundColor;
-    if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
-        ctx.fillStyle = bg;
-        ctx.fillRect(x, y, w, h);
+    // Contêineres com overflow:hidden (ex.: .categoryselector da paleta,
+    // que recorta .catbkg — uma faixa de fundo declarada MAIOR que a área
+    // visível, ${708 * scaleMultiplier}px de largura contra os
+    // ${354 * scaleMultiplier}px do pai) precisam recortar o que é pintado
+    // dentro deles, senão o filho "vaza" pra fora da caixa do pai — foi
+    // assim que .catbkg (background: #f0e8f5) virou um retângulo lilás
+    // cobrindo boa parte da tela em vez da faixa fina que deveria ser.
+    const clips = style.overflow === 'hidden' || style.overflow === 'clip'
+        || style.overflowX === 'hidden' || style.overflowY === 'hidden';
+    if (clips) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(x, y, w, h);
+        ctx.clip();
     }
 
-    for (const child of el.children) {
-        _paintNodeIntoCanvas(child, ctx, frameRect, scale);
+    try {
+        const bg = style.backgroundColor;
+        if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+            ctx.fillStyle = bg;
+            ctx.fillRect(x, y, w, h);
+        }
+
+        for (const child of el.children) {
+            _paintNodeIntoCanvas(child, ctx, frameRect, scale);
+        }
+    } finally {
+        if (clips) ctx.restore();
     }
 }
 
