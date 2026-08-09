@@ -28,6 +28,13 @@
  * novo do professor piscava a tela inteira do aluno (Stage.clear() +
  * reload) só pra aparecer um sprite.
  *
+ * Além do palco em si, o "chrome" da UI do professor também é espelhado
+ * (applyUiState, no mesmo tick de preview_frame): biblioteca de atores/
+ * cenários aberta, tela cheia, categoria de bloco selecionada na paleta.
+ * A biblioteca espelhada é a MESMA UI clicável do professor — só é segura
+ * de mostrar porque showLockOverlay() (abaixo) tem zIndex acima dela
+ * também, não só do palco.
+ *
  * Protocolo de handoff (professor → aluno é a única direção com aprovação —
  * aluno pedindo de volta é sempre aceito na hora, ele é o dono da conta):
  *  1. Professor manda 'control_request'. Aluno vê um aviso com
@@ -59,6 +66,8 @@ import ScratchJr from './ScratchJr.js';
 import Project from './ui/Project.js';
 import ScriptsPane from './ui/ScriptsPane.js';
 import Thumbs from './ui/Thumbs.js';
+import Palette from './ui/Palette.js';
+import Library from './ui/Library.js';
 import IO from '../iPad/IO.js';
 
 const SESSION_HEARTBEAT_MS = 20000;
@@ -116,7 +125,9 @@ function showBanner(text, buttons = []) {
     if (!bannerEl) {
         bannerEl = newHTML('div', 'liveWatchBanner', document.body);
         Object.assign(bannerEl.style, {
-            position: 'fixed', top: '0', left: '0', right: '0', zIndex: '5000',
+            // zIndex acima do vidro (10500) e da biblioteca espelhada
+            // (.libframe, z-index 10000 no CSS) — ver showLockOverlay abaixo.
+            position: 'fixed', top: '0', left: '0', right: '0', zIndex: '11000',
             background: '#4a90d9', color: 'white', textAlign: 'center',
             padding: '6px 12px', fontSize: '14px', fontFamily: 'Verdana, sans-serif',
         });
@@ -146,15 +157,25 @@ function hideBanner() {
  * (o clique dele e o broadcast do professor) — risco real de corromper o
  * estado, não só uma sobreposição visual incômoda.
  *
- * z-index abaixo do banner (5000) — o aviso e os botões "Aceitar"/"Recusar"/
- * "Pedir controle" continuam clicáveis por cima do vidro.
+ * z-index abaixo do banner (11000) — o aviso e os botões "Aceitar"/
+ * "Recusar"/"Pedir controle" continuam clicáveis por cima do vidro.
+ *
+ * zIndex 10500, ACIMA de .libframe (biblioteca de atores/cenários,
+ * z-index:10000 no CSS — librarymodal.css). Motivo: o espelhamento de UI
+ * (applyUiState, ver mais abaixo) pode abrir a biblioteca de verdade na
+ * tela do aluno pra ele ver o que o professor está escolhendo — mas os
+ * cliques dentro dela continuam com os handlers reais e vivos
+ * (Library.selectAsset → ...→ Page.addSprite de verdade). Sem o vidro por
+ * cima também da biblioteca, o aluno "bloqueado" ainda conseguiria clicar
+ * num personagem e adicionar de verdade no projeto dele — o mesmo risco de
+ * corromper o estado que o vidro inteiro existe pra evitar.
  */
 function showLockOverlay() {
     if (lockOverlayEl) return;
     lockOverlayEl = newHTML('div', 'liveWatchLockOverlay', document.body);
     Object.assign(lockOverlayEl.style, {
         position: 'fixed', top: '0', left: '0', right: '0', bottom: '0',
-        zIndex: '4000', background: 'rgba(0, 0, 0, 0.02)', cursor: 'not-allowed',
+        zIndex: '10500', background: 'rgba(0, 0, 0, 0.02)', cursor: 'not-allowed',
     });
 }
 
@@ -377,6 +398,74 @@ function applyStageState(stageData) {
 }
 
 /**
+ * Algumas funções do motor (ScratchJr.enterFullScreen/quitFullScreen,
+ * Library.close) chamam e.preventDefault()/e.stopPropagation() no evento
+ * que as disparou — como aqui não existe clique/toque real nenhum (é o
+ * broadcast do professor pilotando), um TouchEvent fake basta; mesmo
+ * padrão já usado em Library.cancelPick e no callback de onBackButtonCallback
+ * de ScratchJr.fullScreen.
+ */
+function fakeTouchEvent() {
+    const e = document.createEvent('TouchEvent');
+    e.initTouchEvent();
+    return e;
+}
+
+/**
+ * Aplica o "chrome" da UI do professor — biblioteca aberta, tela cheia,
+ * categoria de bloco selecionada — no motor do aluno, além do palco em si
+ * (applyStageState). Ao contrário de applyStageState, aqui não guarda
+ * snapshot nenhum: cada tick compara direto contra o estado ATUAL do motor
+ * (Library.isOpen/currentType, ScratchJr.inFullscreen, Palette.numcat) —
+ * mais simples e autocorretivo, sem risco da classe de bug de "leitura de
+ * formato errado" que já pegou applyStageState (ver comentário lá em cima).
+ *
+ * ⚠️ Biblioteca: abrir de verdade (Library.open) monta a MESMA UI
+ * clicável que o professor usa — os thumbnails têm onmousedown ligado a
+ * funções reais (Library.selectAsset → ... → Page.addSprite/setBackground).
+ * Só é seguro espelhar isso porque showLockOverlay() agora fica com
+ * zIndex ACIMA de .libframe (10500 > 10000) — o "vidro" cobre a biblioteca
+ * espelhada também, não só o palco. Ver comentário de showLockOverlay.
+ */
+function applyUiState(ui) {
+    if (!ui || !ScratchJr.stage) return;
+
+    if (!!ui.fullscreen !== ScratchJr.inFullscreen) {
+        if (ui.fullscreen) {
+            ScratchJr.enterFullScreen(fakeTouchEvent());
+        } else {
+            ScratchJr.quitFullScreen(fakeTouchEvent());
+        }
+    }
+
+    if (typeof ui.category === 'number' && ui.category !== Palette.numcat) {
+        Palette.selectCategory(ui.category);
+    }
+
+    const wantOpen = !!ui.library;
+    if (wantOpen) {
+        if (!Library.isOpen || Library.currentType !== ui.library) {
+            if (Library.isOpen) Library.close(fakeTouchEvent()); // troca de tipo: fecha e reabre com o tipo certo
+            Library.open(ui.library);
+        }
+    } else if (Library.isOpen) {
+        Library.close(fakeTouchEvent());
+    }
+}
+
+/**
+ * Rede de segurança: se a sessão terminar (ou o controle voltar pro aluno)
+ * enquanto a biblioteca espelhada ou a tela cheia do professor estavam
+ * ativas na tela do aluno, elas ficariam presas assim pra sempre — nada
+ * mais chama applyUiState depois disso pra fechar. Mesmo espírito do
+ * hideLockOverlay() já chamado como rede de segurança em endLocalSession().
+ */
+function resetMirroredUi() {
+    if (Library.isOpen) Library.close(fakeTouchEvent());
+    if (ScratchJr.inFullscreen) ScratchJr.quitFullScreen(fakeTouchEvent());
+}
+
+/**
  * Salva o estado atual antes de soltar o controle, então avisa o outro lado
  * que já pode recarregar. Usa o save forçado que o próprio ScratchJr expõe.
  */
@@ -414,6 +503,7 @@ function denyControlRequest() {
 function grantControlToStudent() {
     hasControl = true;
     hideLockOverlay();
+    resetMirroredUi(); // biblioteca/tela cheia espelhadas não podem ficar presas depois que o controle volta
     showBanner('Seu professor está vendo 👀');
     reloadProjectFromBackend();
 }
@@ -459,6 +549,7 @@ async function joinSession(sessionId) {
             // pra não reaplicar o próprio estado nele mesmo.
             if (!hasControl && msg.payload?.stage) {
                 applyStageState(msg.payload.stage);
+                applyUiState(msg.payload.ui);
             }
         })
         .on('broadcast', { event: 'session_ended' }, () => {
@@ -502,6 +593,7 @@ function endLocalSession() {
     hasControl = false;
     hideBanner();
     hideLockOverlay(); // rede de segurança — sessão pode terminar sem passar por grantControlToStudent()
+    resetMirroredUi(); // idem — biblioteca/tela cheia espelhadas não podem ficar presas
 }
 
 /**

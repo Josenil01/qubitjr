@@ -19,6 +19,7 @@ import ScratchJr from '../editor/ScratchJr.js';
 import iOS from '../iPad/iOS.js';
 import IO from '../iPad/IO.js';
 import Palette from '../editor/ui/Palette.js';
+import Library from '../editor/ui/Library.js';
 import { connectChannel } from '../services/RealtimeClient.js';
 import { newHTML, gn } from '../utils/lib.js';
 
@@ -364,6 +365,12 @@ function _mountControllingEngine() {
  * poucos KB) resolve os dois problemas de uma vez — ver
  * declarative-wobbling-penguin.md pro desenho completo e a tabela de
  * funções confirmadas seguras de chamar do lado do aluno.
+ *
+ * `ui` (adicionado depois, junto no mesmo tick pra não criar outro canal):
+ * biblioteca aberta (e de que tipo), tela cheia, categoria de bloco
+ * selecionada — os três lidos via getters que já existiam ou foram
+ * adicionados pra isso (ScratchJr.inFullscreen, Palette.numcat,
+ * Library.isOpen/currentType), sem duplicar estado nenhum.
  */
 function _broadcastTeacherPreview() {
     if (!sessionChannel || !hasControl) return;
@@ -372,7 +379,12 @@ function _broadcastTeacherPreview() {
         const page = ScratchJr.stage.currentPage;
         const stage = page.encodePage();
         stage.id = page.id; // encodePage() não inclui isso — o aluno precisa pra achar a página certa
-        sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { stage } })
+        const ui = {
+            library: Library.isOpen ? Library.currentType : null,
+            fullscreen: ScratchJr.inFullscreen,
+            category: Palette.numcat,
+        };
+        sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { stage, ui } })
             .catch((err) => {
                 console.error('[teacher preview send] falhou:', err);
             });

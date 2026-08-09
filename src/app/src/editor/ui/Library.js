@@ -19,6 +19,18 @@ let timeoutEvent;
 let libFrame;
 
 export default class Library {
+    // Getters de leitura pra fora do módulo (mesmo padrão de ScratchJr.inFullscreen/
+    // Palette.numcat) — usados pelo espelhamento professor→aluno em teacher.js/
+    // LiveWatch.js pra saber se a biblioteca está aberta e de qual tipo, sem
+    // duplicar o estado interno (`type`/`libFrame` continuam privados ao módulo).
+    static get isOpen () {
+        return !!(libFrame && libFrame.className.indexOf('appear') !== -1);
+    }
+
+    static get currentType () {
+        return type;
+    }
+
     static init () {
         libFrame = document.getElementById('libframe');
         if (!libFrame) {
