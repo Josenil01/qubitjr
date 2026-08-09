@@ -26,7 +26,8 @@ import { newHTML, gn } from '../utils/lib.js';
 const HEARTBEAT_MS = 20000;
 const DEVICE_ID_KEY = 'scratchjr_teacher_device_id';
 const TEACHER_PREVIEW_INTERVAL_MS = 500; // igual ao LiveWatch.js do lado do aluno
-const PREVIEW_SIZE = { w: 384, h: 288 };
+const PREVIEW_SIZE = { w: 384, h: 288 }; // só usado no fallback (palco sozinho)
+const FULL_PREVIEW_MAX_WIDTH = 960; // captura de #frame inteiro (paleta+scripts+palco), não só o palco
 
 let apiBase;
 let turmaId;
@@ -347,14 +348,69 @@ function _mountControllingEngine() {
     previewTimer = setInterval(_broadcastTeacherPreview, TEACHER_PREVIEW_INTERVAL_MS);
 }
 
+/**
+ * Composição em canvas de tudo que está visível dentro de #frame (paleta,
+ * área de scripts e palco) — não só o palco como antes. Todo bloco em
+ * ScratchJr é desenhado em <canvas> próprio (Block.js: shadow/shine/
+ * blockshape/blockicon via getContext('2d')), então dá pra "colar" cada um
+ * no lugar certo com drawImage() — cópia de pixels nativa, sem re-renderizar
+ * nada (ao contrário de uma lib tipo html2canvas). O editor de pintura
+ * (Paint.js) fica de fora de propósito: é SVG, não canvas.
+ */
+function _captureFrameSnapshot(maxW) {
+    const frameEl = document.getElementById('frame');
+    if (!frameEl) return null;
+    const frameRect = frameEl.getBoundingClientRect();
+    if (!frameRect.width || !frameRect.height) return null;
+
+    const scale = Math.min(1, maxW / frameRect.width);
+    const outW = Math.max(1, Math.round(frameRect.width * scale));
+    const outH = Math.max(1, Math.round(frameRect.height * scale));
+
+    const out = document.createElement('canvas');
+    out.width = outW;
+    out.height = outH;
+    const ctx = out.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, outW, outH);
+
+    frameEl.querySelectorAll('canvas').forEach((cnv) => {
+        if (!cnv.width || !cnv.height) return;
+        const rect = cnv.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        const style = window.getComputedStyle(cnv);
+        if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) return;
+        const x = (rect.left - frameRect.left) * scale;
+        const y = (rect.top - frameRect.top) * scale;
+        const w = rect.width * scale;
+        const h = rect.height * scale;
+        try {
+            ctx.drawImage(cnv, x, y, w, h);
+        } catch (err) {
+            // Um canvas "sujo" (cross-origin) travaria toDataURL() lá na
+            // frente — não deveria acontecer aqui (tudo é gerado
+            // localmente), mas um canvas ruim não pode derrubar o frame inteiro.
+        }
+    });
+
+    return out.toDataURL('image/png');
+}
+
 function _broadcastTeacherPreview() {
     if (!sessionChannel || !hasControl) return;
     try {
+        const dataUrl = _captureFrameSnapshot(FULL_PREVIEW_MAX_WIDTH);
+        if (dataUrl) {
+            sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { dataUrl } });
+            return;
+        }
+        // Fallback: se #frame ainda não tiver nenhum canvas (ex.: logo após
+        // o appinit), manda ao menos o palco sozinho em vez de deixar o
+        // aluno sem prévia nenhuma neste tick.
         if (!ScratchJr.stage || !ScratchJr.stage.pages || !ScratchJr.stage.pages[0]) return;
-        const page = ScratchJr.stage.pages[0];
-        Project.getThumbnailPNG(page, PREVIEW_SIZE.w, PREVIEW_SIZE.h, function (dataUrl) {
+        Project.getThumbnailPNG(ScratchJr.stage.pages[0], PREVIEW_SIZE.w, PREVIEW_SIZE.h, function (thumbUrl) {
             if (sessionChannel) {
-                sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { dataUrl } });
+                sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { dataUrl: thumbUrl } });
             }
         });
     } catch (err) {

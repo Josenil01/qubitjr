@@ -106,15 +106,27 @@ function hideBanner() {
  * professor passa a transmitir (teacher.js:_broadcastTeacherPreview) assim
  * que ele assume o controle; o aluno só via o aviso de texto e não tinha
  * como ver o que estava sendo editado no projeto dele.
+ *
+ * Desde que _broadcastTeacherPreview passou a mandar #frame inteiro (paleta
+ * + scripts + palco, não só o palco), 220px de largura fica pequeno demais
+ * pra ler texto de bloco — por isso o tamanho maior e o clique-pra-ampliar
+ * (só troca o CSS do <img>, sem nenhuma interação real com o projeto).
  */
 function showPreview() {
     if (previewEl) return;
     previewEl = newHTML('img', 'liveWatchPreview', document.body);
+    let expanded = false;
     Object.assign(previewEl.style, {
-        position: 'fixed', top: '36px', right: '8px', width: '220px',
+        position: 'fixed', top: '36px', right: '8px', width: '340px',
         border: '2px solid #4a90d9', borderRadius: '6px', zIndex: '4999',
-        background: '#000',
+        background: '#000', cursor: 'zoom-in', transition: 'width 0.15s ease',
     });
+    previewEl.title = 'Clique para ampliar';
+    previewEl.onclick = () => {
+        expanded = !expanded;
+        previewEl.style.width = expanded ? 'min(900px, 90vw)' : '340px';
+        previewEl.style.cursor = expanded ? 'zoom-out' : 'zoom-in';
+    };
 }
 
 function hidePreview() {
