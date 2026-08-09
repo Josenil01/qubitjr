@@ -401,7 +401,8 @@ function _resolveBgImage(url) {
 function _paintNodeIntoCanvas(el, ctx, frameRect, scale) {
     if (!el || el.nodeType !== 1) return;
     const style = window.getComputedStyle(el);
-    if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) return;
+    const opacity = parseFloat(style.opacity);
+    if (style.display === 'none' || style.visibility === 'hidden' || !(opacity > 0)) return;
 
     const rect = el.getBoundingClientRect();
     const hasBox = rect.width > 0 && rect.height > 0;
@@ -411,80 +412,103 @@ function _paintNodeIntoCanvas(el, ctx, frameRect, scale) {
     const w = rect.width * scale;
     const h = rect.height * scale;
 
-    if (el.tagName === 'CANVAS' || el.tagName === 'IMG') {
-        if (!hasBox) return; // folha sem área própria não tem o que desenhar
-        const ready = el.tagName === 'CANVAS'
-            ? (el.width && el.height)
-            : (el.complete && el.naturalWidth && el.naturalHeight);
-        if (!ready) return;
-        try {
-            ctx.drawImage(el, x, y, w, h);
-        } catch (err) {
-            // Elemento "sujo" (cross-origin, ex.: img sem CORS) travaria
-            // toDataURL() lá na frente — não deveria acontecer aqui (tudo é
-            // gerado/servido localmente), mas um elemento ruim não pode
-            // derrubar o frame inteiro.
-        }
-        return;
-    }
-
-    // Contêiner com caixa própria de tamanho zero (ex.: #library — o painel
-    // esquerdo com o logo e a lista de sprites: seu único filho em fluxo
-    // normal é .spritethumbs, mas o logo .flipme e os cards de sprite são
-    // position:absolute e não contribuem pra altura do pai, então #library
-    // acaba com height:0 mesmo com filhos bem visíveis na tela) NÃO pode
-    // cortar a recursão aqui — os filhos absolutamente posicionados têm
-    // caixa própria, independente da caixa (vazia) do pai. Só pula a
-    // pintura do PRÓPRIO fundo (não tem o que preencher) e o recorte
-    // (recortar por uma caixa vazia esconderia tudo dentro, errado).
-    const clips = hasBox && (style.overflow === 'hidden' || style.overflow === 'clip'
-        || style.overflowX === 'hidden' || style.overflowY === 'hidden');
-    if (clips) {
-        // Contêineres com overflow:hidden (ex.: .categoryselector da
-        // paleta, que recorta .catbkg — uma faixa de fundo declarada MAIOR
-        // que a área visível) precisam recortar o que é pintado dentro
-        // deles, senão o filho "vaza" pra fora da caixa do pai — foi assim
-        // que .catbkg (background: #f0e8f5) virou um retângulo lilás
-        // cobrindo boa parte da tela em vez da faixa fina que deveria ser.
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(x, y, w, h);
-        ctx.clip();
-    }
+    // Opacidade fracionária (ex.: .pagethumb.caret — indicador de posição
+    // ao arrastar página, opacity:0.25, quase invisível de propósito) só
+    // era tratada como "0 = pula" ou "qualquer coisa > 0 = pinta 100%
+    // opaco". Isso transformava elementos sutis em retângulos sólidos no
+    // meio da tela. ctx.globalAlpha resolve isso — e ctx.save()/restore()
+    // (já usado pro recorte de overflow) garante que a opacidade do pai
+    // não vaza pra fora da sua própria subárvore, e some corretamente
+    // (multiplicativo) se um filho também tiver a sua própria opacidade.
+    const needsAlphaScope = opacity < 1;
+    const prevAlpha = ctx.globalAlpha;
+    if (needsAlphaScope) ctx.globalAlpha = prevAlpha * opacity;
 
     try {
-        if (hasBox) {
-            const bg = style.backgroundColor;
-            if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
-                ctx.fillStyle = bg;
-                ctx.fillRect(x, y, w, h);
+        if (el.tagName === 'CANVAS' || el.tagName === 'IMG') {
+            if (!hasBox) return; // folha sem área própria não tem o que desenhar
+            const ready = el.tagName === 'CANVAS'
+                ? (el.width && el.height)
+                : (el.complete && el.naturalWidth && el.naturalHeight);
+            if (!ready) return;
+            try {
+                ctx.drawImage(el, x, y, w, h);
+            } catch (err) {
+                // Elemento "sujo" (cross-origin, ex.: img sem CORS) travaria
+                // toDataURL() lá na frente — não deveria acontecer aqui
+                // (tudo é gerado/servido localmente), mas um elemento ruim
+                // não pode derrubar o frame inteiro.
             }
+            return;
+        }
 
-            // Ícones/logo definidos via CSS background-image (.flipme = logo
-            // QUBIT_JR, botão "+" de adicionar sprite, vários botões de
-            // categoria/barra) — só o caso simples, sem repetição de
-            // ladrilho (ver comentário do topo da função).
-            if (style.backgroundRepeat === 'no-repeat') {
-                const bgUrl = _extractBgImageUrl(style.backgroundImage);
-                if (bgUrl) {
-                    const bgImg = _resolveBgImage(bgUrl);
-                    if (bgImg) {
-                        try {
-                            ctx.drawImage(bgImg, x, y, w, h);
-                        } catch (err) {
-                            // mesmo tratamento de sempre — um recurso ruim
-                            // não pode derrubar o frame inteiro.
+        // Contêiner com caixa própria de tamanho zero (ex.: #library — o
+        // painel esquerdo com o logo e a lista de sprites: seu único filho
+        // em fluxo normal é .spritethumbs, mas o logo .flipme e os cards de
+        // sprite são position:absolute e não contribuem pra altura do pai,
+        // então #library acaba com height:0 mesmo com filhos bem visíveis
+        // na tela) NÃO pode cortar a recursão aqui — os filhos
+        // absolutamente posicionados têm caixa própria, independente da
+        // caixa (vazia) do pai. Só pula a pintura do PRÓPRIO fundo (não tem
+        // o que preencher) e o recorte (recortar por uma caixa vazia
+        // esconderia tudo dentro, errado).
+        const clips = hasBox && (style.overflow === 'hidden' || style.overflow === 'clip'
+            || style.overflowX === 'hidden' || style.overflowY === 'hidden');
+        if (clips) {
+            // Contêineres com overflow:hidden (ex.: .categoryselector da
+            // paleta, que recorta .catbkg — uma faixa de fundo declarada
+            // MAIOR que a área visível) precisam recortar o que é pintado
+            // dentro deles, senão o filho "vaza" pra fora da caixa do pai —
+            // foi assim que .catbkg (background: #f0e8f5) virou um
+            // retângulo lilás cobrindo boa parte da tela em vez da faixa
+            // fina que deveria ser.
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(x, y, w, h);
+            ctx.clip();
+        }
+
+        try {
+            if (hasBox) {
+                const bg = style.backgroundColor;
+                if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+                    ctx.fillStyle = bg;
+                    ctx.fillRect(x, y, w, h);
+                }
+
+                // Ícones/logo definidos via CSS background-image (.flipme =
+                // logo QUBIT_JR, botão "+" de adicionar sprite, molduras
+                // .pagethumb.on/.off, vários botões de categoria/barra) —
+                // desenha também quando background-size cobre a caixa
+                // inteira (ex.: "100% 100%" ou "cover"), já que aí o
+                // repeat declarado (ou o padrão "repeat" do shorthand
+                // `background: url(...)` sem mais nada, caso do
+                // .pagethumb) não tem efeito visual nenhum mesmo — só pula
+                // ladrilhos de verdade (ex.: a textura "papercut").
+                if (style.backgroundRepeat === 'no-repeat' || /^(100%\s+100%|cover)$/.test(style.backgroundSize)) {
+                    const bgUrl = _extractBgImageUrl(style.backgroundImage);
+                    if (bgUrl) {
+                        const bgImg = _resolveBgImage(bgUrl);
+                        if (bgImg) {
+                            try {
+                                ctx.drawImage(bgImg, x, y, w, h);
+                            } catch (err) {
+                                // mesmo tratamento de sempre — um recurso
+                                // ruim não pode derrubar o frame inteiro.
+                            }
                         }
                     }
                 }
             }
-        }
 
-        for (const child of el.children) {
-            _paintNodeIntoCanvas(child, ctx, frameRect, scale);
+            for (const child of el.children) {
+                _paintNodeIntoCanvas(child, ctx, frameRect, scale);
+            }
+        } finally {
+            if (clips) ctx.restore();
         }
     } finally {
-        if (clips) ctx.restore();
+        if (needsAlphaScope) ctx.globalAlpha = prevAlpha;
     }
 }
 
