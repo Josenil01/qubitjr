@@ -27,7 +27,12 @@ const HEARTBEAT_MS = 20000;
 const DEVICE_ID_KEY = 'scratchjr_teacher_device_id';
 const TEACHER_PREVIEW_INTERVAL_MS = 500; // igual ao LiveWatch.js do lado do aluno
 const PREVIEW_SIZE = { w: 384, h: 288 }; // só usado no fallback (palco sozinho)
-const FULL_PREVIEW_MAX_WIDTH = 960; // captura de #frame inteiro (paleta+scripts+palco), não só o palco
+// Confirmado via ack:true (RealtimeClient.js) que o Supabase Realtime
+// rejeita ("error") um broadcast de ~334KB — mensagens pequenas (controle)
+// sempre passaram. 960px de largura gerava PNGs de 200-340KB; reduzido pra
+// 480px (área ~4x menor) como primeira tentativa — se ainda estourar o
+// limite, o próximo passo é cair mais ou trocar pra JPEG.
+const FULL_PREVIEW_MAX_WIDTH = 480; // captura de #frame inteiro (paleta+scripts+palco), não só o palco
 
 let apiBase;
 let turmaId;
