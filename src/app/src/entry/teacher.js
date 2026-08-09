@@ -38,6 +38,7 @@ let sessionChannel = null;
 let currentSession = null; // { sessionId, studentId, realtimeChannel, expiresAt }
 let heartbeatTimer = null;
 let previewTimer = null; // broadcast do que o PROFESSOR está fazendo, pro aluno ver
+let _debugLogged = false; // DEBUG TEMPORÁRIO — ver _captureFrameSnapshot
 let hasControl = false; // true quando o PROFESSOR está no controle
 
 function authHeader() {
@@ -506,6 +507,34 @@ function _captureFrameSnapshot(maxW) {
     ctx.fillRect(0, 0, outW, outH);
 
     _paintNodeIntoCanvas(frameEl, ctx, frameRect, scale);
+
+    // DEBUG TEMPORÁRIO — remover depois de descobrir por que #stage/#library
+    // sumiram de novo apesar do fix de contêiner-com-caixa-zero. Loga só uma
+    // vez (não a cada 500ms) pra não afogar o console.
+    if (!_debugLogged) {
+        _debugLogged = true;
+        const stageEl = document.getElementById('stage');
+        const libraryEl = document.getElementById('library');
+        console.log('[teacher preview debug] frameRect', frameRect);
+        if (stageEl) {
+            const stageStyle = window.getComputedStyle(stageEl);
+            console.log('[teacher preview debug] #stage rect', stageEl.getBoundingClientRect(),
+                'overflow', stageStyle.overflow, 'display', stageStyle.display, 'visibility', stageStyle.visibility,
+                'opacity', stageStyle.opacity, 'transform', stageStyle.transform,
+                'children', stageEl.children.length, 'imgs dentro', stageEl.querySelectorAll('img').length,
+                'canvases dentro', stageEl.querySelectorAll('canvas').length);
+        } else {
+            console.log('[teacher preview debug] #stage NÃO encontrado no DOM');
+        }
+        if (libraryEl) {
+            const libStyle = window.getComputedStyle(libraryEl);
+            console.log('[teacher preview debug] #library rect', libraryEl.getBoundingClientRect(),
+                'display', libStyle.display, 'visibility', libStyle.visibility, 'opacity', libStyle.opacity,
+                'children', libraryEl.children.length, 'canvases dentro', libraryEl.querySelectorAll('canvas').length);
+        } else {
+            console.log('[teacher preview debug] #library NÃO encontrado no DOM');
+        }
+    }
 
     return out.toDataURL('image/png');
 }
