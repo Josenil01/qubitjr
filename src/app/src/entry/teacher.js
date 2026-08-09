@@ -522,14 +522,18 @@ function _captureFrameSnapshot(maxW) {
     // projeto (buscar do backend, decodificar SVG do sprite, gerar
     // watermark colorido — tudo assíncrono, ver Sprite.doRender/
     // SVGTools.getWatermark/doneProjectLoad) só termina um pouco depois.
-    // Confirmado via log real: o primeiro tick do preview timer (500ms
-    // após montar) disparava ANTES desse carregamento acabar, e a prévia
-    // saía com o palco genuinamente vazio (0 imgs/canvas dentro de #stage)
-    // — não um bug de composição, só um frame cedo demais. Pular esse tick
-    // (em vez de mandar um frame em branco pro aluno) resolve sozinho: o
-    // próximo tick, 500ms depois, já encontra o sprite renderizado.
+    // Checar só "existe ALGO dentro de #stage" não basta: confirmado via
+    // log real que, ao trocar de página rápido, a página NOVA já aparece
+    // no DOM (existe) mas seus img/canvas ainda não terminaram de carregar
+    // — a página ANTIGA (escondida) já tinha elementos prontos há tempo,
+    // então a checagem de "não vazio" passava, e o frame saía com o palco
+    // em branco mesmo assim (0 elementos da página atual prontos, todos
+    // "notReady"/"invisible"). Por isso a checagem é sobre READY, não
+    // sobre existência bruta. Pular esse tick (em vez de mandar um frame
+    // em branco pro aluno) resolve sozinho: o próximo tick, 500ms depois,
+    // já encontra o conteúdo pronto.
     const stageEl = document.getElementById('stage');
-    if (stageEl && stageEl.querySelectorAll('img, canvas').length === 0) return null;
+    if (stageEl && _stageElementCounts(stageEl).ready === 0) return null;
 
     const scale = Math.min(1, maxW / frameRect.width);
     const outW = Math.max(1, Math.round(frameRect.width * scale));
@@ -547,9 +551,7 @@ function _captureFrameSnapshot(maxW) {
     return out.toDataURL('image/png');
 }
 
-function _debugStageElementCounts() {
-    const stageEl = document.getElementById('stage');
-    if (!stageEl) return 'sem #stage';
+function _stageElementCounts(stageEl) {
     let ready = 0;
     let notReady = 0;
     let invisible = 0;
@@ -563,20 +565,20 @@ function _debugStageElementCounts() {
         const r = el.tagName === 'CANVAS' ? !!(el.width && el.height) : !!(el.complete && el.naturalWidth && el.naturalHeight);
         if (r) ready++; else notReady++;
     });
-    const stageStyle = window.getComputedStyle(stageEl);
-    return `total ${ready + notReady + invisible} ready ${ready} notReady ${notReady} invisible ${invisible} | stage overflow=${stageStyle.overflow} opacity=${stageStyle.opacity} display=${stageStyle.display}`;
+    return { ready, notReady, invisible };
 }
 
 function _broadcastTeacherPreview() {
     if (!sessionChannel || !hasControl) return;
     try {
         const dataUrl = _captureFrameSnapshot(FULL_PREVIEW_MAX_WIDTH);
-        // DEBUG TEMPORÁRIO — investigando "palco trava em branco, bytes
-        // idênticos tick a tick". _debugStageElementCounts() mostra, pra
-        // cada img/canvas dentro de #stage, se está pronto pra desenhar,
-        // ainda carregando, ou sendo pulado por visibilidade/opacidade —
-        // isolando qual checagem está descartando o conteúdo. Remover depois.
-        console.log('[teacher preview tick]', 'page', ScratchJr.stage && ScratchJr.stage.currentPage ? ScratchJr.stage.currentPage.num : '?', 'bytes', dataUrl ? dataUrl.length : 'null (fallback)', '|', _debugStageElementCounts());
+        // DEBUG TEMPORÁRIO — confirmando o fix de "ready===0" acima
+        // (antes só checava existência bruta — total>0 — que dava falso
+        // positivo logo após trocar de página, antes do conteúdo carregar).
+        // Remover depois de confirmado em produção.
+        const stageEl = document.getElementById('stage');
+        const counts = stageEl ? _stageElementCounts(stageEl) : null;
+        console.log('[teacher preview tick]', 'page', ScratchJr.stage && ScratchJr.stage.currentPage ? ScratchJr.stage.currentPage.num : '?', 'bytes', dataUrl ? dataUrl.length : 'null (fallback/skip)', '|', counts ? `ready ${counts.ready} notReady ${counts.notReady} invisible ${counts.invisible}` : 'sem #stage');
         if (dataUrl) {
             sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { dataUrl } });
             return;
