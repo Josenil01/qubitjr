@@ -404,6 +404,19 @@ function applyStageState(stageData) {
                 spr.div.style.visibility = 'visible'; // mesmo padrão de Undo.copySprite
             }
             Thumbs.updateSprites(); // sem isso o ícone do ator novo não aparece na tira de sprites
+            // Page.prototype.drawSpriteImage (Page.js:302-332, chamado por
+            // setPageThumb → pageThumbnail → Thumbs.updatePages) usa
+            // spr.originalImg pra desenhar o ator na miniatura da página — e
+            // simplesmente pula ("if (!img) return", Page.js:306-308) se essa
+            // imagem ainda não carregou. Como esse callback SÓ roda depois do
+            // asset carregar de verdade (Sprite/getAsset), chamar
+            // Thumbs.updatePages() aqui garante que a miniatura da página seja
+            // redesenhada COM o ator novo. Sem isso, a primeira chamada de
+            // Thumbs.updatePages() (dentro de Stage.setPage, passo 1, que roda
+            // ANTES do asset terminar de carregar) desenhava a miniatura sem o
+            // ator, e nada nunca mandava redesenhar de novo — miniatura da
+            // página ficava em branco pra sempre (confirmado em produção).
+            Thumbs.updatePages();
             console.log('[monitor][aluno] ATOR CRIADO (asset carregado)', spriteId);
         }, spriteId === stageData.lastSprite);
     });
