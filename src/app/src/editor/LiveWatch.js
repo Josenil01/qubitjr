@@ -263,6 +263,7 @@ function applyStageState(stageData) {
     // o problema não era o aluno não ter o sprite — era essa leitura errada).
     const pageKnown = ScratchJr.stage.pages.some((p) => p.id === stageData.id);
     if (!pageKnown) {
+        console.log('[DEBUG TEMPORÁRIO][applyStageState] RELOAD disparado — página desconhecida', stageData.id, ScratchJr.stage.pages.map((p) => p.id));
         _reloadInFlight = true;
         if (_reloadResetTimer) clearTimeout(_reloadResetTimer);
         _reloadResetTimer = setTimeout(() => {
@@ -293,7 +294,10 @@ function applyStageState(stageData) {
     // quando o cenário some — Page.setBackground já trata 'none' como caso
     // especial (Page.js:117-121, só limpa e sai, sem asset pra buscar).
     if (stageData.md5 !== page.md5) {
-        page.setBackground(stageData.md5 || 'none', () => {}); // callback vazio de propósito — nunca updateBkg
+        console.log('[DEBUG TEMPORÁRIO][applyStageState] cenário mudando', { stageDataMd5: stageData.md5, pageMd5Antes: page.md5 });
+        page.setBackground(stageData.md5 || 'none', () => {
+            console.log('[DEBUG TEMPORÁRIO][applyStageState] setBackground callback (carregou) — pageMd5Depois:', page.md5);
+        }); // callback vazio de propósito — nunca updateBkg
     }
 
     // --- 3. Sprites novos: criar cirurgicamente, sem recarregar a página ---
@@ -470,6 +474,7 @@ function applyUiState(ui) {
     const wantOpen = !!ui.library;
     if (wantOpen) {
         if (!Library.isOpen || Library.currentType !== ui.library) {
+            console.log('[DEBUG TEMPORÁRIO][applyUiState] biblioteca abrindo/trocando', { uiLibrary: ui.library, isOpenAntes: Library.isOpen, currentTypeAntes: Library.currentType });
             if (Library.isOpen) Library.close(fakeTouchEvent()); // troca de tipo: fecha e reabre com o tipo certo
             Library.open(ui.library);
         }
@@ -489,6 +494,7 @@ function applyUiState(ui) {
             }
         }
     } else if (Library.isOpen) {
+        console.log('[DEBUG TEMPORÁRIO][applyUiState] biblioteca fechando', { uiLibrary: ui.library, currentTypeAntes: Library.currentType });
         Library.close(fakeTouchEvent());
     }
 
