@@ -399,16 +399,23 @@ function applyStageState(stageData) {
 
 /**
  * Algumas funções do motor (ScratchJr.enterFullScreen/quitFullScreen,
- * Library.close) chamam e.preventDefault()/e.stopPropagation() no evento
- * que as disparou — como aqui não existe clique/toque real nenhum (é o
- * broadcast do professor pilotando), um TouchEvent fake basta; mesmo
- * padrão já usado em Library.cancelPick e no callback de onBackButtonCallback
- * de ScratchJr.fullScreen.
+ * Library.close) só chamam e.preventDefault()/e.stopPropagation() no evento
+ * que as disparou (e, por baixo, ScratchJr.unfocus(e) só lê e.target, de
+ * forma opcional) — como aqui não existe clique/toque real nenhum (é o
+ * broadcast do professor pilotando à distância), um Event genérico e
+ * cancelable cobre tudo isso.
+ *
+ * ⚠️ NÃO usar document.createEvent('TouchEvent') + e.initTouchEvent() (o
+ * padrão legado usado em ScratchJr.fullScreen/Library.open pro botão físico
+ * "voltar" do Android) — essa API é instável/ausente em navegador desktop
+ * moderno, e como esses dois pontos só são exercitados pelo hardware de
+ * back do Android, nunca em desktop, o bug nunca tinha aparecido antes.
+ * Confirmado em produção: era exatamente essa a causa da tela cheia não
+ * entrar/sair pro aluno via espelhamento (a chamada de fakeTouchEvent()
+ * lançava exceção antes mesmo de chegar em enterFullScreen/quitFullScreen).
  */
 function fakeTouchEvent() {
-    const e = document.createEvent('TouchEvent');
-    e.initTouchEvent();
-    return e;
+    return new Event('touchstart', { bubbles: true, cancelable: true });
 }
 
 /**
@@ -447,6 +454,21 @@ function applyUiState(ui) {
         if (!Library.isOpen || Library.currentType !== ui.library) {
             if (Library.isOpen) Library.close(fakeTouchEvent()); // troca de tipo: fecha e reabre com o tipo certo
             Library.open(ui.library);
+        }
+        // Rolagem da biblioteca — fração (0..1) de scrollTop/scrollHeight, não
+        // pixel absoluto: telas de tamanhos diferentes têm scrollHeight
+        // diferente (mesmo conteúdo, wrap de grid diferente), então um valor
+        // absoluto ia parar num ponto errado do lado do aluno. Reaplicado a
+        // cada tick (como o resto de applyUiState) — nos primeiros ticks
+        // depois de abrir, os thumbnails ainda estão carregando (addThumbnails
+        // é assíncrono, via IO.query) e scrollHeight ainda não é o final, mas
+        // os próximos ticks se autocorrigem assim que o conteúdo estabiliza.
+        if (typeof ui.libraryScroll === 'number') {
+            const area = gn('scrollarea');
+            if (area) {
+                const max = area.scrollHeight - area.clientHeight;
+                area.scrollTop = max > 0 ? ui.libraryScroll * max : 0;
+            }
         }
     } else if (Library.isOpen) {
         Library.close(fakeTouchEvent());

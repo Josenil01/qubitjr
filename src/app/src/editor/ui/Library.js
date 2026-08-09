@@ -24,7 +24,17 @@ export default class Library {
     // LiveWatch.js pra saber se a biblioteca está aberta e de qual tipo, sem
     // duplicar o estado interno (`type`/`libFrame` continuam privados ao módulo).
     static get isOpen () {
-        return !!(libFrame && libFrame.className.indexOf('appear') !== -1);
+        // ⚠️ NUNCA usar .indexOf('appear') aqui — "disappear" CONTÉM "appear"
+        // como substring ('disappear'.indexOf('appear') === 3, não -1), então
+        // essa checagem dava sempre true depois do primeiro open(), mesmo já
+        // fechado (Library.close() usa exatamente 'libframe disappear').
+        // Bug real confirmado em produção: o professor fechava a biblioteca
+        // (ou selecionava um ator, que fecha por baixo) e ela nunca fechava
+        // do lado do aluno — o getter buscado do LADO DO PROFESSOR também
+        // usa isOpen, então nem o broadcast dele nunca dizia "fechou".
+        // Comparar o token exato da classe evita a colisão de substring.
+        if (!libFrame) return false;
+        return libFrame.className.split(' ').indexOf('appear') !== -1;
     }
 
     static get currentType () {

@@ -367,11 +367,18 @@ function _mountControllingEngine() {
  * funções confirmadas seguras de chamar do lado do aluno.
  *
  * `ui` (adicionado depois, junto no mesmo tick pra não criar outro canal):
- * biblioteca aberta (e de que tipo), tela cheia, categoria de bloco
- * selecionada — os três lidos via getters que já existiam ou foram
+ * biblioteca aberta (e de que tipo, e a rolagem dela), tela cheia, categoria
+ * de bloco selecionada — lidos via getters que já existiam ou foram
  * adicionados pra isso (ScratchJr.inFullscreen, Palette.numcat,
  * Library.isOpen/currentType), sem duplicar estado nenhum.
  */
+function _libraryScrollFraction() {
+    const area = gn('scrollarea');
+    if (!area) return null;
+    const max = area.scrollHeight - area.clientHeight;
+    return max > 0 ? area.scrollTop / max : 0;
+}
+
 function _broadcastTeacherPreview() {
     if (!sessionChannel || !hasControl) return;
     if (!ScratchJr.stage || !ScratchJr.stage.currentPage) return; // projeto ainda não carregou de verdade
@@ -379,8 +386,10 @@ function _broadcastTeacherPreview() {
         const page = ScratchJr.stage.currentPage;
         const stage = page.encodePage();
         stage.id = page.id; // encodePage() não inclui isso — o aluno precisa pra achar a página certa
+        const libraryOpen = Library.isOpen;
         const ui = {
-            library: Library.isOpen ? Library.currentType : null,
+            library: libraryOpen ? Library.currentType : null,
+            libraryScroll: libraryOpen ? _libraryScrollFraction() : null,
             fullscreen: ScratchJr.inFullscreen,
             category: Palette.numcat,
         };
