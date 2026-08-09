@@ -184,10 +184,18 @@ function applyStageState(stageData) {
     // Project.recreateObject() pra segurança (não feito nesta passada). Cai
     // pra recarga completa nesse caso, mesmo caminho já testado na troca de
     // controle.
+    // ⚠️ stageData.sprites é um array de STRINGS (ids), não de objetos —
+    // exatamente como Page.encodePage() (Page.js:350-377) devolve: os dados
+    // de cada sprite ficam em chaves separadas no próprio stageData
+    // (stageData[spriteId]), não aninhados dentro de "sprites". Confirmado
+    // em produção via log: tratar stageData.sprites[i].id retornava
+    // sempre undefined, fazendo TODO sprite parecer "nunca visto" pra
+    // sempre, mesmo depois de recarregar (a recarga nunca resolvia porque
+    // o problema não era o aluno não ter o sprite — era essa leitura errada).
     const pageKnown = ScratchJr.stage.pages.some((p) => p.id === stageData.id);
-    const incomingSpriteIds = (stageData.sprites || []).map((s) => s.id);
+    const incomingSpriteIds = stageData.sprites || [];
     const spriteExistsFlags = incomingSpriteIds.map((id) => `${JSON.stringify(id)}=${!!gn(id)}`);
-    const spriteMissing = (stageData.sprites || []).some((s) => !gn(s.id));
+    const spriteMissing = incomingSpriteIds.some((id) => !gn(id));
     if (!pageKnown || spriteMissing) {
         // DEBUG TEMPORÁRIO — investigando "applyStageState nunca aplica
         // nada". Se isso disparar em TODO tick (mesmo depois da recarga
@@ -229,7 +237,7 @@ function applyStageState(stageData) {
     }
 
     // --- 3. Sprites que existiam e sumiram desde a última aplicação --------
-    const incomingIds = new Set((stageData.sprites || []).map((s) => s.id));
+    const incomingIds = new Set(incomingSpriteIds);
     _lastSpriteIds.forEach((id) => {
         if (!incomingIds.has(id)) {
             const el = gn(id);
@@ -242,8 +250,10 @@ function applyStageState(stageData) {
     });
 
     // --- 4. Sprites presentes: aplicar só o que mudou -----------------------
-    (stageData.sprites || []).forEach((sData) => {
-        const el = gn(sData.id);
+    incomingSpriteIds.forEach((spriteId) => {
+        const sData = stageData[spriteId]; // dados reais do sprite ficam aqui, não dentro de "sprites"
+        if (!sData) return; // defensivo
+        const el = gn(spriteId);
         if (!el || !el.owner) return; // defensivo; spriteMissing já garantiu isso acima
         const sprite = el.owner;
 
@@ -255,12 +265,11 @@ function applyStageState(stageData) {
             || sprite.angle !== sData.angle || sprite.flip !== sData.flip;
         const shownChanged = sprite.shown !== sData.shown;
         const costumeChanged = !!sData.md5 && sprite.md5 !== sData.md5;
-        const prevScripts = _lastAppliedStage
-            && (_lastAppliedStage.sprites || []).find((s) => s.id === sData.id);
-        const scriptsChanged = !prevScripts
-            || JSON.stringify(prevScripts.scripts) !== JSON.stringify(sData.scripts);
+        const prevSData = _lastAppliedStage && _lastAppliedStage[spriteId];
+        const scriptsChanged = !prevSData
+            || JSON.stringify(prevSData.scripts) !== JSON.stringify(sData.scripts);
         if (pageChanged || posChanged || transformChanged || shownChanged || costumeChanged || scriptsChanged) {
-            console.log('[applyStageState]', sData.id, { pageChanged, posChanged, transformChanged, shownChanged, costumeChanged, scriptsChanged });
+            console.log('[applyStageState]', spriteId, { pageChanged, posChanged, transformChanged, shownChanged, costumeChanged, scriptsChanged });
         }
 
         if (posChanged) {
@@ -287,7 +296,7 @@ function applyStageState(stageData) {
         }
 
         if (scriptsChanged) {
-            const scriptsDiv = gn(sData.id + '_scripts');
+            const scriptsDiv = gn(spriteId + '_scripts');
             if (scriptsDiv) {
                 const sc = scriptsDiv.owner;
                 while (scriptsDiv.childElementCount > 0) scriptsDiv.removeChild(scriptsDiv.childNodes[0]);
