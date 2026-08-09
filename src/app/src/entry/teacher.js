@@ -363,20 +363,48 @@ function _mountControllingEngine() {
  * getContext('2d')); sprites e fundo de página são <img> (Sprite.js/Page.js:
  * document.createElement('img') com o costume/cenário em img.src).
  *
- * Fora do escopo aqui, de propósito: bordas, sombras, cantos arredondados,
- * gradientes e background-image (essa última exigiria pré-carregar a URL de
- * forma assíncrona, o que não cabe num loop síncrono a cada 500ms) — pra
- * fidelidade 100% pixel-perfect disso tudo precisaria de algo tipo
- * html2canvas (nova dependência, custo por frame bem maior). O editor de
- * pintura (Paint.js) também fica de fora — é SVG, não canvas/img/CSS simples.
+ * Fora do escopo aqui, de propósito: bordas, sombras, cantos arredondados e
+ * gradientes — pra fidelidade 100% pixel-perfect disso precisaria de algo
+ * tipo html2canvas (nova dependência, custo por frame bem maior). O editor
+ * de pintura (Paint.js) também fica de fora — é SVG, não canvas/img/CSS
+ * simples.
+ *
+ * background-image (logo QUBIT_JR, botão "+" de adicionar sprite, ícones de
+ * categoria/botões da barra) É tratado — via cache de <img> resolvido de
+ * forma assíncrona (ver _resolveBgImage), só pro caso simples de imagem
+ * única sem repetição (background-repeat: no-repeat). Fundos em ladrilho
+ * (ex.: a textura "papercut" da faixa de categoria) ficam de fora — replicar
+ * tiling certinho é mais trabalho pra um ganho visual pequeno.
  */
+const _bgImageCache = new Map();
+
+function _extractBgImageUrl(backgroundImageValue) {
+    if (!backgroundImageValue || backgroundImageValue === 'none') return null;
+    const match = /url\((['"]?)(.*?)\1\)/.exec(backgroundImageValue);
+    return match ? match[2] : null;
+}
+
+function _resolveBgImage(url) {
+    let img = _bgImageCache.get(url);
+    if (!img) {
+        // Primeira vez que essa URL aparece: começa a carregar agora (o
+        // navegador já deve ter isso em cache HTTP, já que está sendo
+        // exibido como background em algum lugar da tela) e devolve null
+        // pra este tick — o próximo broadcastTeacherPreview (500ms depois)
+        // já encontra pronto no cache.
+        img = new Image();
+        img.src = url;
+        _bgImageCache.set(url, img);
+    }
+    return (img.complete && img.naturalWidth) ? img : null;
+}
 function _paintNodeIntoCanvas(el, ctx, frameRect, scale) {
     if (!el || el.nodeType !== 1) return;
     const style = window.getComputedStyle(el);
     if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) return;
 
     const rect = el.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
+    const hasBox = rect.width > 0 && rect.height > 0;
 
     const x = (rect.left - frameRect.left) * scale;
     const y = (rect.top - frameRect.top) * scale;
@@ -384,6 +412,7 @@ function _paintNodeIntoCanvas(el, ctx, frameRect, scale) {
     const h = rect.height * scale;
 
     if (el.tagName === 'CANVAS' || el.tagName === 'IMG') {
+        if (!hasBox) return; // folha sem área própria não tem o que desenhar
         const ready = el.tagName === 'CANVAS'
             ? (el.width && el.height)
             : (el.complete && el.naturalWidth && el.naturalHeight);
@@ -399,16 +428,24 @@ function _paintNodeIntoCanvas(el, ctx, frameRect, scale) {
         return;
     }
 
-    // Contêineres com overflow:hidden (ex.: .categoryselector da paleta,
-    // que recorta .catbkg — uma faixa de fundo declarada MAIOR que a área
-    // visível, ${708 * scaleMultiplier}px de largura contra os
-    // ${354 * scaleMultiplier}px do pai) precisam recortar o que é pintado
-    // dentro deles, senão o filho "vaza" pra fora da caixa do pai — foi
-    // assim que .catbkg (background: #f0e8f5) virou um retângulo lilás
-    // cobrindo boa parte da tela em vez da faixa fina que deveria ser.
-    const clips = style.overflow === 'hidden' || style.overflow === 'clip'
-        || style.overflowX === 'hidden' || style.overflowY === 'hidden';
+    // Contêiner com caixa própria de tamanho zero (ex.: #library — o painel
+    // esquerdo com o logo e a lista de sprites: seu único filho em fluxo
+    // normal é .spritethumbs, mas o logo .flipme e os cards de sprite são
+    // position:absolute e não contribuem pra altura do pai, então #library
+    // acaba com height:0 mesmo com filhos bem visíveis na tela) NÃO pode
+    // cortar a recursão aqui — os filhos absolutamente posicionados têm
+    // caixa própria, independente da caixa (vazia) do pai. Só pula a
+    // pintura do PRÓPRIO fundo (não tem o que preencher) e o recorte
+    // (recortar por uma caixa vazia esconderia tudo dentro, errado).
+    const clips = hasBox && (style.overflow === 'hidden' || style.overflow === 'clip'
+        || style.overflowX === 'hidden' || style.overflowY === 'hidden');
     if (clips) {
+        // Contêineres com overflow:hidden (ex.: .categoryselector da
+        // paleta, que recorta .catbkg — uma faixa de fundo declarada MAIOR
+        // que a área visível) precisam recortar o que é pintado dentro
+        // deles, senão o filho "vaza" pra fora da caixa do pai — foi assim
+        // que .catbkg (background: #f0e8f5) virou um retângulo lilás
+        // cobrindo boa parte da tela em vez da faixa fina que deveria ser.
         ctx.save();
         ctx.beginPath();
         ctx.rect(x, y, w, h);
@@ -416,10 +453,31 @@ function _paintNodeIntoCanvas(el, ctx, frameRect, scale) {
     }
 
     try {
-        const bg = style.backgroundColor;
-        if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
-            ctx.fillStyle = bg;
-            ctx.fillRect(x, y, w, h);
+        if (hasBox) {
+            const bg = style.backgroundColor;
+            if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+                ctx.fillStyle = bg;
+                ctx.fillRect(x, y, w, h);
+            }
+
+            // Ícones/logo definidos via CSS background-image (.flipme = logo
+            // QUBIT_JR, botão "+" de adicionar sprite, vários botões de
+            // categoria/barra) — só o caso simples, sem repetição de
+            // ladrilho (ver comentário do topo da função).
+            if (style.backgroundRepeat === 'no-repeat') {
+                const bgUrl = _extractBgImageUrl(style.backgroundImage);
+                if (bgUrl) {
+                    const bgImg = _resolveBgImage(bgUrl);
+                    if (bgImg) {
+                        try {
+                            ctx.drawImage(bgImg, x, y, w, h);
+                        } catch (err) {
+                            // mesmo tratamento de sempre — um recurso ruim
+                            // não pode derrubar o frame inteiro.
+                        }
+                    }
+                }
+            }
         }
 
         for (const child of el.children) {
