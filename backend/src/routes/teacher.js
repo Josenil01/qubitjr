@@ -4,7 +4,10 @@
  * Rotas do lobby do professor (observação ao vivo de alunos).
  * Autorização de turma vem da HelloYotta (ver services/helloyotta.js);
  * aqui só cruzamos o roster autorizado com os projetos do Supabase.
- * Todas as rotas passam pelo identityMiddleware (req.userId = teacherId).
+ * Todas as rotas passam pelo identityMiddleware — req.userId identifica
+ * quem chamou (professor OU aluno, dependendo do token). Heartbeat e end
+ * são chamados pelos dois lados (ver comentário de cada rota); as
+ * checagens de dono aceitam teacher_id OU student_id por isso.
  *
  * GET  /api/teacher/classroom/:turmaId/students
  * POST /api/teacher/session/start
@@ -321,8 +324,15 @@ router.post('/session/:sessionId/heartbeat', async (req, res) => {
 
 /**
  * POST /api/teacher/session/:sessionId/end
- * Body: { reason: 'teacher_left' | 'switched_student' | 'student_disconnected' }
- * Encerramento explícito (professor saiu, trocou de aluno pela UI, etc).
+ * Body: { reason: 'teacher_left' | 'switched_student' | 'student_disconnected' |
+ *                  'teacher_unresponsive' }
+ * Encerramento explícito. Antes só o professor podia chamar (checagem
+ * `.eq('teacher_id', req.userId)` direto na query) — mas o aluno também
+ * precisa poder encerrar quando a aba do professor trava/some (ver
+ * 'teacher_unresponsive' — LiveWatch.js:_forceRecoverControl, recuperação
+ * forçada depois de ~90s sem notícia do professor). Mesma checagem de dono
+ * (teacher_id OU student_id) já usada em POST .../heartbeat, pelo mesmo
+ * motivo: sem aceitar os dois lados, a chamada do aluno sempre dava 404.
  */
 router.post('/session/:sessionId/end', async (req, res) => {
     const supabase = getSupabase();
@@ -331,21 +341,28 @@ router.post('/session/:sessionId/end', async (req, res) => {
     const sessionId = parseInt(req.params.sessionId, 10);
     if (!sessionId) return res.status(400).json({ error: 'Invalid sessionId' });
 
-    const validReasons = ['teacher_left', 'switched_student', 'student_disconnected'];
+    const validReasons = ['teacher_left', 'switched_student', 'student_disconnected', 'teacher_unresponsive'];
     const reason = validReasons.includes(req.body?.reason) ? req.body.reason : 'teacher_left';
 
     try {
-        const { data: updated, error } = await supabase
+        const { data: session, error: fetchError } = await supabase
+            .from('live_sessions')
+            .select('id, teacher_id, student_id, ended_at')
+            .eq('id', sessionId)
+            .maybeSingle();
+
+        if (fetchError) throw fetchError;
+        const isOwner = session && (session.teacher_id === req.userId || session.student_id === req.userId);
+        if (!session || !isOwner) return res.status(404).json({ error: 'Sessão não encontrada' });
+        if (session.ended_at) return res.status(404).json({ error: 'Sessão não encontrada ou já encerrada' });
+
+        const { error: updateError } = await supabase
             .from('live_sessions')
             .update({ ended_at: new Date().toISOString(), end_reason: reason })
             .eq('id', sessionId)
-            .eq('teacher_id', req.userId)
-            .is('ended_at', null)
-            .select('id')
-            .maybeSingle();
+            .is('ended_at', null);
 
-        if (error) throw error;
-        if (!updated) return res.status(404).json({ error: 'Sessão não encontrada ou já encerrada' });
+        if (updateError) throw updateError;
 
         res.json({ success: true });
     } catch (err) {

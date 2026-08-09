@@ -79,6 +79,18 @@ const SESSION_HEARTBEAT_MS = 20000;
 const PREVIEW_INTERVAL_MS = 500;
 const PREVIEW_SIZE = { w: 384, h: 288 };
 
+// Vigia de professor inativo (ver _checkTeacherWatchdog mais abaixo) —
+// devolve o controle sozinho se o professor sumir (fechou o notebook,
+// perdeu a rede) em vez de deixar o aluno esperando até os 50min de
+// expiração da sessão. Duas camadas: TEACHER_INACTIVITY_MS sem nenhum
+// preview_frame chegando -> pede o controle de volta (o mesmo caminho que
+// já existia pro aluno clicar manualmente); se isso também não resolver em
+// mais CONTROL_READY_TIMEOUT_MS, recupera à força a partir do backend.
+// Valores confirmados com o usuário: ~45s cada camada.
+const TEACHER_INACTIVITY_MS = 45000;
+const CONTROL_READY_TIMEOUT_MS = 45000;
+const WATCHDOG_CHECK_INTERVAL_MS = 10000;
+
 let presenceChannel = null;
 let sessionChannel = null;
 let currentSessionId = null;
@@ -87,6 +99,9 @@ let bannerEl = null;
 let lockOverlayEl = null;
 let hasControl = false; // true quando o ALUNO está no controle (estado normal)
 let _hoverEl = null; // elemento atualmente destacado por applyHoverState (ver mais abaixo)
+let _watchdogTimer = null;
+let _lastPreviewReceivedAt = null; // timestamp do último preview_frame aplicado enquanto o professor está no controle
+let _autoRequestSentAt = null; // timestamp de quando a camada 1 do vigia pediu o controle de volta sozinha
 
 // Estado de aplicação incremental de preview_frame (ver applyStageState
 // mais abaixo) — o professor manda o estado do palco inteiro a cada tick,
@@ -725,6 +740,95 @@ function resetMirroredUi() {
     applyHoverTarget(null); // limpa o destaque de hover, se algum ainda estiver aceso
 }
 
+function _startWatchdog() {
+    _stopWatchdog();
+    _lastPreviewReceivedAt = Date.now(); // começa a contar de agora, não de um preview que talvez nunca tenha chegado ainda
+    _autoRequestSentAt = null;
+    _watchdogTimer = setInterval(_checkTeacherWatchdog, WATCHDOG_CHECK_INTERVAL_MS);
+}
+
+function _stopWatchdog() {
+    if (_watchdogTimer) clearInterval(_watchdogTimer);
+    _watchdogTimer = null;
+    _lastPreviewReceivedAt = null;
+    _autoRequestSentAt = null;
+}
+
+/**
+ * Vigia de professor inativo — roda a cada WATCHDOG_CHECK_INTERVAL_MS
+ * enquanto o professor está no controle (ver _startWatchdog, chamado em
+ * acceptControlRequest). Sem isso, se a aba do professor travar/fechar
+ * (notebook fechado, rede caiu) sem passar por _releaseControl, o aluno
+ * fica esperando até os 50min de expiração da sessão inteira — mesmo já
+ * podendo clicar "Pedir controle" a qualquer momento, isso só resolve se a
+ * aba do professor ainda estiver viva pra processar o pedido.
+ *
+ * Duas camadas:
+ *  1. TEACHER_INACTIVITY_MS sem nenhum preview_frame chegando -> tenta o
+ *     caminho normal (requestControlBack(), o mesmo botão que o aluno já
+ *     tem) sozinho, sem precisar que a criança perceba e clique.
+ *  2. Se isso também não resolver (control_ready nunca chega) depois de
+ *     mais CONTROL_READY_TIMEOUT_MS, a aba do professor provavelmente
+ *     está morta de verdade (não só ele longe do aparelho) —
+ *     _forceRecoverControl() destrava o aluno sem depender mais dela.
+ */
+function _checkTeacherWatchdog() {
+    if (hasControl || !currentSessionId) return; // aluno já está no controle, ou sem sessão — nada a vigiar
+    const now = Date.now();
+    if (_autoRequestSentAt) {
+        if (now - _autoRequestSentAt > CONTROL_READY_TIMEOUT_MS) {
+            _forceRecoverControl();
+        }
+        return;
+    }
+    if (_lastPreviewReceivedAt && (now - _lastPreviewReceivedAt > TEACHER_INACTIVITY_MS)) {
+        console.warn('[LiveWatch] professor inativo há', Math.round((now - _lastPreviewReceivedAt) / 1000), 's — pedindo controle de volta automaticamente');
+        showBanner('Seu professor parece estar inativo. Tentando devolver o controle...');
+        requestControlBack();
+        _autoRequestSentAt = now;
+    }
+}
+
+/**
+ * Camada 2 do vigia: nem o pedido automático de volta resolveu
+ * (control_ready nunca chegou) — a aba do professor provavelmente travou
+ * ou fechou de verdade, não só ele saiu de perto por um instante. Recupera
+ * localmente a partir do último estado salvo no backend em vez de deixar
+ * o aluno preso esperando os 50min de expiração da sessão.
+ *
+ * ⚠️ Trade-off aceito (confirmado com o usuário antes de implementar):
+ * qualquer edição que o professor tenha feito depois de assumir o
+ * controle mas não chegou a salvar (só salva de verdade em
+ * saveThenSignalReady/_releaseControl, do lado dele) se perde — melhor o
+ * aluno voltar a conseguir trabalhar do que ficar travado.
+ *
+ * POST .../session/:id/end com reason 'teacher_unresponsive' — avisa o
+ * backend que essa sessão específica não faz mais sentido continuar
+ * (evita o professor aparecer como "observando" pra sempre no painel dele,
+ * e evita uma resposta tardia da aba zumbi confundir o estado depois).
+ * Precisa da checagem de dono aceitar aluno também, não só professor (ver
+ * backend/src/routes/teacher.js — mesmo ajuste já feito pro heartbeat).
+ *
+ * ⚠️ Reaproveita endLocalSession() pra derrubar heartbeat/canal — não dá
+ * pra só setar hasControl=true e deixar o resto rodando: o heartbeat já
+ * tinha um tick agendado (setTimeout), e assim que o POST .../end abaixo
+ * marcar a sessão como encerrada no backend, esse tick pendente ia receber
+ * 404 e chamar endLocalSession() sozinho — que zera hasControl de volta
+ * pra false, desfazendo a recuperação. Derrubar tudo AQUI (via
+ * endLocalSession) e só depois setar hasControl=true evita essa corrida.
+ */
+function _forceRecoverControl() {
+    console.warn('[LiveWatch] professor sem resposta — recuperando controle à força a partir do backend');
+    const sessionIdToClose = currentSessionId;
+    endLocalSession(); // para heartbeat/canal/vigia, esconde overlay/banner — mas zera hasControl pra false
+    hasControl = true; // ...então corrige aqui: isso é uma recuperação, não um "fim de sessão" qualquer
+    showBanner('Não conseguimos falar com seu professor — recuperando seu projeto...');
+    reloadProjectFromBackend();
+    if (sessionIdToClose) {
+        apiPost(`/teacher/session/${sessionIdToClose}/end`, { reason: 'teacher_unresponsive' });
+    }
+}
+
 /**
  * Salva o estado atual antes de soltar o controle, então avisa o outro lado
  * que já pode recarregar. Usa o save forçado que o próprio ScratchJr expõe.
@@ -751,6 +855,7 @@ function acceptControlRequest() {
         { label: 'Pedir controle', onClick: requestControlBack },
     ]);
     saveThenSignalReady();
+    _startWatchdog(); // devolve sozinho se o professor sumir — ver _checkTeacherWatchdog
 }
 
 function denyControlRequest() {
@@ -764,6 +869,7 @@ function grantControlToStudent() {
     hasControl = true;
     hideLockOverlay();
     resetMirroredUi(); // biblioteca/tela cheia espelhadas não podem ficar presas depois que o controle volta
+    _stopWatchdog(); // controle voltou pelo caminho normal — não tem mais o que vigiar
     showBanner('Seu professor está vendo 👀');
     reloadProjectFromBackend();
 }
@@ -808,6 +914,13 @@ async function joinSession(sessionId) {
             // broadcastPreview() (formato {dataUrl}, não {stage}) — ignorar
             // pra não reaplicar o próprio estado nele mesmo.
             if (!hasControl && msg.payload?.stage) {
+                // Sinal de que o professor está ativo — reseta o vigia de
+                // inatividade (ver _checkTeacherWatchdog). Se ele já tinha
+                // pedido o controle de volta sozinho (camada 1) mas essa
+                // mensagem chegou antes do control_ready, cancela a contagem
+                // da camada 2 — o professor claramente ainda está vivo.
+                _lastPreviewReceivedAt = Date.now();
+                _autoRequestSentAt = null;
                 applyPageList(msg.payload.pageIds); // limpa página apagada ANTES de aplicar a atual
                 applyStageState(msg.payload.stage);
                 applyUiState(msg.payload.ui);
@@ -855,6 +968,7 @@ function endLocalSession() {
     hideBanner();
     hideLockOverlay(); // rede de segurança — sessão pode terminar sem passar por grantControlToStudent()
     resetMirroredUi(); // idem — biblioteca/tela cheia espelhadas não podem ficar presas
+    _stopWatchdog(); // idem — sem sessão, não tem mais professor pra vigiar
 }
 
 /**
