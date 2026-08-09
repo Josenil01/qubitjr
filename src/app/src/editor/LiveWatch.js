@@ -216,8 +216,16 @@ function applyStageState(stageData) {
     }
 
     // --- 2. Cenário ---------------------------------------------------------
-    if (stageData.md5 && page.md5 !== stageData.md5) {
-        page.setBackground(stageData.md5, () => {}); // callback vazio de propósito — nunca updateBkg
+    // Page.encodePage() só grava stageData.md5 quando a página TEM cenário
+    // (Page.js:356-358: `if (md5) data.md5 = md5;`) — se o professor remove
+    // o cenário, stageData.md5 simplesmente não existe no payload (não vira
+    // null, some). A checagem antiga (`stageData.md5 && ...`) exigia
+    // stageData.md5 verdadeiro, então nunca disparava pra REMOVER um
+    // cenário, só pra trocar por outro. Comparar sempre, e mandar 'none'
+    // quando o cenário some — Page.setBackground já trata 'none' como caso
+    // especial (Page.js:117-121, só limpa e sai, sem asset pra buscar).
+    if (stageData.md5 !== page.md5) {
+        page.setBackground(stageData.md5 || 'none', () => {}); // callback vazio de propósito — nunca updateBkg
     }
 
     // --- 3. Sprites que existiam e sumiram desde a última aplicação --------
