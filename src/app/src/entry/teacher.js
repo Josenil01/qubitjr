@@ -183,7 +183,7 @@ async function _startObserving(student) {
     currentSession = { ...data, studentId: student.id, studentName: student.name };
     hasControl = false;
 
-    sessionChannel = connectChannel(data.realtimeChannel);
+    sessionChannel = connectChannel(data.realtimeChannel, { ack: true });
     if (!sessionChannel) {
         window.alert('Canal Realtime não configurado (VITE_SUPABASE_URL/ANON_KEY ausentes).');
         return;
@@ -572,15 +572,24 @@ function _broadcastTeacherPreview() {
     if (!sessionChannel || !hasControl) return;
     try {
         const dataUrl = _captureFrameSnapshot(FULL_PREVIEW_MAX_WIDTH);
-        // DEBUG TEMPORÁRIO — confirmando o fix de "ready===0" acima
-        // (antes só checava existência bruta — total>0 — que dava falso
-        // positivo logo após trocar de página, antes do conteúdo carregar).
-        // Remover depois de confirmado em produção.
-        const stageEl = document.getElementById('stage');
-        const counts = stageEl ? _stageElementCounts(stageEl) : null;
-        console.log('[teacher preview tick]', 'page', ScratchJr.stage && ScratchJr.stage.currentPage ? ScratchJr.stage.currentPage.num : '?', 'bytes', dataUrl ? dataUrl.length : 'null (fallback/skip)', '|', counts ? `ready ${counts.ready} notReady ${counts.notReady} invisible ${counts.invisible}` : 'sem #stage');
         if (dataUrl) {
-            sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { dataUrl } });
+            // DEBUG TEMPORÁRIO — a composição em si já foi confirmada certa
+            // (ready/invisible batendo com a página atual), mas o aluno
+            // nunca recebeu um preview_frame sequer, mesmo com o professor
+            // gerando normalmente. Suspeita: o Supabase Realtime está
+            // rejeitando o broadcast por causa do tamanho do payload
+            // (~200-300KB em base64) — mensagens pequenas (control_ready,
+            // etc.) sempre chegaram. sessionChannel agora conecta com
+            // ack:true (RealtimeClient.js), então send() aqui devolve o
+            // status real confirmado pelo servidor em vez de ser
+            // fire-and-forget. Remover depois de confirmado.
+            sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { dataUrl } })
+                .then((status) => {
+                    console.log('[teacher preview send]', 'status', status, 'bytes', dataUrl.length);
+                })
+                .catch((err) => {
+                    console.error('[teacher preview send] falhou:', err, 'bytes', dataUrl.length);
+                });
             return;
         }
         // Fallback: se #frame ainda não tiver nenhum canvas (ex.: logo após

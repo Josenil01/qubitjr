@@ -36,11 +36,17 @@ function getClient() {
 /**
  * Conecta a um canal público. Devolve null se o Supabase não estiver
  * configurado no frontend.
+ *
+ * opts.ack: quando true, channel.send() devolve uma Promise que só resolve
+ * depois que o servidor confirma o recebimento ('ok' | 'timed out' |
+ * 'error') — sem isso (o padrão do Supabase), send() é fire-and-forget e
+ * não há como saber se o servidor rejeitou uma mensagem (ex.: payload
+ * grande demais) sem essa confirmação.
  */
-function connectChannel(channelName) {
+function connectChannel(channelName, opts = {}) {
     const client = getClient();
     if (!client || !channelName) return null;
-    return client.channel(channelName, { config: { broadcast: { self: false } } });
+    return client.channel(channelName, { config: { broadcast: { self: false, ack: !!opts.ack } } });
 }
 
 export { getClient, connectChannel };
