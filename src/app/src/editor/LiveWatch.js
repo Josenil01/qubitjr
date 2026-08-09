@@ -379,7 +379,12 @@ function startHeartbeat() {
     const tick = async () => {
         if (!currentSessionId) return;
         const res = await apiPost(`/teacher/session/${currentSessionId}/heartbeat`, {});
-        if (!res || res.status === 410) {
+        // 410 = sessão expirou (50min); 404 = sessão não existe mais (ex.: aba
+        // antiga sobrevivendo depois da sessão real já ter terminado/sido
+        // trocada). Os dois são terminais — sem isso, um 404 ficava tentando
+        // de novo pra sempre a cada 20s (visto em produção: uma aba velha
+        // martelando /heartbeat com 404 sem parar).
+        if (!res || res.status === 410 || res.status === 404) {
             endLocalSession();
             return;
         }

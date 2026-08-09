@@ -420,8 +420,15 @@ function _startHeartbeat() {
     heartbeatTimer = setInterval(async () => {
         if (!currentSession) return;
         const res = await apiFetch(`/teacher/session/${currentSession.sessionId}/heartbeat`, { method: 'POST' });
+        // 410 = sessão expirou (50min); 404 = sessão não existe mais — os
+        // dois são terminais. Sem checar 404 aqui, uma aba com sessão morta
+        // (ex.: reaberta depois de já ter terminado do outro lado) ficaria
+        // batendo em /heartbeat pra sempre, a cada 20s, sem nunca sair
+        // desse estado (visto em produção nos logs do aluno).
         if (res.status === 410) {
             window.alert('Sessão de observação expirou (50min).');
+            _endSession();
+        } else if (res.status === 404) {
             _endSession();
         }
     }, HEARTBEAT_MS);
