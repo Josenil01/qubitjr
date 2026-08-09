@@ -547,15 +547,36 @@ function _captureFrameSnapshot(maxW) {
     return out.toDataURL('image/png');
 }
 
+function _debugStageElementCounts() {
+    const stageEl = document.getElementById('stage');
+    if (!stageEl) return 'sem #stage';
+    let ready = 0;
+    let notReady = 0;
+    let invisible = 0;
+    stageEl.querySelectorAll('img, canvas').forEach((el) => {
+        const s = window.getComputedStyle(el);
+        const op = parseFloat(s.opacity);
+        if (s.display === 'none' || s.visibility === 'hidden' || !(op > 0)) {
+            invisible++;
+            return;
+        }
+        const r = el.tagName === 'CANVAS' ? !!(el.width && el.height) : !!(el.complete && el.naturalWidth && el.naturalHeight);
+        if (r) ready++; else notReady++;
+    });
+    const stageStyle = window.getComputedStyle(stageEl);
+    return `total ${ready + notReady + invisible} ready ${ready} notReady ${notReady} invisible ${invisible} | stage overflow=${stageStyle.overflow} opacity=${stageStyle.opacity} display=${stageStyle.display}`;
+}
+
 function _broadcastTeacherPreview() {
     if (!sessionChannel || !hasControl) return;
     try {
         const dataUrl = _captureFrameSnapshot(FULL_PREVIEW_MAX_WIDTH);
-        // DEBUG TEMPORÁRIO — investigando "prévia trava na cena anterior".
-        // currentPage.num confirma se o MODELO JS já trocou de página;
-        // dataUrl.length muda perceptivelmente entre cenas diferentes (fica
-        // igual, tick a tick, se travar de verdade). Remover depois.
-        console.log('[teacher preview tick]', 'page', ScratchJr.stage && ScratchJr.stage.currentPage ? ScratchJr.stage.currentPage.num : '?', 'bytes', dataUrl ? dataUrl.length : 'null (fallback)');
+        // DEBUG TEMPORÁRIO — investigando "palco trava em branco, bytes
+        // idênticos tick a tick". _debugStageElementCounts() mostra, pra
+        // cada img/canvas dentro de #stage, se está pronto pra desenhar,
+        // ainda carregando, ou sendo pulado por visibilidade/opacidade —
+        // isolando qual checagem está descartando o conteúdo. Remover depois.
+        console.log('[teacher preview tick]', 'page', ScratchJr.stage && ScratchJr.stage.currentPage ? ScratchJr.stage.currentPage.num : '?', 'bytes', dataUrl ? dataUrl.length : 'null (fallback)', '|', _debugStageElementCounts());
         if (dataUrl) {
             sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { dataUrl } });
             return;
