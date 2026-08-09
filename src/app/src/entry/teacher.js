@@ -373,9 +373,6 @@ function _broadcastTeacherPreview() {
         const stage = page.encodePage();
         stage.id = page.id; // encodePage() não inclui isso — o aluno precisa pra achar a página certa
         sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { stage } })
-            .then((status) => {
-                console.log('[teacher preview send]', 'status', status, 'bytes', JSON.stringify(stage).length);
-            })
             .catch((err) => {
                 console.error('[teacher preview send] falhou:', err);
             });

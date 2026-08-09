@@ -69,7 +69,12 @@ let _reloadInFlight = false; // true enquanto uma recarga completa está em curs
 let _reloadResetTimer = null; // timeout que rearma _reloadInFlight
 let _lastAppliedStage = null; // último stageData já aplicado (pra comparar o que mudou)
 let _lastSpriteIds = new Set(); // ids de sprite do broadcast anterior (detectar sumidos)
-const RELOAD_SETTLE_MS = 3000; // Project.dataRecieved não expõe callback de conclusão utilizável daqui
+// Project.dataRecieved não expõe callback de conclusão utilizável daqui.
+// Confirmado em produção: criar 2 sprites novos numa página nova levou ~4
+// ciclos (12s) pra estabilizar com 3000ms — a recarga em si é bem mais
+// rápida que isso na prática, 1200ms dá folga suficiente sem esticar tanto
+// o "flash" visual.
+const RELOAD_SETTLE_MS = 1200;
 
 function authHeader() {
     const token = window.__AUTH_TOKEN__;
@@ -169,14 +174,8 @@ function reloadProjectFromBackend() {
  * de costume é feita chamando sprite.getAsset/setCostume direto.
  */
 function applyStageState(stageData) {
-    if (!stageData || !ScratchJr.stage) {
-        console.log('[applyStageState] saída antecipada: stageData ou ScratchJr.stage ausente', !!stageData, !!ScratchJr.stage);
-        return;
-    }
-    if (_reloadInFlight) {
-        console.log('[applyStageState] pulando tick — recarga em curso (_reloadInFlight)');
-        return;
-    }
+    if (!stageData || !ScratchJr.stage) return;
+    if (_reloadInFlight) return; // recarga completa já em curso, ignora este tick
 
     // --- Detectar "isso é novo" (página ou sprite nunca vistos) -----------
     // Os caminhos abaixo só sabem ATUALIZAR sprites/páginas que já existem
@@ -194,23 +193,8 @@ function applyStageState(stageData) {
     // o problema não era o aluno não ter o sprite — era essa leitura errada).
     const pageKnown = ScratchJr.stage.pages.some((p) => p.id === stageData.id);
     const incomingSpriteIds = stageData.sprites || [];
-    const spriteExistsFlags = incomingSpriteIds.map((id) => `${JSON.stringify(id)}=${!!gn(id)}`);
     const spriteMissing = incomingSpriteIds.some((id) => !gn(id));
     if (!pageKnown || spriteMissing) {
-        // DEBUG TEMPORÁRIO — investigando "applyStageState nunca aplica
-        // nada". Se isso disparar em TODO tick (mesmo depois da recarga
-        // completar), o id da página ou de algum sprite nunca bate com o
-        // que o aluno tem, e a função nunca sai desse branch. Imprime os
-        // valores direto em texto (não objeto/array aninhado) pra dar pra
-        // copiar sem precisar expandir nada no DevTools. Remover depois de
-        // confirmado.
-        console.log(
-            '[applyStageState] "isso é novo" — caindo pra recarga completa'
-            + ' | stageData.id=' + JSON.stringify(stageData.id)
-            + ' | pageKnown=' + pageKnown
-            + ' | paginasConhecidas=' + JSON.stringify(ScratchJr.stage.pages.map((p) => p.id))
-            + ' | spritesRecebidos(id=existeNoDOM)=' + spriteExistsFlags.join(', ')
-        );
         _reloadInFlight = true;
         if (_reloadResetTimer) clearTimeout(_reloadResetTimer);
         _reloadResetTimer = setTimeout(() => {
@@ -257,9 +241,6 @@ function applyStageState(stageData) {
         if (!el || !el.owner) return; // defensivo; spriteMissing já garantiu isso acima
         const sprite = el.owner;
 
-        // DEBUG TEMPORÁRIO — investigando "tela piscando". Loga só quando
-        // ALGUMA coisa dispara, pra achar o que está re-aplicando a cada
-        // tick mesmo sem mudança real. Remover depois de confirmado.
         const posChanged = sprite.xcoor !== sData.xcoor || sprite.ycoor !== sData.ycoor;
         const transformChanged = sprite.scale !== sData.scale
             || sprite.angle !== sData.angle || sprite.flip !== sData.flip;
@@ -268,9 +249,6 @@ function applyStageState(stageData) {
         const prevSData = _lastAppliedStage && _lastAppliedStage[spriteId];
         const scriptsChanged = !prevSData
             || JSON.stringify(prevSData.scripts) !== JSON.stringify(sData.scripts);
-        if (pageChanged || posChanged || transformChanged || shownChanged || costumeChanged || scriptsChanged) {
-            console.log('[applyStageState]', spriteId, { pageChanged, posChanged, transformChanged, shownChanged, costumeChanged, scriptsChanged });
-        }
 
         if (posChanged) {
             sprite.setPos(sData.xcoor, sData.ycoor); // ABSOLUTO — nunca subtrair/calcular delta
@@ -402,10 +380,6 @@ async function joinSession(sessionId) {
             // controle, esse mesmo evento é o que ELE envia em
             // broadcastPreview() (formato {dataUrl}, não {stage}) — ignorar
             // pra não reaplicar o próprio estado nele mesmo.
-            // DEBUG TEMPORÁRIO — investigando "applyStageState nunca
-            // aparece" mesmo com o professor confirmadamente enviando.
-            // Remover depois de confirmado.
-            console.log('[preview_frame handler]', 'hasControl(aluno)', hasControl, 'tem stage?', !!msg.payload?.stage, 'vai aplicar?', !hasControl && !!msg.payload?.stage);
             if (!hasControl && msg.payload?.stage) {
                 applyStageState(msg.payload.stage);
             }
