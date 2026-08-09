@@ -404,14 +404,25 @@ function applyStageState(stageData) {
     });
 
     // --- 4. Sprites que existiam e sumiram desde a última aplicação --------
+    // ScratchJr.stage.removeFromPage(spr) (Stage.js:622-645) — NÃO
+    // Stage.prototype.removeCharacter (grava Undo por baixo). removeFromPage
+    // é o passo interno que removeCharacter chama antes de gravar o undo:
+    // tira o id de page.sprites, remove a <div> do sprite, a <div> de
+    // scripts e a MINIATURA da tira de atores — tudo de uma vez, sem Undo.
+    // Antes disso só marcávamos shown=false/opacity=0 (só escondia no
+    // palco); a miniatura na tira de atores continuava lá pra sempre —
+    // Thumbs.updateSprites() nem filtra por `shown`, só por pertencer a
+    // page.sprites, então a miniatura do ator apagado pelo professor nunca
+    // sumia pro aluno (confirmado em produção). Segura mesmo se `id`
+    // pertencer a OUTRA página (não a atual): removeFromPage usa
+    // this.currentPage e retorna sem fazer nada se o id não estiver na
+    // lista dela (Stage.js:627-630) — não precisa checar isso aqui.
     const incomingIds = new Set(incomingSpriteIds);
     _lastSpriteIds.forEach((id) => {
         if (!incomingIds.has(id)) {
             const el = gn(id);
             if (el && el.owner) {
-                const goneSprite = el.owner;
-                goneSprite.shown = false;
-                goneSprite.div.style.opacity = 0;
+                ScratchJr.stage.removeFromPage(el.owner);
             }
         }
     });
@@ -502,6 +513,35 @@ function applyStageState(stageData) {
 
     _lastAppliedStage = stageData;
     _lastSpriteIds = incomingIds;
+}
+
+/**
+ * Remove páginas que o professor apagou mas que NÃO são a página atual
+ * dele — applyStageState/encodePage só transmitem a página ATUAL a cada
+ * tick, então uma página apagada que o professor não estivesse vendo no
+ * momento nunca teria como o aluno saber (nenhum evento cobria esse caso).
+ * teacher.js manda `pageIds` (só os ids, leve) com TODAS as páginas do
+ * projeto em todo tick — qualquer página que o aluno conhece e não está
+ * mais nessa lista foi apagada em algum outro momento.
+ *
+ * ScratchJr.stage.deletePage(id, true) — NÃO Thumbs.pageMouseDown nem
+ * chamar sem o segundo argumento: deletePage(str, data) só grava
+ * Undo.record e toca o som de corte quando `!data` (Stage.js:229-248) —
+ * passar qualquer valor truthy pula os dois. O resto (tirar do array
+ * ScratchJr.stage.pages, remover a <div> da página e de cada sprite dela,
+ * trocar de página se a apagada era a atual, atualizar as tiras de
+ * miniatura) roda igual, sem Undo.
+ */
+function applyPageList(pageIds) {
+    if (!pageIds || !ScratchJr.stage) return;
+    if (_reloadInFlight) return; // recarga completa já em curso, não mexer no meio dela
+    const known = new Set(pageIds);
+    // Cópia do array porque deletePage muta ScratchJr.stage.pages durante o loop.
+    ScratchJr.stage.pages.slice().forEach((p) => {
+        if (!known.has(p.id)) {
+            ScratchJr.stage.deletePage(p.id, true);
+        }
+    });
 }
 
 /**
@@ -729,6 +769,7 @@ async function joinSession(sessionId) {
             // broadcastPreview() (formato {dataUrl}, não {stage}) — ignorar
             // pra não reaplicar o próprio estado nele mesmo.
             if (!hasControl && msg.payload?.stage) {
+                applyPageList(msg.payload.pageIds); // limpa página apagada ANTES de aplicar a atual
                 applyStageState(msg.payload.stage);
                 applyUiState(msg.payload.ui);
             }

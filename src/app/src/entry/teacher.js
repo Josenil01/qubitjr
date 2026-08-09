@@ -426,6 +426,13 @@ function _broadcastTeacherPreview() {
         const page = ScratchJr.stage.currentPage;
         const stage = page.encodePage();
         stage.id = page.id; // encodePage() não inclui isso — o aluno precisa pra achar a página certa
+        // Lista de ids de TODAS as páginas do projeto (não só a atual) — sem
+        // isso, o aluno nunca fica sabendo que uma página que NÃO é a atual
+        // do professor foi apagada (o payload só carrega a página atual, ver
+        // encodePage() acima). Barato: só ids, não os dados completos de
+        // cada página. LiveWatch.applyStageState usa isso pra detectar e
+        // remover páginas apagadas fora da que está sendo espelhada agora.
+        const pageIds = ScratchJr.stage.pages.map((p) => p.id);
         const libraryOpen = Library.isOpen;
         const ui = {
             library: libraryOpen ? Library.currentType : null,
@@ -434,7 +441,7 @@ function _broadcastTeacherPreview() {
             category: Palette.numcat,
             hover: _hoverTarget,
         };
-        sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { stage, ui } })
+        sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { stage, ui, pageIds } })
             .catch((err) => {
                 console.error('[teacher preview send] falhou:', err);
             });
