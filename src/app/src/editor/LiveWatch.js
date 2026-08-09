@@ -37,10 +37,14 @@
  *    op-sync), com alguns segundos de atraso. Professor→aluno (o caminho
  *    mais usado, quando o professor está editando) já é aplicação de
  *    estado real, não imagem.
- *  - O handoff troca o estado local (hasControl) e o aviso na tela, mas NÃO
- *    bloqueia fisicamente a interação do aluno com os blocos enquanto o
- *    professor está no controle — isso exigiria instrumentar Stage/Sprite/
- *    ScriptsPane, fora do escopo desta passada. Ver aviso ao usuário.
+ *  - O handoff troca o estado local (hasControl), mostra o aviso na tela E
+ *    bloqueia fisicamente a interação do aluno (showLockOverlay/
+ *    hideLockOverlay — um "vidro" transparente cobrindo a tela, sem
+ *    instrumentar Stage/Sprite/ScriptsPane) enquanto o professor está no
+ *    controle. Isso deixou de ser só UX: como applyStageState pilota o
+ *    motor de verdade do aluno, deixar o aluno mexer ao mesmo tempo
+ *    puxaria os objetos Sprite/Page pra dois lados — risco real de
+ *    corromper o estado, não só uma sobreposição visual incômoda.
  */
 
 import { connectChannel } from '../services/RealtimeClient.js';
@@ -59,6 +63,7 @@ let sessionChannel = null;
 let currentSessionId = null;
 let previewTimer = null;
 let bannerEl = null;
+let lockOverlayEl = null;
 let hasControl = false; // true quando o ALUNO está no controle (estado normal)
 
 // Estado de aplicação incremental de preview_frame (ver applyStageState
@@ -122,6 +127,33 @@ function showBanner(text, buttons = []) {
 function hideBanner() {
     if (bannerEl && bannerEl.parentNode) bannerEl.parentNode.removeChild(bannerEl);
     bannerEl = null;
+}
+
+/**
+ * "Vidro" transparente cobrindo a tela inteira enquanto o professor está no
+ * controle — intercepta clique/toque antes de chegar no editor por baixo,
+ * sem precisar instrumentar Stage/Sprite/ScriptsPane (que era o motivo do
+ * bloqueio nunca ter sido feito antes). Isso deixou de ser só UX: agora que
+ * applyStageState pilota o motor de verdade do aluno, deixar o aluno mexer
+ * ao mesmo tempo puxaria os objetos Sprite/Page pra dois lados diferentes
+ * (o clique dele e o broadcast do professor) — risco real de corromper o
+ * estado, não só uma sobreposição visual incômoda.
+ *
+ * z-index abaixo do banner (5000) — o aviso e os botões "Aceitar"/"Recusar"/
+ * "Pedir controle" continuam clicáveis por cima do vidro.
+ */
+function showLockOverlay() {
+    if (lockOverlayEl) return;
+    lockOverlayEl = newHTML('div', 'liveWatchLockOverlay', document.body);
+    Object.assign(lockOverlayEl.style, {
+        position: 'fixed', top: '0', left: '0', right: '0', bottom: '0',
+        zIndex: '4000', background: 'rgba(0, 0, 0, 0.02)', cursor: 'not-allowed',
+    });
+}
+
+function hideLockOverlay() {
+    if (lockOverlayEl && lockOverlayEl.parentNode) lockOverlayEl.parentNode.removeChild(lockOverlayEl);
+    lockOverlayEl = null;
 }
 
 function requestControlBack() {
@@ -330,6 +362,7 @@ function promptControlRequest() {
 
 function acceptControlRequest() {
     hasControl = false;
+    showLockOverlay();
     showBanner('Seu professor está no controle agora', [
         { label: 'Pedir controle', onClick: requestControlBack },
     ]);
@@ -345,6 +378,7 @@ function denyControlRequest() {
 
 function grantControlToStudent() {
     hasControl = true;
+    hideLockOverlay();
     showBanner('Seu professor está vendo 👀');
     reloadProjectFromBackend();
 }
@@ -432,6 +466,7 @@ function endLocalSession() {
     currentSessionId = null;
     hasControl = false;
     hideBanner();
+    hideLockOverlay(); // rede de segurança — sessão pode terminar sem passar por grantControlToStudent()
 }
 
 /**
