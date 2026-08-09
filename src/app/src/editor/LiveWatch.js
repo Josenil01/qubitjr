@@ -19,8 +19,14 @@
  *
  * O reload completo do backend (IO.getObject + Project.dataRecieved) fica
  * reservado pros instantes pontuais de troca de controle e pro caso raro de
- * sprite/página novo aparecer no meio da sessão (applyStageState detecta e
- * cai pra recarga completa nesse caso) — nunca roda em loop.
+ * PÁGINA nova aparecer no meio da sessão (applyStageState detecta e cai pra
+ * recarga completa só nesse caso) — nunca roda em loop. Sprite/ator novo em
+ * página já conhecida NÃO cai mais pra recarga completa: é criado
+ * cirurgicamente via Project.recreateObject (mesmo caminho que
+ * Undo.copySprite já usa em produção pra recriar um sprite ao vivo sem
+ * gravar undo nem marcar o projeto como alterado) — antes disso, todo ator
+ * novo do professor piscava a tela inteira do aluno (Stage.clear() +
+ * reload) só pra aparecer um sprite.
  *
  * Protocolo de handoff (professor → aluno é a única direção com aprovação —
  * aluno pedindo de volta é sempre aceito na hora, ele é o dono da conta):
@@ -52,6 +58,7 @@ import { newHTML, gn } from '../utils/lib.js';
 import ScratchJr from './ScratchJr.js';
 import Project from './ui/Project.js';
 import ScriptsPane from './ui/ScriptsPane.js';
+import Thumbs from './ui/Thumbs.js';
 import IO from '../iPad/IO.js';
 
 const SESSION_HEARTBEAT_MS = 20000;
@@ -209,12 +216,12 @@ function applyStageState(stageData) {
     if (!stageData || !ScratchJr.stage) return;
     if (_reloadInFlight) return; // recarga completa já em curso, ignora este tick
 
-    // --- Detectar "isso é novo" (página ou sprite nunca vistos) -----------
-    // Os caminhos abaixo só sabem ATUALIZAR sprites/páginas que já existem
-    // no DOM do aluno — criar um objeto novo do zero exigiria auditar
-    // Project.recreateObject() pra segurança (não feito nesta passada). Cai
-    // pra recarga completa nesse caso, mesmo caminho já testado na troca de
-    // controle.
+    // --- Detectar página nunca vista → só isso ainda cai pra recarga completa
+    // Sprite novo em página já conhecida NÃO cai mais aqui — ver passo 3
+    // abaixo (criação cirúrgica via Project.recreateObject). Página nova
+    // continua caindo pra recarga completa: criar uma Page inteira do zero
+    // é um caso mais raro e maior (fora do escopo desta rodada — ver
+    // declarative-wobbling-penguin.md, seção "Fora de escopo").
     // ⚠️ stageData.sprites é um array de STRINGS (ids), não de objetos —
     // exatamente como Page.encodePage() (Page.js:350-377) devolve: os dados
     // de cada sprite ficam em chaves separadas no próprio stageData
@@ -224,9 +231,7 @@ function applyStageState(stageData) {
     // sempre, mesmo depois de recarregar (a recarga nunca resolvia porque
     // o problema não era o aluno não ter o sprite — era essa leitura errada).
     const pageKnown = ScratchJr.stage.pages.some((p) => p.id === stageData.id);
-    const incomingSpriteIds = stageData.sprites || [];
-    const spriteMissing = incomingSpriteIds.some((id) => !gn(id));
-    if (!pageKnown || spriteMissing) {
+    if (!pageKnown) {
         _reloadInFlight = true;
         if (_reloadResetTimer) clearTimeout(_reloadResetTimer);
         _reloadResetTimer = setTimeout(() => {
@@ -260,7 +265,36 @@ function applyStageState(stageData) {
         page.setBackground(stageData.md5 || 'none', () => {}); // callback vazio de propósito — nunca updateBkg
     }
 
-    // --- 3. Sprites que existiam e sumiram desde a última aplicação --------
+    // --- 3. Sprites novos: criar cirurgicamente, sem recarregar a página ---
+    // Mesmo caminho que Undo.copySprite (Undo.js:283-299) já usa em
+    // produção pra recriar um sprite ao vivo: Project.recreateObject()
+    // (Project.js:389-426) monta via `new Sprite(data, fcn)` — confirmado
+    // lendo o construtor de Sprite e o próprio recreateObject que nenhum
+    // dos dois grava Undo nem marca ScratchJr.changed. Ele já recria os
+    // scripts (sc.recreateStrip) e já aplica shown/opacidade sozinho — só
+    // falta a visibilidade do <div> do sprite no palco, que o padrão do
+    // Undo.copySprite restaura no callback (só quando a página é a atual,
+    // sempre verdade aqui — a página já foi resolvida no passo 1 acima).
+    // Passa uma cópia rasa de sData porque recreateObject muta `data.page =
+    // page` — sem a cópia, isso poluiria o stageData original (guardado em
+    // _lastAppliedStage pra diff do próximo tick) com uma referência viva
+    // à Page (não serializável, ciclo de DOM).
+    const incomingSpriteIds = stageData.sprites || [];
+    const createdThisTick = new Set();
+    incomingSpriteIds.forEach((spriteId) => {
+        if (gn(spriteId)) return; // já existe no DOM, passo 5 cuida de atualizar
+        const sData = stageData[spriteId];
+        if (!sData) return; // defensivo — sem dados, nada a criar (tenta de novo no próximo tick)
+        createdThisTick.add(spriteId);
+        Project.recreateObject(page, spriteId, Object.assign({}, sData), (spr) => {
+            if (page.id === ScratchJr.stage.currentPage.id) {
+                spr.div.style.visibility = 'visible'; // mesmo padrão de Undo.copySprite
+            }
+            Thumbs.updateSprites(); // sem isso o ícone do ator novo não aparece na tira de sprites
+        }, spriteId === stageData.lastSprite);
+    });
+
+    // --- 4. Sprites que existiam e sumiram desde a última aplicação --------
     const incomingIds = new Set(incomingSpriteIds);
     _lastSpriteIds.forEach((id) => {
         if (!incomingIds.has(id)) {
@@ -273,12 +307,13 @@ function applyStageState(stageData) {
         }
     });
 
-    // --- 4. Sprites presentes: aplicar só o que mudou -----------------------
+    // --- 5. Sprites presentes: aplicar só o que mudou -----------------------
     incomingSpriteIds.forEach((spriteId) => {
+        if (createdThisTick.has(spriteId)) return; // acabou de ser criado, já está em sincronia com sData
         const sData = stageData[spriteId]; // dados reais do sprite ficam aqui, não dentro de "sprites"
         if (!sData) return; // defensivo
         const el = gn(spriteId);
-        if (!el || !el.owner) return; // defensivo; spriteMissing já garantiu isso acima
+        if (!el || !el.owner) return; // defensivo; passo 3 acima já criou quem faltava
         const sprite = el.owner;
 
         const posChanged = sprite.xcoor !== sData.xcoor || sprite.ycoor !== sData.ycoor;
@@ -323,7 +358,7 @@ function applyStageState(stageData) {
         }
     });
 
-    // --- 5. Sprite selecionado (mostrar os blocos certos na área de scripts)
+    // --- 6. Sprite selecionado (mostrar os blocos certos na área de scripts)
     // ScriptsPane.setActiveScript() (não Page.setCurrentSprite direto) —
     // ela faz tudo que setCurrentSprite faz E MAIS: torna a <div> de scripts
     // do sprite visível (Scripts.prototype.activate(), diferente do
