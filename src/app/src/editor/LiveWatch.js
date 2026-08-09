@@ -47,6 +47,7 @@ import { connectChannel } from '../services/RealtimeClient.js';
 import { newHTML, gn } from '../utils/lib.js';
 import ScratchJr from './ScratchJr.js';
 import Project from './ui/Project.js';
+import ScriptsPane from './ui/ScriptsPane.js';
 import IO from '../iPad/IO.js';
 
 const SESSION_HEARTBEAT_MS = 20000;
@@ -157,8 +158,13 @@ function reloadProjectFromBackend() {
  *     scripts de bandeira verde/toque da página nova).
  *   - Limpar blocos + Scripts.recreateStrip, no mesmo padrão de
  *     Undo.redoScripts.
- *   - Page.setCurrentSprite — garante que a área de scripts do aluno
- *     mostre o sprite que o professor está editando.
+ *   - ScriptsPane.setActiveScript(spriteId) — NÃO Page.setCurrentSprite
+ *     direto: setActiveScript já chama setCurrentSprite por dentro E
+ *     também ativa a <div> de scripts do sprite (Scripts.prototype.activate,
+ *     função diferente de Sprite.prototype.activate) e reconecta o
+ *     onmousedown/ontouchstart do painel pro sprite certo — sem isso,
+ *     clicar/arrastar no painel de scripts quebrava com "Cannot read
+ *     properties of null" (confirmado em produção).
  * NUNCA Page.modifySprite (grava undo e rouba a seleção do aluno) — troca
  * de costume é feita chamando sprite.getAsset/setCostume direto.
  */
@@ -269,9 +275,17 @@ function applyStageState(stageData) {
     });
 
     // --- 5. Sprite selecionado (mostrar os blocos certos na área de scripts)
+    // ScriptsPane.setActiveScript() (não Page.setCurrentSprite direto) —
+    // ela faz tudo que setCurrentSprite faz E MAIS: torna a <div> de scripts
+    // do sprite visível (Scripts.prototype.activate(), diferente do
+    // Sprite.prototype.activate() que setCurrentSprite já chama) e
+    // reconecta onmousedown/ontouchstart do painel pro sprite certo. Sem
+    // isso, ScratchJr.getActiveScript() (que lê currentSpriteName) ficava
+    // desincronizado do handler de clique de verdade, e clicar/arrastar no
+    // painel de scripts quebrava com "Cannot read properties of null" em
+    // Scripts.scriptsMouseDown/Scroll.bounceBack — confirmado em produção.
     if (stageData.lastSprite && page.currentSpriteName !== stageData.lastSprite) {
-        const selEl = gn(stageData.lastSprite);
-        if (selEl && selEl.owner) page.setCurrentSprite(selEl.owner);
+        ScriptsPane.setActiveScript(stageData.lastSprite);
     }
 
     _lastAppliedStage = stageData;
