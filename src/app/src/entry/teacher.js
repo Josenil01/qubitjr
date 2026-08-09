@@ -29,10 +29,12 @@ const TEACHER_PREVIEW_INTERVAL_MS = 500; // igual ao LiveWatch.js do lado do alu
 const PREVIEW_SIZE = { w: 384, h: 288 }; // só usado no fallback (palco sozinho)
 // Confirmado via ack:true (RealtimeClient.js) que o Supabase Realtime
 // rejeita ("error") um broadcast de ~334KB — mensagens pequenas (controle)
-// sempre passaram. 960px de largura gerava PNGs de 200-340KB; reduzido pra
-// 480px (área ~4x menor) como primeira tentativa — se ainda estourar o
-// limite, o próximo passo é cair mais ou trocar pra JPEG.
-const FULL_PREVIEW_MAX_WIDTH = 480; // captura de #frame inteiro (paleta+scripts+palco), não só o palco
+// sempre passaram. 960px de largura gerava PNGs de 200-340KB; 480px+PNG
+// coube no limite mas ficou ilegível. Trocado pra JPEG (bem mais eficiente
+// pra sprite/cenário, que tem gradiente/sombreado) e a resolução subiu de
+// novo — se ainda estourar o limite ou a qualidade continuar baixa, o log
+// de status (_broadcastTeacherPreview) mostra o tamanho real pra ajustar.
+const FULL_PREVIEW_MAX_WIDTH = 720; // captura de #frame inteiro (paleta+scripts+palco), não só o palco
 
 let apiBase;
 let turmaId;
@@ -553,7 +555,14 @@ function _captureFrameSnapshot(maxW) {
 
     _paintNodeIntoCanvas(frameEl, ctx, frameRect, scale);
 
-    return out.toDataURL('image/png');
+    // JPEG em vez de PNG: sprites/cenários têm gradiente/sombreado (tipo
+    // foto), onde PNG (sem perdas) comprime mal — era isso que forçava
+    // reduzir tanto a resolução pra caber no limite do Realtime. JPEG
+    // aproveita melhor esse tipo de conteúdo, sobrando espaço pra aumentar
+    // a resolução de novo sem estourar o limite. O fundo já é preenchido de
+    // branco sólido antes de pintar (linha acima), então não corre risco do
+    // fundo preto padrão que apareceria num canvas com áreas transparentes.
+    return out.toDataURL('image/jpeg', 0.85);
 }
 
 function _stageElementCounts(stageEl) {
