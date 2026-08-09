@@ -349,18 +349,67 @@ function _mountControllingEngine() {
 }
 
 /**
- * Composição em canvas de tudo que está visível dentro de #frame (paleta,
- * área de scripts e palco) — não só o palco como antes. Blocos em ScratchJr
- * são <canvas> (Block.js: shadow/shine/blockshape/blockicon via
- * getContext('2d')), MAS sprites e fundo de página são <img> (Sprite.js e
- * Page.js criam document.createElement('img') com o costume/cenário em
- * img.src) — não canvas. A primeira versão só pegava <canvas> e por isso o
- * palco (onde os sprites aparecem) ficava em branco na prévia. drawImage()
- * aceita tanto <canvas> quanto <img> do mesmo jeito, então basta capturar os
- * dois juntos, na ordem em que aparecem no documento (aproxima o
- * empilhamento visual sem precisar ler z-index). O editor de pintura
- * (Paint.js) fica de fora de propósito: é SVG, não canvas/img.
+ * Pinta um nó (e sua subárvore) no canvas de saída, na mesma ordem em que o
+ * navegador pintaria na tela: fundo do próprio elemento primeiro, depois
+ * cada filho, em ordem de documento. Sem isso, um <div> com background-color
+ * (os painéis lilás da paleta/área de scripts, o fundo da página antes de
+ * ter cenário — CSS puro, não <img>/<canvas>) simplesmente não aparecia:
+ * a primeira versão só copiava pixels de <canvas>/<img>, ignorando qualquer
+ * contêiner só-CSS por baixo deles.
+ *
+ * <canvas>/<img> são tratados como folha (o conteúdo interno já está
+ * "assado" no bitmap, não tem filho relevante pra descer). Blocos em
+ * ScratchJr são <canvas> (Block.js: shadow/shine/blockshape/blockicon via
+ * getContext('2d')); sprites e fundo de página são <img> (Sprite.js/Page.js:
+ * document.createElement('img') com o costume/cenário em img.src).
+ *
+ * Fora do escopo aqui, de propósito: bordas, sombras, cantos arredondados,
+ * gradientes e background-image (essa última exigiria pré-carregar a URL de
+ * forma assíncrona, o que não cabe num loop síncrono a cada 500ms) — pra
+ * fidelidade 100% pixel-perfect disso tudo precisaria de algo tipo
+ * html2canvas (nova dependência, custo por frame bem maior). O editor de
+ * pintura (Paint.js) também fica de fora — é SVG, não canvas/img/CSS simples.
  */
+function _paintNodeIntoCanvas(el, ctx, frameRect, scale) {
+    if (!el || el.nodeType !== 1) return;
+    const style = window.getComputedStyle(el);
+    if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) return;
+
+    const rect = el.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+
+    const x = (rect.left - frameRect.left) * scale;
+    const y = (rect.top - frameRect.top) * scale;
+    const w = rect.width * scale;
+    const h = rect.height * scale;
+
+    if (el.tagName === 'CANVAS' || el.tagName === 'IMG') {
+        const ready = el.tagName === 'CANVAS'
+            ? (el.width && el.height)
+            : (el.complete && el.naturalWidth && el.naturalHeight);
+        if (!ready) return;
+        try {
+            ctx.drawImage(el, x, y, w, h);
+        } catch (err) {
+            // Elemento "sujo" (cross-origin, ex.: img sem CORS) travaria
+            // toDataURL() lá na frente — não deveria acontecer aqui (tudo é
+            // gerado/servido localmente), mas um elemento ruim não pode
+            // derrubar o frame inteiro.
+        }
+        return;
+    }
+
+    const bg = style.backgroundColor;
+    if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+        ctx.fillStyle = bg;
+        ctx.fillRect(x, y, w, h);
+    }
+
+    for (const child of el.children) {
+        _paintNodeIntoCanvas(child, ctx, frameRect, scale);
+    }
+}
+
 function _captureFrameSnapshot(maxW) {
     const frameEl = document.getElementById('frame');
     if (!frameEl) return null;
@@ -378,26 +427,7 @@ function _captureFrameSnapshot(maxW) {
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, outW, outH);
 
-    frameEl.querySelectorAll('canvas, img').forEach((el) => {
-        const isImg = el.tagName === 'IMG';
-        if (isImg ? (!el.complete || !el.naturalWidth || !el.naturalHeight) : (!el.width || !el.height)) return;
-        const rect = el.getBoundingClientRect();
-        if (!rect.width || !rect.height) return;
-        const style = window.getComputedStyle(el);
-        if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) return;
-        const x = (rect.left - frameRect.left) * scale;
-        const y = (rect.top - frameRect.top) * scale;
-        const w = rect.width * scale;
-        const h = rect.height * scale;
-        try {
-            ctx.drawImage(el, x, y, w, h);
-        } catch (err) {
-            // Um elemento "sujo" (cross-origin, ex.: img sem CORS) travaria
-            // toDataURL() lá na frente — não deveria acontecer aqui (tudo é
-            // gerado/servido localmente), mas um elemento ruim não pode
-            // derrubar o frame inteiro.
-        }
-    });
+    _paintNodeIntoCanvas(frameEl, ctx, frameRect, scale);
 
     return out.toDataURL('image/png');
 }
