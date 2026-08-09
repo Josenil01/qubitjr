@@ -330,11 +330,13 @@ function applyStageState(stageData) {
                 pageWasCurrentBefore.setPageSprites('hidden');
             }
             incomingSpriteIds.forEach((id) => createdThisTick.add(id));
+            console.log('[monitor][aluno] PÁGINA CRIADA', stageData.id, 'sprites:', incomingSpriteIds);
         } catch (err) {
             console.error('[applyStageState] falha ao criar página nova cirurgicamente, caindo pra recarga completa:', err);
             page = null;
         }
         if (!page) {
+            console.log('[monitor][aluno] RELOAD COMPLETO disparado (falha ao criar página cirurgicamente)', stageData.id);
             _reloadInFlight = true;
             if (_reloadResetTimer) clearTimeout(_reloadResetTimer);
             _reloadResetTimer = setTimeout(() => {
@@ -369,6 +371,7 @@ function applyStageState(stageData) {
     // Pra página recém-criada no passo 0, isso já bate (setBackground já
     // rodou dentro de new Page()) e vira um no-op aqui, como esperado.
     if (stageData.md5 !== page.md5) {
+        console.log('[monitor][aluno] CENÁRIO mudando', { pagina: stageData.id, de: page.md5, para: stageData.md5 || 'none' });
         page.setBackground(stageData.md5 || 'none', () => {}); // callback vazio de propósito — nunca updateBkg
     }
 
@@ -395,11 +398,13 @@ function applyStageState(stageData) {
         const sData = stageData[spriteId];
         if (!sData) return; // defensivo — sem dados, nada a criar (tenta de novo no próximo tick)
         createdThisTick.add(spriteId);
+        console.log('[monitor][aluno] ATOR CRIANDO (cirúrgico)', { spriteId, pagina: stageData.id, nome: sData.name, tipo: sData.type });
         Project.recreateObject(page, spriteId, Object.assign({}, sData), (spr) => {
             if (page.id === ScratchJr.stage.currentPage.id) {
                 spr.div.style.visibility = 'visible'; // mesmo padrão de Undo.copySprite
             }
             Thumbs.updateSprites(); // sem isso o ícone do ator novo não aparece na tira de sprites
+            console.log('[monitor][aluno] ATOR CRIADO (asset carregado)', spriteId);
         }, spriteId === stageData.lastSprite);
     });
 
@@ -422,7 +427,10 @@ function applyStageState(stageData) {
         if (!incomingIds.has(id)) {
             const el = gn(id);
             if (el && el.owner) {
+                console.log('[monitor][aluno] ATOR REMOVENDO', { spriteId: id, pagina: stageData.id, nome: el.owner.name });
                 ScratchJr.stage.removeFromPage(el.owner);
+            } else {
+                console.log('[monitor][aluno] ATOR "sumiu" mas não achei no DOM (id de outra página ou já removido)', id);
             }
         }
     });
@@ -539,6 +547,7 @@ function applyPageList(pageIds) {
     // Cópia do array porque deletePage muta ScratchJr.stage.pages durante o loop.
     ScratchJr.stage.pages.slice().forEach((p) => {
         if (!known.has(p.id)) {
+            console.log('[monitor][aluno] PÁGINA REMOVENDO', p.id, 'pageIds do professor:', pageIds);
             ScratchJr.stage.deletePage(p.id, true);
         }
     });

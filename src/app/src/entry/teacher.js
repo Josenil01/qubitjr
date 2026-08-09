@@ -40,6 +40,9 @@ let sessionChannel = null;
 let currentSession = null; // { sessionId, studentId, realtimeChannel, expiresAt }
 let heartbeatTimer = null;
 let previewTimer = null; // broadcast do que o PROFESSOR está fazendo, pro aluno ver
+let _monitorLastSpriteIds = new Set(); // só pra log — diff de sprites/páginas entre um tick e outro
+let _monitorLastPageIds = new Set();
+let _monitorLastMd5;
 let _hoverTarget = null; // { kind: 'library'|'sprite'|'page', id } | null — ver _updateHoverTarget
 let hasControl = false; // true quando o PROFESSOR está no controle
 
@@ -419,6 +422,31 @@ function _updateHoverTarget(e) {
 }
 document.addEventListener('mouseover', _updateHoverTarget);
 
+/**
+ * Log temporário de monitoramento — compara o sprites/pageIds/md5 desse
+ * tick contra o tick anterior e só imprime quando algo REALMENTE muda
+ * (entrou ou saiu um id, ou o cenário trocou), em vez de logar a cada
+ * 200ms. Objetivo: correlacionar com os logs [monitor][aluno] de
+ * LiveWatch.js pra achar exatamente onde a adição de ator/página diverge
+ * entre professor e aluno.
+ */
+function _logMonitorDiff(spriteIds, pageIds, md5) {
+    const sSet = new Set(spriteIds);
+    const pSet = new Set(pageIds);
+    const spritesAdded = spriteIds.filter((id) => !_monitorLastSpriteIds.has(id));
+    const spritesRemoved = [..._monitorLastSpriteIds].filter((id) => !sSet.has(id));
+    const pagesAdded = pageIds.filter((id) => !_monitorLastPageIds.has(id));
+    const pagesRemoved = [..._monitorLastPageIds].filter((id) => !pSet.has(id));
+    if (spritesAdded.length) console.log('[monitor][professor] ATOR ADICIONADO', spritesAdded);
+    if (spritesRemoved.length) console.log('[monitor][professor] ATOR REMOVIDO', spritesRemoved);
+    if (pagesAdded.length) console.log('[monitor][professor] PÁGINA ADICIONADA', pagesAdded);
+    if (pagesRemoved.length) console.log('[monitor][professor] PÁGINA REMOVIDA', pagesRemoved);
+    if (md5 !== _monitorLastMd5) console.log('[monitor][professor] CENÁRIO mudou', { de: _monitorLastMd5, para: md5 });
+    _monitorLastSpriteIds = sSet;
+    _monitorLastPageIds = pSet;
+    _monitorLastMd5 = md5;
+}
+
 function _broadcastTeacherPreview() {
     if (!sessionChannel || !hasControl) return;
     if (!ScratchJr.stage || !ScratchJr.stage.currentPage) return; // projeto ainda não carregou de verdade
@@ -433,6 +461,7 @@ function _broadcastTeacherPreview() {
         // cada página. LiveWatch.applyStageState usa isso pra detectar e
         // remover páginas apagadas fora da que está sendo espelhada agora.
         const pageIds = ScratchJr.stage.pages.map((p) => p.id);
+        _logMonitorDiff(stage.sprites || [], pageIds, stage.md5);
         const libraryOpen = Library.isOpen;
         const ui = {
             library: libraryOpen ? Library.currentType : null,
