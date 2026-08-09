@@ -312,7 +312,24 @@ function applyStageState(stageData) {
     const isNewPage = !pageKnown; // usado lá embaixo no passo 6 (ver comentário lá)
     if (!pageKnown) {
         try {
-            page = new Page(stageData.id, _shallowCopyStageData(stageData));
+            // 3º argumento (fcn): loadPageData (Page.js:42-70) só chama isso
+            // depois que o CENÁRIO e TODOS os atores da página terminam de
+            // carregar de verdade (checkBkgDone/checkCount, gatilhados por
+            // Project.mediaCount chegar a 0) — sem passar nada aqui,
+            // `if (!fcn) return;` faz esse aviso não ir pra lugar nenhum, e
+            // Thumbs.updatePages() nunca é chamado de novo depois da criação.
+            // Resultado (confirmado em produção): a miniatura da página nova
+            // ficava em branco pra sempre, só sendo redesenhada por
+            // coincidência quando QUALQUER outra coisa não relacionada (como
+            // apagar uma página, que chama Thumbs.updatePages() por conta
+            // própria) rodava depois — nesse ponto os assets já tinham
+            // carregado silenciosamente havia tempo, só faltava avisar quem
+            // desenha a miniatura.
+            page = new Page(stageData.id, _shallowCopyStageData(stageData), () => {
+                Thumbs.updateSprites();
+                Thumbs.updatePages();
+                console.log('[monitor][aluno] PÁGINA — cenário+atores carregados, miniaturas redesenhadas', stageData.id);
+            });
             // Project.recreatePage() (Project.js:376-379) faz esse mesmo
             // passo manualmente logo após `new Page(...)` — o construtor
             // sozinho não esconde a própria <div> (nenhum `visibility` no
