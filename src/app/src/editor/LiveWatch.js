@@ -185,20 +185,24 @@ function applyStageState(stageData) {
     // pra recarga completa nesse caso, mesmo caminho já testado na troca de
     // controle.
     const pageKnown = ScratchJr.stage.pages.some((p) => p.id === stageData.id);
+    const incomingSpriteIds = (stageData.sprites || []).map((s) => s.id);
+    const spriteExistsFlags = incomingSpriteIds.map((id) => `${JSON.stringify(id)}=${!!gn(id)}`);
     const spriteMissing = (stageData.sprites || []).some((s) => !gn(s.id));
     if (!pageKnown || spriteMissing) {
         // DEBUG TEMPORÁRIO — investigando "applyStageState nunca aplica
         // nada". Se isso disparar em TODO tick (mesmo depois da recarga
         // completar), o id da página ou de algum sprite nunca bate com o
-        // que o aluno tem, e a função nunca sai desse branch. Remover
-        // depois de confirmado.
-        console.log('[applyStageState] "isso é novo" — caindo pra recarga completa', {
-            stageDataId: stageData.id,
-            pageKnown,
-            spriteMissing,
-            paginasConhecidas: ScratchJr.stage.pages.map((p) => p.id),
-            spritesRecebidos: (stageData.sprites || []).map((s) => s.id),
-        });
+        // que o aluno tem, e a função nunca sai desse branch. Imprime os
+        // valores direto em texto (não objeto/array aninhado) pra dar pra
+        // copiar sem precisar expandir nada no DevTools. Remover depois de
+        // confirmado.
+        console.log(
+            '[applyStageState] "isso é novo" — caindo pra recarga completa'
+            + ' | stageData.id=' + JSON.stringify(stageData.id)
+            + ' | pageKnown=' + pageKnown
+            + ' | paginasConhecidas=' + JSON.stringify(ScratchJr.stage.pages.map((p) => p.id))
+            + ' | spritesRecebidos(id=existeNoDOM)=' + spriteExistsFlags.join(', ')
+        );
         _reloadInFlight = true;
         if (_reloadResetTimer) clearTimeout(_reloadResetTimer);
         _reloadResetTimer = setTimeout(() => {
