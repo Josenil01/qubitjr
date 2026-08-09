@@ -231,6 +231,14 @@ async function joinSession(sessionId) {
             if (!hasControl) grantControlToStudent();
         })
         .on('broadcast', { event: 'preview_frame' }, (msg) => {
+            // DEBUG TEMPORÁRIO — o log do lado do professor mostra a
+            // composição certa sendo gerada e enviada, mas a tela do aluno
+            // não atualiza. Duas hipóteses: (a) a mensagem nem chega até
+            // aqui (Realtime derrubando/atrasando), ou (b) chega mas
+            // `hasControl` (do ALUNO) está com o valor errado e o guard
+            // abaixo descarta o frame silenciosamente. Esse log distingue
+            // as duas. Remover depois.
+            console.log('[LiveWatch preview_frame]', 'recebido, bytes', msg.payload?.dataUrl ? msg.payload.dataUrl.length : 'sem dataUrl', 'hasControl(aluno)', hasControl, 'vai aplicar?', !hasControl && !!msg.payload?.dataUrl);
             // Só faz sentido mostrar enquanto o PROFESSOR está no controle
             // (hasControl aqui é do lado do aluno). Quando o aluno está no
             // controle, esse mesmo evento é o que o aluno ENVIA lá embaixo
