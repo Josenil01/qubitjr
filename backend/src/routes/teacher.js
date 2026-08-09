@@ -325,7 +325,7 @@ router.post('/session/:sessionId/heartbeat', async (req, res) => {
 /**
  * POST /api/teacher/session/:sessionId/end
  * Body: { reason: 'teacher_left' | 'switched_student' | 'student_disconnected' |
- *                  'teacher_unresponsive' }
+ *                  'teacher_unresponsive' | 'observe_timeout' }
  * Encerramento explícito. Antes só o professor podia chamar (checagem
  * `.eq('teacher_id', req.userId)` direto na query) — mas o aluno também
  * precisa poder encerrar quando a aba do professor trava/some (ver
@@ -333,6 +333,9 @@ router.post('/session/:sessionId/heartbeat', async (req, res) => {
  * forçada depois de ~90s sem notícia do professor). Mesma checagem de dono
  * (teacher_id OU student_id) já usada em POST .../heartbeat, pelo mesmo
  * motivo: sem aceitar os dois lados, a chamada do aluno sempre dava 404.
+ * 'observe_timeout': professor ficou só observando (sem assumir controle)
+ * por tempo demais — teacher.js encerra sozinho pra liberar o canal
+ * Realtime em vez de deixar uma aba esquecida consumindo conexão à toa.
  */
 router.post('/session/:sessionId/end', async (req, res) => {
     const supabase = getSupabase();
@@ -341,7 +344,7 @@ router.post('/session/:sessionId/end', async (req, res) => {
     const sessionId = parseInt(req.params.sessionId, 10);
     if (!sessionId) return res.status(400).json({ error: 'Invalid sessionId' });
 
-    const validReasons = ['teacher_left', 'switched_student', 'student_disconnected', 'teacher_unresponsive'];
+    const validReasons = ['teacher_left', 'switched_student', 'student_disconnected', 'teacher_unresponsive', 'observe_timeout'];
     const reason = validReasons.includes(req.body?.reason) ? req.body.reason : 'teacher_left';
 
     try {

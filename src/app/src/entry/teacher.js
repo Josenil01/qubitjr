@@ -40,6 +40,8 @@ let sessionChannel = null;
 let currentSession = null; // { sessionId, studentId, realtimeChannel, expiresAt }
 let heartbeatTimer = null;
 let previewTimer = null; // broadcast do que o PROFESSOR está fazendo, pro aluno ver
+let _observeTimeoutTimer = null; // ver OBSERVE_TIMEOUT_MS abaixo
+const OBSERVE_TIMEOUT_MS = 3 * 60 * 1000; // 3min só observando sem assumir controle -> volta sozinho pra turma
 let _monitorLastSpriteIds = new Set(); // só pra log — diff de sprites/páginas entre um tick e outro
 let _monitorLastPageIds = new Set();
 let _monitorLastMd5;
@@ -230,6 +232,13 @@ async function _startObserving(student) {
 
     _renderObserving();
     _startHeartbeat();
+    // Economiza conexão do Realtime: se o professor ficar só observando
+    // (sem nunca assumir controle) por mais de OBSERVE_TIMEOUT_MS, volta
+    // sozinho pra tela da turma — cancelado em _requestControl() (deixou de
+    // ser "só observando") e em _endSession() (limpeza geral).
+    _observeTimeoutTimer = setTimeout(() => {
+        _endSession('observe_timeout');
+    }, OBSERVE_TIMEOUT_MS);
 }
 
 function _renderObserving() {
@@ -261,6 +270,7 @@ function _updatePreview(dataUrl) {
 
 function _requestControl() {
     if (!sessionChannel) return;
+    if (_observeTimeoutTimer) { clearTimeout(_observeTimeoutTimer); _observeTimeoutTimer = null; } // deixou de ser "só observando"
     hasControl = true;
     sessionChannel.send({ type: 'broadcast', event: 'control_request', payload: { from: 'teacher' } });
     const btn = document.querySelector('.teacherControlBtn');
@@ -530,6 +540,8 @@ function _startHeartbeat() {
 }
 
 async function _endSession(reason) {
+    if (_observeTimeoutTimer) clearTimeout(_observeTimeoutTimer);
+    _observeTimeoutTimer = null;
     if (heartbeatTimer) clearInterval(heartbeatTimer);
     heartbeatTimer = null;
     if (previewTimer) clearInterval(previewTimer);
