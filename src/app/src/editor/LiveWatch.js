@@ -69,7 +69,6 @@ import { connectChannel } from '../services/RealtimeClient.js';
 import { newHTML, gn } from '../utils/lib.js';
 import ScratchJr from './ScratchJr.js';
 import Project from './ui/Project.js';
-import ScriptsPane from './ui/ScriptsPane.js';
 import Thumbs from './ui/Thumbs.js';
 import Palette from './ui/Palette.js';
 import Library from './ui/Library.js';
@@ -229,13 +228,18 @@ function reloadProjectFromBackend() {
  *     scripts de bandeira verde/toque da página nova).
  *   - Limpar blocos + Scripts.recreateStrip, no mesmo padrão de
  *     Undo.redoScripts.
- *   - ScriptsPane.setActiveScript(spriteId) — NÃO Page.setCurrentSprite
- *     direto: setActiveScript já chama setCurrentSprite por dentro E
- *     também ativa a <div> de scripts do sprite (Scripts.prototype.activate,
- *     função diferente de Sprite.prototype.activate) e reconecta o
- *     onmousedown/ontouchstart do painel pro sprite certo — sem isso,
- *     clicar/arrastar no painel de scripts quebrava com "Cannot read
- *     properties of null" (confirmado em produção).
+ *   - Thumbs.selectThisSprite(sprite) — NÃO Page.setCurrentSprite nem
+ *     ScriptsPane.setActiveScript sozinhos: selectThisSprite percorre TODA
+ *     a tira de miniaturas e, além de ativar a <div> de scripts do sprite
+ *     novo (via ScriptsPane.setActiveScript por baixo), desativa a de TODOS
+ *     os outros (Thumbs.unhighlighSprite → Scripts.prototype.deactivate).
+ *     setActiveScript sozinho só ativa a nova — nunca desativa a anterior —
+ *     e sem isso, trocar de sprite não trocava pro aluno e os blocos de
+ *     vários atores ficavam acumulados visíveis ao mesmo tempo (confirmado
+ *     em produção). Antes disso, setActiveScript sozinho já tinha resolvido
+ *     um crash "Cannot read properties of null" ao clicar/arrastar no
+ *     painel — esse cuidado (reconectar onmousedown/ontouchstart do painel)
+ *     continua garantido porque selectThisSprite chama setActiveScript.
  * NUNCA Page.modifySprite (grava undo e rouba a seleção do aluno) — troca
  * de costume é feita chamando sprite.getAsset/setCostume direto.
  */
@@ -386,17 +390,25 @@ function applyStageState(stageData) {
     });
 
     // --- 6. Sprite selecionado (mostrar os blocos certos na área de scripts)
-    // ScriptsPane.setActiveScript() (não Page.setCurrentSprite direto) —
-    // ela faz tudo que setCurrentSprite faz E MAIS: torna a <div> de scripts
-    // do sprite visível (Scripts.prototype.activate(), diferente do
-    // Sprite.prototype.activate() que setCurrentSprite já chama) e
-    // reconecta onmousedown/ontouchstart do painel pro sprite certo. Sem
-    // isso, ScratchJr.getActiveScript() (que lê currentSpriteName) ficava
-    // desincronizado do handler de clique de verdade, e clicar/arrastar no
-    // painel de scripts quebrava com "Cannot read properties of null" em
-    // Scripts.scriptsMouseDown/Scroll.bounceBack — confirmado em produção.
+    // Thumbs.selectThisSprite() (NÃO ScriptsPane.setActiveScript direto) —
+    // setActiveScript só ATIVA a <div> de scripts do sprite novo
+    // (Scripts.prototype.activate(), diferente do Sprite.prototype.activate()
+    // que Page.setCurrentSprite já chama por baixo) e reconecta
+    // onmousedown/ontouchstart do painel — mas NUNCA desativa a <div> de
+    // scripts do sprite que estava ativo antes. Quem faz essa desativação de
+    // verdade é Thumbs.selectThisSprite(), que percorre TODAS as miniaturas
+    // da tira e chama Thumbs.unhighlighSprite() (→ Scripts.deactivate()) em
+    // cada uma que não é a selecionada — chamar setActiveScript sozinho
+    // pulava esse passo inteiro. Bug real confirmado em produção: trocar de
+    // ator na tira lateral do professor não trocava pro aluno, e os blocos
+    // de vários atores diferentes iam se acumulando visíveis ao mesmo tempo
+    // (cada Scripts ativado por um setActiveScript anterior nunca era
+    // desativado de novo). Thumbs.selectThisSprite já chama
+    // ScriptsPane.setActiveScript por baixo (via Thumbs.highlighSprite),
+    // então isso substitui a chamada antiga por completo, não só complementa.
     if (stageData.lastSprite && page.currentSpriteName !== stageData.lastSprite) {
-        ScriptsPane.setActiveScript(stageData.lastSprite);
+        const selEl = gn(stageData.lastSprite);
+        if (selEl && selEl.owner) Thumbs.selectThisSprite(selEl.owner);
     }
 
     _lastAppliedStage = stageData;
