@@ -551,6 +551,11 @@ function _broadcastTeacherPreview() {
     if (!sessionChannel || !hasControl) return;
     try {
         const dataUrl = _captureFrameSnapshot(FULL_PREVIEW_MAX_WIDTH);
+        // DEBUG TEMPORÁRIO — investigando "prévia trava na cena anterior".
+        // currentPage.num confirma se o MODELO JS já trocou de página;
+        // dataUrl.length muda perceptivelmente entre cenas diferentes (fica
+        // igual, tick a tick, se travar de verdade). Remover depois.
+        console.log('[teacher preview tick]', 'page', ScratchJr.stage && ScratchJr.stage.currentPage ? ScratchJr.stage.currentPage.num : '?', 'bytes', dataUrl ? dataUrl.length : 'null (fallback)');
         if (dataUrl) {
             sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { dataUrl } });
             return;
