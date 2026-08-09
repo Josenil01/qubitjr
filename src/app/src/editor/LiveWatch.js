@@ -169,8 +169,14 @@ function reloadProjectFromBackend() {
  * de costume é feita chamando sprite.getAsset/setCostume direto.
  */
 function applyStageState(stageData) {
-    if (!stageData || !ScratchJr.stage) return;
-    if (_reloadInFlight) return; // recarga completa já em curso, ignora este tick
+    if (!stageData || !ScratchJr.stage) {
+        console.log('[applyStageState] saída antecipada: stageData ou ScratchJr.stage ausente', !!stageData, !!ScratchJr.stage);
+        return;
+    }
+    if (_reloadInFlight) {
+        console.log('[applyStageState] pulando tick — recarga em curso (_reloadInFlight)');
+        return;
+    }
 
     // --- Detectar "isso é novo" (página ou sprite nunca vistos) -----------
     // Os caminhos abaixo só sabem ATUALIZAR sprites/páginas que já existem
@@ -181,6 +187,18 @@ function applyStageState(stageData) {
     const pageKnown = ScratchJr.stage.pages.some((p) => p.id === stageData.id);
     const spriteMissing = (stageData.sprites || []).some((s) => !gn(s.id));
     if (!pageKnown || spriteMissing) {
+        // DEBUG TEMPORÁRIO — investigando "applyStageState nunca aplica
+        // nada". Se isso disparar em TODO tick (mesmo depois da recarga
+        // completar), o id da página ou de algum sprite nunca bate com o
+        // que o aluno tem, e a função nunca sai desse branch. Remover
+        // depois de confirmado.
+        console.log('[applyStageState] "isso é novo" — caindo pra recarga completa', {
+            stageDataId: stageData.id,
+            pageKnown,
+            spriteMissing,
+            paginasConhecidas: ScratchJr.stage.pages.map((p) => p.id),
+            spritesRecebidos: (stageData.sprites || []).map((s) => s.id),
+        });
         _reloadInFlight = true;
         if (_reloadResetTimer) clearTimeout(_reloadResetTimer);
         _reloadResetTimer = setTimeout(() => {
@@ -371,6 +389,10 @@ async function joinSession(sessionId) {
             // controle, esse mesmo evento é o que ELE envia em
             // broadcastPreview() (formato {dataUrl}, não {stage}) — ignorar
             // pra não reaplicar o próprio estado nele mesmo.
+            // DEBUG TEMPORÁRIO — investigando "applyStageState nunca
+            // aparece" mesmo com o professor confirmadamente enviando.
+            // Remover depois de confirmado.
+            console.log('[preview_frame handler]', 'hasControl(aluno)', hasControl, 'tem stage?', !!msg.payload?.stage, 'vai aplicar?', !hasControl && !!msg.payload?.stage);
             if (!hasControl && msg.payload?.stage) {
                 applyStageState(msg.payload.stage);
             }
