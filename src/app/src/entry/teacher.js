@@ -357,6 +357,19 @@ async function _startObserving(student) {
  * inteira é o botão, não um botãozinho — pedido do usuário) pra assumir
  * controle. As duas ficam num wrapper fixo só pra empilhar em fluxo normal
  * sem precisar calcular offset em pixel manualmente.
+ *
+ * Como o wrapper é position:fixed (fora do fluxo do documento), ele NÃO
+ * empurra o conteúdo de #frame pra baixo sozinho — fica sobrepondo por
+ * cima. Isso escondia a própria barra de ferramentas do ScratchJr (logo,
+ * tela cheia, grade, desfazer, bandeira — dentro de #frame, começa em
+ * top:0 igual o wrapper) atrás da nossa barra (confirmado em produção:
+ * "senti falta da barra superior"). Empurrado manualmente aqui via
+ * margin-top = altura do wrapper, e desfeito em _hideObserveBar/
+ * _enableEditingMode — só existe durante a observação BLOQUEADA, quando
+ * nenhuma interação/arrasto é possível, então não corre o risco de
+ * desalinhar globalx()/globaly() (usados pra calcular onde um bloco foi
+ * solto) igual aconteceria se isso ficasse deslocado durante edição de
+ * verdade.
  */
 function _showObserveBar() {
     _hideObserveBar();
@@ -387,12 +400,17 @@ function _showObserveBar() {
     });
     _controlBarEl.textContent = '🖐️ Assumir controle';
     _controlBarEl.onclick = _requestControl;
+
+    const frame = document.getElementById('frame');
+    if (frame) frame.style.marginTop = wrap.offsetHeight + 'px';
 }
 
 function _hideObserveBar() {
     if (_observeWrapEl && _observeWrapEl.parentNode) _observeWrapEl.parentNode.removeChild(_observeWrapEl);
     _observeWrapEl = null;
     _controlBarEl = null;
+    const frame = document.getElementById('frame');
+    if (frame) frame.style.marginTop = ''; // volta pro top:0 exato que a edição de verdade precisa
 }
 
 function _requestControl() {
