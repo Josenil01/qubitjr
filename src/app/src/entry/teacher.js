@@ -230,7 +230,15 @@ async function _openOffline(student) {
     if (sessionChannel) {
         sessionChannel
             .on('broadcast', { event: 'control_request' }, (msg) => {
-                if (msg.payload?.from === 'student' && hasControl) _releaseControl();
+                // Mesmo aviso que _startObserving usa pro caso normal — o
+                // aluno pode reclamar o controle a qualquer momento, mesmo
+                // durante uma edição offline (ele é o dono da conta), e o
+                // professor precisa saber que isso aconteceu (não só a
+                // tela recarregando sem explicação).
+                if (msg.payload?.from === 'student' && hasControl) {
+                    window.alert('O aluno entrou e pediu o controle de volta. Salvando e devolvendo agora...');
+                    _releaseControl();
+                }
             })
             .subscribe();
     }
@@ -319,8 +327,15 @@ async function _startObserving(student) {
         .on('broadcast', { event: 'control_request' }, (msg) => {
             // Aluno pedindo o controle de volta — diferente do pedido do
             // professor, este NUNCA precisa de aprovação (o aluno é o dono
-            // da conta, ver LiveMirror/LiveWatch.js).
+            // da conta, ver LiveMirror/LiveWatch.js) — mas o professor
+            // ainda precisa SABER que isso aconteceu, do jeito que o aluno
+            // sempre soube quando o professor pedia (promptControlRequest,
+            // LiveWatch.js) — sem isso, a tela do professor só recarregava
+            // de repente sem explicação nenhuma (regressão real: esse
+            // aviso existia antes da extração pra LiveMirror.js e foi
+            // perdido sem querer na reescrita).
             if (msg.payload?.from === 'student' && hasControl) {
+                window.alert('O aluno pediu para retomar o controle. Salvando e devolvendo agora...');
                 _releaseControl();
             }
         })
