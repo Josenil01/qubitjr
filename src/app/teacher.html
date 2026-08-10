@@ -65,21 +65,18 @@ html, body { background: #f4f6fb; margin: 0; padding: 0; font-family: 'Helvetica
 }
 .teacherCard.offline .teacherCardBtn { background: #b0b6c3; }
 
-#teacher-observing { display: none; }
-.teacherObserveBar {
-    display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+/* A barra de observação/assumir controle e o aviso de "aluno ficou
+   online" agora são montados via estilo inline em teacher.js
+   (_showObserveBar/_warnStudentCameOnline) — são elementos position:fixed
+   fora do fluxo normal do documento (mesmo motivo de #teacher-topbar
+   precisar ficar oculto enquanto o motor real está montado, ver
+   _mountEngine), então não faz sentido declará-los aqui como se fizessem
+   parte do layout normal de #teacher-root. */
+.teacherBackBtn {
+    padding: 8px 14px; border: none; border-radius: 8px; cursor: pointer;
+    font-weight: 700; background: #e4e8f0;
 }
-.teacherBackBtn, .teacherControlBtn {
-    padding: 8px 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700;
-}
-.teacherBackBtn { background: #e4e8f0; }
-.teacherControlBtn { background: #6c63ff; color: #fff; margin-left: auto; }
 .teacherObserveTitle { font-weight: 700; font-size: 15px; }
-.teacherPreviewWrap {
-    display: flex; justify-content: center; padding: 20px;
-    background: #000; border-radius: 12px;
-}
-.teacherPreviewImg { max-width: 480px; width: 100%; border-radius: 4px; }
 </style>
 
 <script>

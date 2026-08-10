@@ -2,32 +2,42 @@
  * src/app/src/entry/teacher.js
  *
  * Lobby do professor: lista os alunos de uma turma (online primeiro),
- * permite observar um aluno ao vivo (prévia de imagem via canal Realtime) e,
- * opcionalmente, assumir o controle do editor daquele aluno.
+ * permite observar um aluno ao vivo — o motor real do editor é montado
+ * IMEDIATAMENTE em modo só-visualização (bloqueado, LiveMirror.
+ * showLockOverlay), pilotado pelos dados que o aluno já transmite o tempo
+ * todo (o aluno sempre broadcasta seu próprio estado enquanto uma sessão
+ * está ativa, não só quando o professor pede) — nada de foto/imagem.
+ * Clicando na barra "Assumir controle", o professor pede aprovação do
+ * aluno e passa a editar de verdade.
+ *
+ * Também permite abrir o último projeto de um aluno OFFLINE — mesmo
+ * mecanismo de bypass de sessão, mas sem handshake nenhum (não tem
+ * ninguém do outro lado pra aprovar): entra direto editando.
  *
  * turma_id vem de ?turmaId= na URL (redirect vindo da HelloYotta).
  *
- * ⚠️ Não testado contra Supabase/HelloYotta reais neste ambiente — ver
- * ressalvas na conversa de arquitetura. "Assumir controle" é a parte de
- * maior risco: monta o motor completo do ScratchJr (mesma abordagem do
- * player.js) contra os endpoints de bypass em backend/src/routes/teacher.js
- * (GET/PUT /api/teacher/session/:id/project), que existem só enquanto a
- * live_session estiver ativa.
+ * "Assumir controle"/edição offline são a parte de maior risco: montam o
+ * motor completo do ScratchJr contra os endpoints de bypass em
+ * backend/src/routes/teacher.js (GET/PUT /api/teacher/session/:id/project),
+ * que existem só enquanto a live_session estiver ativa.
  */
 
 import ScratchJr from '../editor/ScratchJr.js';
 import iOS from '../iPad/iOS.js';
 import IO from '../iPad/IO.js';
-import Palette from '../editor/ui/Palette.js';
-import Library from '../editor/ui/Library.js';
 import { connectChannel } from '../services/RealtimeClient.js';
 import { newHTML, gn } from '../utils/lib.js';
+import {
+    applyStageState, applyUiState, applyPageList, buildMirrorPayload,
+    showLockOverlay, hideLockOverlay, resetMirroredUi, reloadProjectFromBackend,
+    resetMirrorState, ABOVE_LOCK_OVERLAY_Z_INDEX,
+} from '../editor/LiveMirror.js';
 
 const HEARTBEAT_MS = 20000;
 const DEVICE_ID_KEY = 'scratchjr_teacher_device_id';
-// Payload agora é dado (JSON, ~1KB típico), não mais imagem — sobra muita
-// margem de banda comparado ao limite de payload do Realtime (que rejeitava
-// só a partir de ~330KB). 200ms deixa o movimento no palco do aluno mais
+// Payload é dado (JSON, ~1KB típico), não imagem — sobra muita margem de
+// banda comparado ao limite de payload do Realtime (que rejeitava só a
+// partir de ~330KB). 200ms deixa o movimento no palco do outro lado mais
 // próximo de tempo real sem custo relevante de mensagens extras.
 const TEACHER_PREVIEW_INTERVAL_MS = 200;
 
@@ -37,16 +47,20 @@ let roster = [];
 let onlineIds = new Set();
 let presenceChannel = null;
 let sessionChannel = null;
-let currentSession = null; // { sessionId, studentId, realtimeChannel, expiresAt }
+let currentSession = null; // { sessionId, studentId, studentName, realtimeChannel, expiresAt, offline? }
 let heartbeatTimer = null;
-let previewTimer = null; // broadcast do que o PROFESSOR está fazendo, pro aluno ver
+let previewTimer = null; // broadcast do que o PROFESSOR está fazendo, pro aluno ver (só ativo quando hasControl)
 let _observeTimeoutTimer = null; // ver OBSERVE_TIMEOUT_MS abaixo
 const OBSERVE_TIMEOUT_MS = 3 * 60 * 1000; // 3min só observando sem assumir controle -> volta sozinho pra turma
 let _monitorLastSpriteIds = new Set(); // só pra log — diff de sprites/páginas entre um tick e outro
 let _monitorLastPageIds = new Set();
 let _monitorLastMd5;
-let _hoverTarget = null; // { kind: 'library'|'sprite'|'page', id } | null — ver _updateHoverTarget
-let hasControl = false; // true quando o PROFESSOR está no controle
+let hasControl = false; // true quando o PROFESSOR está editando de verdade (não só observando)
+let engineMounted = false; // true assim que o motor é montado (observando OU editando) — diferente de hasControl
+let _observeWrapEl = null; // wrapper flutuante: barra de voltar + barra grande de assumir controle
+let _controlBarEl = null;
+let _onlineWarningEl = null;
+let _onlineWarningShown = false;
 
 function authHeader() {
     const token = window.__AUTH_TOKEN__;
@@ -119,7 +133,15 @@ async function _connectPresence() {
         .on('presence', { event: 'sync' }, () => {
             const state = presenceChannel.presenceState();
             onlineIds = new Set(Object.values(state).flat().map((p) => p.studentId));
-            _renderLobby();
+            // Editando offline e o aluno específico dessa sessão acabou de
+            // ficar online — os dois podem editar ao mesmo tempo sem
+            // coordenação nenhuma e um sobrescrever o trabalho do outro.
+            // Decisão (confirmada com o usuário): só avisar, não bloquear
+            // automaticamente — o professor decide o que fazer.
+            if (currentSession && currentSession.offline && onlineIds.has(currentSession.studentId)) {
+                _warnStudentCameOnline();
+            }
+            if (!engineMounted) _renderLobby(); // só recompõe a lista se ainda estivermos nela
         })
         .subscribe();
 }
@@ -161,14 +183,84 @@ function _renderLobby() {
     });
 }
 
-function _openOffline(student) {
-    // Aluno offline: fora do escopo desta tela — abrir o projeto no modo
-    // editor normal (assíncrono) é a mesma UI de edição já existente, não a
-    // de observação ao vivo. Aqui só sinalizamos onde isso deveria acontecer.
-    window.alert(`Abrir "${student.project ? student.project.name : 'projeto'}" de ${student.name} no modo editor normal (fora do escopo desta tela de observação ao vivo).`);
+// ── Editar projeto de aluno OFFLINE (sem sessão ao vivo do outro lado) ──
+
+/**
+ * Abre o último projeto salvo de um aluno que não está online agora — sem
+ * handshake de aprovação nenhum (não tem ninguém do outro lado pra
+ * aprovar): entra direto no modo de edição. Reaproveita o MESMO mecanismo
+ * de bypass de sessão que "assumir controle" já usa — confirmado lendo
+ * POST /session/start (backend/src/routes/teacher.js) que não exige o
+ * aluno estar online em nenhum ponto, só verifica se o professor tem
+ * permissão pra turma+aluno.
+ *
+ * ⚠️ Risco de colisão: se o aluno ficar online NO MEIO dessa edição, ele
+ * pode abrir o próprio projeto e editar ao mesmo tempo sem coordenação —
+ * um pode sobrescrever o trabalho do outro. Decisão (confirmada com o
+ * usuário): só avisar visualmente (_warnStudentCameOnline), não bloquear
+ * automaticamente.
+ */
+async function _openOffline(student) {
+    const res = await apiFetch('/teacher/session/start', {
+        method: 'POST',
+        body: JSON.stringify({
+            turmaId,
+            studentId: student.id,
+            deviceId: getDeviceId(),
+            projectId: student.project ? student.project.id : null,
+        }),
+    });
+
+    if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        window.alert(body.error || 'Não foi possível abrir o projeto.');
+        return;
+    }
+
+    const data = await res.json();
+    currentSession = { ...data, studentId: student.id, studentName: student.name, offline: true };
+    _onlineWarningShown = false;
+
+    // Canal Realtime conectado mesmo sem ninguém do outro lado agora — não
+    // pra sincronizar nada, só pra saber se o aluno ficar online no meio
+    // da edição (ver _connectPresence) e, nesse caso raro, ainda reagir a
+    // um control_request dele (o aluno sempre pode pedir de volta o que é
+    // dele, mesmo estando "offline" quando a sessão começou).
+    sessionChannel = connectChannel(data.realtimeChannel, { ack: true });
+    if (sessionChannel) {
+        sessionChannel
+            .on('broadcast', { event: 'control_request' }, (msg) => {
+                if (msg.payload?.from === 'student' && hasControl) _releaseControl();
+            })
+            .subscribe();
+    }
+
+    _mountEngine(() => {
+        // Sem handoff nenhum acontecendo (ninguém do outro lado) — pula
+        // direto pra edição, sem passar pelo estado "bloqueado observando".
+        _enableEditingMode({ reloadFirst: false });
+    });
+    _startHeartbeat();
 }
 
-// ── Observar (prévia de imagem) ─────────────────────────────────────────
+function _warnStudentCameOnline() {
+    if (_onlineWarningShown) return;
+    _onlineWarningShown = true;
+    _onlineWarningEl = newHTML('div', 'teacherOnlineWarning', document.body);
+    _onlineWarningEl.textContent = `⚠️ ${currentSession.studentName} ficou online — cuidado pra não sobrescrever o trabalho um do outro.`;
+    Object.assign(_onlineWarningEl.style, {
+        position: 'fixed', bottom: '0', left: '0', right: '0', zIndex: String(ABOVE_LOCK_OVERLAY_Z_INDEX),
+        background: '#ffb020', color: '#3a2a00', textAlign: 'center', padding: '8px 12px',
+        fontSize: '14px', fontWeight: '700', fontFamily: 'Helvetica Neue, Arial, sans-serif',
+    });
+}
+
+function _hideOnlineWarning() {
+    if (_onlineWarningEl && _onlineWarningEl.parentNode) _onlineWarningEl.parentNode.removeChild(_onlineWarningEl);
+    _onlineWarningEl = null;
+}
+
+// ── Observar (motor real, ao vivo, bloqueado até assumir controle) ──────
 
 async function _startObserving(student) {
     const res = await apiFetch('/teacher/session/start', {
@@ -198,24 +290,37 @@ async function _startObserving(student) {
     }
 
     sessionChannel
-        .on('broadcast', { event: 'preview_frame' }, (msg) => _updatePreview(msg.payload?.dataUrl))
+        .on('broadcast', { event: 'preview_frame' }, (msg) => {
+            // O aluno manda o próprio estado o tempo todo enquanto tem
+            // controle (o padrão dele, não só quando o professor assumiu)
+            // — aplicar direto no motor já montado, mesmo caminho que
+            // LiveWatch.js usa no sentido contrário. Só ignora enquanto o
+            // PRÓPRIO professor está editando (hasControl aqui é do lado
+            // dele) — nesse caso quem manda preview_frame é o professor
+            // mesmo, pro aluno, não teria sentido reaplicar em si mesmo.
+            if (!hasControl && msg.payload?.stage) {
+                applyPageList(msg.payload.pageIds);
+                applyStageState(msg.payload.stage);
+                applyUiState(msg.payload.ui);
+            }
+        })
         .on('broadcast', { event: 'control_ready' }, () => {
-            if (hasControl) _mountControllingEngine();
+            if (hasControl) _enableEditingMode({ reloadFirst: true });
         })
         .on('broadcast', { event: 'control_denied' }, () => {
             hasControl = false;
-            const btn = document.querySelector('.teacherControlBtn');
-            if (btn) { btn.disabled = false; btn.textContent = 'Assumir controle'; }
+            if (_controlBarEl) {
+                _controlBarEl.textContent = '🖐️ Assumir controle';
+                _controlBarEl.style.cursor = 'pointer';
+                _controlBarEl.onclick = _requestControl;
+            }
             window.alert('O aluno recusou o pedido de controle.');
         })
         .on('broadcast', { event: 'control_request' }, (msg) => {
             // Aluno pedindo o controle de volta — diferente do pedido do
             // professor, este NUNCA precisa de aprovação (o aluno é o dono
-            // da conta, ver LiveWatch.js). Faltava esse listener inteiro:
-            // o aluno mandava o broadcast e nada acontecia do lado do
-            // professor — "pedido não aparecia na tela".
+            // da conta, ver LiveMirror/LiveWatch.js).
             if (msg.payload?.from === 'student' && hasControl) {
-                window.alert('O aluno pediu para retomar o controle. Salvando e devolvendo agora...');
                 _releaseControl();
             }
         })
@@ -230,7 +335,10 @@ async function _startObserving(student) {
         });
     }
 
-    _renderObserving();
+    _mountEngine(() => {
+        showLockOverlay();
+        _showObserveBar();
+    });
     _startHeartbeat();
     // Economiza conexão do Realtime: se o professor ficar só observando
     // (sem nunca assumir controle) por mais de OBSERVE_TIMEOUT_MS, volta
@@ -241,31 +349,50 @@ async function _startObserving(student) {
     }, OBSERVE_TIMEOUT_MS);
 }
 
-function _renderObserving() {
-    const root = gn('teacher-root');
-    root.innerHTML = '';
+/**
+ * Barra flutuante substituindo #teacher-topbar (escondido enquanto o motor
+ * está montado — ver comentário de calibração de coordenadas em
+ * _mountEngine): uma faixa pequena com "← Voltar pra turma" + o nome de
+ * quem está sendo observado, e logo abaixo uma faixa GRANDE (a barra
+ * inteira é o botão, não um botãozinho — pedido do usuário) pra assumir
+ * controle. As duas ficam num wrapper fixo só pra empilhar em fluxo normal
+ * sem precisar calcular offset em pixel manualmente.
+ */
+function _showObserveBar() {
+    _hideObserveBar();
+    const wrap = newHTML('div', 'teacherFloatingObserveWrap', document.body);
+    Object.assign(wrap.style, {
+        position: 'fixed', top: '0', left: '0', right: '0', zIndex: String(ABOVE_LOCK_OVERLAY_Z_INDEX),
+        fontFamily: 'Helvetica Neue, Arial, sans-serif',
+    });
+    _observeWrapEl = wrap;
 
-    const bar = newHTML('div', 'teacherObserveBar', root);
-    const back = newHTML('button', 'teacherBackBtn', bar);
+    const backBar = newHTML('div', 'teacherFloatingBackBar', wrap);
+    Object.assign(backBar.style, {
+        display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 12px',
+        background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.12)', fontSize: '13px',
+    });
+    const back = newHTML('button', 'teacherBackBtn', backBar);
     back.textContent = '← Voltar pra turma';
     back.onclick = _endSession;
-
-    const title = newHTML('span', 'teacherObserveTitle', bar);
+    const title = newHTML('span', 'teacherObserveTitle', backBar);
     title.textContent = `Observando: ${currentSession.studentName}`;
 
-    const controlBtn = newHTML('button', 'teacherControlBtn', bar);
-    controlBtn.textContent = 'Assumir controle';
-    controlBtn.onclick = _requestControl;
-
-    newHTML('div', 'teacherPreviewWrap', root).id = 'teacher-preview-wrap';
-    const img = newHTML('img', 'teacherPreviewImg', gn('teacher-preview-wrap'));
-    img.id = 'teacher-preview-img';
-    img.alt = 'Prévia ao vivo';
+    _controlBarEl = newHTML('div', 'teacherControlBar', wrap);
+    _controlBarEl.setAttribute('role', 'button');
+    _controlBarEl.tabIndex = 0;
+    Object.assign(_controlBarEl.style, {
+        background: 'linear-gradient(90deg, #6c63ff, #48c9b0)', color: '#fff',
+        textAlign: 'center', padding: '14px', fontSize: '17px', fontWeight: '700', cursor: 'pointer',
+    });
+    _controlBarEl.textContent = '🖐️ Assumir controle';
+    _controlBarEl.onclick = _requestControl;
 }
 
-function _updatePreview(dataUrl) {
-    const img = gn('teacher-preview-img');
-    if (img && dataUrl) img.src = dataUrl;
+function _hideObserveBar() {
+    if (_observeWrapEl && _observeWrapEl.parentNode) _observeWrapEl.parentNode.removeChild(_observeWrapEl);
+    _observeWrapEl = null;
+    _controlBarEl = null;
 }
 
 function _requestControl() {
@@ -273,18 +400,21 @@ function _requestControl() {
     if (_observeTimeoutTimer) { clearTimeout(_observeTimeoutTimer); _observeTimeoutTimer = null; } // deixou de ser "só observando"
     hasControl = true;
     sessionChannel.send({ type: 'broadcast', event: 'control_request', payload: { from: 'teacher' } });
-    const btn = document.querySelector('.teacherControlBtn');
-    if (btn) { btn.disabled = true; btn.textContent = 'Aguardando o aluno salvar...'; }
+    if (_controlBarEl) {
+        _controlBarEl.textContent = 'Aguardando o aluno salvar...';
+        _controlBarEl.style.cursor = 'default';
+        _controlBarEl.onclick = null;
+    }
 }
 
-// ── Assumir controle (monta o motor completo — maior risco, não testado) ──
+// ── Montagem do motor real (observação ou edição) ───────────────────────
 
-function _mountControllingEngine() {
-    const sessionId = currentSession.sessionId;
-
-    // Patch estreito de IO, só neste módulo/sessão: lê e grava o projeto do
-    // aluno via os endpoints de bypass (backend/src/routes/teacher.js),
-    // nunca pelo /api/db normal (que filtraria por owner e bloquearia).
+/**
+ * Patch estreito de IO, só neste módulo/sessão: lê e grava o projeto do
+ * aluno via os endpoints de bypass (backend/src/routes/teacher.js), nunca
+ * pelo /api/db normal (que filtraria por owner e bloquearia).
+ */
+function _patchIOBypass(sessionId) {
     const _origGetObjectinDB = IO.getObjectinDB;
     IO.getObjectinDB = function (db, md5, fcn) {
         if (db === 'projects') {
@@ -305,13 +435,22 @@ function _mountControllingEngine() {
             .then((r) => (fcn ? fcn({ success: r.ok }) : null))
             .catch(() => (fcn ? fcn({ success: false }) : null));
     };
+}
 
-    // Library/Record/Undo precisam rodar de verdade aqui — diferente do
-    // player.js (que é só leitura), o professor no controle precisa poder
-    // adicionar atores/cenários (Library) e desfazer (Undo). Estavam
-    // stubados como no-op copiando o padrão do player.js sem pensar que
-    // "assumir controle" É edição de verdade — por isso os botões de
-    // adicionar ator/cenário não faziam nada.
+/**
+ * Monta o motor completo do ScratchJr contra o bypass de sessão — usado
+ * tanto pra OBSERVAR (motor montado, mas bloqueado por LiveMirror.
+ * showLockOverlay até o professor assumir controle) quanto pra EDITAR
+ * offline (direto, sem bloqueio). `onReady` roda depois que
+ * ScratchJr.appinit() já rodou.
+ *
+ * Library/Record/Undo precisam rodar de verdade aqui — diferente do
+ * player.js (que é só leitura), o professor no controle precisa poder
+ * adicionar atores/cenários (Library) e desfazer (Undo).
+ */
+function _mountEngine(onReady) {
+    const sessionId = currentSession.sessionId;
+    _patchIOBypass(sessionId);
 
     document.body.classList.add('teacherControlling');
     window.currentProjectMd5 = currentSession.projectId;
@@ -341,104 +480,56 @@ function _mountControllingEngine() {
     // o ponto de solta 44px abaixo de onde o bloco realmente estava,
     // fazendo o encaixe falhar. Mesma classe de bug documentada em
     // Stage.js:421 pro clique no palco — aqui pega o editor inteiro.
+    // As barras flutuantes de observação/edição (_showObserveBar,
+    // _addReleaseButton) são position:fixed — fora do fluxo normal do
+    // documento, então não reintroduzem esse mesmo problema.
     const topbar = gn('teacher-topbar');
     if (topbar) topbar.style.display = 'none';
+
+    engineMounted = true;
 
     iOS.getsettings(function (str) {
         const list = str.split(',');
         iOS.path = list[1] === '0' ? list[0] + '/' : undefined;
         ScratchJr.currentProject = currentSession.projectId;
         ScratchJr.appinit(window.Settings.scratchJrVersion);
+        if (onReady) onReady();
     });
+}
 
-    // O botão "Soltar controle" de _renderObserving() vive dentro de
-    // #teacher-root, que acabamos de esconder — ficava inacessível assim
-    // que o motor montava. Um botão flutuante fixo, fora de #teacher-root,
-    // resolve isso e também não interfere no offsetTop de #frame (position:
-    // fixed é removido do fluxo normal do documento).
+/**
+ * Liga a edição de verdade — sai do modo "só observando bloqueado" (ou,
+ * pra edição offline, é chamado direto sem nunca ter passado por lá).
+ * reloadFirst=true (transição observar→controlar): recarrega do backend
+ * pra garantir que o motor reflete o que o aluno acabou de salvar
+ * (saveThenSignalReady, do lado dele) — o espelho ao vivo pode ter ficado
+ * levemente atrás até esse instante. reloadFirst=false (edição offline):
+ * o motor acabou de carregar fresco via bypass, recarregar de novo seria
+ * redundante.
+ */
+function _enableEditingMode({ reloadFirst } = {}) {
+    hasControl = true;
+    hideLockOverlay();
+    resetMirroredUi();
+    resetMirrorState();
+    _hideObserveBar();
+    if (reloadFirst) {
+        reloadProjectFromBackend();
+    }
     _addReleaseButton();
-
-    // Espelha LiveWatch.js do lado do aluno: sem isso, o aluno via a tela
-    // "Seu professor está no controle agora" e nada mais — não tinha como
-    // ver o que estava sendo editado.
+    // Espelha LiveWatch.js do lado do aluno: manda o estado ao vivo pro
+    // aluno ver o que está sendo editado enquanto o professor está no
+    // controle. Em edição offline isso ainda roda (ninguém escutando no
+    // canal agora, broadcast vira só um envio sem efeito), mas não custa
+    // nada manter simétrico — se o aluno entrar online no meio, já
+    // encontra o canal recebendo normalmente.
     previewTimer = setInterval(_broadcastTeacherPreview, TEACHER_PREVIEW_INTERVAL_MS);
 }
 
 /**
- * Broadcast do estado do palco pro aluno — não mais uma foto (canvas/
- * imagem), e sim os DADOS do projeto (posição/costume/scripts de cada
- * sprite, cenário, página atual). O aluno (LiveWatch.js:applyStageState)
- * aplica isso direto nos objetos Sprite/Page que já estão vivos na tela
- * dele, usando as mesmas funções internas que undo/redo e carregamento de
- * projeto já usam — o motor de verdade desenha, não uma imagem comprimida.
- *
- * Motivo da mudança (era canvas→JPEG antes): ~13.000 mensagens Realtime
- * numa única sessão de teste (custo real de escala), e o payload de imagem
- * precisava reduzir resolução/usar JPEG com perdas pra caber no limite de
- * ~330KB do broadcast do Supabase (qualidade ruim). JSON de projeto (típico
- * poucos KB) resolve os dois problemas de uma vez — ver
- * declarative-wobbling-penguin.md pro desenho completo e a tabela de
- * funções confirmadas seguras de chamar do lado do aluno.
- *
- * `ui` (adicionado depois, junto no mesmo tick pra não criar outro canal):
- * biblioteca aberta (e de que tipo, e a rolagem dela), tela cheia, categoria
- * de bloco selecionada — lidos via getters que já existiam ou foram
- * adicionados pra isso (ScratchJr.inFullscreen, Palette.numcat,
- * Library.isOpen/currentType), sem duplicar estado nenhum.
- */
-function _libraryScrollFraction() {
-    const area = gn('scrollarea');
-    if (!area) return null;
-    const max = area.scrollHeight - area.clientHeight;
-    return max > 0 ? area.scrollTop / max : 0;
-}
-
-/**
- * Rastreia sobre qual miniatura identificável (biblioteca, tira de atores,
- * tira de páginas) o mouse do professor está passando — NÃO coordenadas de
- * pixel. Guardamos só um {kind, id} pequeno em _hoverTarget, lido a cada
- * tick de _broadcastTeacherPreview. Rodar por delegação num único listener
- * de 'mouseover' (dispara só ao ENTRAR num elemento novo, bem mais barato
- * que 'mousemove') é seguro chamar sempre, mesmo fora de controle — só
- * escreve uma variável local, o broadcast em si já é condicionado a
- * hasControl.
- *
- * .assetbox tem o DOM id = o próprio md5 do asset (Library.js:
- * addAssetThumbChoose/addLocalThumbChoose) — dá pra usar direto. Já
- * .spritethumb/.pagethumb têm um DOM id gerado descartável; o id de
- * verdade do sprite/página fica em `.owner` (propriedade JS, não atributo
- * — Sprite.js:189-191/Page.js:228-229), por isso o aluno também precisa
- * procurar por `.owner`, não por gn(id) direto (ver applyHoverState).
- */
-function _updateHoverTarget(e) {
-    const el = e.target;
-    if (!el || !el.closest) return;
-    const assetbox = el.closest('.assetbox');
-    if (assetbox && assetbox.id) {
-        _hoverTarget = { kind: 'library', id: assetbox.id };
-        return;
-    }
-    const spriteThumb = el.closest('.spritethumb');
-    if (spriteThumb && spriteThumb.owner) {
-        _hoverTarget = { kind: 'sprite', id: spriteThumb.owner };
-        return;
-    }
-    const pageThumb = el.closest('.pagethumb');
-    if (pageThumb && pageThumb.owner) {
-        _hoverTarget = { kind: 'page', id: pageThumb.owner };
-        return;
-    }
-    _hoverTarget = null;
-}
-document.addEventListener('mouseover', _updateHoverTarget);
-
-/**
- * Log temporário de monitoramento — compara o sprites/pageIds/md5 desse
- * tick contra o tick anterior e só imprime quando algo REALMENTE muda
- * (entrou ou saiu um id, ou o cenário trocou), em vez de logar a cada
- * 200ms. Objetivo: correlacionar com os logs [monitor][aluno] de
- * LiveWatch.js pra achar exatamente onde a adição de ator/página diverge
- * entre professor e aluno.
+ * Log temporário de monitoramento — compara sprites/pageIds/md5 desse tick
+ * contra o tick anterior e só imprime quando algo REALMENTE muda, em vez
+ * de logar a cada 200ms.
  */
 function _logMonitorDiff(spriteIds, pageIds, md5) {
     const sSet = new Set(spriteIds);
@@ -457,30 +548,19 @@ function _logMonitorDiff(spriteIds, pageIds, md5) {
     _monitorLastMd5 = md5;
 }
 
+/**
+ * Broadcast do estado do palco pro aluno enquanto o PROFESSOR está
+ * editando — mesmo payload leve (dados, não imagem) que LiveMirror.
+ * buildMirrorPayload já monta pro sentido contrário (aluno→professor
+ * observando). Só ativo enquanto hasControl (ver _enableEditingMode).
+ */
 function _broadcastTeacherPreview() {
     if (!sessionChannel || !hasControl) return;
-    if (!ScratchJr.stage || !ScratchJr.stage.currentPage) return; // projeto ainda não carregou de verdade
     try {
-        const page = ScratchJr.stage.currentPage;
-        const stage = page.encodePage();
-        stage.id = page.id; // encodePage() não inclui isso — o aluno precisa pra achar a página certa
-        // Lista de ids de TODAS as páginas do projeto (não só a atual) — sem
-        // isso, o aluno nunca fica sabendo que uma página que NÃO é a atual
-        // do professor foi apagada (o payload só carrega a página atual, ver
-        // encodePage() acima). Barato: só ids, não os dados completos de
-        // cada página. LiveWatch.applyStageState usa isso pra detectar e
-        // remover páginas apagadas fora da que está sendo espelhada agora.
-        const pageIds = ScratchJr.stage.pages.map((p) => p.id);
-        _logMonitorDiff(stage.sprites || [], pageIds, stage.md5);
-        const libraryOpen = Library.isOpen;
-        const ui = {
-            library: libraryOpen ? Library.currentType : null,
-            libraryScroll: libraryOpen ? _libraryScrollFraction() : null,
-            fullscreen: ScratchJr.inFullscreen,
-            category: Palette.numcat,
-            hover: _hoverTarget,
-        };
-        sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload: { stage, ui, pageIds } })
+        const payload = buildMirrorPayload();
+        if (!payload) return; // projeto ainda não carregou de verdade
+        _logMonitorDiff(payload.stage.sprites || [], payload.pageIds, payload.stage.md5);
+        sessionChannel.send({ type: 'broadcast', event: 'preview_frame', payload })
             .catch((err) => {
                 console.error('[teacher preview send] falhou:', err);
             });
@@ -514,7 +594,8 @@ function _releaseControl() {
         if (sessionChannel) sessionChannel.send({ type: 'broadcast', event: 'control_ready', payload: {} });
         hasControl = false;
         // Recarrega a visão de prévia — mais simples que desmontar o motor
-        // do editor em memória. O aluno volta a ser a fonte da prévia.
+        // do editor em memória. O aluno volta a ser a fonte da prévia (ou,
+        // em edição offline, a sessão simplesmente encerra).
         location.reload();
     }, true);
 }
@@ -547,8 +628,11 @@ async function _endSession(reason) {
     if (previewTimer) clearInterval(previewTimer);
     previewTimer = null;
     _removeReleaseButton();
+    _hideObserveBar();
+    _hideOnlineWarning();
 
-    const wasControlling = hasControl;
+    const wasEngineMounted = engineMounted;
+    engineMounted = false;
 
     // Avisa o aluno PRIMEIRO (broadcast sobre um websocket já aberto sai
     // quase na hora) — sem isso o aviso "professor vendo" fica preso na tela
@@ -569,12 +653,15 @@ async function _endSession(reason) {
     currentSession = null;
     hasControl = false;
 
-    if (wasControlling) {
+    if (wasEngineMounted) {
         // Sessão encerrada (ex.: estourou os 50min) enquanto o motor do
-        // editor já estava montado em memória — só re-renderizar
-        // #teacher-root não desfaz isso (#frame/#libframe/#paintframe
-        // continuariam visíveis por cima, com o motor ainda rodando).
-        // Recarregar é o mesmo caminho seguro já usado por _releaseControl().
+        // editor já estava montado em memória (observando OU editando) —
+        // só re-renderizar #teacher-root não desfaz isso (#frame/#libframe/
+        // #paintframe continuariam visíveis por cima, com o motor ainda
+        // rodando). Recarregar é o mesmo caminho seguro já usado por
+        // _releaseControl() — e também reseta de graça todo o estado
+        // incremental de LiveMirror (não precisa chamar resetMirrorState
+        // aqui, o reload já limpa tudo).
         location.reload();
         return;
     }
