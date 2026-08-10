@@ -111,10 +111,36 @@ export function showLockOverlay() {
 export function hideLockOverlay() {
     if (lockOverlayEl && lockOverlayEl.parentNode) lockOverlayEl.parentNode.removeChild(lockOverlayEl);
     lockOverlayEl = null;
+    reserveFrameTopSpace(0); // desfaz qualquer espaço reservado pro aviso/barra — ver reserveFrameTopSpace
 }
 
 export function isLockOverlayShown() {
     return !!lockOverlayEl;
+}
+
+/**
+ * Empurra #frame pra baixo (margin-top) pra abrir espaço pro aviso/barra
+ * flutuante de cada lado (banner "Seu professor está..." do aluno,
+ * "Assumir controle" do professor) — sem isso, esses elementos position:
+ * fixed ficam por CIMA da própria barra de ferramentas do ScratchJr (logo,
+ * tela cheia, grade, desfazer, bandeira — dentro de #frame, também começa
+ * em top:0), cobrindo ela ao invés de empurrar (confirmado em produção nos
+ * dois lados: professor via _showObserveBar, aluno via showBanner).
+ *
+ * ⚠️ SÓ é seguro chamar isso enquanto showLockOverlay() estiver ativo —
+ * hideLockOverlay() já limpa automaticamente (reserveFrameTopSpace(0))
+ * assim que destrava. O aluno mostra esse MESMO banner ("Seu professor
+ * está vendo 👀") em estados onde ele AINDA tem controle interativo total
+ * (não travado) — empurrar #frame nesses casos desalinharia
+ * globalx()/globaly() (usados pra calcular onde um bloco foi solto,
+ * Stage.js/ScriptsPane.js), o mesmo motivo de #teacher-topbar precisar
+ * ficar oculto durante edição de verdade. Por isso quem chama isso
+ * (showBanner em LiveWatch.js, _showObserveBar em teacher.js) precisa
+ * checar isLockOverlayShown() antes.
+ */
+export function reserveFrameTopSpace(px) {
+    const frame = document.getElementById('frame');
+    if (frame) frame.style.marginTop = (px || 0) + 'px';
 }
 
 /**

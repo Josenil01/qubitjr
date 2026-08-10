@@ -30,7 +30,7 @@ import { newHTML, gn } from '../utils/lib.js';
 import {
     applyStageState, applyUiState, applyPageList, buildMirrorPayload,
     showLockOverlay, hideLockOverlay, resetMirroredUi, reloadProjectFromBackend,
-    resetMirrorState, ABOVE_LOCK_OVERLAY_Z_INDEX,
+    resetMirrorState, reserveFrameTopSpace, ABOVE_LOCK_OVERLAY_Z_INDEX,
 } from '../editor/LiveMirror.js';
 
 const HEARTBEAT_MS = 20000;
@@ -378,13 +378,14 @@ async function _startObserving(student) {
  * cima. Isso escondia a própria barra de ferramentas do ScratchJr (logo,
  * tela cheia, grade, desfazer, bandeira — dentro de #frame, começa em
  * top:0 igual o wrapper) atrás da nossa barra (confirmado em produção:
- * "senti falta da barra superior"). Empurrado manualmente aqui via
- * margin-top = altura do wrapper, e desfeito em _hideObserveBar/
- * _enableEditingMode — só existe durante a observação BLOQUEADA, quando
- * nenhuma interação/arrasto é possível, então não corre o risco de
- * desalinhar globalx()/globaly() (usados pra calcular onde um bloco foi
- * solto) igual aconteceria se isso ficasse deslocado durante edição de
- * verdade.
+ * "senti falta da barra superior"). Empurrado via
+ * LiveMirror.reserveFrameTopSpace (mesmo helper que showBanner usa do
+ * lado do aluno pro mesmo problema) — desfeito automaticamente por
+ * hideLockOverlay() (chamado por _enableEditingMode logo antes desta
+ * barra sumir) — só existe durante a observação BLOQUEADA, quando nenhuma
+ * interação/arrasto é possível, então não corre o risco de desalinhar
+ * globalx()/globaly() (usados pra calcular onde um bloco foi solto) igual
+ * aconteceria se isso ficasse deslocado durante edição de verdade.
  */
 function _showObserveBar() {
     _hideObserveBar();
@@ -416,16 +417,13 @@ function _showObserveBar() {
     _controlBarEl.textContent = '🖐️ Assumir controle';
     _controlBarEl.onclick = _requestControl;
 
-    const frame = document.getElementById('frame');
-    if (frame) frame.style.marginTop = wrap.offsetHeight + 'px';
+    reserveFrameTopSpace(wrap.offsetHeight);
 }
 
 function _hideObserveBar() {
     if (_observeWrapEl && _observeWrapEl.parentNode) _observeWrapEl.parentNode.removeChild(_observeWrapEl);
     _observeWrapEl = null;
     _controlBarEl = null;
-    const frame = document.getElementById('frame');
-    if (frame) frame.style.marginTop = ''; // volta pro top:0 exato que a edição de verdade precisa
 }
 
 function _requestControl() {

@@ -52,7 +52,7 @@ import ScratchJr from './ScratchJr.js';
 import {
     applyStageState, applyUiState, applyPageList, buildMirrorPayload,
     showLockOverlay, hideLockOverlay, resetMirroredUi, reloadProjectFromBackend,
-    resetMirrorState, ABOVE_LOCK_OVERLAY_Z_INDEX,
+    resetMirrorState, isLockOverlayShown, reserveFrameTopSpace, ABOVE_LOCK_OVERLAY_Z_INDEX,
 } from './LiveMirror.js';
 
 const SESSION_HEARTBEAT_MS = 20000;
@@ -103,6 +103,19 @@ async function apiPost(path, body) {
 /**
  * @param {string} text
  * @param {Array<{label: string, onClick: Function}>} [buttons]
+ *
+ * ⚠️ Empurra #frame pra baixo (LiveMirror.reserveFrameTopSpace) só quando
+ * showLockOverlay() está ativo — este MESMO banner também aparece em
+ * estados onde o aluno ainda tem controle interativo total (ex.: "Seu
+ * professor está vendo 👀", logo que a sessão começa, hasControl ainda
+ * true) — empurrar #frame nesses casos desalinharia globalx()/globaly()
+ * (cálculo de onde um bloco foi solto). Sem essa checagem, a barra de
+ * ferramentas do próprio ScratchJr (logo, tela cheia, grade, desfazer,
+ * bandeira) ficava coberta pelo banner em vez de aparecer abaixo dele
+ * (confirmado em produção — mesmo problema já corrigido do lado do
+ * professor em teacher.js:_showObserveBar). Reaplicado a cada chamada
+ * (não só na criação do elemento) porque o texto muda de um aviso pro
+ * outro e a altura renderizada pode mudar junto (quebra de linha).
  */
 function showBanner(text, buttons = []) {
     if (!bannerEl) {
@@ -123,6 +136,9 @@ function showBanner(text, buttons = []) {
         btn.style.marginLeft = '6px';
         btn.onclick = onClick;
     });
+    if (isLockOverlayShown()) {
+        reserveFrameTopSpace(bannerEl.offsetHeight);
+    }
 }
 
 function hideBanner() {
