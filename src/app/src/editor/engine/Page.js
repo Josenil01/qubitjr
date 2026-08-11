@@ -308,6 +308,13 @@ export default class Page {
         }
         var imgw = img.naturalWidth ? img.naturalWidth : img.width;
         var imgh = img.naturalHeight ? img.naturalHeight : img.height;
+        if (!imgw || !imgh) {
+            // A 0-sized source (e.g. a text sprite's outline canvas measured
+            // before it was laid out) makes drawImage throw InvalidStateError,
+            // which aborts the whole thumbnail/save pipeline upstream. Skip
+            // this one sprite instead of failing the entire save.
+            return;
+        }
         var sw = imgw * spr.scale;
         var sh = imgh * spr.scale;
         ctx.save();

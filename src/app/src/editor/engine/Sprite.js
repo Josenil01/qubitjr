@@ -1050,7 +1050,11 @@ export default class Sprite {
         var w = ctx.measureText(this.str).width;
         this.w = (Math.round(w) + 1);
         this.div.style.width = (this.w * 2) + 'px';
-        this.h = this.div.offsetHeight;
+        // offsetHeight is 0 whenever this.div isn't currently laid out (e.g. its
+        // page isn't the visible one when the text gets finalized) - fall back to
+        // a fontsize-based estimate so `outline` never gets sized to 0, which
+        // later crashes Page.drawSpriteImage's drawImage during thumbnail save.
+        this.h = this.div.offsetHeight || Math.ceil(this.fontsize * 1.35);
         this.cx = this.w / 2;
         this.cy = this.h / 2;
         setCanvasSize(this.outline, this.w, this.h);
