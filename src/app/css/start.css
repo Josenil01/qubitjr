@@ -150,6 +150,10 @@ div.frame {
 .gear.hide {display: none;}
 .gear.show {display: block;}
 
+/* Gear/settings entry point disabled - keeps overriding entry/index.js's
+   'gear show' toggle regardless of when it fires. */
+#gear {display: none !important;}
+
 .gear {
     position: absolute;
     top: 10px;

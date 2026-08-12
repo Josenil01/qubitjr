@@ -67,6 +67,10 @@ ul#settings.reference {
     right: ${css_vh(15.5)};
 }
 
+/* Gear/settings entry point disabled - hides the topbar button without
+   touching the click handler or the settings page it leads to. */
+#geartab {display: none !important;}
+
 #topbar ul.reference .gear .gear-icon {
     display: block;
     width: ${css_vh(12.63)};
