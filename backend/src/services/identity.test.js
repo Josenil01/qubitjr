@@ -104,6 +104,48 @@ describe('identity.verifyAndDecode — token de ALUNO (sem role, verificação r
         const token = fakeJwt({ id_usuario: 'usr_001' });
         await expect(verifyAndDecode(token)).resolves.toBeNull();
     });
+
+    it('HELLOYOTTA_MODE=live: verifies the same token only once (cache reused across repeated requests)', async () => {
+        process.env.HELLOYOTTA_MODE = 'live';
+        verifyStudentToken.mockResolvedValue({ sub: 'usr_cache_1', id_usuario: 'usr_cache_1', turma_id: 'turma-001' });
+
+        // id_usuario único pro teste — evita colidir no cache (module-level,
+        // não resetado entre testes) com o token de outro `it`. exp no
+        // futuro é obrigatório pra entrar no cache (ver setCachedStudentClaims).
+        const token = fakeJwt({ id_usuario: 'usr_cache_1', exp: Math.floor(Date.now() / 1000) + 3600 });
+
+        const first = await verifyAndDecode(token);
+        const second = await verifyAndDecode(token);
+        const third = await verifyAndDecode(token);
+
+        expect(verifyStudentToken).toHaveBeenCalledTimes(1);
+        expect(first).toEqual(second);
+        expect(second).toEqual(third);
+    });
+
+    it('HELLOYOTTA_MODE=live: also caches a rejection, avoiding repeated remote calls for an invalid token', async () => {
+        process.env.HELLOYOTTA_MODE = 'live';
+        verifyStudentToken.mockResolvedValue(null);
+
+        const token = fakeJwt({ id_usuario: 'usr_cache_2', exp: Math.floor(Date.now() / 1000) + 3600 });
+
+        await verifyAndDecode(token);
+        await verifyAndDecode(token);
+
+        expect(verifyStudentToken).toHaveBeenCalledTimes(1);
+    });
+
+    it('HELLOYOTTA_MODE=live: does not cache when the token has no exp claim', async () => {
+        process.env.HELLOYOTTA_MODE = 'live';
+        verifyStudentToken.mockResolvedValue({ sub: 'usr_cache_3', id_usuario: 'usr_cache_3' });
+
+        const token = fakeJwt({ id_usuario: 'usr_cache_3' }); // sem exp
+
+        await verifyAndDecode(token);
+        await verifyAndDecode(token);
+
+        expect(verifyStudentToken).toHaveBeenCalledTimes(2);
+    });
 });
 
 describe('identity.getUserIdFromClaims', () => {
