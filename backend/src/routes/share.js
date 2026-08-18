@@ -10,6 +10,10 @@
  * Rotas públicas (sem auth — registradas em index.js antes do middleware):
  *   GET    /api/public/project/:token   → dados públicos do projeto + reações
  *   POST   /api/public/project/:token/react  → incrementa contador de emoji
+ *
+ * Rota servidor-a-servidor pra HelloYotta puxar dado nosso (não usa o fluxo
+ * de JWT normal - quem chama é o backend deles, não um usuário logado):
+ *   GET    /api/public/students/:studentId/time-spent  → tempo total do aluno
  */
 
 const express = require('express');
@@ -116,6 +120,13 @@ router.delete('/:projectId', async (req, res) => {
 // ============================================
 // Rotas públicas (sem autenticação)
 // ============================================
+
+function timingSafeEqual(a, b) {
+    const bufA = Buffer.from(String(a));
+    const bufB = Buffer.from(String(b));
+    if (bufA.length !== bufB.length) return false;
+    return crypto.timingSafeEqual(bufA, bufB);
+}
 
 /**
  * GET /api/public/project/:token
@@ -236,6 +247,52 @@ publicRouter.post('/project/:token/react', async (req, res) => {
         }
     } catch (err) {
         console.error('[public] POST react error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * GET /api/public/students/:studentId/time-spent
+ * Endpoint servidor-a-servidor pra HelloYotta puxar (pull) o tempo total que
+ * um aluno já passou editando, somado entre todos os projetos dele
+ * (projects.time_spent_seconds, alimentado pelos heartbeats do editor - ver
+ * POST /api/db/project/:id/heartbeat em routes/db.js).
+ *
+ * Não usa o identityMiddleware normal (não há JWT de usuário aqui - quem
+ * chama é o backend da HelloYotta) - protegido por uma chave estática
+ * própria (HELLOYOTTA_INBOUND_API_KEY), comparada em tempo constante pra não
+ * vazar informação por timing. studentId desconhecido/sem projetos devolve
+ * totalTimeSeconds: 0 em vez de 404, pra não revelar se um id existe.
+ */
+publicRouter.get('/students/:studentId/time-spent', async (req, res) => {
+    const expectedKey = process.env.HELLOYOTTA_INBOUND_API_KEY;
+    if (!expectedKey) return res.status(503).json({ error: 'Endpoint not configured' });
+
+    const auth = req.headers.authorization || '';
+    const providedKey = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+    if (!providedKey || !timingSafeEqual(providedKey, expectedKey)) {
+        return res.status(401).json({ error: 'Invalid or missing API key' });
+    }
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    const { studentId } = req.params;
+    if (!studentId) return res.status(400).json({ error: 'Invalid studentId' });
+
+    try {
+        const { data, error } = await supabase
+            .from('projects')
+            .select('time_spent_seconds')
+            .eq('owner', studentId)
+            .eq('deleted', 'NO');
+
+        if (error) throw error;
+
+        const totalTimeSeconds = (data || []).reduce((sum, p) => sum + (p.time_spent_seconds || 0), 0);
+        res.json({ studentId, totalTimeSeconds });
+    } catch (err) {
+        console.error('[public] GET students/:studentId/time-spent error:', err);
         res.status(500).json({ error: err.message });
     }
 });

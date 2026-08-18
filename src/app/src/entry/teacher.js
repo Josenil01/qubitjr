@@ -148,6 +148,18 @@ async function _connectPresence() {
 
 // ── Lobby (grid de alunos, online primeiro) ─────────────────────────────
 
+// student.totalTimeSeconds vem de GET /teacher/classroom/:turmaId/students -
+// soma de projects.time_spent_seconds de TODOS os projetos do aluno,
+// alimentada pelos heartbeats do editor (ver src/app/src/utils/TimeTracker.js).
+function _formatDuration(totalSeconds) {
+    const totalMinutes = Math.floor((totalSeconds || 0) / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    if (hours > 0) return `⏱ ${hours}h ${minutes}min`;
+    if (minutes > 0) return `⏱ ${minutes}min`;
+    return '⏱ <1min';
+}
+
 function _renderLobby() {
     const root = gn('teacher-root');
     root.innerHTML = '';
@@ -156,7 +168,8 @@ function _renderLobby() {
     const sorted = [...roster].sort((a, b) => {
         const aOnline = onlineIds.has(a.id) ? 1 : 0;
         const bOnline = onlineIds.has(b.id) ? 1 : 0;
-        return bOnline - aOnline;
+        if (aOnline !== bOnline) return bOnline - aOnline;
+        return (a.name || '').localeCompare(b.name || '', 'pt-BR', { sensitivity: 'base' });
     });
 
     sorted.forEach((student) => {
@@ -176,6 +189,9 @@ function _renderLobby() {
 
         const name = newHTML('div', 'teacherCardName', card);
         name.textContent = student.name;
+
+        const time = newHTML('div', 'teacherCardTime', card);
+        time.textContent = _formatDuration(student.totalTimeSeconds);
 
         const btn = newHTML('button', 'teacherCardBtn', card);
         btn.textContent = online ? 'Observar' : 'Abrir';

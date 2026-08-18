@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS projects (
   isgift TEXT DEFAULT '0',
   deleted TEXT DEFAULT 'NO',
   version TEXT DEFAULT 'iOSv01',
+  time_spent_seconds INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -81,6 +82,42 @@ ALTER TABLE projects ADD COLUMN IF NOT EXISTS isgift TEXT DEFAULT '0';
 
 -- Migração: token de compartilhamento por projeto
 ALTER TABLE projects ADD COLUMN IF NOT EXISTS share_token UUID DEFAULT NULL;
+
+-- Migração: tempo (em segundos) que o aluno passou editando este projeto.
+-- Alimentado por heartbeats do editor (ver POST /api/db/project/:id/heartbeat
+-- em backend/src/routes/db.js) via a função increment_project_time abaixo.
+-- "Tempo total na plataforma" de um aluno = SUM(time_spent_seconds) sobre
+-- todos os projetos dele - não precisa de coluna/tabela separada pra isso.
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS time_spent_seconds INTEGER NOT NULL DEFAULT 0;
+
+-- Incremento atômico do tempo de um projeto, feito no banco pra não perder
+-- heartbeats concorrentes de abas/dispositivos diferentes do mesmo aluno
+-- (um simples "ler, somar, escrever" no backend teria essa corrida).
+-- A checagem de dono (owner) fica DENTRO da função, já que uma chamada RPC
+-- não passa pelo filtro .eq('owner', ...) que db.js aplica nas queries
+-- normais - sem isso, qualquer aluno autenticado poderia inflar o tempo de
+-- um projeto de outro aluno.
+-- p_delta_seconds é limitado a [0, 240] (heartbeat é a cada ~60s; a folga
+-- cobre heartbeats atrasados sem permitir um valor absurdo de um cliente
+-- malicioso ou uma aba que ficou suspensa e "acordou" horas depois).
+CREATE OR REPLACE FUNCTION increment_project_time(
+  p_project_id INTEGER,
+  p_owner TEXT,
+  p_delta_seconds INTEGER
+) RETURNS INTEGER AS $$
+DECLARE
+  new_total INTEGER;
+  safe_delta INTEGER := LEAST(GREATEST(p_delta_seconds, 0), 240);
+BEGIN
+  UPDATE projects
+  SET time_spent_seconds = time_spent_seconds + safe_delta,
+      updated_at = CURRENT_TIMESTAMP
+  WHERE id = p_project_id AND owner = p_owner AND deleted = 'NO'
+  RETURNING time_spent_seconds INTO new_total;
+
+  RETURN new_total; -- NULL quando o projeto não existe, não é do aluno, ou foi apagado
+END;
+$$ LANGUAGE plpgsql;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_projects_share_token ON projects(share_token) WHERE share_token IS NOT NULL;
 
 -- Tabela: reactions (reações emoji por projeto compartilhado)

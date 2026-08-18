@@ -114,7 +114,7 @@ router.get('/classroom/:turmaId/students', async (req, res) => {
     try {
         const { data: projects, error } = await supabase
             .from('projects')
-            .select('id, name, owner, thumbnail, mtime')
+            .select('id, name, owner, thumbnail, mtime, time_spent_seconds')
             .in('owner', studentIds)
             .eq('deleted', 'NO')
             .order('mtime', { ascending: false });
@@ -124,8 +124,13 @@ router.get('/classroom/:turmaId/students', async (req, res) => {
         // A query já vem ordenada por mtime desc, então a primeira ocorrência
         // de cada owner é o projeto mais recente daquele aluno.
         const latestByOwner = {};
+        // Tempo total do aluno na plataforma = soma de time_spent_seconds de
+        // TODOS os projetos dele, não só o mais recente (ver
+        // increment_project_time em supabase-setup.sql).
+        const totalTimeByOwner = {};
         (projects || []).forEach((p) => {
             if (!latestByOwner[p.owner]) latestByOwner[p.owner] = p;
+            totalTimeByOwner[p.owner] = (totalTimeByOwner[p.owner] || 0) + (p.time_spent_seconds || 0);
         });
 
         const students = roster.students.map((s) => {
@@ -133,6 +138,7 @@ router.get('/classroom/:turmaId/students', async (req, res) => {
             return {
                 id: s.id,
                 name: s.name,
+                totalTimeSeconds: totalTimeByOwner[s.id] || 0,
                 project: project
                     ? {
                         id: project.id,

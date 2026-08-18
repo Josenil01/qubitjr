@@ -354,6 +354,50 @@ router.post('/transaction', async (req, res) => {
 });
 
 /**
+ * POST /api/db/project/:id/heartbeat
+ * Body: { deltaSeconds }
+ *
+ * Called periodically (~60s) by the editor while a student is actively
+ * working on a project, to accumulate time_spent_seconds. The increment
+ * happens atomically in Postgres (increment_project_time RPC, see
+ * supabase-setup.sql) - including the owner check, since an RPC call
+ * bypasses the .eq('owner', ...) filter buildSelectQuery/buildMutationQuery
+ * apply to normal queries above. Delta is clamped server-side too (see the
+ * SQL function), so a stale/malicious client can't inflate the total.
+ */
+router.post('/project/:id/heartbeat', async (req, res) => {
+  const supabase = getSupabase();
+  if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+  try {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+
+    const projectId = parseInt(req.params.id, 10);
+    const deltaSeconds = Number(req.body.deltaSeconds);
+    if (!Number.isFinite(projectId)) return res.status(400).json({ error: 'Invalid project id' });
+    if (!Number.isFinite(deltaSeconds)) return res.status(400).json({ error: 'Invalid deltaSeconds' });
+
+    const { data, error } = await supabase.rpc('increment_project_time', {
+      p_project_id: projectId,
+      p_owner: req.userId,
+      p_delta_seconds: Math.round(deltaSeconds),
+    });
+
+    if (error) {
+      console.error('[db] heartbeat RPC error:', error);
+      return res.status(500).json({ error: 'Failed to record time' });
+    }
+    // NULL = project doesn't exist, isn't owned by this user, or was deleted.
+    if (data == null) return res.status(404).json({ error: 'Project not found' });
+
+    res.json({ success: true, timeSpentSeconds: data });
+  } catch (err) {
+    console.error('[db] heartbeat route error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
  * GET /api/db/schema
  */
 router.get('/schema', (req, res) => {
