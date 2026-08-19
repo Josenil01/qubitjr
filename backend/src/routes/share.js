@@ -14,6 +14,7 @@
  * Rota servidor-a-servidor pra HelloYotta puxar dado nosso (não usa o fluxo
  * de JWT normal - quem chama é o backend deles, não um usuário logado):
  *   GET    /api/public/students/:studentId/time-spent  → tempo total do aluno
+ *                                                          + quantidade de projetos
  */
 
 const express = require('express');
@@ -256,13 +257,16 @@ publicRouter.post('/project/:token/react', async (req, res) => {
  * Endpoint servidor-a-servidor pra HelloYotta puxar (pull) o tempo total que
  * um aluno já passou editando, somado entre todos os projetos dele
  * (projects.time_spent_seconds, alimentado pelos heartbeats do editor - ver
- * POST /api/db/project/:id/heartbeat em routes/db.js).
+ * POST /api/db/project/:id/heartbeat em routes/db.js), e quantos projetos
+ * (não apagados) esse aluno tem - a mesma query que soma o tempo já traz uma
+ * linha por projeto, então a contagem é só data.length, sem query extra.
  *
  * Não usa o identityMiddleware normal (não há JWT de usuário aqui - quem
  * chama é o backend da HelloYotta) - protegido por uma chave estática
  * própria (HELLOYOTTA_INBOUND_API_KEY), comparada em tempo constante pra não
  * vazar informação por timing. studentId desconhecido/sem projetos devolve
- * totalTimeSeconds: 0 em vez de 404, pra não revelar se um id existe.
+ * totalTimeSeconds: 0 e projectCount: 0 em vez de 404, pra não revelar se um
+ * id existe.
  */
 publicRouter.get('/students/:studentId/time-spent', async (req, res) => {
     const expectedKey = process.env.HELLOYOTTA_INBOUND_API_KEY;
@@ -289,8 +293,9 @@ publicRouter.get('/students/:studentId/time-spent', async (req, res) => {
 
         if (error) throw error;
 
-        const totalTimeSeconds = (data || []).reduce((sum, p) => sum + (p.time_spent_seconds || 0), 0);
-        res.json({ studentId, totalTimeSeconds });
+        const rows = data || [];
+        const totalTimeSeconds = rows.reduce((sum, p) => sum + (p.time_spent_seconds || 0), 0);
+        res.json({ studentId, totalTimeSeconds, projectCount: rows.length });
     } catch (err) {
         console.error('[public] GET students/:studentId/time-spent error:', err);
         res.status(500).json({ error: err.message });
