@@ -17,6 +17,7 @@ const mediaRoutes = require('./routes/media');
 const { shareRouter, publicRouter } = require('./routes/share');
 const teacherRoutes = require('./routes/teacher');
 const realtimeRoutes = require('./routes/realtime');
+const assignmentsRoutes = require('./routes/assignments');
 const {
   verifyAndDecode,
   getUserIdFromClaims,
@@ -204,6 +205,7 @@ app.use('/api/media', mediaRoutes);
 app.use('/api/share', shareRouter);
 app.use('/api/teacher', teacherRoutes);
 app.use('/api/realtime', realtimeRoutes);
+app.use('/api/assignments', assignmentsRoutes);
 
 // ============================================
 // Error Handler

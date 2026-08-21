@@ -96,19 +96,45 @@ export default class Project {
         }
     }
 
-    static createNewProject (fcn) {
+    // optsOrFcn: aceita tanto a chamada legada `createNewProject(fcn)` quanto
+    // `createNewProject({name, assignmentId}, fcn)` (usado pelo fluxo de
+    // missões - AssignmentAuthorBar.js/AssignmentBadge.js - pra dar nome
+    // customizado ao projeto e/ou vincular a uma missão via assignment_id,
+    // ver IO.createProject/Part 3).
+    static createNewProject (optsOrFcn, maybeFcn) {
+        var opts = (typeof optsOrFcn === 'function') ? {} : (optsOrFcn || {});
+        var fcn = (typeof optsOrFcn === 'function') ? optsOrFcn : maybeFcn;
         iOS.analyticsEvent('editor', 'new_project_created');
         var obj = {};
-        obj.name = Localization.localize('NEW_PROJECT_PREFIX') + ' 1';
+        obj.name = opts.name || (Localization.localize('NEW_PROJECT_PREFIX') + ' 1');
         obj.version = (window.Settings && window.Settings.scratchJrVersion) || 'iOSv01';
         obj.mtime = (new Date()).getTime().toString();
+        if (opts.assignmentId) {
+            obj.assignmentId = opts.assignmentId;
+        }
         IO.createProject(obj, function(md5) {
             console.log('[Project.createNewProject] Novo projeto criado, md5:', md5);
             window.currentProjectMd5 = md5;
             ScratchJr.currentProject = md5;   // ← atualiza o currentProject para o autosave funcionar
             if (fcn) fcn(md5);
-            // Recarregar o projeto agora
-            IO.getObject(md5, Project.dataRecieved);
+            // Só recarrega/renderiza aqui se o palco (ScratchJr.stage) já
+            // existir - é o caso do fluxo normal (Project.startLoad chama
+            // isto DEPOIS de UI.layout()). No fluxo do professor-autor
+            // (AssignmentAuthorBar.js via entry/editor.js) e no fluxo do
+            // aluno iniciando uma missão (AssignmentBadge.js), isto é
+            // chamado ANTES de ScratchJr.appinit() ter rodado - de
+            // propósito, pra window.currentProjectMd5 já estar definido
+            // quando appinit() ler urlvars/currentProjectMd5 (ver
+            // ScratchJr.appinit ~linha 197). Nesse caso o próprio
+            // appinit() -> Project.load(currentProject) -> Project.
+            // startLoad() -> UI.layout() vai criar o palco e carregar/
+            // renderizar o projeto pelo caminho normal (else branch de
+            // startLoad, currentProject já truthy) - chamar getObject
+            // aqui de novo duplicaria esse carregamento contra um palco
+            // que ainda nem existe (ScratchJr.stage undefined).
+            if (ScratchJr.stage) {
+                IO.getObject(md5, Project.dataRecieved);
+            }
         });
     }
 

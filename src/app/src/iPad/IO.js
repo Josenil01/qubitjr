@@ -266,6 +266,9 @@ export default class IO {
         if (obj.thumbnail) {
             addValue('thumbnail', JSON.stringify(obj.thumbnail));
         }
+        if (obj.assignmentId) {
+            addValue('assignment_id', obj.assignmentId);
+        }
         json.stmt = 'insert into ' + database + ' (' + keylist.toString() + ') values (' + values + ')';
         iOS.stmt(json, function(result) {
             // Daily project limit exceeded

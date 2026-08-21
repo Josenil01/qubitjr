@@ -1,0 +1,170 @@
+/* src/app/css/assignment.css
+ *
+ * UI da feature de missões (assignments): botão flutuante de autoria
+ * (professor), banner de "nova missão" e selo de progresso + popover
+ * (aluno). Arquivo isolado de propósito - não mexe nos CSS grandes
+ * compartilhados (editor.css/editorstage.css/editormodal.css).
+ *
+ * z-index: 9000 fica ACIMA da UI normal do editor (topsection/paleta,
+ * que ficam na faixa ~1-100 - ver editor.css/editorstage.css) e da barra
+ * flutuante de observação do professor/aviso do LiveWatch (teacher.js/
+ * LiveWatch.js, ABOVE_LOCK_OVERLAY_Z_INDEX=11000 em LiveMirror.js) sem
+ * COMPETIR com eles - fica abaixo dos modais de bloqueio de tela cheia
+ * (infobox/parentalgate, 11000-12000 em editor.css, e a biblioteca/paint
+ * editor, 10000-11000 em librarymodal.css/paintlook.css), que devem
+ * continuar cobrindo tudo quando abertos.
+ *
+ * Cor de destaque: #01bebc (teal), mesma usada em editor.css/lobby.css/
+ * editorleftpanel.css pro rebrand atual.
+ */
+
+.assignmentAuthorBtn,
+.assignmentBadge {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 9000;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.assignmentAuthorBtn {
+    padding: 12px 18px;
+    border-radius: 24px;
+    background: #01bebc;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.assignmentAuthorBtn:hover {
+    background: #019a98;
+}
+
+.assignmentAuthorBtn:disabled {
+    opacity: 0.7;
+    cursor: default;
+}
+
+/* Selo colapsado de progresso (aluno) */
+.assignmentBadge {
+    padding: 10px 16px;
+    border-radius: 20px;
+    background: #01bebc;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    user-select: none;
+}
+
+.assignmentBadge:hover {
+    background: #019a98;
+}
+
+/* Banner dispensável "nova missão" (aluno) - não bloqueante, fica no
+ * mesmo canto onde o selo normalmente apareceria. */
+.assignmentStartBanner {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: min(90vw, 360px);
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #fff;
+    color: #333;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    border: 2px solid #01bebc;
+}
+
+.assignmentStartText {
+    flex: 1;
+    line-height: 1.3;
+}
+
+.assignmentStartBtn {
+    flex-shrink: 0;
+    border: none;
+    border-radius: 16px;
+    padding: 8px 14px;
+    background: #01bebc;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.assignmentStartBtn:hover {
+    background: #019a98;
+}
+
+.assignmentStartClose {
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    color: #999;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.assignmentStartClose:hover {
+    color: #333;
+}
+
+/* Popover de detalhamento (aluno) - abre ao clicar no selo colapsado */
+.assignmentPopover {
+    position: fixed;
+    right: 16px;
+    bottom: 68px;
+    z-index: 9001;
+    width: min(85vw, 260px);
+    padding: 14px;
+    border-radius: 14px;
+    background: #fff;
+    color: #333;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    border: 2px solid #01bebc;
+}
+
+.assignmentPopoverTitle {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 10px;
+    color: #01bebc;
+}
+
+.assignmentPopoverRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-top: 1px solid #eee;
+}
+
+.assignmentPopoverRow:first-of-type {
+    border-top: none;
+}
+
+.assignmentPopoverLabel {
+    color: #555;
+}
+
+.assignmentPopoverValue {
+    font-weight: 700;
+    color: #999;
+}
+
+.assignmentPopoverRow.met .assignmentPopoverValue {
+    color: #01bebc;
+}

@@ -146,9 +146,22 @@ function getPresenceStatusFromClaims(claims) {
     return claims.status || claims.presence_status || null;
 }
 
+/**
+ * Nível/ano escolar (ex.: "3" para 3º Ano) embarcado no token pela HelloYotta.
+ * Ainda não confirmado no contrato com o mesmo nível de certeza de turma_id —
+ * capturado com os mesmos nomes alternativos plausíveis de getTurmaIdFromClaims,
+ * usado pela rota de assignments (routes/assignments.js) pra registrar/filtrar
+ * missões por nível.
+ */
+function getNivelFromClaims(claims) {
+    if (!claims || typeof claims !== 'object') return null;
+    return claims.nivel || claims.grade || claims.gradeLevel || null;
+}
+
 module.exports = {
     verifyAndDecode,
     getUserIdFromClaims,
     getTurmaIdFromClaims,
     getPresenceStatusFromClaims,
+    getNivelFromClaims,
 };

@@ -160,6 +160,50 @@ CREATE INDEX IF NOT EXISTS idx_live_sessions_teacher_active ON live_sessions(tea
 CREATE INDEX IF NOT EXISTS idx_live_sessions_student ON live_sessions(student_id);
 CREATE INDEX IF NOT EXISTS idx_live_sessions_turma ON live_sessions(turma_id);
 
+-- Tabela: assignments (missões/atividades atribuídas pelo professor a uma turma)
+-- Criadas pela HelloYotta (área do professor) via API; o ScratchJr web só lê
+-- essas linhas pra saber os requisitos da missão ativa de uma turma e, no
+-- futuro, validar o projeto do aluno contra eles.
+--
+-- requirements (JSONB): formato livre, versionado pela aplicação e não pelo
+-- schema do banco. Shape esperado, por exemplo:
+-- {
+--   "scenes":     { "count": 3, "used": ["Farm.svg", "Park.svg"] },
+--   "characters": { "count": 2, "used": ["HY-Ruby.svg", "HY-Allan.svg"] },
+--   "blocks":     { "count": 15, "byType": { "forward": 3, "repeat": 2 } },
+--   "ctScores":   { "parallelism": 2, "flowControl": 1, "synchronization": 1,
+--                   "userInteractivity": 1, "abstraction": 1, "dataRepresentation": 0 }
+-- }
+--
+-- "Uma assignment ativa por turma_id de cada vez" é invariante de APLICAÇÃO,
+-- não do banco: o backend desativa (active = false) a assignment anterior da
+-- turma antes de inserir a nova. Não há constraint/trigger garantindo isso
+-- aqui - mesmo estilo de outras regras deste arquivo que vivem no código, não
+-- no schema (ex.: autorização de live_sessions vive na HelloYotta).
+CREATE TABLE IF NOT EXISTS assignments (
+  id            SERIAL PRIMARY KEY,
+  turma_id      TEXT    NOT NULL,
+  nivel         TEXT,                    -- ano/série (ex.: "3" para 3º Ano); vem da HelloYotta como campo próprio, não é extraído de turma_id
+  teacher_id    TEXT    NOT NULL,
+  project_name  TEXT    NOT NULL,
+  requirements  JSONB   NOT NULL,        -- ver shape explicado acima
+  active        BOOLEAN NOT NULL DEFAULT true,
+  created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_assignments_turma ON assignments(turma_id);
+CREATE INDEX IF NOT EXISTS idx_assignments_teacher_nivel ON assignments(teacher_id, nivel);
+CREATE INDEX IF NOT EXISTS idx_assignments_active ON assignments(active) WHERE active = true;
+
+-- Migração: projeto vinculado a uma assignment (missão). NULL para projetos
+-- livres, criados fora de qualquer missão. ON DELETE SET NULL porque apagar
+-- a assignment não deve apagar os projetos que os alunos já entregaram nela.
+-- (Fica aqui, junto da tabela assignments, e não ao lado das outras migrações
+-- de projects acima, porque a FK exige que assignments já exista antes desta
+-- linha rodar - este script é executado de cima pra baixo no SQL Editor.)
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS assignment_id INTEGER REFERENCES assignments(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_projects_assignment_id ON projects(assignment_id);
+
 -- ============================================
 -- Cole o conteúdo acima no Supabase SQL Editor
 -- ============================================

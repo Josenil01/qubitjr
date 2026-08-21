@@ -15,6 +15,13 @@
  *
  * HELLOYOTTA_MODE=mock (padrão) usa um roster fixo local para desenvolvimento,
  * sem depender dos endpoints reais.
+ *
+ * Terceiro ponto de integração, SEPARADO dos dois acima e AINDA NÃO
+ * confirmado com o time da HelloYotta: notifyAssignmentRegistered() avisa
+ * (best-effort) quando um professor termina de cadastrar uma missão. Não
+ * confundir com o roster/verify-token acima — aqueles têm contrato fechado
+ * por e-mail; este usa HELLOYOTTA_ASSIGNMENT_WEBHOOK_URL, que fica vazia (e
+ * a função vira no-op) até a URL real existir do lado deles.
  */
 
 const HELLOYOTTA_MODE = process.env.HELLOYOTTA_MODE || 'mock';
@@ -125,4 +132,36 @@ async function verifyStudentToken(token) {
     };
 }
 
-module.exports = { getClassroomRoster, verifyStudentToken };
+/**
+ * Notificação best-effort para a HelloYotta quando um professor termina de
+ * cadastrar uma missão (ver POST /api/assignments/register em
+ * routes/assignments.js). O endpoint real de recebimento AINDA NÃO está
+ * confirmado com o time deles (diferente de verify-token/roster acima, que
+ * já são contrato fechado) — por isso fica atrás de uma env var própria,
+ * HELLOYOTTA_ASSIGNMENT_WEBHOOK_URL, e vira no-op enquanto ela não existir.
+ * Nunca lança: quem chama trata isso como fire-and-forget (ver
+ * routes/assignments.js, mesmo padrão do sync de mídia em WebInterface.js).
+ */
+async function notifyAssignmentRegistered(payload) {
+    const url = process.env.HELLOYOTTA_ASSIGNMENT_WEBHOOK_URL;
+    if (!url) {
+        // Não configurada ainda - no-op silencioso (log em debug, não warn,
+        // pra não poluir os logs de produção com algo esperado por enquanto).
+        if (process.env.DEBUG === 'true') {
+            console.log('[helloyotta] notifyAssignmentRegistered: HELLOYOTTA_ASSIGNMENT_WEBHOOK_URL não configurada, pulando notificação');
+        }
+        return;
+    }
+
+    try {
+        await fetch(url, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${QUBITJR_API_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+    } catch (err) {
+        console.warn('[helloyotta] notifyAssignmentRegistered failed (non-fatal):', err.message);
+    }
+}
+
+module.exports = { getClassroomRoster, verifyStudentToken, notifyAssignmentRegistered };

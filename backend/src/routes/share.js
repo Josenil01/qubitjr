@@ -11,15 +11,21 @@
  *   GET    /api/public/project/:token   → dados públicos do projeto + reações
  *   POST   /api/public/project/:token/react  → incrementa contador de emoji
  *
- * Rota servidor-a-servidor pra HelloYotta puxar dado nosso (não usa o fluxo
- * de JWT normal - quem chama é o backend deles, não um usuário logado):
- *   GET    /api/public/students/:studentId/time-spent  → tempo total do aluno
- *                                                          + quantidade de projetos
+ * Rotas servidor-a-servidor pra HelloYotta puxar dado nosso (não usa o fluxo
+ * de JWT normal - quem chama é o backend deles, não um usuário logado; mesma
+ * chave estática HELLOYOTTA_INBOUND_API_KEY protege as quatro):
+ *   GET    /api/public/students/:studentId/time-spent       → tempo total do aluno
+ *                                                               + quantidade de projetos
+ *   GET    /api/public/students/:studentId/assignment-score → progresso do aluno na
+ *                                                               missão ativa da turma
+ *   GET    /api/public/teachers/:teacherId/activities        → missões cadastradas por
+ *                                                               um professor num nível
  */
 
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
+const { computeProjectManifest, compareManifests } = require('../services/assignmentScoring');
 
 const router = express.Router();
 const publicRouter = express.Router();
@@ -298,6 +304,132 @@ publicRouter.get('/students/:studentId/time-spent', async (req, res) => {
         res.json({ studentId, totalTimeSeconds, projectCount: rows.length });
     } catch (err) {
         console.error('[public] GET students/:studentId/time-spent error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * GET /api/public/students/:studentId/assignment-score
+ * Endpoint servidor-a-servidor (mesma chave HELLOYOTTA_INBOUND_API_KEY do
+ * time-spent acima) pra HelloYotta puxar o progresso do aluno na missão
+ * ativa da turma dele. Acha o projeto mais recente do aluno que esteja
+ * vinculado a uma assignment ainda ativa (join projects→assignments) e
+ * compara o manifesto real do projeto com os requisitos da missão.
+ *
+ * Sem missão ativa/projeto vinculado devolve 200 com hasAssignment: false,
+ * não 404 - mesma filosofia do time-spent de não vazar existência via
+ * código de erro, e "sem missão ativa" é estado normal, não erro.
+ */
+publicRouter.get('/students/:studentId/assignment-score', async (req, res) => {
+    const expectedKey = process.env.HELLOYOTTA_INBOUND_API_KEY;
+    if (!expectedKey) return res.status(503).json({ error: 'Endpoint not configured' });
+
+    const auth = req.headers.authorization || '';
+    const providedKey = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+    if (!providedKey || !timingSafeEqual(providedKey, expectedKey)) {
+        return res.status(401).json({ error: 'Invalid or missing API key' });
+    }
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    const { studentId } = req.params;
+    if (!studentId) return res.status(400).json({ error: 'Invalid studentId' });
+
+    try {
+        // Supabase JS não faz JOIN condicional direto no filtro de uma tabela
+        // relacionada de forma simples com !inner + eq encadeado; usamos a
+        // sintaxe de embed do PostgREST (assignments!inner(...)) pra filtrar
+        // por assignments.active = true na mesma query.
+        const { data: rows, error } = await supabase
+            .from('projects')
+            .select('id, json, assignment_id, assignments!inner(id, project_name, requirements, active)')
+            .eq('owner', studentId)
+            .eq('deleted', 'NO')
+            .eq('assignments.active', true)
+            .not('assignment_id', 'is', null)
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+        if (error) throw error;
+
+        const project = rows && rows[0];
+        if (!project || !project.assignments) {
+            return res.json({ studentId, hasAssignment: false });
+        }
+
+        const assignment = project.assignments;
+
+        let projectJson;
+        try {
+            projectJson = JSON.parse(project.json);
+        } catch (parseErr) {
+            console.error('[public] assignment-score: projeto', project.id, 'com json inválido:', parseErr.message);
+            return res.status(500).json({ error: 'Projeto com json inválido' });
+        }
+
+        const actualManifest = computeProjectManifest(projectJson);
+        const comparison = compareManifests(assignment.requirements, actualManifest);
+
+        res.json({
+            studentId,
+            hasAssignment: true,
+            projectName: assignment.project_name,
+            ...comparison,
+        });
+    } catch (err) {
+        console.error('[public] GET students/:studentId/assignment-score error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * GET /api/public/teachers/:teacherId/activities?nivel=X
+ * Endpoint servidor-a-servidor (mesma chave HELLOYOTTA_INBOUND_API_KEY) pra
+ * HelloYotta listar as missões cadastradas por um professor num nível/ano.
+ * nivel é obrigatório na query string - sem ele não dá pra saber que
+ * conjunto de turmas/anos o professor quer ver (um professor pode dar aula
+ * em mais de um nível).
+ */
+publicRouter.get('/teachers/:teacherId/activities', async (req, res) => {
+    const expectedKey = process.env.HELLOYOTTA_INBOUND_API_KEY;
+    if (!expectedKey) return res.status(503).json({ error: 'Endpoint not configured' });
+
+    const auth = req.headers.authorization || '';
+    const providedKey = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+    if (!providedKey || !timingSafeEqual(providedKey, expectedKey)) {
+        return res.status(401).json({ error: 'Invalid or missing API key' });
+    }
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    const { teacherId } = req.params;
+    const { nivel } = req.query;
+    if (!teacherId) return res.status(400).json({ error: 'Invalid teacherId' });
+    if (!nivel) return res.status(400).json({ error: 'nivel query param is required' });
+
+    try {
+        const { data, error } = await supabase
+            .from('assignments')
+            .select('id, project_name, requirements, active, created_at')
+            .eq('teacher_id', teacherId)
+            .eq('nivel', nivel)
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const activities = (data || []).map((row) => ({
+            activityId: row.id,
+            projectName: row.project_name,
+            requirements: row.requirements,
+            active: row.active,
+            createdAt: row.created_at,
+        }));
+
+        res.json({ nivel, activities });
+    } catch (err) {
+        console.error('[public] GET teachers/:teacherId/activities error:', err);
         res.status(500).json({ error: err.message });
     }
 });
