@@ -16,6 +16,8 @@
  * chave estática HELLOYOTTA_INBOUND_API_KEY protege as quatro):
  *   GET    /api/public/students/:studentId/time-spent       → tempo total do aluno
  *                                                               + quantidade de projetos
+ *                                                               + métricas completas do
+ *                                                               projeto mais recente
  *   GET    /api/public/students/:studentId/assignment-score → progresso do aluno na
  *                                                               missão ativa da turma
  *   GET    /api/public/teachers/:teacherId/activities        → missões cadastradas por
@@ -263,16 +265,26 @@ publicRouter.post('/project/:token/react', async (req, res) => {
  * Endpoint servidor-a-servidor pra HelloYotta puxar (pull) o tempo total que
  * um aluno já passou editando, somado entre todos os projetos dele
  * (projects.time_spent_seconds, alimentado pelos heartbeats do editor - ver
- * POST /api/db/project/:id/heartbeat em routes/db.js), e quantos projetos
- * (não apagados) esse aluno tem - a mesma query que soma o tempo já traz uma
- * linha por projeto, então a contagem é só data.length, sem query extra.
+ * POST /api/db/project/:id/heartbeat em routes/db.js), quantos projetos
+ * (não apagados) esse aluno tem, e um retrato completo (nome + todas as
+ * métricas de computeProjectManifest) só do projeto mais recente - de
+ * propósito NÃO mandamos isso pra todos os projetos do aluno, só o último
+ * (evita um payload que só cresce, e o mais recente é o sinal mais
+ * relevante do nível atual do aluno).
+ *
+ * "Mais recente" = maior mtime, não updated_at: updated_at não é tocado
+ * pelo fluxo normal de salvar (IO.saveProject's UPDATE não inclui essa
+ * coluna no SET), então ficaria sempre parado na criação da linha. mtime é
+ * atualizado a cada save (Project.save's metadata.mtime) e é o mesmo campo
+ * que o resto do app já usa pra ordenar por "última edição" (ex:
+ * Home.js's 'ctime desc').
  *
  * Não usa o identityMiddleware normal (não há JWT de usuário aqui - quem
  * chama é o backend da HelloYotta) - protegido por uma chave estática
  * própria (HELLOYOTTA_INBOUND_API_KEY), comparada em tempo constante pra não
  * vazar informação por timing. studentId desconhecido/sem projetos devolve
- * totalTimeSeconds: 0 e projectCount: 0 em vez de 404, pra não revelar se um
- * id existe.
+ * totalTimeSeconds: 0, projectCount: 0 e latestProject: null em vez de 404,
+ * pra não revelar se um id existe.
  */
 publicRouter.get('/students/:studentId/time-spent', async (req, res) => {
     const expectedKey = process.env.HELLOYOTTA_INBOUND_API_KEY;
@@ -293,15 +305,29 @@ publicRouter.get('/students/:studentId/time-spent', async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('projects')
-            .select('time_spent_seconds')
+            .select('name, json, mtime, time_spent_seconds')
             .eq('owner', studentId)
-            .eq('deleted', 'NO');
+            .eq('deleted', 'NO')
+            .order('mtime', { ascending: false });
 
         if (error) throw error;
 
         const rows = data || [];
         const totalTimeSeconds = rows.reduce((sum, p) => sum + (p.time_spent_seconds || 0), 0);
-        res.json({ studentId, totalTimeSeconds, projectCount: rows.length });
+
+        let latestProject = null;
+        if (rows.length > 0) {
+            let manifest;
+            try {
+                manifest = computeProjectManifest(JSON.parse(rows[0].json));
+            } catch (parseErr) {
+                console.error('[public] time-spent: projeto mais recente de', studentId, 'com json inválido:', parseErr.message);
+                manifest = computeProjectManifest(null); // zerado - não derruba o endpoint inteiro por causa de 1 projeto
+            }
+            latestProject = { projectName: rows[0].name, ...manifest };
+        }
+
+        res.json({ studentId, totalTimeSeconds, projectCount: rows.length, latestProject });
     } catch (err) {
         console.error('[public] GET students/:studentId/time-spent error:', err);
         res.status(500).json({ error: err.message });
