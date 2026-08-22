@@ -142,6 +142,29 @@ function timingSafeEqual(a, b) {
 }
 
 /**
+ * A tabela assignments não tem coluna própria de "deletado" - só projects
+ * tem. O projeto de exemplo que originou um template (projects.assignment_id
+ * = o id do TEMPLATE, nunca o de uma linha de referência) pode ter sido
+ * apagado pelo professor depois de cadastrar a missão. Regra: só devolvemos
+ * pra HelloYotta missões cujo projeto de origem não esteja deletado.
+ *
+ * templateId: o id do TEMPLATE (não de uma referência - resolva
+ * row.template_id || row.id antes de chamar isto).
+ * Sem nenhum projeto vinculado (link falhou uma vez, ou caso raro qualquer),
+ * não dá pra provar que foi deletado - trata como NÃO deletado (falha aberta,
+ * não esconde uma missão válida por engano).
+ */
+async function isTemplateProjectDeleted(supabase, templateId) {
+    const { data: linkedProject } = await supabase
+        .from('projects')
+        .select('deleted')
+        .eq('assignment_id', templateId)
+        .limit(1)
+        .maybeSingle();
+    return !!linkedProject && linkedProject.deleted !== 'NO';
+}
+
+/**
  * GET /api/public/project/:token
  * Retorna dados públicos do projeto + contagem de reações.
  */
@@ -464,16 +487,29 @@ publicRouter.get('/teachers/:teacherId/activities', async (req, res) => {
         // da própria linha (uma referência tem seu próprio registro de
         // ativação por turma, mesmo que os campos de conteúdo venham do
         // template).
-        const activities = await Promise.all((data || []).map(async (row) => {
+        //
+        // Só devolvemos pra HelloYotta missões cujo projeto de origem (o
+        // exemplo do professor, ligado ao TEMPLATE - row.template_id || row.id)
+        // não esteja deletado - ver isTemplateProjectDeleted acima.
+        const withDeletionCheck = await Promise.all((data || []).map(async (row) => {
             const resolved = await resolveAssignmentFields(supabase, row);
+            const templateId = row.template_id || row.id;
+            const projectDeleted = await isTemplateProjectDeleted(supabase, templateId);
             return {
-                activityId: row.id,
-                projectName: resolved.projectName,
-                requirements: resolved.requirements,
-                active: row.active,
-                createdAt: row.created_at,
+                projectDeleted,
+                activity: {
+                    activityId: row.id,
+                    projectName: resolved.projectName,
+                    requirements: resolved.requirements,
+                    active: row.active,
+                    createdAt: row.created_at,
+                },
             };
         }));
+
+        const activities = withDeletionCheck
+            .filter((r) => !r.projectDeleted)
+            .map((r) => r.activity);
 
         res.json({ nivel, activities });
     } catch (err) {
@@ -542,6 +578,14 @@ publicRouter.post('/activities/:activityId/adopt', async (req, res) => {
             return res.status(400).json({
                 error: 'Só é possível adotar um molde original, não uma ativação já existente de outra turma',
             });
+        }
+
+        // 2b. Mesma regra da listagem (GET /teachers/:id/activities): não dá
+        // pra adotar um molde cujo projeto de exemplo já foi apagado pelo
+        // professor - trata como se o activityId não existisse (404), caso a
+        // HelloYotta tenha um id em cache de antes da exclusão.
+        if (await isTemplateProjectDeleted(supabase, template.id)) {
+            return res.status(404).json({ error: 'Molde não encontrado' });
         }
 
         // 3. Desativa qualquer missão já ativa da turma alvo - mesmo passo
