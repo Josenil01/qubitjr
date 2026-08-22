@@ -113,8 +113,10 @@ function sanitizeValue(val) {
 /**
  * Translate INSERT / UPDATE / DELETE SQL into a Supabase mutation.
  * userId: quando fornecido, injeta/verifica owner para tabelas multi-tenant.
+ * role: 'professor' | null (ver identityMiddleware em index.js) - isenta o
+ * professor/ADM do limite diário de criação de projetos abaixo.
  */
-async function buildMutationQuery(supabase, sql, values = [], userId = null) {
+async function buildMutationQuery(supabase, sql, values = [], userId = null, role = null) {
   const sqlLower = sql.toLowerCase().trim();
   let valIdx = 0;
   const nextVal = () => sanitizeValue(values[valIdx++]);
@@ -131,8 +133,15 @@ async function buildMutationQuery(supabase, sql, values = [], userId = null) {
     if (userId && OWNER_TABLES.has(table)) {
       data.owner = userId;
     }
-    // Daily project limit: max 1 new project per user per UTC day
-    if (table === 'projects' && userId) {
+    // Daily project limit: max 1 new project per user per UTC day.
+    // Pensado pra alunos (evitar spam de projetos vazios) - não se aplica a
+    // professor/ADM, que legitimamente pode precisar criar/autorar vários
+    // exemplos de missão no mesmo dia (ver AssignmentAuthorBar.js). Sem essa
+    // isenção, a segunda tentativa de autoria do dia batia 429
+    // DAILY_LIMIT_EXCEEDED - confirmado em produção (player-runtime, que é
+    // onde esse trecho de código compartilhado acabou sendo empacotado pelo
+    // Vite, não porque o professor estivesse no player de verdade).
+    if (table === 'projects' && userId && role !== 'professor') {
       const todayStart = new Date();
       todayStart.setUTCHours(0, 0, 0, 0);
       const tomorrowStart = new Date(todayStart);
@@ -257,7 +266,7 @@ router.post('/stmt', async (req, res) => {
 
     if (sqlStr) {
       console.log(`[DB Stmt] SQL: ${sqlStr.substring(0, 120)}`);
-      const { data, error } = await buildMutationQuery(supabase, sqlStr, values, req.userId);
+      const { data, error } = await buildMutationQuery(supabase, sqlStr, values, req.userId, req.role);
       if (error) { console.error('Stmt error:', error); return res.status(500).json({ error: 'Statement failed', message: error.message }); }
       return res.json({ success: true, changes: data ? data.length : 1, data });
     }
@@ -318,7 +327,7 @@ router.post('/transaction', async (req, res) => {
       const sqlStr = s.sql || s.stmt;
       let result;
       if (sqlStr) {
-        result = await buildMutationQuery(supabase, sqlStr, s.values || [], req.userId);
+        result = await buildMutationQuery(supabase, sqlStr, s.values || [], req.userId, req.role);
       } else {
         const { action, table, data, id } = s;
         requireOwnerIdentity(table, req.userId);

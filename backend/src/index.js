@@ -146,6 +146,11 @@ async function identityMiddleware(req, res, next) {
     req.userId = jwtUserId;
     req.turmaId = getTurmaIdFromClaims(claims);
     req.presenceStatus = getPresenceStatusFromClaims(claims);
+    // 'professor' | null - só o token de professor carrega essa claim (ver
+    // identity.js). Usado em routes/db.js pra isentar o professor/ADM do
+    // limite diário de criação de projetos (pensado pra alunos, não pra
+    // quem autora várias missões no mesmo dia - ver DAILY_LIMIT_EXCEEDED).
+    req.role = claims?.role || null;
     console.log(`[Auth] JWT userId: ${jwtUserId} (iss: ${claims?.iss || 'unknown'})`);
     return next();
   }
@@ -160,6 +165,10 @@ async function identityMiddleware(req, res, next) {
     const mockContext = MOCK_CONTEXT[userId] || {};
     req.turmaId = mockContext.turmaId || null;
     req.presenceStatus = mockContext.presenceStatus || null;
+    // dev-teacher-a (prof_001) é o único mock token de professor hoje - sem
+    // isso, testar o fluxo de autoria localmente já bateria no limite diário
+    // de projetos na segunda tentativa do mesmo dia.
+    req.role = userId.startsWith('prof_') ? 'professor' : null;
     console.log(`[Auth] Mock userId: ${userId}`);
     return next();
   }
