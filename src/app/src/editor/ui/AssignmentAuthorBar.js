@@ -19,11 +19,36 @@
  *     indicador "Saving" em Project.js) - erros usam window.alert, mesmo
  *     padrão simples já usado por teacher.js pra essa classe de UI
  *     flutuante fora do palco.
+ *  4. Se a URL trouxer um `returnUrl` válido (pedido da HelloYotta, e-mail
+ *     2026-08), navega de volta pra lá depois da confirmação - ver
+ *     _isAllowedReturnUrl: só helloyotta.com/*.helloyotta.com, nunca um
+ *     destino arbitrário (evita virar um open-redirect através do nosso
+ *     domínio). Sem returnUrl ou com um valor que não passa na checagem,
+ *     comportamento atual sem mudança nenhuma: fica no editor.
  */
 
 import ScratchJr from '../ScratchJr.js';
 import Alert from './Alert.js';
 import { newHTML, getUrlVars, frame } from '../../utils/lib.js';
+
+const ALLOWED_RETURN_HOST = 'helloyotta.com';
+
+function isAllowedReturnUrl (raw) {
+    if (!raw) {
+        return false;
+    }
+    var url;
+    try {
+        url = new URL(raw);
+    } catch (err) {
+        return false; // não é uma URL absoluta válida - não arrisca
+    }
+    if (url.protocol !== 'https:') {
+        return false; // nunca redireciona pra http:/javascript:/etc
+    }
+    var host = url.hostname.toLowerCase();
+    return host === ALLOWED_RETURN_HOST || host.endsWith('.' + ALLOWED_RETURN_HOST);
+}
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
@@ -90,10 +115,18 @@ export default class AssignmentAuthorBar {
             }
             barEl.disabled = false;
             if (result.ok && result.body && result.body.success) {
+                var rawReturnUrl = getUrlVars().returnUrl;
+                var returnUrl = rawReturnUrl ? decodeURIComponent(rawReturnUrl) : null;
+                var canReturn = isAllowedReturnUrl(returnUrl);
+
                 barEl.textContent = '✅ Aula cadastrada!';
                 Alert.open(frame, barEl, 'Aula cadastrada!', '#01bebc');
                 window.setTimeout(function () {
                     Alert.close();
+                    if (canReturn) {
+                        window.location.href = returnUrl;
+                        return; // saindo da página - não precisa restaurar o texto do botão
+                    }
                     if (barEl) {
                         barEl.textContent = IDLE_LABEL;
                     }
