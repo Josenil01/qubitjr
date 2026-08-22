@@ -9,6 +9,7 @@ import Project from '../editor/ui/Project.js';
 import Localization from '../utils/Localization.js';
 import ScratchAudio from '../utils/ScratchAudio.js';
 import Vector from '../geom/Vector.js';
+import AssignmentNotice from './AssignmentNotice.js';
 import {gn, newHTML, isTablet} from '../utils/lib.js';
 
 let frame;
@@ -27,6 +28,9 @@ export default class Home {
         frame.onmouseup = Home.handleTouchEnd;
         Home.showLoading();
         Home.displayYourProjects();
+        // Sino de missão pendente no topbar - no-op silencioso se não
+        // houver missão ativa/não iniciada pro aluno (ver AssignmentNotice.js).
+        AssignmentNotice.init();
     }
 
     ////////////////////////////

@@ -133,6 +133,33 @@ async function buildMutationQuery(supabase, sql, values = [], userId = null, rol
     if (userId && OWNER_TABLES.has(table)) {
       data.owner = userId;
     }
+    // Dedup de projeto de missão: IO.createProject({..., assignmentId}) →
+    // addValue('assignment_id', obj.assignmentId) (src/app/src/iPad/IO.js)
+    // roda tanto quando um professor autora um exemplo (AssignmentAuthorBar.js)
+    // quanto quando um aluno inicia uma missão atribuída (AssignmentBadge.js).
+    // Nada nesses chamadores impede um double-click/race de disparar dois
+    // INSERTs pro mesmo assignment_id, e um aluno nunca pode acabar com duas
+    // missões (mesmo assignment_id) simultâneas. Então, antes de qualquer
+    // outra coisa (inclusive antes do limite diário abaixo), procuramos um
+    // projeto não deletado já existente deste usuário para este assignment_id
+    // exato; se achar, devolvemos ele em vez de inserir de novo - no mesmo
+    // formato que o insert normal retorna ({ data: [...], error: null }),
+    // já que o caller em /stmt lê result.data[0].id etc.
+    if (table === 'projects' && userId && data.assignment_id) {
+      const { data: existingRows, error: existingErr } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('owner', userId)
+        .eq('assignment_id', data.assignment_id)
+        .eq('deleted', 'NO')
+        .limit(1);
+      if (!existingErr && existingRows && existingRows.length > 0) {
+        console.log(
+          `[DB INSERT] Mission project reused (not duplicated): userId=${userId} assignment_id=${data.assignment_id} existingProjectId=${existingRows[0].id}`
+        );
+        return { data: existingRows, error: null };
+      }
+    }
     // Daily project limit: max 1 new project per user per UTC day.
     // Pensado pra alunos (evitar spam de projetos vazios) - não se aplica a
     // professor/ADM, que legitimamente pode precisar criar/autorar vários
@@ -141,7 +168,14 @@ async function buildMutationQuery(supabase, sql, values = [], userId = null, rol
     // DAILY_LIMIT_EXCEEDED - confirmado em produção (player-runtime, que é
     // onde esse trecho de código compartilhado acabou sendo empacotado pelo
     // Vite, não porque o professor estivesse no player de verdade).
-    if (table === 'projects' && userId && role !== 'professor') {
+    // Segunda isenção: qualquer projeto de missão (data.assignment_id truthy)
+    // também nunca deve contar pra/ser bloqueado por esse limite, independente
+    // do role - é trabalho escolar atribuído (aluno iniciando via
+    // AssignmentBadge.js, ou professor autorando via AssignmentAuthorBar.js),
+    // não conteúdo discricionário, que é o que o cap diário foi desenhado pra
+    // conter. As duas isenções são independentes: só rodamos a checagem de
+    // limite diário quando NENHUMA das duas se aplica.
+    if (table === 'projects' && userId && role !== 'professor' && !data.assignment_id) {
       const todayStart = new Date();
       todayStart.setUTCHours(0, 0, 0, 0);
       const tomorrowStart = new Date(todayStart);

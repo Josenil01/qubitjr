@@ -28,19 +28,23 @@ export function editorMain () { // eslint-disable-line import/prefer-default-exp
         // quando um PROFESSOR abre o editor pra criar uma missão.
         var urlvars = getUrlVars();
         var teacherMode = urlvars.teacherMode;
+        // Ver lobby/AssignmentNotice.js - o sino de missão pendente manda o
+        // aluno pra cá com assignmentId (+ projectName) quando ele clica
+        // numa missão que ainda não foi iniciada.
+        var startAssignmentId = urlvars.assignmentId;
+        var rawName = urlvars.projectName;
+        var projectName = rawName ? decodeURIComponent(rawName.replace(/\+/g, ' ')) : null;
 
-        // Só entra no fluxo de autoria se ainda não há projeto definido pra
-        // carregar (window.currentProjectMd5/urlvars.pmd5 - mesma checagem
-        // que ScratchJr.appinit faz pra decidir currentProject, ver
-        // src/app/src/editor/ScratchJr.js ~linha 197). Se já existir, o
-        // professor está reabrindo um projeto específico (não criando um
-        // novo) e o fluxo normal serve igual.
+        // Só entra num fluxo de pré-criação se ainda não há projeto definido
+        // pra carregar (window.currentProjectMd5/urlvars.pmd5 - mesma
+        // checagem que ScratchJr.appinit faz pra decidir currentProject, ver
+        // src/app/src/editor/ScratchJr.js ~linha 197). Se já existir, quem
+        // abriu está reabrindo um projeto específico (não criando um novo) e
+        // o fluxo normal serve igual.
         var hasProjectAlready = !!window.currentProjectMd5 ||
             (urlvars.pmd5 && urlvars.pmd5 !== 'null' && urlvars.pmd5 !== 'undefined');
 
         if (teacherMode === 'author' && !hasProjectAlready) {
-            var rawName = urlvars.projectName;
-            var projectName = rawName ? decodeURIComponent(rawName.replace(/\+/g, ' ')) : null;
             // Cria o projeto novo ANTES do appinit - appinit() lê
             // window.currentProjectMd5 sincronamente logo no início (linha
             // 197), então precisa já estar definido quando ele rodar. Ver
@@ -49,6 +53,25 @@ export function editorMain () { // eslint-disable-line import/prefer-default-exp
             // o próprio appinit()->Project.load cuidar de carregar/
             // renderizar pelo caminho normal.
             Project.createNewProject({name: projectName || 'Nova Atividade'}, function (md5) {
+                window.currentProjectMd5 = md5;
+                finishBoot();
+            });
+        } else if (startAssignmentId && !hasProjectAlready) {
+            // Mesmo truque acima, mas pro lado do ALUNO iniciando uma
+            // missão pendente a partir do sino da lobby. Pré-criar aqui
+            // (já com assignmentId) evita cair no fallback genérico de
+            // Project.startLoad() - que roda dentro de appinit(), dispara
+            // ANTES de AssignmentBadge.init() sequer existir, e cria um
+            // projeto em branco SEM assignment_id. Esse projeto solto não
+            // é isento do limite diário de criação (a isenção em
+            // routes/db.js exige assignment_id truthy), então um aluno que
+            // já tivesse criado 1 projeto no dia bateria
+            // DAILY_LIMIT_EXCEEDED só de clicar no sino - mesma classe do
+            // incidente de produção original, só que agora pro aluno em vez
+            // do professor. Se a missão já tiver sido iniciada nesse meio-
+            // tempo (ex.: corrida entre duas abas), o dedup do backend
+            // (routes/db.js) devolve o projeto existente em vez de duplicar.
+            Project.createNewProject({name: projectName, assignmentId: startAssignmentId}, function (md5) {
                 window.currentProjectMd5 = md5;
                 finishBoot();
             });

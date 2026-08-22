@@ -101,6 +101,42 @@ ul#settings.reference {
     height: ${css_vh(10.81)};
 }
 
+/* === Sino de missão pendente (Home/Lobby) ===
+   Item novo no topbar, ao lado de #booktab - NÃO reaproveita #geartab/
+   #settings (aquele grupo é desligado via JS quando
+   window.Settings.settingsPageDisabled, ver Lobby.js, e o próprio
+   #geartab já está retirado via display:none !important, acima).
+   Posicionamento próprio (position:absolute ancorado no #topbar, mesma
+   técnica de ul.topbar-nav logo abaixo) porque .book-icon nunca chegou
+   a ganhar estilo de ícone neste port (resquício do port iOS->desktop) -
+   não dá pra confiar no fluxo do <ul> pai pra posicionar isto sozinho.
+   Some/aparece via .hidden, mesma convenção já usada nos modais deste
+   arquivo (#sjr-naming-modal.hidden, #sjr-daily-limit-modal.hidden). */
+#topbar .bellnotice {
+    position: absolute;
+    top: ${css_vh(1.5)};
+    right: ${css_vh(4)};
+    width: ${css_vh(9)};
+    height: ${css_vh(9)};
+    border-radius: 50%;
+    background: #01bebc;
+    box-shadow: 0 ${1 * scaleMultiplier}px ${3 * scaleMultiplier}px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+}
+
+#topbar .bellnotice.hidden {display: none;}
+#topbar .bellnotice:not(.hidden) {display: flex;}
+
+#topbar .bellnotice:hover {background: #019a98;}
+
+#topbar .bellnotice-icon {
+    font-size: ${css_vh(5)};
+    line-height: 1;
+}
+
 
 /*contents*/
 
