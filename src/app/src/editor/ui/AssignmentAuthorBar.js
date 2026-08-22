@@ -25,6 +25,17 @@
  *     destino arbitrário (evita virar um open-redirect através do nosso
  *     domínio). Sem returnUrl ou com um valor que não passa na checagem,
  *     comportamento atual sem mudança nenhuma: fica no editor.
+ *  5. Ao voltar pro returnUrl, ecoa activityId/projectName/authorId como
+ *     query params (contrato confirmado com a HelloYotta) - assignmentId e
+ *     projectName vêm direto do corpo da resposta de /register;
+ *     authorId é o id do professor que está chamando. Não existe hoje
+ *     nenhum lugar client-side que já exponha esse id (window.__AUTH_CONTEXT__
+ *     só guarda studentId/classId - ver services/WebInterface.js), então
+ *     decodificamos localmente o payload do próprio window.__AUTH_TOKEN__
+ *     (peek inseguro, não-verificado - mesma técnica de
+ *     backend/src/services/identity.js#decodeJwtPayloadUnsafe, só que aqui é
+ *     só pra incluir um identificador na URL de retorno, nunca pra uma
+ *     decisão de segurança).
  */
 
 import ScratchJr from '../ScratchJr.js';
@@ -48,6 +59,47 @@ function isAllowedReturnUrl (raw) {
     }
     var host = url.hostname.toLowerCase();
     return host === ALLOWED_RETURN_HOST || host.endsWith('.' + ALLOWED_RETURN_HOST);
+}
+
+/**
+ * Peek inseguro (não verifica assinatura) no payload de um JWT - mesma
+ * técnica de backend/src/services/identity.js#decodeJwtPayloadUnsafe,
+ * reimplementada aqui no navegador (sem Buffer) só pra ler o `sub` do
+ * professor e incluir como authorId na URL de retorno. Nunca usar isto pra
+ * qualquer decisão de segurança/autorização - é só um identificador.
+ */
+function decodeJwtPayloadUnsafe (token) {
+    try {
+        if (!token || typeof token !== 'string') {
+            return null;
+        }
+        var parts = token.split('.');
+        if (parts.length < 2) {
+            return null;
+        }
+        var b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+        var padded = b64 + '='.repeat((4 - (b64.length % 4 || 4)) % 4);
+        var json = decodeURIComponent(window.atob(padded).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(json);
+    } catch (err) {
+        return null;
+    }
+}
+
+/**
+ * Id do professor autenticado, extraído das claims do próprio
+ * window.__AUTH_TOKEN__ (mesmos nomes alternativos aceitos pelo backend em
+ * identity.js#getUserIdFromClaims). Retorna null se não der pra determinar -
+ * a chamada em _register() trata isso como "omite authorId", não como erro.
+ */
+function getAuthorId () {
+    var claims = decodeJwtPayloadUnsafe(window.__AUTH_TOKEN__);
+    if (!claims) {
+        return null;
+    }
+    return claims.user_id || claims.sub || claims.id_usuario || null;
 }
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -118,6 +170,19 @@ export default class AssignmentAuthorBar {
                 var rawReturnUrl = getUrlVars().returnUrl;
                 var returnUrl = rawReturnUrl ? decodeURIComponent(rawReturnUrl) : null;
                 var canReturn = isAllowedReturnUrl(returnUrl);
+
+                if (canReturn) {
+                    var assignmentId = result.body.assignmentId;
+                    var projectName = result.body.projectName;
+                    var authorId = getAuthorId();
+
+                    var params = 'activityId=' + encodeURIComponent(assignmentId) +
+                        '&projectName=' + encodeURIComponent(projectName);
+                    if (authorId) {
+                        params += '&authorId=' + encodeURIComponent(authorId);
+                    }
+                    returnUrl += (returnUrl.indexOf('?') === -1 ? '?' : '&') + params;
+                }
 
                 barEl.textContent = '✅ Aula cadastrada!';
                 Alert.open(frame, barEl, 'Aula cadastrada!', '#01bebc');

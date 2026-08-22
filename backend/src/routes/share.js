@@ -13,7 +13,7 @@
  *
  * Rotas servidor-a-servidor pra HelloYotta puxar dado nosso (não usa o fluxo
  * de JWT normal - quem chama é o backend deles, não um usuário logado; mesma
- * chave estática HELLOYOTTA_INBOUND_API_KEY protege as quatro):
+ * chave estática HELLOYOTTA_INBOUND_API_KEY protege as cinco):
  *   GET    /api/public/students/:studentId/time-spent       → tempo total do aluno
  *                                                               + quantidade de projetos
  *                                                               + métricas completas do
@@ -22,12 +22,16 @@
  *                                                               missão ativa da turma
  *   GET    /api/public/teachers/:teacherId/activities        → missões cadastradas por
  *                                                               um professor num nível
+ *   POST   /api/public/activities/:activityId/adopt          → turma adota um molde de
+ *                                                               missão (template) já
+ *                                                               cadastrado por um professor
  */
 
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
 const { computeProjectManifest, compareManifests } = require('../services/assignmentScoring');
+const { resolveAssignmentFields } = require('../services/assignmentResolver');
 
 const router = express.Router();
 const publicRouter = express.Router();
@@ -369,7 +373,7 @@ publicRouter.get('/students/:studentId/assignment-score', async (req, res) => {
         // por assignments.active = true na mesma query.
         const { data: rows, error } = await supabase
             .from('projects')
-            .select('id, json, assignment_id, assignments!inner(id, project_name, requirements, active)')
+            .select('id, json, assignment_id, assignments!inner(id, template_id, project_name, requirements, active)')
             .eq('owner', studentId)
             .eq('deleted', 'NO')
             .eq('assignments.active', true)
@@ -386,6 +390,13 @@ publicRouter.get('/students/:studentId/assignment-score', async (req, res) => {
 
         const assignment = project.assignments;
 
+        // A linha da assignment pode ser um template (project_name/requirements
+        // próprios) ou uma referência (template_id apontando pra outro molde) -
+        // resolveAssignmentFields esconde essa diferença e devolve os campos
+        // EFETIVOS já resolvidos, propagando edições feitas no template. Ver
+        // backend/src/services/assignmentResolver.js e backend/supabase-setup.sql.
+        const resolved = await resolveAssignmentFields(supabase, assignment);
+
         let projectJson;
         try {
             projectJson = JSON.parse(project.json);
@@ -395,12 +406,12 @@ publicRouter.get('/students/:studentId/assignment-score', async (req, res) => {
         }
 
         const actualManifest = computeProjectManifest(projectJson);
-        const comparison = compareManifests(assignment.requirements, actualManifest);
+        const comparison = compareManifests(resolved.requirements, actualManifest);
 
         res.json({
             studentId,
             hasAssignment: true,
-            projectName: assignment.project_name,
+            projectName: resolved.projectName,
             ...comparison,
         });
     } catch (err) {
@@ -438,24 +449,142 @@ publicRouter.get('/teachers/:teacherId/activities', async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('assignments')
-            .select('id, project_name, requirements, active, created_at')
+            .select('id, template_id, project_name, requirements, active, created_at')
             .eq('teacher_id', teacherId)
             .eq('nivel', nivel)
             .order('created_at', { ascending: false });
 
         if (error) throw error;
 
-        const activities = (data || []).map((row) => ({
-            activityId: row.id,
-            projectName: row.project_name,
-            requirements: row.requirements,
-            active: row.active,
-            createdAt: row.created_at,
+        // Cada linha pode ser um template ou uma referência (ver
+        // assignmentResolver.js) - resolve projectName/requirements de cada
+        // uma em paralelo (Promise.all) em vez de um await em série por linha,
+        // já que são N queries pequenas e independentes entre si.
+        // activityId/active/createdAt NÃO passam por resolução: são sempre os
+        // da própria linha (uma referência tem seu próprio registro de
+        // ativação por turma, mesmo que os campos de conteúdo venham do
+        // template).
+        const activities = await Promise.all((data || []).map(async (row) => {
+            const resolved = await resolveAssignmentFields(supabase, row);
+            return {
+                activityId: row.id,
+                projectName: resolved.projectName,
+                requirements: resolved.requirements,
+                active: row.active,
+                createdAt: row.created_at,
+            };
         }));
 
         res.json({ nivel, activities });
     } catch (err) {
         console.error('[public] GET teachers/:teacherId/activities error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * POST /api/public/activities/:activityId/adopt
+ * Body: { turmaId, teacherId }
+ * Endpoint servidor-a-servidor (mesma chave HELLOYOTTA_INBOUND_API_KEY dos
+ * outros endpoints deste arquivo) pra HelloYotta fazer uma turma "adotar" um
+ * molde de missão (template) já cadastrado por outro professor: cria uma
+ * linha de REFERÊNCIA na tabela assignments (template_id apontando pro
+ * molde), desativando antes qualquer missão já ativa daquela turma - mesmo
+ * invariante ("uma assignment ativa por turma_id de cada vez") já aplicado
+ * em POST /api/assignments/register (routes/assignments.js).
+ *
+ * :activityId deve ser o id de um TEMPLATE original (template_id IS NULL) -
+ * não dá pra adotar a referência de outra turma (sem encadeamento; ver a
+ * nota sobre esse invariante em backend/supabase-setup.sql).
+ *
+ * Chamado pelo backend da HelloYotta, não por um professor no navegador -
+ * por isso turmaId/teacherId vêm no corpo da requisição em vez de
+ * req.userId/req.turmaId (não há JWT de sessão normal aqui, só a chave
+ * estática de servidor-a-servidor).
+ */
+publicRouter.post('/activities/:activityId/adopt', async (req, res) => {
+    const expectedKey = process.env.HELLOYOTTA_INBOUND_API_KEY;
+    if (!expectedKey) return res.status(503).json({ error: 'Endpoint not configured' });
+
+    const auth = req.headers.authorization || '';
+    const providedKey = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+    if (!providedKey || !timingSafeEqual(providedKey, expectedKey)) {
+        return res.status(401).json({ error: 'Invalid or missing API key' });
+    }
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    const activityId = parseInt(req.params.activityId, 10);
+    if (!Number.isFinite(activityId)) return res.status(400).json({ error: 'Invalid activityId' });
+
+    const { turmaId, teacherId } = req.body || {};
+    if (!turmaId || !teacherId) {
+        return res.status(400).json({ error: 'turmaId e teacherId são obrigatórios' });
+    }
+
+    try {
+        // 1. Busca o molde apontado por activityId.
+        const { data: template, error: templateErr } = await supabase
+            .from('assignments')
+            .select('id, template_id, project_name, requirements, nivel')
+            .eq('id', activityId)
+            .maybeSingle();
+
+        if (templateErr) throw templateErr;
+        if (!template) return res.status(404).json({ error: 'Molde não encontrado' });
+
+        // 2. Invariante "sem encadeamento": só um template original
+        // (template_id IS NULL) pode ser adotado. Se activityId apontar pra
+        // uma linha que já é ela mesma uma referência (ativação de outra
+        // turma), recusa - ver nota em backend/supabase-setup.sql.
+        if (template.template_id) {
+            return res.status(400).json({
+                error: 'Só é possível adotar um molde original, não uma ativação já existente de outra turma',
+            });
+        }
+
+        // 3. Desativa qualquer missão já ativa da turma alvo - mesmo passo
+        // usado em POST /api/assignments/register (routes/assignments.js).
+        const { error: deactivateErr } = await supabase
+            .from('assignments')
+            .update({ active: false })
+            .eq('turma_id', turmaId)
+            .eq('active', true);
+
+        if (deactivateErr) {
+            console.error('[public] adopt: falha ao desativar missão anterior da turma', turmaId, ':', deactivateErr);
+            return res.status(500).json({ error: 'Falha ao desativar missão anterior: ' + deactivateErr.message });
+        }
+
+        // 4. Insere a linha de REFERÊNCIA - de propósito sem project_name/
+        // requirements próprios (ficam null): esses campos são resolvidos ao
+        // vivo via template_id por todo mundo que lê assignments (Tasks 1/2
+        // acima, e /active e /my-progress em routes/assignments.js), então
+        // editar o molde depois propaga sem precisar readotar.
+        const { data: inserted, error: insertErr } = await supabase
+            .from('assignments')
+            .insert({
+                turma_id: turmaId,
+                teacher_id: teacherId,
+                template_id: template.id,
+                nivel: template.nivel,
+                active: true,
+            })
+            .select('id')
+            .single();
+
+        if (insertErr || !inserted) {
+            // A missão anterior da turma já foi desativada no passo 3 - loga
+            // alto pra ficar claro que a turma pode ter ficado sem NENHUMA
+            // missão ativa (mesmo estilo defensivo de POST /register).
+            console.error('[public] adopt: INSERT falhou APÓS desativar a missão anterior da turma', turmaId, '- turma ficou sem missão ativa. Erro:', insertErr);
+            return res.status(500).json({ error: 'Falha ao adotar molde: ' + (insertErr ? insertErr.message : 'unknown') });
+        }
+
+        res.json({ success: true, activityId: inserted.id });
+    } catch (err) {
+        console.error('[public] POST activities/:activityId/adopt error:', err);
         res.status(500).json({ error: err.message });
     }
 });

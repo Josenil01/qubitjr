@@ -7,6 +7,14 @@
  * pensamento computacional) a partir desse projeto e guarda em
  * assignments.requirements (JSONB) — ver backend/supabase-setup.sql.
  *
+ * Modelo self-referencing (assignments.template_id): uma linha "template"
+ * (template_id nulo) é dona de project_name/requirements; uma linha
+ * "referência" (template_id setado, apontando pra um template) delega esses
+ * campos ao template através de services/assignmentResolver.js. Isso é o que
+ * permite um autor editar seu projeto de exemplo canônico (via /register
+ * numa reautoria) e propagar a mudança pra toda turma que referencia esse
+ * template, sem duplicar a missão por turma.
+ *
  * Todas as rotas aqui passam pelo identityMiddleware (montadas depois dele em
  * index.js, mesmo padrão de routes/teacher.js) — req.userId identifica quem
  * chamou. turma_id/nivel vêm das claims do JWT já decodificado durante o
@@ -31,6 +39,7 @@ const { createClient } = require('@supabase/supabase-js');
 const { getTurmaIdFromClaims, getNivelFromClaims, verifyAndDecode } = require('../services/identity');
 const { notifyAssignmentRegistered } = require('../services/helloyotta');
 const { computeProjectManifest, compareManifests } = require('../services/assignmentScoring');
+const { resolveAssignmentFields } = require('../services/assignmentResolver');
 
 const router = express.Router();
 
@@ -69,14 +78,28 @@ async function getTurmaAndNivel(req) {
  * Body: { projectId: <int> }
  *
  * Chamado pelo botão flutuante "Cadastrar aula" do professor, depois de ele
- * montar um projeto de exemplo no editor de verdade. Sequência (sem
- * transação real - Supabase JS não suporta multi-statement facilmente, então
- * seguimos em série e logamos claramente se um passo posterior falhar depois
- * de um anterior já ter sido aplicado, mesmo estilo defensivo já usado no
- * UPDATE de db.js):
- *   1. Desativa qualquer missão anterior ativa da turma.
- *   2. Insere a nova missão (active = true) e pega o id.
- *   3. Vincula o projeto de exemplo à nova missão (projects.assignment_id).
+ * montar um projeto de exemplo no editor de verdade. Duas sequências
+ * possíveis, dependendo de o projeto já ter sido cadastrado antes:
+ *
+ *   A) Primeira vez (project.assignment_id ainda não setado) — sem
+ *      transação real (Supabase JS não suporta multi-statement facilmente,
+ *      então seguimos em série e logamos claramente se um passo posterior
+ *      falhar depois de um anterior já ter sido aplicado, mesmo estilo
+ *      defensivo já usado no UPDATE de db.js):
+ *        1. Desativa qualquer missão anterior ativa da turma.
+ *        2. Insere a nova missão — linha "template" (active = true,
+ *           template_id NULL) — e pega o id.
+ *        3. Vincula o projeto de exemplo à nova missão (projects.assignment_id).
+ *
+ *   B) Reautoria (project.assignment_id já setado de um cadastro anterior
+ *      deste MESMO projeto) — o autor está apenas editando seu exemplo
+ *      canônico, não criando uma nova missão. Faz UPDATE no MESMO id da
+ *      missão-template existente (project_name/requirements/nivel), sem
+ *      mexer em active/turma_id. Isso é o que faz a edição propagar pra
+ *      toda turma que referencia esse template via assignments.template_id
+ *      (ver services/assignmentResolver.js) — sem isso, cada "Cadastrar
+ *      aula" criaria um template novo e quebraria as referências existentes.
+ *
  * Notificação à HelloYotta é best-effort e não bloqueia a resposta (ver
  * services/helloyotta.js#notifyAssignmentRegistered - vira no-op enquanto a
  * URL real não existir).
@@ -93,7 +116,7 @@ router.post('/register', async (req, res) => {
     try {
         const { data: project, error: fetchErr } = await supabase
             .from('projects')
-            .select('id, name, json, owner')
+            .select('id, name, json, owner, assignment_id')
             .eq('id', projectId)
             .eq('owner', req.userId)
             .single();
@@ -117,58 +140,115 @@ router.post('/register', async (req, res) => {
 
         const requirements = computeProjectManifest(projectJson);
 
-        // 1. Desativa a missão anterior da turma, se houver.
-        const { error: deactivateErr } = await supabase
-            .from('assignments')
-            .update({ active: false })
-            .eq('turma_id', turmaId)
-            .eq('active', true);
+        let assignmentId = null;
+        let updatedExistingTemplate = false;
 
-        if (deactivateErr) {
-            console.error('[assignments] Falha ao desativar missão anterior da turma', turmaId, ':', deactivateErr);
-            return res.status(500).json({ error: 'Falha ao desativar missão anterior: ' + deactivateErr.message });
+        // Reautoria: este projeto já está vinculado a uma missão de uma
+        // chamada anterior a /register. Se essa missão for de fato um
+        // template (template_id nulo — o caso normal, já que um projeto só
+        // ganha assignment_id pela primeira vez através do caminho B abaixo,
+        // que sempre cria um template, nunca uma referência), atualiza ela
+        // no lugar em vez de criar uma missão nova.
+        if (project.assignment_id) {
+            const { data: existingAssignment, error: existingErr } = await supabase
+                .from('assignments')
+                .select('id, template_id')
+                .eq('id', project.assignment_id)
+                .maybeSingle();
+
+            if (existingErr) {
+                console.error('[assignments] Falha ao buscar missão existente', project.assignment_id, 'do projeto', projectId, ':', existingErr);
+                return res.status(500).json({ error: 'Falha ao buscar missão existente: ' + existingErr.message });
+            }
+
+            if (existingAssignment && !existingAssignment.template_id) {
+                const { error: updateErr } = await supabase
+                    .from('assignments')
+                    .update({
+                        project_name: project.name,
+                        requirements,
+                        nivel,
+                    })
+                    .eq('id', existingAssignment.id);
+
+                if (updateErr) {
+                    console.error('[assignments] Falha ao atualizar template existente', existingAssignment.id, ':', updateErr);
+                    return res.status(500).json({ error: 'Falha ao atualizar missão existente: ' + updateErr.message });
+                }
+
+                assignmentId = existingAssignment.id;
+                updatedExistingTemplate = true;
+            } else if (existingAssignment && existingAssignment.template_id) {
+                // Defensivo, não esperado na prática: projects.assignment_id de um
+                // projeto de professor apontando pra uma linha "referência" (que
+                // tem template_id setado) em vez de um template. Cai pro caminho
+                // de primeiro cadastro abaixo como fallback seguro.
+                console.warn('[assignments] projects.assignment_id', project.assignment_id, 'do projeto', projectId, 'aponta para uma missão com template_id setado (uma referência, não um template) — tratando como primeiro cadastro.');
+            } else {
+                // Órfão: assignment_id aponta pra uma linha que não existe (mais).
+                // Mesmo fallback seguro do caso acima.
+                console.warn('[assignments] projects.assignment_id', project.assignment_id, 'do projeto', projectId, 'não corresponde a nenhuma missão existente — tratando como primeiro cadastro.');
+            }
         }
 
-        // 2. Insere a nova missão.
-        const { data: inserted, error: insertErr } = await supabase
-            .from('assignments')
-            .insert({
-                turma_id: turmaId,
-                nivel,
-                teacher_id: req.userId,
-                project_name: project.name,
-                requirements,
-                active: true,
-            })
-            .select('id')
-            .single();
+        if (!updatedExistingTemplate) {
+            // 1. Desativa a missão anterior da turma, se houver.
+            const { error: deactivateErr } = await supabase
+                .from('assignments')
+                .update({ active: false })
+                .eq('turma_id', turmaId)
+                .eq('active', true);
 
-        if (insertErr || !inserted) {
-            // A missão anterior da turma já foi desativada no passo 1 — loga alto
-            // pra ficar claro que a turma pode ter ficado sem NENHUMA missão ativa.
-            console.error('[assignments] INSERT falhou APÓS desativar a missão anterior da turma', turmaId, '— turma ficou sem missão ativa. Erro:', insertErr);
-            return res.status(500).json({ error: 'Falha ao criar nova missão: ' + (insertErr ? insertErr.message : 'unknown') });
-        }
+            if (deactivateErr) {
+                console.error('[assignments] Falha ao desativar missão anterior da turma', turmaId, ':', deactivateErr);
+                return res.status(500).json({ error: 'Falha ao desativar missão anterior: ' + deactivateErr.message });
+            }
 
-        const assignmentId = inserted.id;
+            // 2. Insere a nova missão (linha template: template_id fica nulo).
+            const { data: inserted, error: insertErr } = await supabase
+                .from('assignments')
+                .insert({
+                    turma_id: turmaId,
+                    nivel,
+                    teacher_id: req.userId,
+                    project_name: project.name,
+                    requirements,
+                    active: true,
+                })
+                .select('id')
+                .single();
 
-        // 3. Vincula o projeto de exemplo à nova missão.
-        const { error: linkErr } = await supabase
-            .from('projects')
-            .update({ assignment_id: assignmentId })
-            .eq('id', projectId)
-            .eq('owner', req.userId);
+            if (insertErr || !inserted) {
+                // A missão anterior da turma já foi desativada no passo 1 — loga alto
+                // pra ficar claro que a turma pode ter ficado sem NENHUMA missão ativa.
+                console.error('[assignments] INSERT falhou APÓS desativar a missão anterior da turma', turmaId, '— turma ficou sem missão ativa. Erro:', insertErr);
+                return res.status(500).json({ error: 'Falha ao criar nova missão: ' + (insertErr ? insertErr.message : 'unknown') });
+            }
 
-        if (linkErr) {
-            // A missão já existe e está ativa nesse ponto — só o vínculo com o
-            // projeto de exemplo do professor falhou. Não é fatal para o fluxo
-            // do aluno (a missão em si está registrada), então loga e segue.
-            console.error('[assignments] Missão', assignmentId, 'criada, mas falha ao vincular projects.assignment_id no projeto', projectId, ':', linkErr);
+            assignmentId = inserted.id;
+
+            // 3. Vincula o projeto de exemplo à nova missão.
+            const { error: linkErr } = await supabase
+                .from('projects')
+                .update({ assignment_id: assignmentId })
+                .eq('id', projectId)
+                .eq('owner', req.userId);
+
+            if (linkErr) {
+                // A missão já existe e está ativa nesse ponto — só o vínculo com o
+                // projeto de exemplo do professor falhou. Não é fatal para o fluxo
+                // do aluno (a missão em si está registrada), então loga e segue.
+                console.error('[assignments] Missão', assignmentId, 'criada, mas falha ao vincular projects.assignment_id no projeto', projectId, ':', linkErr);
+            }
         }
 
         // Notificação best-effort, fire-and-forget — nunca deve bloquear nem
         // derrubar a resposta HTTP ao professor (mesmo padrão do sync de
-        // mídia em WebInterface.js's io_setmedia).
+        // mídia em WebInterface.js's io_setmedia). turmaId/nivel vêm das
+        // claims (fixos nesta chamada) e projectName/requirements são os
+        // valores recém-computados acima — válidos nos dois ramos (update ou
+        // insert), já que num update eles são exatamente o que acabou de ser
+        // gravado na linha existente.
         notifyAssignmentRegistered({
             turmaId,
             nivel,
@@ -180,7 +260,7 @@ router.post('/register', async (req, res) => {
             console.warn('[assignments] notifyAssignmentRegistered falhou (não-fatal):', err.message);
         });
 
-        res.json({ success: true, assignmentId, requirements });
+        res.json({ success: true, assignmentId, projectName: project.name, requirements });
     } catch (err) {
         console.error('[assignments] POST /register error:', err);
         res.status(500).json({ error: err.message });
@@ -208,7 +288,7 @@ router.get('/active', async (req, res) => {
 
         const { data: assignment, error: assignmentErr } = await supabase
             .from('assignments')
-            .select('id, project_name, requirements, nivel, turma_id')
+            .select('id, project_name, requirements, nivel, turma_id, template_id')
             .eq('turma_id', turmaId)
             .eq('active', true)
             .order('created_at', { ascending: false })
@@ -229,11 +309,20 @@ router.get('/active', async (req, res) => {
 
         if (projectErr) throw projectErr;
 
+        // Resolve project_name/requirements EFETIVOS: se esta linha for uma
+        // referência (template_id setado), busca os valores do template —
+        // é assim que edições no template propagam pras turmas que o
+        // referenciam. Ver services/assignmentResolver.js.
+        const resolved = (await resolveAssignmentFields(supabase, assignment)) || {
+            projectName: assignment.project_name,
+            requirements: assignment.requirements,
+        };
+
         res.json({
             assignment: {
                 id: assignment.id,
-                projectName: assignment.project_name,
-                requirements: assignment.requirements,
+                projectName: resolved.projectName,
+                requirements: resolved.requirements,
                 nivel: assignment.nivel,
                 turmaId: assignment.turma_id,
                 existingProjectId: existingProject ? existingProject.id : null,
@@ -261,7 +350,7 @@ router.get('/my-progress', async (req, res) => {
     try {
         const { data: rows, error } = await supabase
             .from('projects')
-            .select('id, json, assignment_id, assignments!inner(id, project_name, requirements, active)')
+            .select('id, json, assignment_id, assignments!inner(id, project_name, requirements, active, template_id)')
             .eq('owner', req.userId)
             .eq('deleted', 'NO')
             .eq('assignments.active', true)
@@ -286,12 +375,19 @@ router.get('/my-progress', async (req, res) => {
             return res.status(500).json({ error: 'Projeto com json inválido' });
         }
 
+        // Resolve project_name/requirements EFETIVOS através do template,
+        // igual GET /active — ver services/assignmentResolver.js.
+        const resolved = (await resolveAssignmentFields(supabase, assignment)) || {
+            projectName: assignment.project_name,
+            requirements: assignment.requirements,
+        };
+
         const actualManifest = computeProjectManifest(projectJson);
-        const comparison = compareManifests(assignment.requirements, actualManifest);
+        const comparison = compareManifests(resolved.requirements, actualManifest);
 
         res.json({
             hasAssignment: true,
-            projectName: assignment.project_name,
+            projectName: resolved.projectName,
             ...comparison,
         });
     } catch (err) {

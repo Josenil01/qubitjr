@@ -195,6 +195,44 @@ CREATE INDEX IF NOT EXISTS idx_assignments_turma ON assignments(turma_id);
 CREATE INDEX IF NOT EXISTS idx_assignments_teacher_nivel ON assignments(teacher_id, nivel);
 CREATE INDEX IF NOT EXISTS idx_assignments_active ON assignments(active) WHERE active = true;
 
+-- Migração: split template/referência dentro da própria tabela assignments.
+--
+-- template_id NULL   -> esta linha É um template: project_name/requirements
+--                       são a fonte da verdade, definida uma vez (ex.: por
+--                       uma conta admin) e editável depois.
+-- template_id = <id> -> esta linha é uma REFERÊNCIA: representa uma turma que
+--                       "ativou" aquele template. Não guarda project_name/
+--                       requirements próprios - esses campos são sempre
+--                       resolvidos AO VIVO a partir do estado atual do
+--                       template apontado (ver
+--                       backend/src/services/assignmentResolver.js), então
+--                       editar o template propaga pra toda turma que o
+--                       referencia, sem precisar "readotar" nada.
+--
+-- Invariante de APLICAÇÃO, não do banco (mesmo estilo da nota acima sobre
+-- "uma assignment ativa por turma_id de cada vez"): o template_id de uma
+-- linha de referência deve SEMPRE apontar para uma linha com
+-- template_id IS NULL. Não há encadeamento - só um template original pode
+-- ser referenciado, nunca uma referência apontando para outra referência.
+-- Não existe CHECK constraint garantindo isso aqui; é responsabilidade do
+-- código que cria/atualiza linhas de referência manter essa regra.
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS template_id INTEGER REFERENCES assignments(id) ON DELETE SET NULL;
+
+-- Linha de referência não tem requirements/project_name próprios (resolvidos
+-- via template_id em tempo de leitura), então essas colunas não podem mais
+-- ser NOT NULL. "DROP NOT NULL" já é idempotente no Postgres - rodar de novo
+-- numa coluna que já aceita NULL não dá erro (ele só remove a constraint se
+-- ela existir) - então é seguro repetir este script, mesmo padrão dos
+-- ADD COLUMN IF NOT EXISTS acima.
+ALTER TABLE assignments ALTER COLUMN requirements DROP NOT NULL;
+-- project_name também não é obrigatório numa linha de referência, pelo mesmo
+-- motivo. O schema só precisa PERMITIR null aqui - deixar uma referência sem
+-- project_name (em vez de espelhar o do template) é decisão da aplicação,
+-- não algo imposto pelo banco.
+ALTER TABLE assignments ALTER COLUMN project_name DROP NOT NULL;
+
+CREATE INDEX IF NOT EXISTS idx_assignments_template_id ON assignments(template_id) WHERE template_id IS NOT NULL;
+
 -- Migração: projeto vinculado a uma assignment (missão). NULL para projetos
 -- livres, criados fora de qualquer missão. ON DELETE SET NULL porque apagar
 -- a assignment não deve apagar os projetos que os alunos já entregaram nela.
