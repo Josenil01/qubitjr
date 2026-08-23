@@ -39,6 +39,12 @@
  *     Ver services/assignmentScoring.js (cópia client-side, ver seu docblock).
  *  5. Clicar no selo expande um popover com o detalhamento (cenas/atores/
  *     blocos, requerido vs atual). Clicar fora fecha.
+ *  6. Na transição de "ainda não" pra "completou" (scenes+characters+blocks
+ *     todos met - campo `completed` de compareManifests, ctScores NÃO
+ *     entram nessa conta) mostra um modal central de parabéns, uma vez só
+ *     por sessão de aba. Reabrir uma missão já concluída em sessões
+ *     anteriores não reexibe o modal (wasComplete começa null - só dispara
+ *     numa transição observada AO VIVO, não no primeiro cálculo).
  *
  * Se assignment existe, existingProjectId NÃO é null, mas o projeto aberto
  * agora é outro (aluno abriu um projeto qualquer da lobby enquanto tem uma
@@ -62,9 +68,16 @@ let lastProgress = null; // último resultado calculado (pro popover não ficar 
 let bannerEl = null;
 let badgeEl = null;
 let popoverEl = null;
+let completeModalEl = null;
 let actualTimer = null;
 let requirementsTimer = null;
 let dismissedThisSession = false;
+// null = ainda não sabemos (primeiro cálculo desta sessão de aba) - fica
+// assim de propósito pra não disparar o modal de parabéns só por reabrir
+// uma missão que já estava completa antes. Só vira true/false depois do
+// primeiro _applyProgress(), e o modal só aparece numa transição
+// false -> true observada DEPOIS disso.
+let wasComplete = null;
 
 function authHeader () {
     var token = window.__AUTH_TOKEN__;
@@ -246,6 +259,47 @@ export default class AssignmentBadge {
         if (popoverEl) {
             AssignmentBadge._renderPopover(data);
         }
+
+        const isComplete = !!data.completed;
+        if (wasComplete === false && isComplete) {
+            AssignmentBadge._showCompleteModal(data.projectName || (assignment && assignment.projectName));
+        }
+        wasComplete = isComplete;
+    }
+
+    /**
+     * Modal central de "Parabéns" - só na transição ao vivo pra completo
+     * (ver comentário de wasComplete acima). Clicar no botão ou fora do
+     * cartão fecha; não bloqueia o resto da UI (o selo continua ali atrás).
+     */
+    static _showCompleteModal (projectName) {
+        if (completeModalEl) {
+            return; // já mostrando - não duplica
+        }
+        completeModalEl = newHTML('div', 'assignmentCompleteOverlay', document.body);
+        completeModalEl.onclick = function (e) {
+            if (e.target === completeModalEl) {
+                AssignmentBadge._closeCompleteModal();
+            }
+        };
+        const card = newHTML('div', 'assignmentCompleteCard', completeModalEl);
+        const emoji = newHTML('div', 'assignmentCompleteEmoji', card);
+        emoji.textContent = '🎉';
+        const title = newHTML('div', 'assignmentCompleteTitle', card);
+        title.textContent = 'Parabéns!';
+        const text = newHTML('div', 'assignmentCompleteText', card);
+        text.textContent = 'Você concluiu a missão: ' + (projectName || 'Missão');
+        const closeBtn = newHTML('button', 'assignmentCompleteClose', card);
+        closeBtn.type = 'button';
+        closeBtn.textContent = 'Continuar';
+        closeBtn.onclick = AssignmentBadge._closeCompleteModal;
+    }
+
+    static _closeCompleteModal () {
+        if (completeModalEl && completeModalEl.parentNode) {
+            completeModalEl.parentNode.removeChild(completeModalEl);
+        }
+        completeModalEl = null;
     }
 
     static _toggleExpanded () {

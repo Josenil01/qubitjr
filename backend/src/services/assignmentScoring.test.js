@@ -498,4 +498,28 @@ describe('compareManifests', () => {
         expect(result.scenes).toEqual({ required: 0, actual: 0, met: true });
         expect(result.blocks.met).toBe(true);
     });
+
+    it('completed is true only when scenes/characters/blocks are ALL met (ctScores excluded)', () => {
+        const required = {
+            scenes: { count: 1, used: [] },
+            characters: { count: 1, used: [] },
+            blocks: { count: 1, byType: { onflag: 1 } },
+            ctScores: { userInteractivity: 2 }, // required score not reached below - must not affect completed
+        };
+        const fullyMet = {
+            scenes: { count: 1, used: [] },
+            characters: { count: 1, used: [] },
+            blocks: { count: 1, byType: { onflag: 1 } },
+            ctScores: { userInteractivity: 0 },
+        };
+        expect(compareManifests(required, fullyMet).completed).toBe(true);
+
+        const shortOnBlocks = {
+            scenes: { count: 1, used: [] },
+            characters: { count: 1, used: [] },
+            blocks: { count: 0, byType: {} },
+            ctScores: { userInteractivity: 2 },
+        };
+        expect(compareManifests(required, shortOnBlocks).completed).toBe(false);
+    });
 });

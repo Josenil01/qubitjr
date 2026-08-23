@@ -283,6 +283,11 @@ function compareManifests(required, actual) {
             byType,
         },
         ctScores,
+        // Atalho pra quem consome a resposta (HelloYotta via assignment-score,
+        // AssignmentBadge.js pro modal de conclusão) não precisar reimplementar
+        // "os 3 grupos bateram" - ctScores fica de fora de propósito (são notas
+        // de qualidade, não requisitos de conclusão da missão em si).
+        completed: scenesMet && charactersMet && blocksMet,
     };
 }
 

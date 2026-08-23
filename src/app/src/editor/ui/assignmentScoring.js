@@ -230,5 +230,8 @@ export function compareManifests (required, actual) {
             byType,
         },
         ctScores,
+        // Ver o docblock do arquivo original (backend/src/services/assignmentScoring.js) -
+        // mesmo campo, mesma regra, tem que ficar em sincronia.
+        completed: scenesMet && charactersMet && blocksMet,
     };
 }

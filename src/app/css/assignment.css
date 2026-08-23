@@ -1,18 +1,23 @@
 /* src/app/css/assignment.css
  *
  * UI da feature de missões (assignments): botão flutuante de autoria
- * (professor), banner de "nova missão" e selo de progresso + popover
- * (aluno). Arquivo isolado de propósito - não mexe nos CSS grandes
- * compartilhados (editor.css/editorstage.css/editormodal.css).
+ * (professor), banner de "nova missão", selo de progresso + popover, e
+ * modal de conclusão (aluno). Arquivo isolado de propósito - não mexe nos
+ * CSS grandes compartilhados (editor.css/editorstage.css/editormodal.css).
  *
- * z-index: 9000 fica ACIMA da UI normal do editor (topsection/paleta,
- * que ficam na faixa ~1-100 - ver editor.css/editorstage.css) e da barra
- * flutuante de observação do professor/aviso do LiveWatch (teacher.js/
- * LiveWatch.js, ABOVE_LOCK_OVERLAY_Z_INDEX=11000 em LiveMirror.js) sem
- * COMPETIR com eles - fica abaixo dos modais de bloqueio de tela cheia
- * (infobox/parentalgate, 11000-12000 em editor.css, e a biblioteca/paint
- * editor, 10000-11000 em librarymodal.css/paintlook.css), que devem
- * continuar cobrindo tudo quando abertos.
+ * z-index: 9000-9001 (botão/selo/banner/popover) ficam ACIMA da UI normal
+ * do editor (topsection/paleta, que ficam na faixa ~1-100 - ver
+ * editor.css/editorstage.css) e da barra flutuante de observação do
+ * professor/aviso do LiveWatch (teacher.js/LiveWatch.js,
+ * ABOVE_LOCK_OVERLAY_Z_INDEX=11000 em LiveMirror.js) sem COMPETIR com eles.
+ * O modal de conclusão (9500) fica um degrau acima desses (é uma
+ * celebração, deve cobrir o selo/popover) mas ainda ABAIXO dos modais de
+ * bloqueio de tela cheia (infobox/parentalgate, 11000-12000 em editor.css,
+ * e a biblioteca/paint editor, 10000-11000 em librarymodal.css/
+ * paintlook.css) - se algum desses estiver aberto no exato momento da
+ * conclusão, o modal de parabéns só fica visível depois que o aluno
+ * fechar aquele, em vez de brigar por cima de uma tela que deve continuar
+ * bloqueante.
  *
  * Cor de destaque: #01bebc (teal), mesma usada em editor.css/lobby.css/
  * editorleftpanel.css pro rebrand atual.
@@ -167,4 +172,66 @@
 
 .assignmentPopoverRow.met .assignmentPopoverValue {
     color: #01bebc;
+}
+
+/* Modal central de "Parabéns, missão concluída" (aluno) - ver docblock de
+ * AssignmentBadge.js pra quando exatamente dispara. */
+.assignmentCompleteOverlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.55);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.assignmentCompleteCard {
+    max-width: min(90vw, 380px);
+    padding: 32px 28px;
+    border-radius: 20px;
+    background: #fff;
+    color: #333;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    border: 3px solid #01bebc;
+}
+
+.assignmentCompleteEmoji {
+    font-size: 48px;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.assignmentCompleteTitle {
+    font-size: 24px;
+    font-weight: 700;
+    color: #01bebc;
+    margin-bottom: 8px;
+}
+
+.assignmentCompleteText {
+    font-size: 16px;
+    line-height: 1.4;
+    margin-bottom: 22px;
+    word-break: break-word;
+}
+
+.assignmentCompleteClose {
+    border: none;
+    border-radius: 22px;
+    padding: 10px 30px;
+    background: #01bebc;
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.assignmentCompleteClose:hover {
+    background: #019a98;
 }
