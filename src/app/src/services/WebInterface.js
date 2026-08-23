@@ -191,7 +191,17 @@ class WebInterface {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('[WebInterface] Backend error response:', errorText);
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
+        if (response.status === 401) {
+          // Token ausente/expirado/inválido (ver identityMiddleware em
+          // backend/src/index.js) - marca globalmente pra quem exibe a
+          // lista de projetos (Home.js#displayProjects) saber diferenciar
+          // "sem projetos mesmo" de "não consegui nem perguntar ao
+          // servidor", e mostrar um aviso em vez de uma lobby vazia muda.
+          window.__AUTH_EXPIRED__ = true;
+        }
+        const err = new Error(`HTTP ${response.status}: ${errorText}`);
+        if (response.status === 401) err.code = 'AUTH_EXPIRED';
+        throw err;
       }
 
       const result = await response.json();
@@ -237,7 +247,13 @@ class WebInterface {
             throw limitErr;
           }
         }
-        throw new Error(`HTTP ${response.status}: ${body}`);
+        if (response.status === 401) {
+          // Ver o mesmo tratamento em database_query acima.
+          window.__AUTH_EXPIRED__ = true;
+        }
+        const err = new Error(`HTTP ${response.status}: ${body}`);
+        if (response.status === 401) err.code = 'AUTH_EXPIRED';
+        throw err;
       }
 
       const result = await response.json();

@@ -419,26 +419,26 @@ export default class Home {
     }
 
     static displayProjects (str) {
-        console.log('%c[displayProjects] 🎨 Iniciando renderização de projetos', 'color: blue; font-weight: bold;');
-        console.log('[displayProjects] str recebido:', str ? `${str.substring(0, 100)}...` : 'null/empty');
-        
         if (!str) {
-            // Sem resultados, mostrar mensagem vazia
+            // str só chega null/falsy pelo caminho de ERRO de iOS.query()
+            // (ver iPad/iOS.js#query .catch → fcn(null)) - uma lista
+            // genuinamente vazia sempre chega como a string "[]" e cai no
+            // ramo de baixo. Sem essa distinção, "sem projetos mesmo" e
+            // "nem consegui perguntar ao servidor" pareciam idênticos pro
+            // aluno: a mesma lobby com só o "+" de novo projeto, sem
+            // nenhum aviso do que aconteceu.
+            if (window.__AUTH_EXPIRED__) {
+                // Setado em WebInterface.js#database_query/database_stmt
+                // em qualquer 401 (token ausente/expirado/inválido).
+                Home._showActionErrorModal('Sua sessão expirou. Feche esta aba e abra o link de novo (peça um link atualizado, se precisar).', '⚠️');
+            } else {
+                Home._showActionErrorModal('Não foi possível carregar seus projetos agora. Tente recarregar a página.', '⚠️');
+            }
             var div = gn('scrollarea');
-            console.log('[displayProjects] ⚠️ str é null/empty, renderizando empty state');
-            console.log('[displayProjects] div:', div);
-            console.log('[displayProjects] div.childElementCount ANTES:', div.childElementCount);
-            
             while (div.childElementCount > 0) {
-                console.log('[displayProjects] Removendo child:', div.childNodes[0]);
                 div.removeChild(div.childNodes[0]);
             }
-            console.log('[displayProjects] div.childElementCount DEPOIS de limpar:', div.childElementCount);
-            
             Home.emptyProjectThumbnail(div);
-            console.log('[displayProjects] ✅ emptyProjectThumbnail() chamado');
-            console.log('[displayProjects] div.childElementCount APÓS emptyProjectThumbnail:', div.childElementCount);
-            console.log('[displayProjects] div.innerHTML:', div.innerHTML);
             Home._dailyLimitReached = false;
             Home._stillEnumerating = false;
             Home.maybeHideLoading();
@@ -457,10 +457,6 @@ export default class Home {
         }
         
         var div = gn('scrollarea');
-        console.log('[displayProjects] ✅ Projetos parseados, quantidade:', data.length);
-        console.log('[displayProjects] div:', div);
-        console.log('[displayProjects] Limpando div...');
-        
         while (div.childElementCount > 0) {
             div.removeChild(div.childNodes[0]);
         }
@@ -478,7 +474,6 @@ export default class Home {
         }
         
         for (var i = 0; i < data.length; i++) {
-            console.log(`[displayProjects] Adicionando projeto ${i + 1}/${data.length}:`, data[i]);
             Home.addProjectLink(div, data[i]);
         }
         Home._stillEnumerating = false;
