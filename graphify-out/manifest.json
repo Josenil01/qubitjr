@@ -1,8 +1,8 @@
 {
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\editor\\ScratchJr.js": {
-    "mtime": 1785545534.853667,
-    "ast_hash": "f10d96768b8263b822721d9205c3c0b8",
-    "semantic_hash": "f10d96768b8263b822721d9205c3c0b8"
+    "mtime": 1787490451.0827875,
+    "ast_hash": "8c3238319167cd0a69e01e3c554b5aa0",
+    "semantic_hash": "8c3238319167cd0a69e01e3c554b5aa0"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\editor\\ScratchJr_player.js": {
     "mtime": 1781182712.224743,
@@ -50,9 +50,9 @@
     "semantic_hash": "b55a409096519e6f7568a2f6d41f25bf"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\editor\\engine\\Sprite.js": {
-    "mtime": 1786468625.3322628,
-    "ast_hash": "0850d3e670f252a9a9c28724fb369f64",
-    "semantic_hash": "0850d3e670f252a9a9c28724fb369f64"
+    "mtime": 1787490421.3735147,
+    "ast_hash": "239b2da514d5b15d6609609006b97022",
+    "semantic_hash": "239b2da514d5b15d6609609006b97022"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\editor\\engine\\Sprite_player.js": {
     "mtime": 1781182705.0890338,
@@ -85,19 +85,19 @@
     "semantic_hash": "713a980f9805ad41a766497a66bc19df"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\editor\\ui\\Library.js": {
-    "mtime": 1786303722.9270864,
-    "ast_hash": "22fa80a42127dc5c039f58d9043782f9",
-    "semantic_hash": "22fa80a42127dc5c039f58d9043782f9"
+    "mtime": 1787490488.0543425,
+    "ast_hash": "e5743247b5103177ba5fec9d2923226e",
+    "semantic_hash": "e5743247b5103177ba5fec9d2923226e"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\editor\\ui\\Palette.js": {
-    "mtime": 1785545518.4593296,
-    "ast_hash": "4c8468bd8f0b522edf3e92d04898b5a0",
-    "semantic_hash": "4c8468bd8f0b522edf3e92d04898b5a0"
+    "mtime": 1787490429.3365262,
+    "ast_hash": "b9681dfb4d705531374871945842289a",
+    "semantic_hash": "b9681dfb4d705531374871945842289a"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\editor\\ui\\Project.js": {
-    "mtime": 1787351127.4049542,
-    "ast_hash": "774b0c2dca6f19c56ae61fa300a183ff",
-    "semantic_hash": "774b0c2dca6f19c56ae61fa300a183ff"
+    "mtime": 1787490468.7486722,
+    "ast_hash": "9da9362339a0ac89863902aeede07c30",
+    "semantic_hash": "9da9362339a0ac89863902aeede07c30"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\editor\\ui\\Record.js": {
     "mtime": 1771338966.0801227,
@@ -185,9 +185,9 @@
     "semantic_hash": "f1cec89662ee2131d4e539f7c14d8d61"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\iPad\\IO.js": {
-    "mtime": 1787351111.933823,
-    "ast_hash": "71d071e9ffd740eea62886ebe6e2ae8e",
-    "semantic_hash": "71d071e9ffd740eea62886ebe6e2ae8e"
+    "mtime": 1787490480.256243,
+    "ast_hash": "f7adb9e5e900beb0bd4160c099277811",
+    "semantic_hash": "f7adb9e5e900beb0bd4160c099277811"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\iPad\\MediaLib.js": {
     "mtime": 1771338966.092154,
@@ -230,14 +230,14 @@
     "semantic_hash": "b4183b87f75293d890208ea079252645"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\painteditor\\PNGCache.js": {
-    "mtime": 1771456418.7823615,
-    "ast_hash": "8ff76c8cd1b58e03fb28cd11ba5b923e",
-    "semantic_hash": "8ff76c8cd1b58e03fb28cd11ba5b923e"
+    "mtime": 1787490402.891016,
+    "ast_hash": "6dfbead234809f592a47da596fac1c6f",
+    "semantic_hash": "6dfbead234809f592a47da596fac1c6f"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\painteditor\\Paint.js": {
-    "mtime": 1780634071.9281597,
-    "ast_hash": "dece7dc7fde0ad4e8e0f207c8629de13",
-    "semantic_hash": "dece7dc7fde0ad4e8e0f207c8629de13"
+    "mtime": 1787490494.9744487,
+    "ast_hash": "b384f1b906251853907576361a34782b",
+    "semantic_hash": "b384f1b906251853907576361a34782b"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\painteditor\\PaintAction.js": {
     "mtime": 1771338966.097155,
@@ -260,9 +260,9 @@
     "semantic_hash": "aa4d3dbe024600ad406deb3ba17b31df"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\painteditor\\SVGTools.js": {
-    "mtime": 1780632182.9386706,
-    "ast_hash": "b26153fddf787c7946b8c4b9ab98bfa7",
-    "semantic_hash": "b26153fddf787c7946b8c4b9ab98bfa7"
+    "mtime": 1787490413.6140456,
+    "ast_hash": "284654167771124c0c9e47086b5d9071",
+    "semantic_hash": "284654167771124c0c9e47086b5d9071"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\painteditor\\Transform.js": {
     "mtime": 1771338966.100144,
@@ -270,9 +270,9 @@
     "semantic_hash": "5c68becc8f44e3f6a389b73f9c442e3a"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\services\\WebInterface.js": {
-    "mtime": 1785782053.1741107,
-    "ast_hash": "9ad0338c38a5c3efa7925ac1077a4fc3",
-    "semantic_hash": "9ad0338c38a5c3efa7925ac1077a4fc3"
+    "mtime": 1787490542.5550954,
+    "ast_hash": "f41f8e9a564564cc15fb62890f85b894",
+    "semantic_hash": "f41f8e9a564564cc15fb62890f85b894"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\shims\\jszip.js": {
     "mtime": 1771351544.274297,
@@ -370,9 +370,9 @@
     "semantic_hash": "a786680f1ee6900b438f0430b47670d7"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\editor\\ui\\AssignmentBadge.js": {
-    "mtime": 1787487977.9600983,
-    "ast_hash": "6939546f9dfc814997d076cfed57389e",
-    "semantic_hash": "6939546f9dfc814997d076cfed57389e"
+    "mtime": 1787493740.6032288,
+    "ast_hash": "437ae4d53f01cd375d6d924e00c33423",
+    "semantic_hash": "437ae4d53f01cd375d6d924e00c33423"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\lobby\\AssignmentNotice.js": {
     "mtime": 1787404489.6068628,
