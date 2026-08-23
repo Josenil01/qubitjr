@@ -68,6 +68,17 @@
     background: #019a98;
 }
 
+/* Missão completa (completed=true de compareManifests) - verde no lugar do
+ * teal padrão, até o aluno remover algum item obrigatório e voltar a
+ * ficar incompleta (ver AssignmentBadge._applyProgress). */
+.assignmentBadge.completed {
+    background: #2ecc71;
+}
+
+.assignmentBadge.completed:hover {
+    background: #27ae60;
+}
+
 /* Banner dispensável "nova missão" (aluno) - não bloqueante, fica no
  * mesmo canto onde o selo normalmente apareceria. */
 .assignmentStartBanner {

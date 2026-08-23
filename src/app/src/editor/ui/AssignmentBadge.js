@@ -253,14 +253,20 @@ export default class AssignmentBadge {
         const met = groups.filter(function (g) {
             return g && g.met;
         }).length;
+        const isComplete = !!data.completed;
+
         if (badgeEl) {
-            badgeEl.textContent = '🎯 ' + met + '/' + groups.length;
+            // Verde + "Concluído" enquanto completed=true; volta pro selo
+            // normal (🎯 X/3, cor padrão) na hora que deixar de ser - ex.:
+            // aluno apagou um bloco/cena/personagem depois de já ter
+            // completado. classList.toggle já cobre as duas direções.
+            badgeEl.classList.toggle('completed', isComplete);
+            badgeEl.textContent = isComplete ? '✅ Concluído' : ('🎯 ' + met + '/' + groups.length);
         }
         if (popoverEl) {
             AssignmentBadge._renderPopover(data);
         }
 
-        const isComplete = !!data.completed;
         if (wasComplete === false && isComplete) {
             AssignmentBadge._showCompleteModal(data.projectName || (assignment && assignment.projectName));
         }
