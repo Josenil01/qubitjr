@@ -17,9 +17,7 @@ class WebInterface {
 
     this._initAuthFromUrl();
     this._installDebugHelpers();
-    
-    console.log('[WebInterface] Inicializado com API:', API_BASE_URL);
-    
+
     // Testar conexão com backend
     this.testConnection();
   }
@@ -56,7 +54,6 @@ class WebInterface {
     if (extracted.token) {
       window.__AUTH_TOKEN__ = extracted.token;
       try { sessionStorage.setItem(SESSION_KEY_TOKEN, extracted.token); } catch (_) {}
-      console.log('[WebInterface] Auth token: ' + this._maskToken(extracted.token) + ' (from URL → saved to sessionStorage)');
     }
 
     // 2. Token não está na URL → restaura do sessionStorage (navegações internas)
@@ -65,7 +62,6 @@ class WebInterface {
         const stored = sessionStorage.getItem(SESSION_KEY_TOKEN);
         if (stored) {
           window.__AUTH_TOKEN__ = stored;
-          console.log('[WebInterface] Auth token: ' + this._maskToken(stored) + ' (from sessionStorage)');
         } else {
           console.warn('[WebInterface] Auth token: NONE — nenhum token na URL nem no sessionStorage');
         }
@@ -90,8 +86,6 @@ class WebInterface {
         }
       }
     }
-
-    console.log('[WebInterface] Auth context:', window.__AUTH_CONTEXT__);
   }
 
   _installDebugHelpers() {
@@ -155,7 +149,6 @@ class WebInterface {
         try {
           const response = await fetch(healthUrl);
           if (response.ok) {
-            console.log('✅ Conectado ao backend em', healthUrl);
             this.offlineMode = false;
             return;
           }
@@ -185,9 +178,6 @@ class WebInterface {
         queryObj.sql = queryObj.stmt;
         delete queryObj.stmt;
       }
-      
-      console.log('[WebInterface] Enviando query:', JSON.stringify(queryObj).substring(0, 200));
-      console.log('[WebInterface] Query auth header presente:', !!this._authHeader().Authorization);
       
       const response = await fetch(`${API_BASE_URL}/db/query`, {
         method: 'POST',
@@ -226,9 +216,6 @@ class WebInterface {
         delete stmtObj.stmt;
       }
       
-      console.log('[WebInterface] Enviando stmt:', JSON.stringify(stmtObj).substring(0, 200));
-      console.log('[WebInterface] Stmt auth header presente:', !!this._authHeader().Authorization);
-
       const response = await fetch(`${API_BASE_URL}/db/stmt`, {
         method: 'POST',
         headers: {

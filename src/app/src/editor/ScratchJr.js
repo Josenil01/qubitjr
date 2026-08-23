@@ -199,7 +199,6 @@ export default class ScratchJr {
         if (currentProject === 'null' || currentProject === 'undefined') currentProject = null;
         // Limpar a variável global após usar
         window.currentProjectMd5 = null;
-        console.log('[ScratchJr.appinit] currentProject:', currentProject);
         editmode = window.currentEditorMode || urlvars.mode;
         // Limpar a variável global após usar
         window.currentEditorMode = null;
@@ -219,7 +218,6 @@ export default class ScratchJr {
         Events.init();
         if (window.Settings.autoSaveInterval > 0) {
             autoSaveSetInterval = window.setInterval(function () {
-                console.log('[AutoSave] tick — enabled:', autoSaveEnabled, 'onHold:', onHold, 'saving:', Project.saving, 'infoBoxOpen:', UI.infoBoxOpen, 'currentProject:', currentProject, 'changed:', changed);
                 if (autoSaveEnabled && !onHold && !Project.saving && !UI.infoBoxOpen) {
                     ScratchJr.saveProject(null, function () {
                         Alert.close();
@@ -378,10 +376,8 @@ export default class ScratchJr {
                 });
             }, true);
         } else if (ScratchJr.isEditable() && currentProject && !Project.error && (changed || force)) {
-            console.log('[ScratchJr.saveProject] Salvando... currentProject:', currentProject, 'changed:', changed, 'force:', !!force);
             Project.prepareToSave(currentProject, onDone);
         } else {
-            console.log('[ScratchJr.saveProject] Skip — isEditable:', ScratchJr.isEditable(), 'currentProject:', currentProject, 'error:', Project.error, 'changed:', changed);
             if (onDone) {
                 onDone();
             }

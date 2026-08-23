@@ -354,7 +354,6 @@ export default class Palette {
         // set the icons for text or sprite
         numcat = n;
         var currentSel = div.childNodes[n + 1];
-        console.log('[Palette.selectCategory] n:', n, 'sprite:', ScratchJr.getSprite() ? 'ok' : 'null', 'palettes[n]:', BlockSpecs.palettes && BlockSpecs.palettes[n]);
         for (var i = 1; i < div.childElementCount; i++) {
             var sel = div.childNodes[i];
             sel.childNodes[0].style.visibility = (sel.index != n) ? 'visible' : 'hidden';

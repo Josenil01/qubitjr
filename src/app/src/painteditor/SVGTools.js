@@ -861,26 +861,18 @@ export default class SVGTools {
     static getWatermark (shape, color, spriteName) {
         // Checar se SVG tem imagens embarcadas (data:image)
         var svgString = new XMLSerializer().serializeToString(shape);
-        console.log(`[SVGTools.getWatermark] Sprite: "${spriteName}", tem embedded images: ${svgString.indexOf('data:image') > -1}`);
-        
+
         if (svgString.indexOf('data:image') > -1) {
             // SVG com imagens embarcadas - tentar usar PNG do cache
             if (spriteName && window.PNGCache) {
-                console.log(`[SVGTools.getWatermark] Tentando buscar PNG do cache para: "${spriteName}"`);
                 var cachedCanvas = window.PNGCache.get(spriteName);
                 if (cachedCanvas) {
-                    console.log(`[SVGTools.getWatermark] ✅ PNG encontrado no cache! Usando colorido`);
                     return cachedCanvas;
-                } else {
-                    console.log(`[SVGTools.getWatermark] ❌ PNG não está em cache, usando SVG processado`);
                 }
-            } else {
-                console.log(`[SVGTools.getWatermark] ⚠️ PNGCache não disponível ou spriteName não informado`);
             }
         }
-        
+
         // Processar normalmente como SVG puro
-        console.log(`[SVGTools.getWatermark] Processando como SVG normal com cor: ${color}`);
         var svg = SVGTools.getCopy(shape);
         SVGTools.removeExtras(svg);
         SVGTools.changeShape(svg, color);

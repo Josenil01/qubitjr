@@ -147,7 +147,6 @@ export default class Paint {
             console.error('[Paint.init] ❌ paintFrame não encontrado!');
             return;
         }
-        console.log('[Paint.init] ✅ paintFrame encontrado:', paintFrame.id);
         paintFrame.style.width = w + 'px';
         paintFrame.style.height = h + 'px';
         BlockSpecs.loadCount++;

@@ -197,7 +197,6 @@ export default class IO {
     static getObject (md5, fcn) {
         // Ensure md5 is a string (Supabase returns numeric ids as integers)
         if (md5 !== null && md5 !== undefined) md5 = String(md5);
-        console.log('[IO.getObject] md5:', md5);
         if (!md5 || md5 === 'null' || md5 === 'undefined') {
             console.error('[IO.getObject] ❌ md5 é null/undefined! Não posso carregar projeto.');
             if (fcn) {

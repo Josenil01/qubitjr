@@ -47,7 +47,6 @@ export default class Library {
             console.error('[Library.init] ❌ libFrame não encontrado!');
             return;
         }
-        console.log('[Library.init] ✅ libFrame encontrado:', libFrame.id);
         libFrame.style.minHeight = Math.max(getDocumentHeight(), frame.offsetHeight) + 'px';
         var topbar = newHTML('div', 'topbar', libFrame);
         topbar.setAttribute('id', 'topbar');

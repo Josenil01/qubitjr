@@ -150,7 +150,6 @@ export default class Sprite {
         this.render();
         SVG2Canvas.drawInCanvas(this); // canvas draws mask for pixel detection
         this.readOnly = SVG2Canvas.svgerror;
-        console.log(`[Sprite.doRender] Sprite: "${this.name}" (md5: ${this.md5})`);
         this.watermark = SVGTools.getWatermark(this.svg, '#B3B3B3', this.name); // svg for watermark
         if (whenDone) {
             whenDone(this);

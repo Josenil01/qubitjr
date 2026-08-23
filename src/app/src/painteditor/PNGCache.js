@@ -17,22 +17,19 @@ class PNGCache {
     async loadPNG(spriteName) {
         // Se já está em cache, retornar imediatamente
         if (this.cache[spriteName]) {
-            console.log(`[PNGCache.loadPNG] "${spriteName}" já está em cache`);
             return this.cache[spriteName];
         }
 
         // Se já está carregando, retornar a promise existente
         if (this.loading[spriteName]) {
-            console.log(`[PNGCache.loadPNG] "${spriteName}" já está carregando...`);
             return this.loading[spriteName];
         }
 
         // Criar nova promise de carregamento
         this.loading[spriteName] = new Promise((resolve, reject) => {
             const img = new Image();
-            
+
             img.onload = () => {
-                console.log(`[PNGCache.loadPNG] Sucesso: "${spriteName}" (${img.width}x${img.height})`);
                 // Criar canvas com a imagem
                 const canvas = document.createElement('canvas');
                 canvas.width = img.width;
@@ -70,9 +67,7 @@ class PNGCache {
      * @returns {HTMLCanvasElement|null} canvas ou null se não estiver cachado
      */
     get(spriteName) {
-        const cached = this.cache[spriteName];
-        console.log(`[PNGCache.get] Buscando: "${spriteName}"`, cached ? '✅ ENCONTRADO' : '❌ NÃO ENCONTRADO', 'Cache:', Object.keys(this.cache));
-        return cached || null;
+        return this.cache[spriteName] || null;
     }
 
     /**
@@ -81,17 +76,14 @@ class PNGCache {
      * @returns {Promise<void>}
      */
     async preload(spriteNames) {
-        console.log('[PNGCache.preload] Iniciando pré-carregamento de', spriteNames.length, 'PNGs:', spriteNames);
-        
-        const promises = spriteNames.map(name => 
+        const promises = spriteNames.map(name =>
             this.loadPNG(name).catch(err => {
                 // Não falhar se uma PNG não conseguir carregar
                 console.warn('[PNGCache]', err.message);
             })
         );
-        
+
         await Promise.all(promises);
-        console.log('[PNGCache.preload] ✅ Pré-carregamento concluído. Cache:', Object.keys(this.cache));
     }
 
     /**

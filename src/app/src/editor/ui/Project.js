@@ -84,13 +84,10 @@ export default class Project {
         ScratchJr.log('all UI assets recieved - procced to call server', ScratchJr.getTime(), 'sec');
         Project.setProgress(20);
         UI.layout();
-        console.log('[Project.startLoad] Carregando projeto:', ScratchJr.currentProject);
         if (!ScratchJr.currentProject) {
             console.warn('[Project.startLoad] ⚠️ currentProject é null/undefined - criando novo projeto em branco');
             // Se não há projeto, criar um novo em branco
-            Project.createNewProject(function(md5) {
-                console.log('[Project.startLoad] Novo projeto criado com md5:', md5, '→ currentProject atualizado');
-            });
+            Project.createNewProject(function() {});
         } else {
             IO.getObject(ScratchJr.currentProject, Project.dataRecieved);
         }
@@ -168,7 +165,6 @@ export default class Project {
             Project.loadwait(doneProjectLoad);
         }
         function doneProjectLoad () {
-            console.log('[doneProjectLoad] ✅ chamado, metadata.id:', metadata && metadata.id, 'sprite:', ScratchJr.stage && ScratchJr.stage.currentPage && ScratchJr.stage.currentPage.currentSpriteName);
             // Clear gift flag
             if ('id' in metadata) {
                 metadata.isgift = '0';

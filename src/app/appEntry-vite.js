@@ -31,7 +31,6 @@ window.iOS = iOS;
 window.IO = IO;
 window.MediaLib = MediaLib;
 window.PNGCache = PNGCache;
-console.log('[AppEntry] ✅ PNGCache exposto globalmente:', !!window.PNGCache);
 
 // Resolve quando todo o CSS tiver sido processado (ou após timeout de 3 s)
 let _cssReadyResolve;
@@ -220,7 +219,6 @@ async function loadSettings(settingsRoot) {
 
 // App entry point
 window.onload = async () => {
-  console.log('[AppEntry] Iniciando:', window.scratchJrPage);
   await loadPage(window.scratchJrPage);
 };
 
@@ -247,42 +245,28 @@ async function loadPage(page) {
 
   // Carregar em sequência com Promises
   try {
-    console.log('[AppEntry] 1️⃣ Carregando settings...');
     await loadSettings(root);
-    console.log('[AppEntry] 2️⃣ Settings carregado, carregando localizações...');
-    
+
     if (window.Localization && window.Localization.includeLocales) {
       await new Promise((resolve) => {
-        console.log('[AppEntry] 3️⃣ Incluindo locales...');
-        window.Localization.includeLocales(root, () => {
-          console.log('[AppEntry] 4️⃣ Locales carregadas!');
-          resolve();
-        });
+        window.Localization.includeLocales(root, resolve);
       });
     }
-    
-    console.log('[AppEntry] 5️⃣ Carregando MediaLib...');
+
     if (window.MediaLib && window.MediaLib.loadMediaLib) {
       await new Promise((resolve) => {
-        window.MediaLib.loadMediaLib(root, () => {
-          console.log('[AppEntry] 6️⃣ MediaLib carregada!');
-          resolve();
-        });
+        window.MediaLib.loadMediaLib(root, resolve);
       });
     }
-    
+
     // Pré-carregar PNGs para watermarks
-    console.log('[AppEntry] 6️⃣ ½ Pré-carregando PNGs para watermarks...');
-    console.log('[AppEntry] DEBUG: window.MediaLib =', !!window.MediaLib, 'window.MediaLib.sprites =', !!(window.MediaLib && window.MediaLib.sprites), 'window.PNGCache =', !!window.PNGCache);
     if (window.MediaLib && window.MediaLib.sprites && window.PNGCache) {
       // Pré-carregar usando md5 (nome do arquivo) e criar alias pelo name (nome exibido)
       const spriteItems = window.MediaLib.sprites.filter(item => item.md5);
       const spriteFileNames = spriteItems
         .map(item => item.md5.replace(/\.[^.]+$/, ''))
         .filter(name => name);
-      const spriteNames = spriteItems.map(item => item.name).filter(name => name);
-      
-      console.log('[AppEntry] Sprites para pré-carregar:', spriteFileNames.length);
+
       if (spriteFileNames.length > 0) {
         await window.PNGCache.preload(spriteFileNames);
         // Criar aliases: cache[name] = cache[md5fileName] para que getWatermark(this.name) funcione
@@ -292,29 +276,25 @@ async function loadPage(page) {
             window.PNGCache.cache[item.name] = window.PNGCache.cache[fileKey];
           }
         });
-        console.log('[AppEntry] ✅ PNGs pré-carregadas:', Object.keys(window.PNGCache.cache || {}).length);
       }
     } else {
       console.warn('[AppEntry] ⚠️ Não foi possível pré-carregar PNGs - MediaLib.sprites ou PNGCache indisponíveis');
     }
-    
-    console.log('[AppEntry] 7️⃣ Inicializando AppUsage...');
+
     // Inicializar AppUsage ANTES de entryFunction
     if (window.AppUsage && window.AppUsage.initUsage) {
       window.AppUsage.initUsage();
     }
-    
+
     // Para a página home, aguarda o CSS ser processado antes de renderizar
     // para evitar que o topsection apareça com alturas css_vh() em 0px.
     if (page === 'home') {
       await cssReady;
     }
 
-    console.log('[AppEntry] 8️⃣ Chamando entryFunction para ' + page);
     // Executar função de entrada
     if (entryFunction) {
       entryFunction();
-      console.log('[AppEntry] ✅ EntryFunction executada!');
     } else {
       console.error('[AppEntry] ❌ EntryFunction não definida para página:', page);
     }
