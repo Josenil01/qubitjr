@@ -111,6 +111,22 @@ function sanitizeValue(val) {
 }
 
 /**
+ * Conta quantas páginas um blob de projeto (o mesmo formato que
+ * Project.getProject() serializa no cliente) tem, sem lançar - usado só pelo
+ * diagnóstico de PAGE_LOSS_SUSPECTED abaixo. Devolve null se o JSON não puder
+ * ser interpretado (nunca deve travar o save por causa disso).
+ */
+function countPages(jsonStr) {
+  if (typeof jsonStr !== 'string' || !jsonStr) return null;
+  try {
+    const parsed = JSON.parse(jsonStr);
+    return Array.isArray(parsed.pages) ? parsed.pages.length : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+/**
  * Translate INSERT / UPDATE / DELETE SQL into a Supabase mutation.
  * userId: quando fornecido, injeta/verifica owner para tabelas multi-tenant.
  * role: 'professor' | null (ver identityMiddleware em index.js) - isenta o
@@ -216,6 +232,30 @@ async function buildMutationQuery(supabase, sql, values = [], userId = null, rol
         : data[k];
     }
     console.log(`[DB UPDATE] table=${table} id=${id} data:`, JSON.stringify(logData));
+
+    // Diagnóstico temporário (investigação em andamento - projeto de aluno
+    // perdeu 3 de 4 páginas depois de reabrir+editar; não reproduzido ainda
+    // sob auth mock/navegador automatizado, ver histórico do projeto). Só
+    // roda quando o UPDATE está sobrescrevendo o json do projeto: compara a
+    // quantidade de páginas que JÁ estava salva com a que está prestes a ser
+    // gravada, e loga um aviso bem visível se ela encolher - assim, se
+    // acontecer de novo em produção, temos o id/owner/contagens exatas sem
+    // precisar reproduzir manualmente. Nunca bloqueia nem atrasa o save de
+    // verdade (best-effort, e um erro aqui nunca deve impedir o UPDATE real
+    // abaixo) - remover quando a causa raiz for encontrada ou descartada.
+    if (table === 'projects' && typeof data.json === 'string') {
+      try {
+        const newPageCount = countPages(data.json);
+        const { data: beforeRows } = await supabase.from('projects').select('json').eq('id', id).limit(1);
+        const oldPageCount = beforeRows && beforeRows[0] ? countPages(beforeRows[0].json) : null;
+        if (oldPageCount != null && newPageCount != null && newPageCount < oldPageCount) {
+          console.warn(`[PAGE_LOSS_SUSPECTED] project id=${id} owner=${userId} pages ${oldPageCount} -> ${newPageCount}`);
+        }
+      } catch (diagErr) {
+        console.warn('[PAGE_LOSS_SUSPECTED] diagnostic check failed (non-fatal):', diagErr.message);
+      }
+    }
+
     // Filtro de owner previne atualização cruzada entre usuários
     let q = supabase.from(table).update(data).eq('id', id);
     if (userId && OWNER_TABLES.has(table)) {

@@ -23,10 +23,20 @@
  *     têm met:true - as 6 notas de pensamento computacional (ctScores)
  *     ficam de fora da visão do aluno neste primeiro momento (mais úteis
  *     pro professor do que pra uma criança de 6 anos decifrar).
- *  4. Atualiza chamando GET /api/assignments/my-progress a cada ~30s
- *     enquanto a aba está visível - mesmo padrão de polling condicionado a
- *     visibilitychange que TimeTracker.js já usa (mas mais simples: aqui
- *     não precisamos acumular delta, só reconsultar).
+ *  4. O lado ATUAL do checklist (quantas cenas/atores/blocos o projeto TEM
+ *     agora) é recalculado EM TEMPO REAL, direto da memória do navegador -
+ *     computeProjectManifest(Project.getProject(...)) roda a cada poucos
+ *     segundos (ACTUAL_REFRESH_MS) usando o mesmo snapshot que Project.save()
+ *     usaria pra salvar, sem esperar o autosave nem ida-e-volta ao servidor.
+ *     Isso é só um retorno visual otimista pro aluno em pleno trabalho - o
+ *     lado REQUISITADO (o que o professor pediu) ainda vem do servidor via
+ *     GET /api/assignments/active, recarregado a cada REQUIREMENTS_REFRESH_MS
+ *     (bem mais raro) só pra pegar o caso do professor reautorar a missão
+ *     no meio da sessão do aluno. A fonte de verdade pra correção/nota
+ *     continua sendo o servidor lendo o projeto SALVO (GET /api/public/
+ *     students/:id/assignment-score, consultado pela HelloYotta) - o que
+ *     está aqui é só feedback ao vivo, nunca usado pra decisão de avaliação.
+ *     Ver services/assignmentScoring.js (cópia client-side, ver seu docblock).
  *  5. Clicar no selo expande um popover com o detalhamento (cenas/atores/
  *     blocos, requerido vs atual). Clicar fora fecha.
  *
@@ -40,17 +50,20 @@
 import ScratchJr from '../ScratchJr.js';
 import Project from './Project.js';
 import {newHTML} from '../../utils/lib.js';
+import {computeProjectManifest, compareManifests} from './assignmentScoring.js';
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
-const POLL_MS = 30000;
+const ACTUAL_REFRESH_MS = 2000; // recálculo local, em memória - barato, pode ser frequente
+const REQUIREMENTS_REFRESH_MS = 30000; // ida ao servidor - só pra pegar reautoria do professor
 
 let assignment = null; // { id, projectName, requirements, nivel, turmaId, existingProjectId }
-let lastProgress = null; // último payload de /my-progress (pro popover não ficar vazio ao abrir)
+let lastProgress = null; // último resultado calculado (pro popover não ficar vazio ao abrir)
 let bannerEl = null;
 let badgeEl = null;
 let popoverEl = null;
-let pollTimer = null;
+let actualTimer = null;
+let requirementsTimer = null;
 let dismissedThisSession = false;
 
 function authHeader () {
@@ -153,18 +166,58 @@ export default class AssignmentBadge {
         badgeEl.tabIndex = 0;
         badgeEl.textContent = '🎯 …';
         badgeEl.onclick = AssignmentBadge._toggleExpanded;
-        AssignmentBadge._refreshProgress();
-        pollTimer = window.setInterval(function () {
+        AssignmentBadge._recomputeLocal();
+        actualTimer = window.setInterval(function () {
             if (document.visibilityState === 'visible') {
-                AssignmentBadge._refreshProgress();
+                AssignmentBadge._recomputeLocal();
             }
-        }, POLL_MS);
+        }, ACTUAL_REFRESH_MS);
+        requirementsTimer = window.setInterval(function () {
+            if (document.visibilityState === 'visible') {
+                AssignmentBadge._refreshRequirements();
+            }
+        }, REQUIREMENTS_REFRESH_MS);
     }
 
-    static async _refreshProgress () {
+    /**
+     * Recalcula o lado ATUAL do checklist direto do estado em memória do
+     * palco - mesmo snapshot que Project.save() serializaria se salvasse
+     * agora (Project.getProject() é a função usada nos dois lugares). Não
+     * bate no servidor - roda a cada ACTUAL_REFRESH_MS, então precisa ser
+     * barato (é: só uma varredura de JS puro sobre um JSON pequeno).
+     */
+    static _recomputeLocal () {
+        if (!assignment || !ScratchJr.stage || !ScratchJr.stage.pages || !ScratchJr.stage.pages.length) {
+            return; // palco ainda não montado - próximo tick tenta de novo
+        }
+        let projectJson;
+        try {
+            projectJson = Project.getProject(ScratchJr.stage.pages[0].id);
+        } catch (err) {
+            return; // best-effort - nunca deixa um erro de leitura quebrar o selo
+        }
+        const actual = computeProjectManifest(projectJson);
+        const comparison = compareManifests(assignment.requirements, actual);
+        AssignmentBadge._applyProgress({
+            hasAssignment: true,
+            projectName: assignment.projectName,
+            ...comparison,
+        });
+    }
+
+    /**
+     * Só recarrega o lado REQUISITADO (assignment.requirements), consultando
+     * GET /assignments/active de novo - cobre o caso (raro) de o professor
+     * reautorar/editar o exemplo enquanto o aluno já está com a missão
+     * aberta. Reaplica o cálculo local na sequência com o requisito novo.
+     */
+    static async _refreshRequirements () {
+        if (!assignment) {
+            return;
+        }
         let res;
         try {
-            res = await apiFetch('/assignments/my-progress');
+            res = await apiFetch('/assignments/active');
         } catch (err) {
             return; // best-effort - próximo tick tenta de novo
         }
@@ -174,9 +227,14 @@ export default class AssignmentBadge {
         const data = await res.json().catch(function () {
             return {};
         });
-        if (!data || !data.hasAssignment) {
-            return;
+        if (!data || !data.assignment || String(data.assignment.id) !== String(assignment.id)) {
+            return; // missão mudou/sumiu no meio da sessão - não é o escopo deste refresh
         }
+        assignment.requirements = data.assignment.requirements;
+        AssignmentBadge._recomputeLocal();
+    }
+
+    static _applyProgress (data) {
         lastProgress = data;
         const groups = [data.scenes, data.characters, data.blocks];
         const met = groups.filter(function (g) {
