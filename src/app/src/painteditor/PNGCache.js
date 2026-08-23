@@ -28,7 +28,6 @@ class PNGCache {
         }
 
         // Criar nova promise de carregamento
-        console.log(`[PNGCache.loadPNG] Iniciando carregamento de "${spriteName}"`);
         this.loading[spriteName] = new Promise((resolve, reject) => {
             const img = new Image();
             
@@ -59,7 +58,6 @@ class PNGCache {
             
             // Tentar carregar de ./pnglibrary/
             const path = './pnglibrary/' + spriteName + '.png';
-            console.log(`[PNGCache.loadPNG] Buscando: ${path}`);
             img.src = path;
         });
 
