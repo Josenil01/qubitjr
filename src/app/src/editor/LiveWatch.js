@@ -85,6 +85,60 @@ function authHeader() {
     return token ? { Authorization: `Bearer ${token}` } : null;
 }
 
+/**
+ * Peek inseguro (não verifica assinatura) no payload do próprio
+ * window.__AUTH_TOKEN__ — mesma técnica de
+ * backend/src/services/identity.js#decodeJwtPayloadUnsafe, reimplementada
+ * aqui no navegador (sem Buffer), já usada por AssignmentAuthorBar.js#
+ * decodeJwtPayloadUnsafe pro mesmo problema do lado do professor. Nunca usar
+ * isto pra qualquer decisão de segurança/autorização — é só um
+ * identificador pra exibição (ver getOwnStudentId).
+ */
+function decodeJwtPayloadUnsafe(token) {
+    try {
+        if (!token || typeof token !== 'string') return null;
+        const parts = token.split('.');
+        if (parts.length < 2) return null;
+        const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+        const padded = b64 + '='.repeat((4 - (b64.length % 4 || 4)) % 4);
+        const json = decodeURIComponent(window.atob(padded).split('').map((c) => (
+            '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        )).join(''));
+        return JSON.parse(json);
+    } catch (err) {
+        return null;
+    }
+}
+
+/**
+ * Id do próprio aluno autenticado, usado só pra presença (track() +
+ * filtro de UX do 'session_started' abaixo) — nunca uma fronteira de
+ * segurança (a autorização de verdade é sempre revalidada no backend contra
+ * o req.userId real do token, ver POST /session/:id/join).
+ *
+ * window.__AUTH_CONTEXT__?.studentId (WebInterface.js) vem de um parâmetro
+ * de URL `studentId=` que, na prática, NENHUM fluxo real de entrada do
+ * aluno envia — nem a HelloYotta (confirmado no contrato: a URL de entrada
+ * é sempre `home.html?token=...` ou `editor.html?token=...&pmd5=...`, sem
+ * studentId/classId), nem a navegação interna deste app (Home.gotoEditor,
+ * AssignmentNotice._gotoEditorForMission - nenhuma das duas adiciona
+ * studentId à URL). Resultado: ownId ficava sempre undefined, então
+ * presenceChannel.track() nunca rodava e nenhum aluno aparecia "online" pro
+ * professor em teacher.html, pra NINGUÉM, independente de projeto de missão
+ * ou não (confirmado ao vivo nesta investigação). Decodifica localmente as
+ * claims do próprio JWT (mesmos nomes alternativos de
+ * identity.js#getUserIdFromClaims) em vez disso — é a mesma identidade que
+ * o backend já usa pra projects.owner e pro roster da HelloYotta
+ * (routes/teacher.js), então bate com student.id no teacher.js do
+ * professor. Mantém o fallback pro contexto de URL por último, caso algum
+ * fluxo futuro volte a preenchê-lo.
+ */
+function getOwnStudentId() {
+    const claims = decodeJwtPayloadUnsafe(window.__AUTH_TOKEN__);
+    const fromClaims = claims && (claims.user_id || claims.sub || claims.studentId || claims.id_usuario);
+    return fromClaims || window.__AUTH_CONTEXT__?.studentId || null;
+}
+
 async function apiPost(path, body) {
     const headers = authHeader();
     if (!headers) return null;
@@ -392,7 +446,7 @@ async function initLiveWatch() {
     presenceChannel = connectChannel(data.channel);
     if (!presenceChannel) return;
 
-    const ownId = window.__AUTH_CONTEXT__?.studentId;
+    const ownId = getOwnStudentId();
 
     presenceChannel
         .on('broadcast', { event: 'session_started' }, (msg) => {
@@ -406,8 +460,9 @@ async function initLiveWatch() {
         })
         .subscribe((status) => {
             // Anuncia presença pro professor ver a lista "quem está online"
-            // na tela de turma. studentId vem do parâmetro de URL (classId
-            // context) — só usado pra exibição, não é fronteira de segurança.
+            // na tela de turma. ownId vem das claims do próprio JWT (ver
+            // getOwnStudentId) — só usado pra exibição, não é fronteira de
+            // segurança.
             if (status === 'SUBSCRIBED' && ownId) {
                 presenceChannel.track({ studentId: ownId, onlineAt: new Date().toISOString() });
             }
