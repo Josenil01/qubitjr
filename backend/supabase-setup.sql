@@ -233,6 +233,34 @@ ALTER TABLE assignments ALTER COLUMN project_name DROP NOT NULL;
 
 CREATE INDEX IF NOT EXISTS idx_assignments_template_id ON assignments(template_id) WHERE template_id IS NOT NULL;
 
+-- Migração: dicas de coaching geradas por LLM ("Que tal você colocar o
+-- cenário X?"), derivadas da estrutura do projeto-exemplo do professor pelo
+-- ScratchJr web (ver backend/src/services/hintsGeneration.js e
+-- services/detailedManifest.js) e aprovadas por ele antes de ir ao ar.
+--
+-- Só existe numa linha de TEMPLATE (template_id IS NULL) - mesma regra de
+-- project_name/requirements acima: uma linha de referência não guarda hints
+-- próprias, elas são resolvidas ao vivo a partir do template (ver
+-- services/assignmentResolver.js). NULL até a primeira geração/aprovação
+-- (POST /api/assignments/:id/generate-hints + POST /api/assignments/:id/hints
+-- em backend/src/routes/assignments.js); a aplicação trata null como [].
+--
+-- Shape esperado (versionado pela aplicação, não pelo schema, mesmo estilo
+-- de `requirements` acima):
+-- {
+--   "hints": [
+--     { "id": "h1", "text": "Que tal você colocar o cenário Spring.svg?",
+--       "when": { "type": "scene_missing", "sceneMd5": "Spring.svg" } },
+--     { "id": "h2", "text": "Depois de acertar a bola, avise o goleiro!",
+--       "when": { "type": "message_not_received", "messageName": "gol" } }
+--   ]
+-- }
+--
+-- POST /api/assignments/:id/hints SUBSTITUI o conteúdo inteiro desta coluna
+-- a cada chamada (regenera toda vez que "Cadastrar aula" reroda) - não há
+-- merge/append aqui, de propósito.
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS hints JSONB;
+
 -- Migração: projeto vinculado a uma assignment (missão). NULL para projetos
 -- livres, criados fora de qualquer missão. ON DELETE SET NULL porque apagar
 -- a assignment não deve apagar os projetos que os alunos já entregaram nela.

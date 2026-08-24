@@ -123,6 +123,26 @@ function apiFetch (path, options) {
     });
 }
 
+/**
+ * Rótulos amigáveis (PT-BR) pra when.type de cada dica gerada - o professor
+ * vê isso ao lado do texto da dica na tela de revisão, pra entender quando
+ * ela vai aparecer pro aluno, sem precisar decifrar o JSON cru devolvido
+ * por POST /assignments/:id/generate-hints. Tipo desconhecido/futuro cai no
+ * fallback genérico em vez de quebrar a tela de revisão.
+ */
+const HINT_WHEN_LABELS = {
+    scene_missing: '🎬 aparece quando faltar essa cena',
+    character_missing: '🧑 aparece quando esse personagem não existir ainda',
+    character_no_script: '📝 aparece quando esse personagem não tiver nenhum script',
+    character_missing_block_type: '🧩 aparece quando faltar esse tipo de bloco',
+    message_not_received: '✉️ aparece quando a mensagem não for recebida por ninguém',
+};
+
+function hintWhenLabel (when) {
+    var type = when && when.type;
+    return HINT_WHEN_LABELS[type] || '💡 dica geral';
+}
+
 export default class AssignmentAuthorBar {
     static init () {
         if (getUrlVars().teacherMode !== 'author') {
@@ -170,9 +190,9 @@ export default class AssignmentAuthorBar {
                 var rawReturnUrl = getUrlVars().returnUrl;
                 var returnUrl = rawReturnUrl ? decodeURIComponent(rawReturnUrl) : null;
                 var canReturn = isAllowedReturnUrl(returnUrl);
+                var assignmentId = result.body.assignmentId;
 
                 if (canReturn) {
-                    var assignmentId = result.body.assignmentId;
                     var projectName = result.body.projectName;
                     var authorId = getAuthorId();
 
@@ -188,13 +208,15 @@ export default class AssignmentAuthorBar {
                 Alert.open(frame, barEl, 'Aula cadastrada!', '#01bebc');
                 window.setTimeout(function () {
                     Alert.close();
-                    if (canReturn) {
-                        window.location.href = returnUrl;
-                        return; // saindo da página - não precisa restaurar o texto do botão
-                    }
-                    if (barEl) {
-                        barEl.textContent = IDLE_LABEL;
-                    }
+                    // Passo extra (dicas geradas por IA) entre a confirmação
+                    // acima e o fim do fluxo - ver _runHintFlow. O
+                    // redirecionamento pro returnUrl (ou reset do botão, se
+                    // não houver returnUrl) continua acontecendo sempre, só
+                    // que agora dentro de _finish(), chamado ao final desse
+                    // passo extra (professor aprovando dicas, rejeitando
+                    // todas, ou pulando) - o destino final não muda, só
+                    // adia por alguns segundos pra dar chance de revisão.
+                    AssignmentAuthorBar._runHintFlow(assignmentId, canReturn, returnUrl);
                 }, 2000);
             } else {
                 barEl.textContent = IDLE_LABEL;
@@ -209,5 +231,182 @@ export default class AssignmentAuthorBar {
             }
             window.alert('Não foi possível cadastrar a aula.');
         });
+    }
+
+    /**
+     * Passo extra entre "aula cadastrada" e o fim do fluxo (redirecionamento
+     * pro returnUrl, ou reset do botão): pede à IA um lote de dicas-rascunho
+     * pra esta missão (POST /assignments/:id/generate-hints) e, se vier
+     * alguma, abre a tela de revisão (_showHintReview) pro professor aprovar
+     * ou rejeitar cada uma. `finish` (definido aqui, repassado adiante) é o
+     * único jeito de sair desse passo - sempre encerra chamando _finish com
+     * o mesmo (canReturn, returnUrl) calculados lá em _register, então o
+     * destino final do fluxo original nunca muda, só o momento em que ele
+     * acontece. Qualquer falha (503 sem IA configurada, erro de rede, lote
+     * vazio) cai direto em finish() - dica é extra, nunca pode travar o
+     * cadastro da aula.
+     */
+    static _runHintFlow (assignmentId, canReturn, returnUrl) {
+        var finish = function () {
+            AssignmentAuthorBar._finish(canReturn, returnUrl);
+        };
+        if (!assignmentId) {
+            finish();
+            return;
+        }
+        if (barEl) {
+            barEl.textContent = 'Gerando dicas com IA... ⏳';
+        }
+        apiFetch('/assignments/' + encodeURIComponent(assignmentId) + '/generate-hints', {
+            method: 'POST',
+        }).then(function (res) {
+            return res.json().catch(function () {
+                return {};
+            }).then(function (body) {
+                return {ok: res.ok, body: body};
+            });
+        }).then(function (result) {
+            if (!barEl) {
+                finish();
+                return;
+            }
+            barEl.textContent = IDLE_LABEL;
+            if (!result.ok) {
+                // 503 (IA não configurada no servidor), 404/400/500 - falha
+                // silenciosa e não alarmante: reaproveita o mesmo balão do
+                // Alert.js usado pra "Aula cadastrada!", só que cinza/breve,
+                // e segue o fluxo normalmente sem bloquear o professor.
+                Alert.open(frame, barEl, 'Não foi possível gerar dicas agora', '#999');
+                window.setTimeout(function () {
+                    Alert.close();
+                    finish();
+                }, 1500);
+                return;
+            }
+            var hints = result.body && Array.isArray(result.body.hints) ? result.body.hints : [];
+            if (!hints.length) {
+                finish(); // nenhuma dica sugerida - segue direto, sem alarde
+                return;
+            }
+            AssignmentAuthorBar._showHintReview(assignmentId, hints, finish);
+        }).catch(function (err) {
+            console.error('[AssignmentAuthorBar] generate-hints error:', err);
+            finish();
+        });
+    }
+
+    /**
+     * Fim do fluxo de "Cadastrar aula" - idêntico ao comportamento original
+     * (antes deste passo de dicas existir): redireciona pro returnUrl já
+     * montado em _register (se ele passou em _isAllowedReturnUrl), ou volta
+     * o botão flutuante pro rótulo ocioso.
+     */
+    static _finish (canReturn, returnUrl) {
+        if (canReturn) {
+            window.location.href = returnUrl;
+            return; // saindo da página - não precisa restaurar o texto do botão
+        }
+        if (barEl) {
+            barEl.textContent = IDLE_LABEL;
+        }
+    }
+
+    /**
+     * Tela de revisão das dicas-rascunho (overlay central, mesmo idioma
+     * visual do resto da feature de missões - ver assignment.css, seção
+     * "Hints review UI"). Cada dica começa neutra (nem aprovada nem
+     * rejeitada) - o professor decide uma a uma clicando em ✅ Aprovar ou
+     * ❌ Rejeitar (clicar de novo no mesmo botão desfaz, voltando a neutro).
+     * "Concluir" salva só o subconjunto aprovado via POST
+     * /assignments/:id/hints (se nada foi aprovado, nem chama o endpoint -
+     * equivalente a pular). "Pular por agora" fecha sem salvar nada. Os dois
+     * caminhos (e qualquer falha do POST de salvar) terminam chamando
+     * `onDone` - nunca deixam o professor preso nesta tela.
+     */
+    static _showHintReview (assignmentId, hints, onDone) {
+        var entries = hints.map(function (hint) {
+            return {hint: hint, status: null}; // null | 'approved' | 'rejected'
+        });
+
+        var overlayEl = newHTML('div', 'assignmentHintsOverlay', document.body);
+        var card = newHTML('div', 'assignmentHintsCard', overlayEl);
+        var title = newHTML('div', 'assignmentHintsTitle', card);
+        title.textContent = '💡 Revisar dicas sugeridas';
+        var subtitle = newHTML('div', 'assignmentHintsSubtitle', card);
+        subtitle.textContent = 'Aprove ou rejeite cada dica antes de salvar.';
+        var list = newHTML('div', 'assignmentHintsList', card);
+
+        entries.forEach(function (entry) {
+            var row = newHTML('div', 'assignmentHintRow', list);
+            var textEl = newHTML('div', 'assignmentHintText', row);
+            textEl.textContent = entry.hint.text;
+            var whenEl = newHTML('div', 'assignmentHintWhen', row);
+            whenEl.textContent = hintWhenLabel(entry.hint.when);
+            var actions = newHTML('div', 'assignmentHintActions', row);
+            var approveBtn = newHTML('button', 'assignmentHintApproveBtn', actions);
+            approveBtn.type = 'button';
+            approveBtn.textContent = '✅ Aprovar';
+            var rejectBtn = newHTML('button', 'assignmentHintRejectBtn', actions);
+            rejectBtn.type = 'button';
+            rejectBtn.textContent = '❌ Rejeitar';
+
+            var applyStatus = function (status) {
+                entry.status = status;
+                approveBtn.classList.toggle('selected', status === 'approved');
+                rejectBtn.classList.toggle('selected', status === 'rejected');
+            };
+            approveBtn.onclick = function () {
+                applyStatus(entry.status === 'approved' ? null : 'approved');
+            };
+            rejectBtn.onclick = function () {
+                applyStatus(entry.status === 'rejected' ? null : 'rejected');
+            };
+        });
+
+        var footer = newHTML('div', 'assignmentHintsFooter', card);
+        var skipBtn = newHTML('button', 'assignmentHintsSkipBtn', footer);
+        skipBtn.type = 'button';
+        skipBtn.textContent = 'Pular por agora';
+        var saveBtn = newHTML('button', 'assignmentHintsSaveBtn', footer);
+        saveBtn.type = 'button';
+        saveBtn.textContent = 'Concluir';
+
+        var closeOverlay = function () {
+            if (overlayEl.parentNode) {
+                overlayEl.parentNode.removeChild(overlayEl);
+            }
+        };
+
+        skipBtn.onclick = function () {
+            closeOverlay();
+            onDone();
+        };
+
+        saveBtn.onclick = function () {
+            var approved = entries.filter(function (entry) {
+                return entry.status === 'approved';
+            }).map(function (entry) {
+                return entry.hint;
+            });
+            if (!approved.length) {
+                closeOverlay();
+                onDone();
+                return;
+            }
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Salvando...';
+            apiFetch('/assignments/' + encodeURIComponent(assignmentId) + '/hints', {
+                method: 'POST',
+                body: JSON.stringify({hints: approved}),
+            }).catch(function (err) {
+                // Best-effort: salvar dicas é um extra sobre um cadastro que
+                // já teve sucesso - uma falha aqui não pode travar o professor
+                // nesta tela nem reverter a aula já cadastrada.
+                console.error('[AssignmentAuthorBar] save hints error:', err);
+            }).then(function () {
+                closeOverlay();
+                onDone();
+            });
+        };
     }
 }

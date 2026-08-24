@@ -45,18 +45,25 @@
  *     por sessão de aba. Reabrir uma missão já concluída em sessões
  *     anteriores não reexibe o modal (wasComplete começa null - só dispara
  *     numa transição observada AO VIVO, não no primeiro cálculo).
- *
- * Se assignment existe, existingProjectId NÃO é null, mas o projeto aberto
- * agora é outro (aluno abriu um projeto qualquer da lobby enquanto tem uma
- * missão pendente noutro projeto) - nem banner nem selo aparecem: mostrar
- * progresso de um projeto que não está nem aberto seria confuso pra uma
- * criança, e a tela dele não deveria falar de algo que ele não está vendo.
+ *  7. Enquanto a missão NÃO está completa, o mesmo componente visual do
+ *     modal de parabéns é reaproveitado (_showCoachModal, generalizado a
+ *     partir do antigo _showCompleteModal) pra mostrar "dicas de coach"
+ *     (assignment.hints, geradas pelo professor - ver AssignmentAuthorBar.js
+ *     e POST /assignments/:id/generate-hints) quando a condição de alguma
+ *     delas está batendo AGORA no projeto do aluno. A avaliação roda dentro
+ *     do mesmo tick de _recomputeLocal() (2s), usando computeDetailedManifest
+ *     (detailedManifest.js) sobre o mesmíssimo projectJson já lido pra
+ *     computeProjectManifest - sem round-trip extra ao servidor. Cada dica
+ *     já mostrada+fechada nesta sessão de aba nunca reaparece (mesma
+ *     filosofia não-chata de dismissedThisSession pro banner de início), e
+ *     nenhuma dica aparece depois que a missão já completou de vez.
  */
 
 import ScratchJr from '../ScratchJr.js';
 import Project from './Project.js';
 import {newHTML} from '../../utils/lib.js';
 import {computeProjectManifest, compareManifests} from './assignmentScoring.js';
+import {computeDetailedManifest} from './detailedManifest.js';
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
@@ -68,10 +75,11 @@ let lastProgress = null; // último resultado calculado (pro popover não ficar 
 let bannerEl = null;
 let badgeEl = null;
 let popoverEl = null;
-let completeModalEl = null;
+let coachModalEl = null; // um modal por vez - serve tanto pro "parabéns" quanto pra dica de coach
 let actualTimer = null;
 let requirementsTimer = null;
 let dismissedThisSession = false;
+let dismissedHintIds = new Set(); // ids de dica já mostrada+fechada nesta sessão de aba - nunca mais reexibida
 // null = ainda não sabemos (primeiro cálculo desta sessão de aba) - fica
 // assim de propósito pra não disparar o modal de parabéns só por reabrir
 // uma missão que já estava completa antes. Só vira true/false depois do
@@ -216,6 +224,7 @@ export default class AssignmentBadge {
             projectName: assignment.projectName,
             ...comparison,
         });
+        AssignmentBadge._evaluateHints(comparison.completed, projectJson);
     }
 
     /**
@@ -268,44 +277,191 @@ export default class AssignmentBadge {
         }
 
         if (wasComplete === false && isComplete) {
-            AssignmentBadge._showCompleteModal(data.projectName || (assignment && assignment.projectName));
+            // Parabéns tem prioridade sobre uma dica de coach eventualmente
+            // aberta neste exato tick (ver _showCoachModal - só um modal por
+            // vez) - fecha ela pra abrir a celebração no lugar. wasComplete
+            // vira true logo abaixo de qualquer forma, então essa dica não
+            // seria reavaliada de novo mesmo se a deixássemos aberta (missão
+            // completa nunca mostra dica - ver _evaluateHints).
+            AssignmentBadge._closeCoachModal();
+            AssignmentBadge._showCoachModal({
+                icon: '🎉',
+                title: 'Parabéns!',
+                text: 'Você concluiu a missão: ' + ((data.projectName || (assignment && assignment.projectName)) || 'Missão'),
+            });
         }
         wasComplete = isComplete;
     }
 
     /**
-     * Modal central de "Parabéns" - só na transição ao vivo pra completo
-     * (ver comentário de wasComplete acima). Clicar no botão ou fora do
-     * cartão fecha; não bloqueia o resto da UI (o selo continua ali atrás).
+     * Avalia assignment.hints (nesta ordem - ver docblock do topo do
+     * arquivo) e mostra a primeira cujo `when` está batendo agora no
+     * projeto do aluno, via _showCoachModal. Não faz nada se a missão já
+     * está completa (data.completed - o modal de parabéns cobre esse
+     * caso, dica de coach nunca aparece depois de concluído) nem se algum
+     * modal já está aberto agora (congrats ou outra dica - uma coisa de
+     * cada vez). Reaproveita o mesmo detailedManifest.js pro projectJson já
+     * lido por _recomputeLocal, sem ida extra ao servidor.
      */
-    static _showCompleteModal (projectName) {
-        if (completeModalEl) {
-            return; // já mostrando - não duplica
+    static _evaluateHints (isComplete, projectJson) {
+        if (isComplete || coachModalEl) {
+            return;
         }
-        completeModalEl = newHTML('div', 'assignmentCompleteOverlay', document.body);
-        completeModalEl.onclick = function (e) {
-            if (e.target === completeModalEl) {
-                AssignmentBadge._closeCompleteModal();
+        const hints = (assignment && Array.isArray(assignment.hints)) ? assignment.hints : [];
+        if (!hints.length) {
+            return;
+        }
+        const detailed = computeDetailedManifest(projectJson);
+        for (const hint of hints) {
+            if (!hint || dismissedHintIds.has(hint.id)) {
+                continue; // sem id, ou já mostrada+fechada nesta sessão de aba - nunca mais
+            }
+            if (AssignmentBadge._hintConditionHolds(hint, detailed)) {
+                AssignmentBadge._showCoachModal({
+                    icon: '💡',
+                    text: hint.text,
+                    extraClass: 'assignmentCoachCard',
+                    onClose: function () {
+                        dismissedHintIds.add(hint.id);
+                    },
+                });
+                return; // uma dica por tick, mesmo que outras também estejam batendo
+            }
+        }
+    }
+
+    /**
+     * Encontra, dentro do detailedManifest, a cena com o sceneMd5 dado e
+     * (se characterMd5 também for passado) o personagem com esse
+     * characterMd5 dentro dela. Retorna null se a cena (ou o personagem
+     * dentro dela) simplesmente não existir ainda no projeto do aluno -
+     * chamado só sabe decidir o que fazer com esse "não existe" (ver cada
+     * ramo de _hintConditionHolds).
+     */
+    static _findSceneAndCharacter (scenes, sceneMd5, characterMd5) {
+        const scene = scenes.find(function (s) {
+            return s.sceneMd5 === sceneMd5;
+        });
+        if (!scene) {
+            return {scene: null, character: null};
+        }
+        const character = scene.characters.find(function (c) {
+            return c.characterMd5 === characterMd5;
+        }) || null;
+        return {scene, character};
+    }
+
+    /**
+     * Regras de cada when.type - ver o docblock do Part 2 desta feature
+     * (mesma nomenclatura/contrato que AssignmentAuthorBar.js usa pra
+     * rotular as dicas na tela do professor). Nunca lança - when.type
+     * desconhecido/malformado simplesmente não bate (retorna false).
+     */
+    static _hintConditionHolds (hint, detailed) {
+        const when = hint && hint.when;
+        if (!when || !when.type) {
+            return false;
+        }
+        const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
+
+        switch (when.type) {
+        case 'scene_missing':
+            return !scenes.some(function (s) {
+                return s.sceneMd5 === when.sceneMd5;
+            });
+
+        case 'character_missing': {
+            const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5);
+            // Cena em si nem existindo ainda não conta como "personagem
+            // faltando" - esse caso é coberto por um hint scene_missing
+            // separado (ver comentário no topo do arquivo/spec).
+            return !!found.scene && !found.character;
+        }
+
+        case 'character_no_script': {
+            const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5);
+            return !!found.character && !found.character.hasScript;
+        }
+
+        case 'character_missing_block_type': {
+            const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5);
+            if (!found.character || !found.character.hasScript) {
+                return false;
+            }
+            const wanted = Array.isArray(when.blockTypes) ? when.blockTypes : [];
+            return !wanted.some(function (bt) {
+                return found.character.blockTypes.includes(bt);
+            });
+        }
+
+        case 'message_not_received': {
+            let sent = false;
+            let received = false;
+            scenes.forEach(function (s) {
+                s.characters.forEach(function (c) {
+                    if (c.messagesSent.includes(when.messageName)) sent = true;
+                    if (c.messagesReceived.includes(when.messageName)) received = true;
+                });
+            });
+            return sent && !received;
+        }
+
+        default:
+            return false;
+        }
+    }
+
+    /**
+     * Modal central reutilizável - mostra tanto o "Parabéns" (transição ao
+     * vivo pra completo, ver wasComplete acima) quanto uma dica de coach
+     * (assignment.hints, ver _evaluateHints), com a mesma estrutura DOM e
+     * as mesmas classes CSS de sempre (assignmentComplete* - nome
+     * histórico do parabéns, mantido de propósito pra não precisar tocar
+     * no CSS já existente). `extraClass`, quando passado, soma uma classe
+     * a mais no cartão (usado pela dica pra ganhar um acento visual
+     * diferente - ver a seção nova em assignment.css). `title` omitido/
+     * null pula o elemento de título inteiro (a dica é só ícone + texto,
+     * sem cabeçalho). Clicar no botão "Continuar" ou fora do cartão fecha
+     * e dispara `onClose`, se houver - _evaluateHints usa isso pra marcar
+     * a dica como dispensada nesta sessão (ver dismissedHintIds).
+     */
+    static _showCoachModal ({icon, title, text, extraClass, onClose}) {
+        if (coachModalEl) {
+            return; // já tem um modal (parabéns ou dica) aberto - não duplica/sobrepõe
+        }
+        const close = function () {
+            AssignmentBadge._closeCoachModal();
+            if (onClose) {
+                onClose();
             }
         };
-        const card = newHTML('div', 'assignmentCompleteCard', completeModalEl);
+        coachModalEl = newHTML('div', 'assignmentCompleteOverlay', document.body);
+        coachModalEl.onclick = function (e) {
+            if (e.target === coachModalEl) {
+                close();
+            }
+        };
+        const cardClass = 'assignmentCompleteCard' + (extraClass ? (' ' + extraClass) : '');
+        const card = newHTML('div', cardClass, coachModalEl);
         const emoji = newHTML('div', 'assignmentCompleteEmoji', card);
-        emoji.textContent = '🎉';
-        const title = newHTML('div', 'assignmentCompleteTitle', card);
-        title.textContent = 'Parabéns!';
-        const text = newHTML('div', 'assignmentCompleteText', card);
-        text.textContent = 'Você concluiu a missão: ' + (projectName || 'Missão');
+        emoji.textContent = icon || '💡';
+        if (title) {
+            const titleEl = newHTML('div', 'assignmentCompleteTitle', card);
+            titleEl.textContent = title;
+        }
+        const textEl = newHTML('div', 'assignmentCompleteText', card);
+        textEl.textContent = text || '';
         const closeBtn = newHTML('button', 'assignmentCompleteClose', card);
         closeBtn.type = 'button';
         closeBtn.textContent = 'Continuar';
-        closeBtn.onclick = AssignmentBadge._closeCompleteModal;
+        closeBtn.onclick = close;
     }
 
-    static _closeCompleteModal () {
-        if (completeModalEl && completeModalEl.parentNode) {
-            completeModalEl.parentNode.removeChild(completeModalEl);
+    static _closeCoachModal () {
+        if (coachModalEl && coachModalEl.parentNode) {
+            coachModalEl.parentNode.removeChild(coachModalEl);
         }
-        completeModalEl = null;
+        coachModalEl = null;
     }
 
     static _toggleExpanded () {

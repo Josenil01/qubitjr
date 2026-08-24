@@ -29,6 +29,7 @@ describe('assignmentResolver.resolveAssignmentFields', () => {
             template_id: null,
             project_name: 'Missão da Fazenda',
             requirements: { scenes: { count: 1, used: ['Farm.svg'] } },
+            hints: [{ id: 'h1', text: 'Que tal...', when: { type: 'scene_missing', sceneMd5: 'Farm.svg' } }],
         };
 
         const result = await resolveAssignmentFields(supabase, templateRow);
@@ -36,6 +37,7 @@ describe('assignmentResolver.resolveAssignmentFields', () => {
         expect(result).toEqual({
             projectName: 'Missão da Fazenda',
             requirements: { scenes: { count: 1, used: ['Farm.svg'] } },
+            hints: [{ id: 'h1', text: 'Que tal...', when: { type: 'scene_missing', sceneMd5: 'Farm.svg' } }],
         });
         // Prova que nenhuma consulta desnecessária foi feita para uma linha de template.
         expect(supabase.from).not.toHaveBeenCalled();
@@ -46,7 +48,11 @@ describe('assignmentResolver.resolveAssignmentFields', () => {
 
     it('returns the TEMPLATE fields (not the reference row\'s own) when template_id is set and the template is found', async () => {
         const supabase = buildSupabaseMock({
-            data: { project_name: 'Template Original', requirements: { scenes: { count: 5, used: [] } } },
+            data: {
+                project_name: 'Template Original',
+                requirements: { scenes: { count: 5, used: [] } },
+                hints: [{ id: 'h1', text: 'Dica do template', when: { type: 'scene_missing', sceneMd5: 'Farm.svg' } }],
+            },
             error: null,
         });
         const referenceRow = {
@@ -56,6 +62,7 @@ describe('assignmentResolver.resolveAssignmentFields', () => {
             // ESTES campos que devem perder para os do template.
             project_name: 'campo antigo da referência (não deve vencer)',
             requirements: { scenes: { count: 0, used: [] } },
+            hints: [{ id: 'h1', text: 'dica antiga da referência (não deve vencer)', when: { type: 'scene_missing', sceneMd5: 'x' } }],
         };
 
         const result = await resolveAssignmentFields(supabase, referenceRow);
@@ -63,10 +70,23 @@ describe('assignmentResolver.resolveAssignmentFields', () => {
         expect(result).toEqual({
             projectName: 'Template Original',
             requirements: { scenes: { count: 5, used: [] } },
+            hints: [{ id: 'h1', text: 'Dica do template', when: { type: 'scene_missing', sceneMd5: 'Farm.svg' } }],
         });
         expect(supabase.from).toHaveBeenCalledWith('assignments');
-        expect(supabase.select).toHaveBeenCalledWith('project_name, requirements');
+        expect(supabase.select).toHaveBeenCalledWith('project_name, requirements, hints');
         expect(supabase.eq).toHaveBeenCalledWith('id', 1);
+    });
+
+    it('resolves hints as [] (not null) when the template row\'s hints column is null (never generated/approved yet)', async () => {
+        const supabase = buildSupabaseMock({
+            data: { project_name: 'Template Original', requirements: { scenes: { count: 5, used: [] } }, hints: null },
+            error: null,
+        });
+        const referenceRow = { id: 2, template_id: 1, project_name: null, requirements: null };
+
+        const result = await resolveAssignmentFields(supabase, referenceRow);
+
+        expect(result.hints).toEqual([]);
     });
 
     it('degrades to the row\'s own fields, without throwing, when the template lookup returns an error', async () => {
@@ -76,6 +96,7 @@ describe('assignmentResolver.resolveAssignmentFields', () => {
         await expect(resolveAssignmentFields(supabase, referenceRow)).resolves.toEqual({
             projectName: null,
             requirements: null,
+            hints: [],
         });
     });
 
@@ -86,6 +107,7 @@ describe('assignmentResolver.resolveAssignmentFields', () => {
         await expect(resolveAssignmentFields(supabase, referenceRow)).resolves.toEqual({
             projectName: null,
             requirements: null,
+            hints: [],
         });
     });
 
@@ -105,6 +127,7 @@ describe('assignmentResolver.resolveAssignmentFields', () => {
         await expect(resolveAssignmentFields(supabase, referenceRow)).resolves.toEqual({
             projectName: 'fallback name',
             requirements: { blocks: { count: 1, byType: {} } },
+            hints: [],
         });
     });
 });

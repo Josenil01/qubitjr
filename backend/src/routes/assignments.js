@@ -22,16 +22,24 @@
  * — ver getNivelFromClaims em services/identity.js), então não precisamos
  * rechamar verifyAndDecode aqui.
  *
- * POST /api/assignments/register     — professor cadastra a missão ativa da turma
- * GET  /api/assignments/active        — qualquer usuário autenticado consulta a
- *                                        missão ativa da própria turma (se houver)
- * GET  /api/assignments/my-progress   — aluno consulta o próprio progresso na
- *                                        missão ativa (mesma lógica de
- *                                        GET /api/public/students/:id/assignment-score
- *                                        em routes/share.js, só que autenticada
- *                                        via sessão normal em vez da chave da
- *                                        HelloYotta - usada pelo badge flutuante
- *                                        no editor do aluno)
+ * POST /api/assignments/register           — professor cadastra a missão ativa da turma
+ * GET  /api/assignments/active              — qualquer usuário autenticado consulta a
+ *                                              missão ativa da própria turma (se houver)
+ * GET  /api/assignments/my-progress         — aluno consulta o próprio progresso na
+ *                                              missão ativa (mesma lógica de
+ *                                              GET /api/public/students/:id/assignment-score
+ *                                              em routes/share.js, só que autenticada
+ *                                              via sessão normal em vez da chave da
+ *                                              HelloYotta - usada pelo badge flutuante
+ *                                              no editor do aluno)
+ * POST /api/assignments/:id/generate-hints  — professor gera um RASCUNHO de dicas de
+ *                                              coaching (LLM) a partir do seu próprio
+ *                                              projeto-exemplo vinculado à missão -
+ *                                              ver services/hintsGeneration.js. Não
+ *                                              persiste nada; é só preview pra revisão.
+ * POST /api/assignments/:id/hints           — professor salva o subconjunto de dicas
+ *                                              já aprovado (filtrado no cliente),
+ *                                              substituindo o que houver antes.
  */
 
 const express = require('express');
@@ -40,6 +48,7 @@ const { getTurmaIdFromClaims, getNivelFromClaims, verifyAndDecode } = require('.
 const { notifyAssignmentRegistered } = require('../services/helloyotta');
 const { computeProjectManifest, compareManifests } = require('../services/assignmentScoring');
 const { resolveAssignmentFields } = require('../services/assignmentResolver');
+const { generateHints } = require('../services/hintsGeneration');
 
 const router = express.Router();
 
@@ -288,7 +297,7 @@ router.get('/active', async (req, res) => {
 
         const { data: assignment, error: assignmentErr } = await supabase
             .from('assignments')
-            .select('id, project_name, requirements, nivel, turma_id, template_id')
+            .select('id, project_name, requirements, hints, nivel, turma_id, template_id')
             .eq('turma_id', turmaId)
             .eq('active', true)
             .order('created_at', { ascending: false })
@@ -309,13 +318,14 @@ router.get('/active', async (req, res) => {
 
         if (projectErr) throw projectErr;
 
-        // Resolve project_name/requirements EFETIVOS: se esta linha for uma
-        // referência (template_id setado), busca os valores do template —
-        // é assim que edições no template propagam pras turmas que o
-        // referenciam. Ver services/assignmentResolver.js.
+        // Resolve project_name/requirements/hints EFETIVOS: se esta linha for
+        // uma referência (template_id setado), busca os valores do template —
+        // é assim que edições no template (e reaprovações de dicas) propagam
+        // pras turmas que o referenciam. Ver services/assignmentResolver.js.
         const resolved = (await resolveAssignmentFields(supabase, assignment)) || {
             projectName: assignment.project_name,
             requirements: assignment.requirements,
+            hints: assignment.hints || [],
         };
 
         res.json({
@@ -323,6 +333,7 @@ router.get('/active', async (req, res) => {
                 id: assignment.id,
                 projectName: resolved.projectName,
                 requirements: resolved.requirements,
+                hints: resolved.hints,
                 nivel: assignment.nivel,
                 turmaId: assignment.turma_id,
                 existingProjectId: existingProject ? existingProject.id : null,
@@ -393,6 +404,152 @@ router.get('/my-progress', async (req, res) => {
     } catch (err) {
         console.error('[assignments] GET /my-progress error:', err);
         res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * Busca a missão :id e valida as duas regras comuns às rotas de dicas
+ * abaixo: (1) só se mexe em dicas no MOLDE (template_id IS NULL) — uma linha
+ * de referência nunca guarda dicas próprias, elas vêm do template via
+ * services/assignmentResolver.js, então "gerar"/"salvar" dicas numa
+ * referência não faria sentido; (2) quem chama precisa ser o dono do
+ * projeto-exemplo vinculado a essa missão (mesmo projeto que POST /register
+ * usou pra computar requirements).
+ *
+ * Retorna `{ project }` em caso de sucesso, ou `{ httpError: { status, body } }`
+ * pro chamador responder direto e parar. Nunca lança - erros do Supabase em
+ * si (não "não encontrado") ainda são propagados via throw, pro try/catch da
+ * rota tratar como 500 igual ao resto do arquivo.
+ */
+async function findOwnedTemplateProject(supabase, assignmentId, userId) {
+    const { data: assignment, error: assignmentErr } = await supabase
+        .from('assignments')
+        .select('id, template_id')
+        .eq('id', assignmentId)
+        .maybeSingle();
+
+    if (assignmentErr) throw assignmentErr;
+    if (!assignment) {
+        return { httpError: { status: 404, body: { error: 'Missão não encontrada' } } };
+    }
+
+    if (assignment.template_id) {
+        return {
+            httpError: {
+                status: 400,
+                body: { error: 'Não é possível gerar/salvar dicas numa referência, só no molde (template) original da missão.' },
+            },
+        };
+    }
+
+    const { data: project, error: projectErr } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('assignment_id', assignmentId)
+        .eq('owner', userId)
+        .eq('deleted', 'NO')
+        .limit(1)
+        .maybeSingle();
+
+    if (projectErr) throw projectErr;
+    if (!project) {
+        return {
+            httpError: {
+                status: 404,
+                body: { error: 'Nenhum projeto de exemplo vinculado a esta missão foi encontrado - cadastre a aula primeiro.' },
+            },
+        };
+    }
+
+    return { project };
+}
+
+/**
+ * POST /api/assignments/:id/generate-hints
+ *
+ * Gera um RASCUNHO de dicas de coaching (LLM, ver services/hintsGeneration.js)
+ * a partir do projeto-exemplo do professor vinculado à missão :id. NÃO
+ * persiste nada em assignments.hints - é só preview, pro professor revisar/
+ * editar/aprovar antes de decidir o que salvar via POST /:id/hints.
+ */
+router.post('/:id/generate-hints', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    const assignmentId = parseInt(req.params.id, 10);
+    if (!Number.isFinite(assignmentId)) return res.status(400).json({ error: 'Invalid assignment id' });
+
+    try {
+        const { project, httpError } = await findOwnedTemplateProject(supabase, assignmentId, req.userId);
+        if (httpError) return res.status(httpError.status).json(httpError.body);
+
+        let projectJson;
+        try {
+            projectJson = JSON.parse(project.json);
+        } catch (parseErr) {
+            console.error('[assignments] generate-hints: projeto', project.id, 'com json inválido:', parseErr.message);
+            return res.status(500).json({ error: 'Projeto com json inválido' });
+        }
+
+        const { hints } = await generateHints(projectJson);
+        res.json({ success: true, hints });
+    } catch (err) {
+        if (err.code === 'NOT_CONFIGURED') {
+            return res.status(503).json({ error: 'Geração de dicas não configurada' });
+        }
+        console.error('[assignments] POST /:id/generate-hints error:', err);
+        res.status(500).json({ error: err.message || 'Falha ao gerar dicas' });
+    }
+});
+
+/**
+ * POST /api/assignments/:id/hints
+ * Body: { hints: [{ id, text, when }, ...] }
+ *
+ * Salva o subconjunto de dicas já APROVADO pelo professor (filtrado no
+ * cliente a partir do rascunho de POST /:id/generate-hints), substituindo
+ * INTEIRAMENTE o que houver antes em assignments.hints - mesma semântica já
+ * combinada de "regenera toda vez que Cadastrar aula reroda", sem merge/append.
+ */
+router.post('/:id/hints', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    const assignmentId = parseInt(req.params.id, 10);
+    if (!Number.isFinite(assignmentId)) return res.status(400).json({ error: 'Invalid assignment id' });
+
+    const hints = req.body && req.body.hints;
+    const isValidHintShape = (h) =>
+        h && typeof h === 'object' &&
+        typeof h.id === 'string' && h.id.length > 0 &&
+        typeof h.text === 'string' && h.text.length > 0 &&
+        h.when && typeof h.when === 'object' && typeof h.when.type === 'string' && h.when.type.length > 0;
+
+    if (!Array.isArray(hints) || !hints.every(isValidHintShape)) {
+        return res.status(400).json({ error: 'Corpo inválido: esperado { hints: [{ id, text, when: { type, ... } }, ...] }' });
+    }
+
+    try {
+        // Só a checagem de posse/template importa aqui - o conteúdo do
+        // projeto em si não é usado por esta rota (ver findOwnedTemplateProject).
+        const { httpError } = await findOwnedTemplateProject(supabase, assignmentId, req.userId);
+        if (httpError) return res.status(httpError.status).json(httpError.body);
+
+        const { error: updateErr } = await supabase
+            .from('assignments')
+            .update({ hints })
+            .eq('id', assignmentId);
+
+        if (updateErr) throw updateErr;
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error('[assignments] POST /:id/hints error:', err);
+        res.status(500).json({ error: err.message || 'Falha ao salvar dicas' });
     }
 });
 

@@ -246,3 +246,192 @@
 .assignmentCompleteClose:hover {
     background: #019a98;
 }
+
+/* ===== Hints review UI (professor) =====
+ * Overlay mostrado ao professor logo após "Aula cadastrada!" (barra
+ * flutuante), ANTES do redirecionamento pro returnUrl ou do reset do botão -
+ * ver AssignmentAuthorBar.js _runHintFlow/_showHintReview. Lista as dicas
+ * geradas por IA (POST /assignments/:id/generate-hints) pra aprovação
+ * INDIVIDUAL do professor (nunca em lote) antes de salvar via POST
+ * /assignments/:id/hints. Só existe no fluxo de autoria (teacherMode=author,
+ * mesma condição do botão .assignmentAuthorBtn acima) - nunca ao mesmo tempo
+ * que o selo/popover/modal de conclusão do aluno (.assignmentBadge*/
+ * .assignmentComplete* acima, que são side do estudante), por isso reusa a
+ * mesma faixa de z-index dos modais (9500) sem risco de disputa entre os
+ * dois.
+ */
+.assignmentHintsOverlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.55);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.assignmentHintsCard {
+    width: min(92vw, 460px);
+    max-height: 86vh;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 22px;
+    border-radius: 20px;
+    background: #fff;
+    color: #333;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    border: 3px solid #01bebc;
+    box-sizing: border-box;
+}
+
+.assignmentHintsTitle {
+    font-size: 20px;
+    font-weight: 700;
+    color: #01bebc;
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.assignmentHintsSubtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.assignmentHintsList {
+    overflow-y: auto;
+    flex: 1;
+    margin: 0 -4px 16px;
+    padding: 0 4px;
+}
+
+.assignmentHintRow {
+    padding: 12px 4px;
+    border-top: 1px solid #eee;
+}
+
+.assignmentHintRow:first-child {
+    border-top: none;
+}
+
+.assignmentHintText {
+    font-size: 15px;
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+.assignmentHintWhen {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.assignmentHintActions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Botões touch-friendly (crianças/professores em tablet) - dois botões
+ * lado a lado, nenhum pré-selecionado (estado neutro) até o professor
+ * clicar; clicar de novo no mesmo botão desfaz e volta a neutro (ver
+ * AssignmentAuthorBar.js _showHintReview/applyStatus). */
+.assignmentHintApproveBtn,
+.assignmentHintRejectBtn {
+    flex: 1;
+    min-height: 40px;
+    border: 2px solid #ddd;
+    border-radius: 16px;
+    padding: 10px 12px;
+    background: #fff;
+    color: #555;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.assignmentHintApproveBtn.selected {
+    background: #01bebc;
+    border-color: #01bebc;
+    color: #fff;
+}
+
+.assignmentHintRejectBtn.selected {
+    background: #e74c3c;
+    border-color: #e74c3c;
+    color: #fff;
+}
+
+.assignmentHintsFooter {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+}
+
+.assignmentHintsSkipBtn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: #888;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 10px 12px;
+}
+
+.assignmentHintsSkipBtn:hover {
+    color: #333;
+}
+
+.assignmentHintsSaveBtn {
+    flex: 1;
+    border: none;
+    border-radius: 22px;
+    padding: 10px 16px;
+    background: #01bebc;
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.assignmentHintsSaveBtn:hover {
+    background: #019a98;
+}
+
+.assignmentHintsSaveBtn:disabled {
+    opacity: 0.7;
+    cursor: default;
+}
+
+/* ===== Coaching hint modal (student) =====
+ * Reaproveita a mesma estrutura DOM/classes do modal de "Parabéns" logo
+ * acima (.assignmentCompleteOverlay/.assignmentCompleteCard/
+ * .assignmentCompleteEmoji/.assignmentCompleteText/.assignmentCompleteClose)
+ * pra mostrar uma dica de coach (assignment.hints, avaliadas em tempo real
+ * por AssignmentBadge._evaluateHints enquanto a missão ainda não está
+ * completa) - ver AssignmentBadge._showCoachModal, que generaliza o antigo
+ * _showCompleteModal pros dois casos. .assignmentCoachCard só SOMA um
+ * acento visual diferente (âmbar, no lugar do teal do parabéns) no mesmo
+ * cartão - nenhuma regra .assignmentComplete* acima é redefinida/reordenada.
+ * A dica não tem título (só ícone 💡 + texto), então .assignmentCompleteTitle
+ * nem chega a existir no DOM pra esse caso - nada a estilizar aqui pra ele.
+ */
+.assignmentCoachCard {
+    border-color: #f5a623;
+}
+
+.assignmentCoachCard .assignmentCompleteClose {
+    background: #f5a623;
+}
+
+.assignmentCoachCard .assignmentCompleteClose:hover {
+    background: #d68910;
+}

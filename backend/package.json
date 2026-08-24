@@ -19,6 +19,7 @@
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.0",
+    "openai": "^7.5.0",
     "pg": "^8.11.3"
   },
   "devDependencies": {
