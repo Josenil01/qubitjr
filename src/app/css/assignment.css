@@ -255,7 +255,7 @@
  * INDIVIDUAL do professor (nunca em lote) antes de salvar via POST
  * /assignments/:id/hints. Só existe no fluxo de autoria (teacherMode=author,
  * mesma condição do botão .assignmentAuthorBtn acima) - nunca ao mesmo tempo
- * que o selo/popover/modal de conclusão do aluno (.assignmentBadge*/
+ * que o selo/popover/modal de conclusão do aluno (.assignmentBadge* /
  * .assignmentComplete* acima, que são side do estudante), por isso reusa a
  * mesma faixa de z-index dos modais (9500) sem risco de disputa entre os
  * dois.
