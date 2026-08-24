@@ -122,18 +122,30 @@ function decodeJwtPayloadUnsafe(token) {
  * é sempre `home.html?token=...` ou `editor.html?token=...&pmd5=...`, sem
  * studentId/classId), nem a navegação interna deste app (Home.gotoEditor,
  * AssignmentNotice._gotoEditorForMission - nenhuma das duas adiciona
- * studentId à URL). Resultado: ownId ficava sempre undefined, então
- * presenceChannel.track() nunca rodava e nenhum aluno aparecia "online" pro
- * professor em teacher.html, pra NINGUÉM, independente de projeto de missão
- * ou não (confirmado ao vivo nesta investigação). Decodifica localmente as
- * claims do próprio JWT (mesmos nomes alternativos de
- * identity.js#getUserIdFromClaims) em vez disso — é a mesma identidade que
- * o backend já usa pra projects.owner e pro roster da HelloYotta
- * (routes/teacher.js), então bate com student.id no teacher.js do
- * professor. Mantém o fallback pro contexto de URL por último, caso algum
- * fluxo futuro volte a preenchê-lo.
+ * studentId à URL).
+ *
+ * Decodificar localmente as claims do próprio JWT (tentado antes) parecia
+ * bater com identity.js#getUserIdFromClaims, mas só é confiável em
+ * HELLOYOTTA_MODE=mock: em modo live o JWT bruto do aluno é o idToken do
+ * Firebase (claim `sub`/`user_id` = UID do Firebase), e a identidade de
+ * verdade (`id_usuario`, a mesma que vira projects.owner e student.id no
+ * roster do professor) só existe depois do backend chamar
+ * verifyStudentToken() contra a HelloYotta (services/helloyotta.js) — nunca
+ * está no próprio token pra decodificar sem verificar. Resultado: o aluno
+ * aparecia com presença "conectada" (track() rodava, sem erro nenhum) mas
+ * com um id que não batia com NENHUM aluno do roster, então nunca aparecia
+ * "online" pro professor — confirmado ao vivo nesta investigação
+ * (routes/teacher.js mostrava o roster certo, tempo de edição recente, e
+ * mesmo assim 0 alunos online). Corrigido usando o id que o PRÓPRIO backend
+ * já resolveu pra esta sessão (POST /realtime/presence-token devolve
+ * `userId: req.userId`, ver routes/realtime.js) em vez de adivinhar do
+ * lado do cliente.
  */
-function getOwnStudentId() {
+function getOwnStudentId(presenceTokenResponse) {
+    const fromBackend = presenceTokenResponse && presenceTokenResponse.userId;
+    if (fromBackend) return fromBackend;
+    // Fallback só por segurança (ex.: backend antigo em deploy sem esse
+    // campo ainda) — mesma ressalva de confiabilidade do comentário acima.
     const claims = decodeJwtPayloadUnsafe(window.__AUTH_TOKEN__);
     const fromClaims = claims && (claims.user_id || claims.sub || claims.studentId || claims.id_usuario);
     return fromClaims || window.__AUTH_CONTEXT__?.studentId || null;
@@ -446,7 +458,7 @@ async function initLiveWatch() {
     presenceChannel = connectChannel(data.channel);
     if (!presenceChannel) return;
 
-    const ownId = getOwnStudentId();
+    const ownId = getOwnStudentId(data);
 
     presenceChannel
         .on('broadcast', { event: 'session_started' }, (msg) => {
