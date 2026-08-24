@@ -340,9 +340,9 @@
     "semantic_hash": "519119bfdf810c68de0e9f4c37c1518f"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\editor\\LiveWatch.js": {
-    "mtime": 1787590791.4574413,
-    "ast_hash": "7dce4720eda049b91f800a48f6e12f50",
-    "semantic_hash": "7dce4720eda049b91f800a48f6e12f50"
+    "mtime": 1787599590.6568933,
+    "ast_hash": "b6247972ab6c3d62ca0947fe0976bdf5",
+    "semantic_hash": "b6247972ab6c3d62ca0947fe0976bdf5"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\entry\\teacher.js": {
     "mtime": 1787060932.3709514,
@@ -365,14 +365,14 @@
     "semantic_hash": "3915d5c10bfa73daa415b53141b96faf"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\editor\\ui\\AssignmentAuthorBar.js": {
-    "mtime": 1787396200.6731472,
-    "ast_hash": "a786680f1ee6900b438f0430b47670d7",
-    "semantic_hash": "a786680f1ee6900b438f0430b47670d7"
+    "mtime": 1787598675.892535,
+    "ast_hash": "6125b36104584a3663cc8fcd184f1bb0",
+    "semantic_hash": "6125b36104584a3663cc8fcd184f1bb0"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\editor\\ui\\AssignmentBadge.js": {
-    "mtime": 1787493740.6032288,
-    "ast_hash": "437ae4d53f01cd375d6d924e00c33423",
-    "semantic_hash": "437ae4d53f01cd375d6d924e00c33423"
+    "mtime": 1787598801.1251483,
+    "ast_hash": "8f2953a3132d3fa86293adf0a8f0aab2",
+    "semantic_hash": "8f2953a3132d3fa86293adf0a8f0aab2"
   },
   "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\lobby\\AssignmentNotice.js": {
     "mtime": 1787589724.4794,
@@ -383,5 +383,10 @@
     "mtime": 1787487936.2916512,
     "ast_hash": "2e230a8f149eff35ab481a0deb411424",
     "semantic_hash": "2e230a8f149eff35ab481a0deb411424"
+  },
+  "C:\\Users\\TI\\Downloads\\ScratchJr-Desktop-master\\ScratchJr-Desktop-master\\src\\app\\src\\editor\\ui\\detailedManifest.js": {
+    "mtime": 1787598613.2722702,
+    "ast_hash": "ec277dfa4c0a5a826606c677b334d653",
+    "semantic_hash": "ec277dfa4c0a5a826606c677b334d653"
   }
 }
