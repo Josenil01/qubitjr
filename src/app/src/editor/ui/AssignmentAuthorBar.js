@@ -322,8 +322,18 @@ export default class AssignmentAuthorBar {
      * equivalente a pular). "Pular por agora" fecha sem salvar nada. Os dois
      * caminhos (e qualquer falha do POST de salvar) terminam chamando
      * `onDone` - nunca deixam o professor preso nesta tela.
+     *
+     * Guarda contra chamada repetida: se o professor clicar "Cadastrar
+     * aula" mais de uma vez na mesma aba (ex.: durante um teste, ou um
+     * clique duplo) antes de fechar a revisão anterior, sem isso cada
+     * chamada empilhava mais uma tela por baixo/por cima da anterior -
+     * nunca removidas, só acumulando no body.
      */
     static _showHintReview (assignmentId, hints, onDone) {
+        if (document.querySelector('.assignmentHintsOverlay')) {
+            onDone(); // já tem uma revisão aberta - não empilha outra
+            return;
+        }
         var entries = hints.map(function (hint) {
             return {hint: hint, status: null}; // null | 'approved' | 'rejected'
         });
