@@ -18,19 +18,34 @@
  * de cliente HTTP neste projeto - ver aquele arquivo pra mais contexto
  * sobre o formato de resposta de GET /assignments/active.
  *
- * O clique manda assignmentId+projectName na URL pro editor.js pré-criar
- * o projeto da missão ANTES do appinit() rodar (mesmo truque já usado por
- * teacherMode=author em entry/editor.js) - navegar pra um editor.html
- * totalmente vazio (sem esses params) deixaria o fallback genérico de
- * Project.startLoad() criar um projeto em branco SEM assignment_id, que
- * não é isento do limite diário de criação e podia estourar
- * DAILY_LIMIT_EXCEEDED pra um aluno que já tivesse criado 1 projeto no dia.
+ * Auto-entrada na primeira vez: a HelloYotta nunca manda um pmd5 pra uma
+ * tarefa recém-atribuída (confirmado por e-mail com eles) - só o token
+ * normal. Ou seja, TODO aluno, na primeira vez que vê uma missão nova,
+ * cairia sempre no lobby precisando clicar no sino manualmente, mesmo
+ * sendo a única coisa fazendo sentido ele fazer ali. Pra evitar esse
+ * passo extra, guardamos em localStorage (sobrevive a fechar aba/
+ * navegador, ao contrário de sessionStorage) que já auto-entramos nessa
+ * missão (chave por assignment.id) - na PRIMEIRA vez que o sino apareceria,
+ * navegamos direto sem esperar clique; se o aluno sair sem terminar e
+ * voltar depois, não forçamos de novo (ele pode ter saído de propósito
+ * pra ver outro projeto) - nesse caso o sino volta a ser só um lembrete
+ * clicável, como era antes desta mudança.
+ *
+ * O clique/auto-entrada manda assignmentId+projectName na URL pro
+ * editor.js pré-criar o projeto da missão ANTES do appinit() rodar (mesmo
+ * truque já usado por teacherMode=author em entry/editor.js) - navegar
+ * pra um editor.html totalmente vazio (sem esses params) deixaria o
+ * fallback genérico de Project.startLoad() criar um projeto em branco SEM
+ * assignment_id, que não é isento do limite diário de criação e podia
+ * estourar DAILY_LIMIT_EXCEEDED pra um aluno que já tivesse criado 1
+ * projeto no dia.
  */
 
 import {gn} from '../utils/lib.js';
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
+const AUTOSTART_KEY_PREFIX = 'qubitjr_mission_autostarted_';
 
 function authHeader () {
     var token = window.__AUTH_TOKEN__;
@@ -71,6 +86,23 @@ export default class AssignmentNotice {
             // fazer aqui (ver docblock acima).
             return;
         }
+
+        const autostartKey = AUTOSTART_KEY_PREFIX + assignment.id;
+        let alreadyAutostarted = false;
+        try {
+            alreadyAutostarted = !!localStorage.getItem(autostartKey);
+        } catch (_) {
+            // Storage indisponível (modo privado/etc) - trata como "ainda
+            // não visto" e segue pro sino manual, nunca quebra o boot da lobby.
+        }
+        if (!alreadyAutostarted) {
+            try {
+                localStorage.setItem(autostartKey, '1');
+            } catch (_) {}
+            AssignmentNotice._gotoEditorForMission(assignment);
+            return; // já estamos navegando - não precisa nem mostrar o sino
+        }
+
         AssignmentNotice._showBell(assignment);
     }
 
