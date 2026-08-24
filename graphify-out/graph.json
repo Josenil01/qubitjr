@@ -3529,7 +3529,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 58,
+      "community": 57,
       "norm_label": "matrix.js",
       "community_name": "SVGImage",
       "id": "geom_matrix"
@@ -3540,7 +3540,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L5",
       "_origin": "ast",
-      "community": 58,
+      "community": 57,
       "norm_label": "matrix",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix"
@@ -3551,7 +3551,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 58,
+      "community": 57,
       "norm_label": ".constructor()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_constructor"
@@ -3562,7 +3562,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 58,
+      "community": 57,
       "norm_label": ".identity()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_identity"
@@ -3573,7 +3573,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 58,
+      "community": 57,
       "norm_label": ".setmatrix()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_setmatrix"
@@ -3584,7 +3584,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L33",
       "_origin": "ast",
-      "community": 58,
+      "community": 57,
       "norm_label": ".isidentity()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_isidentity"
@@ -3595,7 +3595,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L37",
       "_origin": "ast",
-      "community": 58,
+      "community": 57,
       "norm_label": ".rotate()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_rotate"
@@ -3606,7 +3606,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L46",
       "_origin": "ast",
-      "community": 58,
+      "community": 57,
       "norm_label": ".scale()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_scale"
@@ -3617,7 +3617,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L52",
       "_origin": "ast",
-      "community": 58,
+      "community": 57,
       "norm_label": ".translate()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_translate"
@@ -3628,7 +3628,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L57",
       "_origin": "ast",
-      "community": 58,
+      "community": 57,
       "norm_label": ".transformpoint()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_transformpoint"
@@ -3639,7 +3639,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 58,
+      "community": 57,
       "norm_label": ".multiply()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_multiply"
@@ -4002,7 +4002,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L11",
       "_origin": "ast",
-      "community": 61,
+      "community": 60,
       "norm_label": "medialib",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib"
@@ -4013,7 +4013,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 61,
+      "community": 60,
       "norm_label": ".path()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_path"
@@ -4024,7 +4024,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 61,
+      "community": 60,
       "norm_label": ".samples()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_samples"
@@ -4035,7 +4035,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L20",
       "_origin": "ast",
-      "community": 61,
+      "community": 60,
       "norm_label": ".sprites()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_sprites"
@@ -4046,7 +4046,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 61,
+      "community": 60,
       "norm_label": ".backgrounds()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_backgrounds"
@@ -4057,7 +4057,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L28",
       "_origin": "ast",
-      "community": 61,
+      "community": 60,
       "norm_label": ".sounds()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_sounds"
@@ -4068,7 +4068,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L32",
       "_origin": "ast",
-      "community": 61,
+      "community": 60,
       "norm_label": ".keys()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_keys"
@@ -4079,7 +4079,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L36",
       "_origin": "ast",
-      "community": 61,
+      "community": 60,
       "norm_label": ".loadmedialib()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_loadmedialib"
@@ -4090,7 +4090,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L52",
       "_origin": "ast",
-      "community": 61,
+      "community": 60,
       "norm_label": ".localizemedianames()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_localizemedianames"
@@ -4101,7 +4101,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 61,
+      "community": 60,
       "norm_label": ".generatekeys()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_generatekeys"
@@ -4442,7 +4442,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 59,
+      "community": 58,
       "norm_label": "camera",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera"
@@ -4453,7 +4453,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 59,
+      "community": 58,
       "norm_label": ".available()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_available"
@@ -4464,7 +4464,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 59,
+      "community": 58,
       "norm_label": ".startfeed()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_startfeed"
@@ -4475,7 +4475,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L60",
       "_origin": "ast",
-      "community": 59,
+      "community": 58,
       "norm_label": ".prepareforlandscapemode()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_prepareforlandscapemode"
@@ -4486,7 +4486,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L78",
       "_origin": "ast",
-      "community": 59,
+      "community": 58,
       "norm_label": ".doaction()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_doaction"
@@ -4497,7 +4497,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L100",
       "_origin": "ast",
-      "community": 59,
+      "community": 58,
       "norm_label": ".close()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_close"
@@ -4508,7 +4508,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L111",
       "_origin": "ast",
-      "community": 59,
+      "community": 58,
       "norm_label": ".snapshot()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_snapshot"
@@ -4519,7 +4519,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L115",
       "_origin": "ast",
-      "community": 59,
+      "community": 58,
       "norm_label": ".getlayermask()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_getlayermask"
@@ -4530,7 +4530,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L159",
       "_origin": "ast",
-      "community": 59,
+      "community": 58,
       "norm_label": ".drawlayers()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_drawlayers"
@@ -4541,7 +4541,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L167",
       "_origin": "ast",
-      "community": 59,
+      "community": 58,
       "norm_label": ".drawhole()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_drawhole"
@@ -4552,7 +4552,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L185",
       "_origin": "ast",
-      "community": 59,
+      "community": 58,
       "norm_label": ".processimage()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_processimage"
@@ -7863,7 +7863,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 67,
+      "community": 68,
       "norm_label": "jszip.js",
       "community_name": "Thread",
       "id": "shims_jszip"
@@ -7874,7 +7874,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L9",
       "_origin": "ast",
-      "community": 67,
+      "community": 68,
       "norm_label": "jszipshim",
       "community_name": "Thread",
       "id": "shims_jszip_jszipshim"
@@ -7885,7 +7885,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L10",
       "_origin": "ast",
-      "community": 67,
+      "community": 68,
       "norm_label": ".constructor()",
       "community_name": "Thread",
       "id": "shims_jszip_jszipshim_constructor"
@@ -7896,7 +7896,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 67,
+      "community": 68,
       "norm_label": ".file()",
       "community_name": "Thread",
       "id": "shims_jszip_jszipshim_file"
@@ -7907,7 +7907,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 67,
+      "community": 68,
       "norm_label": ".async()",
       "community_name": "Thread",
       "id": "shims_jszip_jszipshim_async"
@@ -7918,7 +7918,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 67,
+      "community": 68,
       "norm_label": ".generateasync()",
       "community_name": "Thread",
       "id": "shims_jszip_jszipshim_generateasync"
@@ -7929,7 +7929,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 67,
+      "community": 68,
       "norm_label": ".folder()",
       "community_name": "Thread",
       "id": "shims_jszip_jszipshim_folder"
@@ -7940,7 +7940,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L33",
       "_origin": "ast",
-      "community": 67,
+      "community": 68,
       "norm_label": ".loadasync()",
       "community_name": "Thread",
       "id": "shims_jszip_jszipshim_loadasync"
@@ -8831,7 +8831,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 68,
+      "community": 69,
       "norm_label": "svg2canvas.js",
       "community_name": "Asset Library",
       "id": "utils_svg2canvas"
@@ -8842,7 +8842,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 68,
+      "community": 69,
       "norm_label": "curveoptions",
       "community_name": "Asset Library",
       "id": "utils_svg2canvas_curveoptions"
@@ -8853,7 +8853,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 68,
+      "community": 69,
       "norm_label": "qcurveoptions",
       "community_name": "Asset Library",
       "id": "utils_svg2canvas_qcurveoptions"
@@ -8864,7 +8864,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 68,
+      "community": 69,
       "norm_label": "strokevalues",
       "community_name": "Asset Library",
       "id": "utils_svg2canvas_strokevalues"
@@ -9084,7 +9084,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L339",
       "_origin": "ast",
-      "community": 60,
+      "community": 59,
       "norm_label": ".drawellipse()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_drawellipse"
@@ -9117,7 +9117,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L391",
       "_origin": "ast",
-      "community": 60,
+      "community": 59,
       "norm_label": ".renderpath()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_renderpath"
@@ -9128,7 +9128,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L416",
       "_origin": "ast",
-      "community": 60,
+      "community": 59,
       "norm_label": ".renderpathtips()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_renderpathtips"
@@ -9139,7 +9139,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L433",
       "_origin": "ast",
-      "community": 60,
+      "community": 59,
       "norm_label": ".drawtip()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_drawtip"
@@ -9183,7 +9183,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L502",
       "_origin": "ast",
-      "community": 60,
+      "community": 59,
       "norm_label": ".drawcommand()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_drawcommand"
@@ -9414,7 +9414,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L755",
       "_origin": "ast",
-      "community": 60,
+      "community": 59,
       "norm_label": ".setabsolutepath()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_setabsolutepath"
@@ -9425,7 +9425,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L766",
       "_origin": "ast",
-      "community": 60,
+      "community": 59,
       "norm_label": ".getsvgcommands()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_getsvgcommands"
@@ -9436,7 +9436,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L770",
       "_origin": "ast",
-      "community": 60,
+      "community": 59,
       "norm_label": ".getcommandlist()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_getcommandlist"
@@ -9447,7 +9447,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L789",
       "_origin": "ast",
-      "community": 60,
+      "community": 59,
       "norm_label": ".arraytostring()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_arraytostring"
@@ -9458,7 +9458,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L802",
       "_origin": "ast",
-      "community": 60,
+      "community": 59,
       "norm_label": ".getabsolutecommands()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_getabsolutecommands"
@@ -9469,7 +9469,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L810",
       "_origin": "ast",
-      "community": 60,
+      "community": 59,
       "norm_label": ".getabsolutecommand()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_getabsolutecommand"
@@ -9667,7 +9667,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L1011",
       "_origin": "ast",
-      "community": 68,
+      "community": 69,
       "norm_label": "dispatchdrawcmd",
       "community_name": "Asset Library",
       "id": "utils_svg2canvas_dispatchdrawcmd"
@@ -9678,7 +9678,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L1032",
       "_origin": "ast",
-      "community": 68,
+      "community": 69,
       "norm_label": "dispatchabsoulutecmd",
       "community_name": "Asset Library",
       "id": "utils_svg2canvas_dispatchabsoulutecmd"
@@ -13044,7 +13044,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L611",
       "_origin": "ast",
-      "community": 68,
+      "community": 69,
       "norm_label": "rgb2hsb()",
       "community_name": "Core Utils & App State",
       "id": "utils_lib_rgb2hsb"
@@ -13088,7 +13088,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L675",
       "_origin": "ast",
-      "community": 68,
+      "community": 69,
       "norm_label": "getrgb()",
       "community_name": "Core Utils & App State",
       "id": "utils_lib_getrgb"
@@ -14100,7 +14100,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 66,
+      "community": 67,
       "community_name": "Live Session Observation",
       "norm_label": "timetracker.js",
       "id": "utils_timetracker"
@@ -14111,7 +14111,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L28",
       "_origin": "ast",
-      "community": 66,
+      "community": 67,
       "community_name": "Live Session Observation",
       "norm_label": "authheader()",
       "id": "utils_timetracker_authheader"
@@ -14122,7 +14122,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L33",
       "_origin": "ast",
-      "community": 66,
+      "community": 67,
       "community_name": "Live Session Observation",
       "norm_label": "timetracker",
       "id": "utils_timetracker_timetracker"
@@ -14133,7 +14133,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L34",
       "_origin": "ast",
-      "community": 66,
+      "community": 67,
       "community_name": "Live Session Observation",
       "norm_label": ".start()",
       "id": "utils_timetracker_timetracker_start"
@@ -14144,7 +14144,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L50",
       "_origin": "ast",
-      "community": 66,
+      "community": 67,
       "community_name": "Live Session Observation",
       "norm_label": "._accrue()",
       "id": "utils_timetracker_timetracker_accrue"
@@ -14155,7 +14155,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L63",
       "_origin": "ast",
-      "community": 66,
+      "community": 67,
       "community_name": "Live Session Observation",
       "norm_label": "._tick()",
       "id": "utils_timetracker_timetracker_tick"
@@ -14166,7 +14166,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L68",
       "_origin": "ast",
-      "community": 66,
+      "community": 67,
       "community_name": "Live Session Observation",
       "norm_label": "._onvisibilitychange()",
       "id": "utils_timetracker_timetracker_onvisibilitychange"
@@ -14177,7 +14177,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L77",
       "_origin": "ast",
-      "community": 66,
+      "community": 67,
       "community_name": "Live Session Observation",
       "norm_label": "._flushfinal()",
       "id": "utils_timetracker_timetracker_flushfinal"
@@ -14188,7 +14188,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L85",
       "_origin": "ast",
-      "community": 66,
+      "community": 67,
       "community_name": "Live Session Observation",
       "norm_label": "._flush()",
       "id": "utils_timetracker_timetracker_flush"
@@ -17509,7 +17509,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L144",
       "_origin": "ast",
-      "community": 57,
+      "community": 56,
       "norm_label": ".init()",
       "id": "painteditor_paint_paint_init"
     },
@@ -17539,7 +17539,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L168",
       "_origin": "ast",
-      "community": 57,
+      "community": 56,
       "norm_label": ".open()",
       "id": "painteditor_paint_paint_open"
     },
@@ -17589,7 +17589,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L245",
       "_origin": "ast",
-      "community": 56,
+      "community": 55,
       "norm_label": ".scroll()",
       "id": "painteditor_paint_paint_scroll"
     },
@@ -17619,7 +17619,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L292",
       "_origin": "ast",
-      "community": 56,
+      "community": 55,
       "norm_label": ".gesturechange()",
       "id": "painteditor_paint_paint_gesturechange"
     },
@@ -17629,7 +17629,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L309",
       "_origin": "ast",
-      "community": 56,
+      "community": 55,
       "norm_label": ".gestureend()",
       "id": "painteditor_paint_paint_gestureend"
     },
@@ -17639,7 +17639,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L326",
       "_origin": "ast",
-      "community": 56,
+      "community": 55,
       "norm_label": ".canvasfits()",
       "id": "painteditor_paint_paint_canvasfits"
     },
@@ -17649,7 +17649,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L331",
       "_origin": "ast",
-      "community": 62,
+      "community": 61,
       "norm_label": ".mousedown()",
       "id": "painteditor_paint_paint_mousedown"
     },
@@ -17659,7 +17659,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L347",
       "_origin": "ast",
-      "community": 62,
+      "community": 61,
       "norm_label": ".close()",
       "id": "painteditor_paint_paint_close"
     },
@@ -17669,7 +17669,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L365",
       "_origin": "ast",
-      "community": 62,
+      "community": 61,
       "norm_label": ".backtoproject()",
       "id": "painteditor_paint_paint_backtoproject"
     },
@@ -17679,7 +17679,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L390",
       "_origin": "ast",
-      "community": 62,
+      "community": 61,
       "norm_label": ".saveeditstate()",
       "id": "painteditor_paint_paint_saveeditstate"
     },
@@ -17689,7 +17689,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L405",
       "_origin": "ast",
-      "community": 51,
+      "community": 62,
       "norm_label": ".setmode()",
       "id": "painteditor_paint_paint_setmode"
     },
@@ -17699,7 +17699,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L431",
       "_origin": "ast",
-      "community": 51,
+      "community": 62,
       "norm_label": ".selectbutton()",
       "id": "painteditor_paint_paint_selectbutton"
     },
@@ -17709,7 +17709,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L443",
       "_origin": "ast",
-      "community": 51,
+      "community": 62,
       "norm_label": ".selectbuttonfromdiv()",
       "id": "painteditor_paint_paint_selectbuttonfromdiv"
     },
@@ -17719,7 +17719,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L460",
       "_origin": "ast",
-      "community": 51,
+      "community": 62,
       "norm_label": ".getclass()",
       "id": "painteditor_paint_paint_getclass"
     },
@@ -17729,7 +17729,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L471",
       "_origin": "ast",
-      "community": 56,
+      "community": 55,
       "norm_label": ".setzoomto()",
       "id": "painteditor_paint_paint_setzoomto"
     },
@@ -17739,7 +17739,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L480",
       "_origin": "ast",
-      "community": 56,
+      "community": 55,
       "norm_label": ".updatezoomscale()",
       "id": "painteditor_paint_paint_updatezoomscale"
     },
@@ -17749,7 +17749,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L487",
       "_origin": "ast",
-      "community": 56,
+      "community": 55,
       "norm_label": ".setcanvastransform()",
       "id": "painteditor_paint_paint_setcanvastransform"
     },
@@ -17759,7 +17759,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L498",
       "_origin": "ast",
-      "community": 56,
+      "community": 55,
       "norm_label": ".adjustpos()",
       "id": "painteditor_paint_paint_adjustpos"
     },
@@ -17769,7 +17769,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L504",
       "_origin": "ast",
-      "community": 56,
+      "community": 55,
       "norm_label": ".bounceback()",
       "id": "painteditor_paint_paint_bounceback"
     },
@@ -17779,7 +17779,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L511",
       "_origin": "ast",
-      "community": 56,
+      "community": 55,
       "norm_label": ".getcoorx()",
       "id": "painteditor_paint_paint_getcoorx"
     },
@@ -17789,7 +17789,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L527",
       "_origin": "ast",
-      "community": 56,
+      "community": 55,
       "norm_label": ".getcoory()",
       "id": "painteditor_paint_paint_getcoory"
     },
@@ -17799,7 +17799,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L543",
       "_origin": "ast",
-      "community": 51,
+      "community": 66,
       "norm_label": ".scaletofit()",
       "id": "painteditor_paint_paint_scaletofit"
     },
@@ -17809,7 +17809,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L549",
       "_origin": "ast",
-      "community": 56,
+      "community": 55,
       "norm_label": ".dragbackground()",
       "id": "painteditor_paint_paint_dragbackground"
     },
@@ -17819,7 +17819,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L568",
       "_origin": "ast",
-      "community": 70,
+      "community": 51,
       "norm_label": ".layout()",
       "id": "painteditor_paint_paint_layout"
     },
@@ -17829,7 +17829,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L585",
       "_origin": "ast",
-      "community": 70,
+      "community": 51,
       "norm_label": ".topbar()",
       "id": "painteditor_paint_paint_topbar"
     },
@@ -17839,7 +17839,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L592",
       "_origin": "ast",
-      "community": 70,
+      "community": 51,
       "norm_label": ".checkmark()",
       "id": "painteditor_paint_paint_checkmark"
     },
@@ -17849,7 +17849,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L602",
       "_origin": "ast",
-      "community": 70,
+      "community": 51,
       "norm_label": ".nameofcostume()",
       "id": "painteditor_paint_paint_nameofcostume"
     },
@@ -17909,7 +17909,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L683",
       "_origin": "ast",
-      "community": 55,
+      "community": 51,
       "norm_label": ".leftpalette()",
       "id": "painteditor_paint_paint_leftpalette"
     },
@@ -17919,7 +17919,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L691",
       "_origin": "ast",
-      "community": 55,
+      "community": 51,
       "norm_label": ".setupeditpalette()",
       "id": "painteditor_paint_paint_setupeditpalette"
     },
@@ -17929,7 +17929,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L708",
       "_origin": "ast",
-      "community": 55,
+      "community": 62,
       "norm_label": ".createsizeselector()",
       "id": "painteditor_paint_paint_createsizeselector"
     },
@@ -17939,7 +17939,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L733",
       "_origin": "ast",
-      "community": 55,
+      "community": 62,
       "norm_label": ".drawpensizeincolor()",
       "id": "painteditor_paint_paint_drawpensizeincolor"
     },
@@ -17949,7 +17949,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L737",
       "_origin": "ast",
-      "community": 55,
+      "community": 62,
       "norm_label": ".updatestrokes()",
       "id": "painteditor_paint_paint_updatestrokes"
     },
@@ -17959,7 +17959,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L748",
       "_origin": "ast",
-      "community": 55,
+      "community": 62,
       "norm_label": ".selectpensize()",
       "id": "painteditor_paint_paint_selectpensize"
     },
@@ -17969,7 +17969,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L764",
       "_origin": "ast",
-      "community": 70,
+      "community": 51,
       "norm_label": ".rightpalette()",
       "id": "painteditor_paint_paint_rightpalette"
     },
@@ -17979,7 +17979,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L772",
       "_origin": "ast",
-      "community": 70,
+      "community": 51,
       "norm_label": ".addsidepalette()",
       "id": "painteditor_paint_paint_addsidepalette"
     },
@@ -17999,7 +17999,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L811",
       "_origin": "ast",
-      "community": 62,
+      "community": 61,
       "norm_label": ".closecameramode()",
       "id": "painteditor_paint_paint_closecameramode"
     },
@@ -18019,7 +18019,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L838",
       "_origin": "ast",
-      "community": 57,
+      "community": 56,
       "norm_label": ".setupcanvasarea()",
       "id": "painteditor_paint_paint_setupcanvasarea"
     },
@@ -18029,7 +18029,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L867",
       "_origin": "ast",
-      "community": 55,
+      "community": 51,
       "norm_label": ".colorpalette()",
       "id": "painteditor_paint_paint_colorpalette"
     },
@@ -18039,7 +18039,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L890",
       "_origin": "ast",
-      "community": 55,
+      "community": 51,
       "norm_label": ".setsplashcolor()",
       "id": "painteditor_paint_paint_setsplashcolor"
     },
@@ -18049,7 +18049,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L895",
       "_origin": "ast",
-      "community": 55,
+      "community": 51,
       "norm_label": ".addimageurl()",
       "id": "painteditor_paint_paint_addimageurl"
     },
@@ -18059,7 +18059,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L902",
       "_origin": "ast",
-      "community": 55,
+      "community": 62,
       "norm_label": ".selectswatch()",
       "id": "painteditor_paint_paint_selectswatch"
     },
@@ -18069,7 +18069,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L929",
       "_origin": "ast",
-      "community": 55,
+      "community": 62,
       "norm_label": ".setswatchcolor()",
       "id": "painteditor_paint_paint_setswatchcolor"
     },
@@ -18079,7 +18079,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L953",
       "_origin": "ast",
-      "community": 55,
+      "community": 51,
       "norm_label": ".initswatchlist()",
       "id": "painteditor_paint_paint_initswatchlist"
     },
@@ -18089,7 +18089,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L974",
       "_origin": "ast",
-      "community": 70,
+      "community": 51,
       "norm_label": ".createsvgeditor()",
       "id": "painteditor_paint_paint_createsvgeditor"
     },
@@ -18099,7 +18099,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L993",
       "_origin": "ast",
-      "community": 57,
+      "community": 56,
       "norm_label": ".clearworkspace()",
       "id": "painteditor_paint_paint_clearworkspace"
     },
@@ -18109,7 +18109,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1005",
       "_origin": "ast",
-      "community": 57,
+      "community": 56,
       "norm_label": ".drawgrid()",
       "id": "painteditor_paint_paint_drawgrid"
     },
@@ -18119,7 +18119,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1031",
       "_origin": "ast",
-      "community": 57,
+      "community": 56,
       "norm_label": ".getgridpath()",
       "id": "painteditor_paint_paint_getgridpath"
     },
@@ -18129,7 +18129,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1057",
       "_origin": "ast",
-      "community": 57,
+      "community": 56,
       "norm_label": ".initbkg()",
       "id": "painteditor_paint_paint_initbkg"
     },
@@ -18139,7 +18139,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1083",
       "_origin": "ast",
-      "community": 57,
+      "community": 56,
       "norm_label": ".loadbackground()",
       "id": "painteditor_paint_paint_loadbackground"
     },
@@ -18149,7 +18149,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1102",
       "_origin": "ast",
-      "community": 57,
+      "community": 56,
       "norm_label": ".getbkg()",
       "id": "painteditor_paint_paint_getbkg"
     },
@@ -18159,7 +18159,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1113",
       "_origin": "ast",
-      "community": 51,
+      "community": 66,
       "norm_label": ".loadbkg()",
       "id": "painteditor_paint_paint_loadbkg"
     },
@@ -18169,7 +18169,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1117",
       "_origin": "ast",
-      "community": 51,
+      "community": 66,
       "norm_label": ".createbkgfromxml()",
       "id": "painteditor_paint_paint_createbkgfromxml"
     },
@@ -18179,7 +18179,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1144",
       "_origin": "ast",
-      "community": 57,
+      "community": 56,
       "norm_label": ".initsprite()",
       "id": "painteditor_paint_paint_initsprite"
     },
@@ -18189,7 +18189,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1170",
       "_origin": "ast",
-      "community": 57,
+      "community": 56,
       "norm_label": ".loadcharacter()",
       "id": "painteditor_paint_paint_loadcharacter"
     },
@@ -18199,7 +18199,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1189",
       "_origin": "ast",
-      "community": 51,
+      "community": 66,
       "norm_label": ".loadsprite()",
       "id": "painteditor_paint_paint_loadsprite"
     },
@@ -18209,7 +18209,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1193",
       "_origin": "ast",
-      "community": 57,
+      "community": 56,
       "norm_label": ".loadchar()",
       "id": "painteditor_paint_paint_loadchar"
     },
@@ -18219,7 +18219,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1204",
       "_origin": "ast",
-      "community": 51,
+      "community": 66,
       "norm_label": ".adjustshapeposition()",
       "id": "painteditor_paint_paint_adjustshapeposition"
     },
@@ -18229,7 +18229,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1213",
       "_origin": "ast",
-      "community": 62,
+      "community": 61,
       "norm_label": ".savepageimage()",
       "id": "painteditor_paint_paint_savepageimage"
     },
@@ -18269,7 +18269,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1279",
       "_origin": "ast",
-      "community": 62,
+      "community": 61,
       "norm_label": ".changepage()",
       "id": "painteditor_paint_paint_changepage"
     },
@@ -18279,7 +18279,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1284",
       "_origin": "ast",
-      "community": 62,
+      "community": 61,
       "norm_label": ".savesprite()",
       "id": "painteditor_paint_paint_savesprite"
     },
@@ -18319,7 +18319,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1366",
       "_origin": "ast",
-      "community": 62,
+      "community": 61,
       "norm_label": ".changepagesprite()",
       "id": "painteditor_paint_paint_changepagesprite"
     },
@@ -18329,7 +18329,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1383",
       "_origin": "ast",
-      "community": 62,
+      "community": 61,
       "norm_label": ".getloadtype()",
       "id": "painteditor_paint_paint_getloadtype"
     },
@@ -18339,7 +18339,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1397",
       "_origin": "ast",
-      "community": 51,
+      "community": 66,
       "norm_label": ".skipunwantedelements()",
       "id": "painteditor_paint_paint_skipunwantedelements"
     },
@@ -18349,7 +18349,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1424",
       "_origin": "ast",
-      "community": 51,
+      "community": 66,
       "norm_label": ".reassingids()",
       "id": "painteditor_paint_paint_reassingids"
     },
@@ -18359,7 +18359,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1440",
       "_origin": "ast",
-      "community": 51,
+      "community": 66,
       "norm_label": ".createcharfromxml()",
       "id": "painteditor_paint_paint_createcharfromxml"
     },
@@ -18369,7 +18369,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1477",
       "_origin": "ast",
-      "community": 51,
+      "community": 66,
       "norm_label": ".doabsolute()",
       "id": "painteditor_paint_paint_doabsolute"
     },
@@ -19789,7 +19789,7 @@
       "source_file": "src/app/src/lobby/AssignmentNotice.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 69,
+      "community": 70,
       "norm_label": "assignmentnotice.js",
       "id": "lobby_assignmentnotice"
     },
@@ -19799,7 +19799,7 @@
       "source_file": "src/app/src/lobby/AssignmentNotice.js",
       "source_location": "L50",
       "_origin": "ast",
-      "community": 69,
+      "community": 70,
       "norm_label": "authheader()",
       "id": "lobby_assignmentnotice_authheader"
     },
@@ -19809,7 +19809,7 @@
       "source_file": "src/app/src/lobby/AssignmentNotice.js",
       "source_location": "L55",
       "_origin": "ast",
-      "community": 69,
+      "community": 70,
       "norm_label": "apifetch()",
       "id": "lobby_assignmentnotice_apifetch"
     },
@@ -19819,7 +19819,7 @@
       "source_file": "src/app/src/lobby/AssignmentNotice.js",
       "source_location": "L63",
       "_origin": "ast",
-      "community": 69,
+      "community": 70,
       "norm_label": "assignmentnotice",
       "id": "lobby_assignmentnotice_assignmentnotice"
     },
@@ -19829,7 +19829,7 @@
       "source_file": "src/app/src/lobby/AssignmentNotice.js",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 69,
+      "community": 70,
       "norm_label": ".init()",
       "id": "lobby_assignmentnotice_assignmentnotice_init"
     },
@@ -19839,7 +19839,7 @@
       "source_file": "src/app/src/lobby/AssignmentNotice.js",
       "source_location": "L109",
       "_origin": "ast",
-      "community": 69,
+      "community": 70,
       "norm_label": "._showbell()",
       "id": "lobby_assignmentnotice_assignmentnotice_showbell"
     },
@@ -19849,7 +19849,7 @@
       "source_file": "src/app/src/lobby/AssignmentNotice.js",
       "source_location": "L128",
       "_origin": "ast",
-      "community": 69,
+      "community": 70,
       "norm_label": "._gotoeditorformission()",
       "id": "lobby_assignmentnotice_assignmentnotice_gotoeditorformission"
     },
@@ -19859,9 +19859,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "editor_livewatch",
       "community": 0,
-      "norm_label": "livewatch.js"
+      "norm_label": "livewatch.js",
+      "id": "editor_livewatch"
     },
     {
       "label": "authHeader()",
@@ -19869,9 +19869,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L83",
       "_origin": "ast",
-      "id": "editor_livewatch_authheader",
       "community": 0,
-      "norm_label": "authheader()"
+      "norm_label": "authheader()",
+      "id": "editor_livewatch_authheader"
     },
     {
       "label": "decodeJwtPayloadUnsafe()",
@@ -19879,9 +19879,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L97",
       "_origin": "ast",
-      "id": "editor_livewatch_decodejwtpayloadunsafe",
       "community": 0,
-      "norm_label": "decodejwtpayloadunsafe()"
+      "norm_label": "decodejwtpayloadunsafe()",
+      "id": "editor_livewatch_decodejwtpayloadunsafe"
     },
     {
       "label": "getOwnStudentId()",
@@ -19889,9 +19889,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L144",
       "_origin": "ast",
-      "id": "editor_livewatch_getownstudentid",
       "community": 0,
-      "norm_label": "getownstudentid()"
+      "norm_label": "getownstudentid()",
+      "id": "editor_livewatch_getownstudentid"
     },
     {
       "label": "apiPost()",
@@ -19899,9 +19899,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L154",
       "_origin": "ast",
-      "id": "editor_livewatch_apipost",
       "community": 0,
-      "norm_label": "apipost()"
+      "norm_label": "apipost()",
+      "id": "editor_livewatch_apipost"
     },
     {
       "label": "showBanner()",
@@ -19909,9 +19909,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L186",
       "_origin": "ast",
-      "id": "editor_livewatch_showbanner",
       "community": 0,
-      "norm_label": "showbanner()"
+      "norm_label": "showbanner()",
+      "id": "editor_livewatch_showbanner"
     },
     {
       "label": "hideBanner()",
@@ -19919,9 +19919,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L210",
       "_origin": "ast",
-      "id": "editor_livewatch_hidebanner",
       "community": 0,
-      "norm_label": "hidebanner()"
+      "norm_label": "hidebanner()",
+      "id": "editor_livewatch_hidebanner"
     },
     {
       "label": "requestControlBack()",
@@ -19929,9 +19929,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L215",
       "_origin": "ast",
-      "id": "editor_livewatch_requestcontrolback",
       "community": 0,
-      "norm_label": "requestcontrolback()"
+      "norm_label": "requestcontrolback()",
+      "id": "editor_livewatch_requestcontrolback"
     },
     {
       "label": "_startWatchdog()",
@@ -19939,9 +19939,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L220",
       "_origin": "ast",
-      "id": "editor_livewatch_startwatchdog",
       "community": 0,
-      "norm_label": "_startwatchdog()"
+      "norm_label": "_startwatchdog()",
+      "id": "editor_livewatch_startwatchdog"
     },
     {
       "label": "_stopWatchdog()",
@@ -19949,9 +19949,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L227",
       "_origin": "ast",
-      "id": "editor_livewatch_stopwatchdog",
       "community": 0,
-      "norm_label": "_stopwatchdog()"
+      "norm_label": "_stopwatchdog()",
+      "id": "editor_livewatch_stopwatchdog"
     },
     {
       "label": "_checkTeacherWatchdog()",
@@ -19959,9 +19959,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L252",
       "_origin": "ast",
-      "id": "editor_livewatch_checkteacherwatchdog",
       "community": 0,
-      "norm_label": "_checkteacherwatchdog()"
+      "norm_label": "_checkteacherwatchdog()",
+      "id": "editor_livewatch_checkteacherwatchdog"
     },
     {
       "label": "_forceRecoverControl()",
@@ -19969,9 +19969,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L293",
       "_origin": "ast",
-      "id": "editor_livewatch_forcerecovercontrol",
       "community": 0,
-      "norm_label": "_forcerecovercontrol()"
+      "norm_label": "_forcerecovercontrol()",
+      "id": "editor_livewatch_forcerecovercontrol"
     },
     {
       "label": "saveThenSignalReady()",
@@ -19979,9 +19979,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L309",
       "_origin": "ast",
-      "id": "editor_livewatch_savethensignalready",
       "community": 0,
-      "norm_label": "savethensignalready()"
+      "norm_label": "savethensignalready()",
+      "id": "editor_livewatch_savethensignalready"
     },
     {
       "label": "promptControlRequest()",
@@ -19989,9 +19989,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L317",
       "_origin": "ast",
-      "id": "editor_livewatch_promptcontrolrequest",
       "community": 0,
-      "norm_label": "promptcontrolrequest()"
+      "norm_label": "promptcontrolrequest()",
+      "id": "editor_livewatch_promptcontrolrequest"
     },
     {
       "label": "acceptControlRequest()",
@@ -19999,9 +19999,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L324",
       "_origin": "ast",
-      "id": "editor_livewatch_acceptcontrolrequest",
       "community": 0,
-      "norm_label": "acceptcontrolrequest()"
+      "norm_label": "acceptcontrolrequest()",
+      "id": "editor_livewatch_acceptcontrolrequest"
     },
     {
       "label": "denyControlRequest()",
@@ -20009,9 +20009,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L334",
       "_origin": "ast",
-      "id": "editor_livewatch_denycontrolrequest",
       "community": 0,
-      "norm_label": "denycontrolrequest()"
+      "norm_label": "denycontrolrequest()",
+      "id": "editor_livewatch_denycontrolrequest"
     },
     {
       "label": "grantControlToStudent()",
@@ -20019,9 +20019,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L341",
       "_origin": "ast",
-      "id": "editor_livewatch_grantcontroltostudent",
       "community": 0,
-      "norm_label": "grantcontroltostudent()"
+      "norm_label": "grantcontroltostudent()",
+      "id": "editor_livewatch_grantcontroltostudent"
     },
     {
       "label": "broadcastPreview()",
@@ -20029,9 +20029,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L351",
       "_origin": "ast",
-      "id": "editor_livewatch_broadcastpreview",
       "community": 0,
-      "norm_label": "broadcastpreview()"
+      "norm_label": "broadcastpreview()",
+      "id": "editor_livewatch_broadcastpreview"
     },
     {
       "label": "joinSession()",
@@ -20039,9 +20039,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L365",
       "_origin": "ast",
-      "id": "editor_livewatch_joinsession",
       "community": 0,
-      "norm_label": "joinsession()"
+      "norm_label": "joinsession()",
+      "id": "editor_livewatch_joinsession"
     },
     {
       "label": "startHeartbeat()",
@@ -20049,9 +20049,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L416",
       "_origin": "ast",
-      "id": "editor_livewatch_startheartbeat",
       "community": 0,
-      "norm_label": "startheartbeat()"
+      "norm_label": "startheartbeat()",
+      "id": "editor_livewatch_startheartbeat"
     },
     {
       "label": "endLocalSession()",
@@ -20059,9 +20059,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L434",
       "_origin": "ast",
-      "id": "editor_livewatch_endlocalsession",
       "community": 0,
-      "norm_label": "endlocalsession()"
+      "norm_label": "endlocalsession()",
+      "id": "editor_livewatch_endlocalsession"
     },
     {
       "label": "initLiveWatch()",
@@ -20069,9 +20069,309 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L453",
       "_origin": "ast",
-      "id": "editor_livewatch_initlivewatch",
       "community": 0,
-      "norm_label": "initlivewatch()"
+      "norm_label": "initlivewatch()",
+      "id": "editor_livewatch_initlivewatch"
+    },
+    {
+      "label": "AssignmentBadge.js",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "assignmentbadge.js",
+      "id": "ui_assignmentbadge"
+    },
+    {
+      "label": "dismissedHintIds",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L82",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "dismissedhintids",
+      "id": "ui_assignmentbadge_dismissedhintids"
+    },
+    {
+      "label": "authHeader()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L90",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "authheader()",
+      "id": "ui_assignmentbadge_authheader"
+    },
+    {
+      "label": "apiFetch()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L95",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "apifetch()",
+      "id": "ui_assignmentbadge_apifetch"
+    },
+    {
+      "label": "AssignmentBadge",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L103",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "assignmentbadge",
+      "id": "ui_assignmentbadge_assignmentbadge"
+    },
+    {
+      "label": ".init()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L104",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": ".init()",
+      "id": "ui_assignmentbadge_assignmentbadge_init"
+    },
+    {
+      "label": "._showStartBanner()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L135",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._showstartbanner()",
+      "id": "ui_assignmentbadge_assignmentbadge_showstartbanner"
+    },
+    {
+      "label": "._dismissBanner()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L153",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._dismissbanner()",
+      "id": "ui_assignmentbadge_assignmentbadge_dismissbanner"
+    },
+    {
+      "label": "._hideBanner()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L160",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._hidebanner()",
+      "id": "ui_assignmentbadge_assignmentbadge_hidebanner"
+    },
+    {
+      "label": "._startMission()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L167",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._startmission()",
+      "id": "ui_assignmentbadge_assignmentbadge_startmission"
+    },
+    {
+      "label": "._showBadge()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L181",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._showbadge()",
+      "id": "ui_assignmentbadge_assignmentbadge_showbadge"
+    },
+    {
+      "label": "._recomputeLocal()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L210",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._recomputelocal()",
+      "id": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "label": "._refreshRequirements()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L236",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._refreshrequirements()",
+      "id": "ui_assignmentbadge_assignmentbadge_refreshrequirements"
+    },
+    {
+      "label": "._applyProgress()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L259",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._applyprogress()",
+      "id": "ui_assignmentbadge_assignmentbadge_applyprogress"
+    },
+    {
+      "label": "._evaluateHints()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L306",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._evaluatehints()",
+      "id": "ui_assignmentbadge_assignmentbadge_evaluatehints"
+    },
+    {
+      "label": "._findSceneAndCharacter()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L341",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._findsceneandcharacter()",
+      "id": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter"
+    },
+    {
+      "label": "._hintConditionHolds()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L360",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._hintconditionholds()",
+      "id": "ui_assignmentbadge_assignmentbadge_hintconditionholds"
+    },
+    {
+      "label": "._showCoachModal()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L428",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._showcoachmodal()",
+      "id": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
+    },
+    {
+      "label": "._closeCoachModal()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L460",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._closecoachmodal()",
+      "id": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
+    },
+    {
+      "label": "._toggleExpanded()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L467",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._toggleexpanded()",
+      "id": "ui_assignmentbadge_assignmentbadge_toggleexpanded"
+    },
+    {
+      "label": "._openPopover()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L475",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._openpopover()",
+      "id": "ui_assignmentbadge_assignmentbadge_openpopover"
+    },
+    {
+      "label": "._closePopover()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L490",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._closepopover()",
+      "id": "ui_assignmentbadge_assignmentbadge_closepopover"
+    },
+    {
+      "label": "._onOutsideClick()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L498",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._onoutsideclick()",
+      "id": "ui_assignmentbadge_assignmentbadge_onoutsideclick"
+    },
+    {
+      "label": "._renderPopover()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L508",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._renderpopover()",
+      "id": "ui_assignmentbadge_assignmentbadge_renderpopover"
+    },
+    {
+      "label": "._renderRow()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L517",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "._renderrow()",
+      "id": "ui_assignmentbadge_assignmentbadge_renderrow"
+    },
+    {
+      "label": "detailedManifest.js",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "detailedmanifest.js",
+      "id": "ui_detailedmanifest"
+    },
+    {
+      "label": "CARET_TYPES",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L38",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "caret_types",
+      "id": "ui_detailedmanifest_caret_types"
+    },
+    {
+      "label": "emptyManifest()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L40",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "emptymanifest()",
+      "id": "ui_detailedmanifest_emptymanifest"
+    },
+    {
+      "label": "walkScript()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L55",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "walkscript()",
+      "id": "ui_detailedmanifest_walkscript"
+    },
+    {
+      "label": "computeDetailedManifest()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L87",
+      "_origin": "ast",
+      "community": 12,
+      "norm_label": "computedetailedmanifest()",
+      "id": "ui_detailedmanifest_computedetailedmanifest"
     },
     {
       "label": "AssignmentAuthorBar.js",
@@ -20217,311 +20517,11 @@
       "label": "._showHintReview()",
       "file_type": "code",
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L326",
+      "source_location": "L332",
       "_origin": "ast",
       "id": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
       "community": 48,
       "norm_label": "._showhintreview()"
-    },
-    {
-      "label": "AssignmentBadge.js",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge",
-      "community": 12,
-      "norm_label": "assignmentbadge.js"
-    },
-    {
-      "label": "dismissedHintIds",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L82",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_dismissedhintids",
-      "community": 12,
-      "norm_label": "dismissedhintids"
-    },
-    {
-      "label": "authHeader()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L90",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_authheader",
-      "community": 12,
-      "norm_label": "authheader()"
-    },
-    {
-      "label": "apiFetch()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L95",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_apifetch",
-      "community": 12,
-      "norm_label": "apifetch()"
-    },
-    {
-      "label": "AssignmentBadge",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L103",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge",
-      "community": 12,
-      "norm_label": "assignmentbadge"
-    },
-    {
-      "label": ".init()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L104",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_init",
-      "community": 12,
-      "norm_label": ".init()"
-    },
-    {
-      "label": "._showStartBanner()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L135",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_showstartbanner",
-      "community": 12,
-      "norm_label": "._showstartbanner()"
-    },
-    {
-      "label": "._dismissBanner()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L153",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_dismissbanner",
-      "community": 12,
-      "norm_label": "._dismissbanner()"
-    },
-    {
-      "label": "._hideBanner()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L160",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_hidebanner",
-      "community": 12,
-      "norm_label": "._hidebanner()"
-    },
-    {
-      "label": "._startMission()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L167",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_startmission",
-      "community": 12,
-      "norm_label": "._startmission()"
-    },
-    {
-      "label": "._showBadge()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L181",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "community": 12,
-      "norm_label": "._showbadge()"
-    },
-    {
-      "label": "._recomputeLocal()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L210",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "community": 12,
-      "norm_label": "._recomputelocal()"
-    },
-    {
-      "label": "._refreshRequirements()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L236",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "community": 12,
-      "norm_label": "._refreshrequirements()"
-    },
-    {
-      "label": "._applyProgress()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L259",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "community": 12,
-      "norm_label": "._applyprogress()"
-    },
-    {
-      "label": "._evaluateHints()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L306",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "community": 12,
-      "norm_label": "._evaluatehints()"
-    },
-    {
-      "label": "._findSceneAndCharacter()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L341",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter",
-      "community": 12,
-      "norm_label": "._findsceneandcharacter()"
-    },
-    {
-      "label": "._hintConditionHolds()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L360",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
-      "community": 12,
-      "norm_label": "._hintconditionholds()"
-    },
-    {
-      "label": "._showCoachModal()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L428",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
-      "community": 12,
-      "norm_label": "._showcoachmodal()"
-    },
-    {
-      "label": "._closeCoachModal()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L460",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_closecoachmodal",
-      "community": 12,
-      "norm_label": "._closecoachmodal()"
-    },
-    {
-      "label": "._toggleExpanded()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L467",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
-      "community": 12,
-      "norm_label": "._toggleexpanded()"
-    },
-    {
-      "label": "._openPopover()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L475",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_openpopover",
-      "community": 12,
-      "norm_label": "._openpopover()"
-    },
-    {
-      "label": "._closePopover()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L490",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_closepopover",
-      "community": 12,
-      "norm_label": "._closepopover()"
-    },
-    {
-      "label": "._onOutsideClick()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L498",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
-      "community": 12,
-      "norm_label": "._onoutsideclick()"
-    },
-    {
-      "label": "._renderPopover()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L508",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_renderpopover",
-      "community": 12,
-      "norm_label": "._renderpopover()"
-    },
-    {
-      "label": "._renderRow()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L517",
-      "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_renderrow",
-      "community": 12,
-      "norm_label": "._renderrow()"
-    },
-    {
-      "label": "detailedManifest.js",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "ui_detailedmanifest",
-      "community": 12,
-      "norm_label": "detailedmanifest.js"
-    },
-    {
-      "label": "CARET_TYPES",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L38",
-      "_origin": "ast",
-      "id": "ui_detailedmanifest_caret_types",
-      "community": 12,
-      "norm_label": "caret_types"
-    },
-    {
-      "label": "emptyManifest()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L40",
-      "_origin": "ast",
-      "id": "ui_detailedmanifest_emptymanifest",
-      "community": 12,
-      "norm_label": "emptymanifest()"
-    },
-    {
-      "label": "walkScript()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L55",
-      "_origin": "ast",
-      "id": "ui_detailedmanifest_walkscript",
-      "community": 12,
-      "norm_label": "walkscript()"
-    },
-    {
-      "label": "computeDetailedManifest()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L87",
-      "_origin": "ast",
-      "id": "ui_detailedmanifest_computedetailedmanifest",
-      "community": 12,
-      "norm_label": "computedetailedmanifest()"
     }
   ],
   "links": [
@@ -51093,9 +51093,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "utils_lib_newhtml",
-      "confidence_score": 1.0
+      "target": "utils_lib_newhtml"
     },
     {
       "relation": "imports",
@@ -51181,9 +51181,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L64",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge",
-      "target": "utils_lib_newhtml",
-      "confidence_score": 1.0
+      "target": "utils_lib_newhtml"
     },
     {
       "relation": "imports",
@@ -52219,9 +52219,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livemirror_resetmirrorstate",
-      "confidence_score": 1.0
+      "target": "editor_livemirror_resetmirrorstate"
     },
     {
       "relation": "imports",
@@ -52252,9 +52252,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livemirror_showlockoverlay",
-      "confidence_score": 1.0
+      "target": "editor_livemirror_showlockoverlay"
     },
     {
       "relation": "imports",
@@ -52296,9 +52296,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livemirror_hidelockoverlay",
-      "confidence_score": 1.0
+      "target": "editor_livemirror_hidelockoverlay"
     },
     {
       "relation": "imports",
@@ -52329,9 +52329,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livemirror_islockoverlayshown",
-      "confidence_score": 1.0
+      "target": "editor_livemirror_islockoverlayshown"
     },
     {
       "relation": "imports",
@@ -52340,9 +52340,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livemirror_reserveframetopspace",
-      "confidence_score": 1.0
+      "target": "editor_livemirror_reserveframetopspace"
     },
     {
       "relation": "imports",
@@ -52384,9 +52384,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livemirror_reloadprojectfrombackend",
-      "confidence_score": 1.0
+      "target": "editor_livemirror_reloadprojectfrombackend"
     },
     {
       "relation": "imports",
@@ -52428,9 +52428,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livemirror_applystagestate",
-      "confidence_score": 1.0
+      "target": "editor_livemirror_applystagestate"
     },
     {
       "relation": "imports",
@@ -52461,9 +52461,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livemirror_applypagelist",
-      "confidence_score": 1.0
+      "target": "editor_livemirror_applypagelist"
     },
     {
       "relation": "imports",
@@ -52527,9 +52527,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livemirror_applyuistate",
-      "confidence_score": 1.0
+      "target": "editor_livemirror_applyuistate"
     },
     {
       "relation": "imports",
@@ -52582,9 +52582,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livemirror_resetmirroredui",
-      "confidence_score": 1.0
+      "target": "editor_livemirror_resetmirroredui"
     },
     {
       "relation": "imports",
@@ -52626,9 +52626,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livemirror_buildmirrorpayload",
-      "confidence_score": 1.0
+      "target": "editor_livemirror_buildmirrorpayload"
     },
     {
       "relation": "imports",
@@ -53874,9 +53874,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "services_realtimeclient_connectchannel",
-      "confidence_score": 1.0
+      "target": "services_realtimeclient_connectchannel"
     },
     {
       "relation": "contains",
@@ -54176,9 +54176,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge",
-      "target": "ui_assignmentscoring_computeprojectmanifest",
-      "confidence_score": 1.0
+      "target": "ui_assignmentscoring_computeprojectmanifest"
     },
     {
       "relation": "imports",
@@ -54187,9 +54187,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge",
-      "target": "ui_assignmentscoring_comparemanifests",
-      "confidence_score": 1.0
+      "target": "ui_assignmentscoring_comparemanifests"
     },
     {
       "relation": "contains",
@@ -64775,9 +64775,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L324",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_acceptcontrolrequest",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_acceptcontrolrequest"
     },
     {
       "relation": "contains",
@@ -64785,9 +64785,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L154",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_apipost",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_apipost"
     },
     {
       "relation": "contains",
@@ -64795,9 +64795,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_authheader",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_authheader"
     },
     {
       "relation": "contains",
@@ -64805,9 +64805,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L351",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_broadcastpreview",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_broadcastpreview"
     },
     {
       "relation": "contains",
@@ -64815,9 +64815,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L252",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_checkteacherwatchdog",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_checkteacherwatchdog"
     },
     {
       "relation": "contains",
@@ -64825,9 +64825,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_decodejwtpayloadunsafe",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_decodejwtpayloadunsafe"
     },
     {
       "relation": "contains",
@@ -64835,9 +64835,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L334",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_denycontrolrequest",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_denycontrolrequest"
     },
     {
       "relation": "contains",
@@ -64845,9 +64845,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L434",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_endlocalsession",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_endlocalsession"
     },
     {
       "relation": "contains",
@@ -64855,9 +64855,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L293",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_forcerecovercontrol",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_forcerecovercontrol"
     },
     {
       "relation": "contains",
@@ -64865,9 +64865,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L144",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_getownstudentid",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_getownstudentid"
     },
     {
       "relation": "contains",
@@ -64875,9 +64875,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L341",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_grantcontroltostudent",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_grantcontroltostudent"
     },
     {
       "relation": "contains",
@@ -64885,9 +64885,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L210",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_hidebanner",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_hidebanner"
     },
     {
       "relation": "contains",
@@ -64895,9 +64895,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L453",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_initlivewatch",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_initlivewatch"
     },
     {
       "relation": "contains",
@@ -64905,9 +64905,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L365",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_joinsession",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_joinsession"
     },
     {
       "relation": "contains",
@@ -64915,9 +64915,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L317",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_promptcontrolrequest",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_promptcontrolrequest"
     },
     {
       "relation": "contains",
@@ -64925,9 +64925,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L215",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_requestcontrolback",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_requestcontrolback"
     },
     {
       "relation": "contains",
@@ -64935,9 +64935,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L309",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_savethensignalready",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_savethensignalready"
     },
     {
       "relation": "contains",
@@ -64945,9 +64945,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L186",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_showbanner",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_showbanner"
     },
     {
       "relation": "contains",
@@ -64955,9 +64955,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L416",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_startheartbeat",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_startheartbeat"
     },
     {
       "relation": "contains",
@@ -64965,9 +64965,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L220",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_startwatchdog",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_startwatchdog"
     },
     {
       "relation": "contains",
@@ -64975,9 +64975,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L227",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch",
-      "target": "editor_livewatch_stopwatchdog",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_stopwatchdog"
     },
     {
       "relation": "calls",
@@ -64986,9 +64986,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L155",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_apipost",
-      "target": "editor_livewatch_authheader",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_authheader"
     },
     {
       "relation": "calls",
@@ -64997,9 +64997,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L149",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_getownstudentid",
-      "target": "editor_livewatch_decodejwtpayloadunsafe",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_decodejwtpayloadunsafe"
     },
     {
       "relation": "calls",
@@ -65008,9 +65008,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L461",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_initlivewatch",
-      "target": "editor_livewatch_getownstudentid",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_getownstudentid"
     },
     {
       "relation": "calls",
@@ -65019,9 +65019,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L301",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_forcerecovercontrol",
-      "target": "editor_livewatch_apipost",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_apipost"
     },
     {
       "relation": "calls",
@@ -65030,9 +65030,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L454",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_initlivewatch",
-      "target": "editor_livewatch_apipost",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_apipost"
     },
     {
       "relation": "calls",
@@ -65041,9 +65041,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L367",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_joinsession",
-      "target": "editor_livewatch_apipost",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_apipost"
     },
     {
       "relation": "calls",
@@ -65052,9 +65052,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L327",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_acceptcontrolrequest",
-      "target": "editor_livewatch_showbanner",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_showbanner"
     },
     {
       "relation": "calls",
@@ -65063,9 +65063,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L263",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_checkteacherwatchdog",
-      "target": "editor_livewatch_showbanner",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_showbanner"
     },
     {
       "relation": "calls",
@@ -65074,9 +65074,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L338",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_denycontrolrequest",
-      "target": "editor_livewatch_showbanner",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_showbanner"
     },
     {
       "relation": "calls",
@@ -65085,9 +65085,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L298",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_forcerecovercontrol",
-      "target": "editor_livewatch_showbanner",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_showbanner"
     },
     {
       "relation": "calls",
@@ -65096,9 +65096,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L347",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_grantcontroltostudent",
-      "target": "editor_livewatch_showbanner",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_showbanner"
     },
     {
       "relation": "calls",
@@ -65107,9 +65107,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L318",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_promptcontrolrequest",
-      "target": "editor_livewatch_showbanner",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_showbanner"
     },
     {
       "relation": "calls",
@@ -65118,9 +65118,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L441",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_endlocalsession",
-      "target": "editor_livewatch_hidebanner",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_hidebanner"
     },
     {
       "relation": "calls",
@@ -65129,9 +65129,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L264",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_checkteacherwatchdog",
-      "target": "editor_livewatch_requestcontrolback",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_requestcontrolback"
     },
     {
       "relation": "calls",
@@ -65140,9 +65140,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L331",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_acceptcontrolrequest",
-      "target": "editor_livewatch_startwatchdog",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_startwatchdog"
     },
     {
       "relation": "calls",
@@ -65151,9 +65151,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L221",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_startwatchdog",
-      "target": "editor_livewatch_stopwatchdog",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_stopwatchdog"
     },
     {
       "relation": "calls",
@@ -65162,9 +65162,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L445",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_endlocalsession",
-      "target": "editor_livewatch_stopwatchdog",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_stopwatchdog"
     },
     {
       "relation": "calls",
@@ -65173,9 +65173,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L346",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_grantcontroltostudent",
-      "target": "editor_livewatch_stopwatchdog",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_stopwatchdog"
     },
     {
       "relation": "calls",
@@ -65184,9 +65184,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L257",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_checkteacherwatchdog",
-      "target": "editor_livewatch_forcerecovercontrol",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_forcerecovercontrol"
     },
     {
       "relation": "calls",
@@ -65195,9 +65195,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L296",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_forcerecovercontrol",
-      "target": "editor_livewatch_endlocalsession",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_endlocalsession"
     },
     {
       "relation": "calls",
@@ -65206,9 +65206,9 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L330",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_acceptcontrolrequest",
-      "target": "editor_livewatch_savethensignalready",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_savethensignalready"
     },
     {
       "relation": "calls",
@@ -65217,9 +65217,619 @@
       "source_file": "src/app/src/editor/LiveWatch.js",
       "source_location": "L413",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "editor_livewatch_joinsession",
-      "target": "editor_livewatch_startheartbeat",
-      "confidence_score": 1.0
+      "target": "editor_livewatch_startheartbeat"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L95",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentbadge_apifetch"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L103",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L90",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentbadge_authheader"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L82",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentbadge_dismissedhintids"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L66",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_detailedmanifest"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L66",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_detailedmanifest_computedetailedmanifest"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L99",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_apifetch",
+      "target": "ui_assignmentbadge_authheader"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L107",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_init",
+      "target": "ui_assignmentbadge_apifetch"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L242",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
+      "target": "ui_assignmentbadge_apifetch"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L259",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_applyprogress"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L460",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L490",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L153",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_dismissbanner"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L306",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L341",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L160",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L360",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L104",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_init"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L498",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_onoutsideclick"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L475",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_openpopover"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L210",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L236",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L508",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L517",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_renderrow"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L181",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L428",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L135",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L167",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_startmission"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L467",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_toggleexpanded"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L127",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_init",
+      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L129",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_init",
+      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L157",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_dismissbanner",
+      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L171",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_startmission",
+      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L177",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_startmission",
+      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L190",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L198",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L222",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
+      "target": "ui_assignmentbadge_assignmentbadge_applyprogress"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L227",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
+      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L256",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L286",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
+      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L276",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
+      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L287",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
+      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L319",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
+      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L320",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
+      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L314",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
+      "target": "ui_detailedmanifest_computedetailedmanifest"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L374",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
+      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L433",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
+      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L469",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
+      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L471",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
+      "target": "ui_assignmentbadge_assignmentbadge_openpopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L478",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_openpopover",
+      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L505",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
+      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L512",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_renderpopover",
+      "target": "ui_assignmentbadge_assignmentbadge_renderrow"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L38",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_detailedmanifest",
+      "target": "ui_detailedmanifest_caret_types"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L87",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_detailedmanifest",
+      "target": "ui_detailedmanifest_computedetailedmanifest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L40",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_detailedmanifest",
+      "target": "ui_detailedmanifest_emptymanifest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L55",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_detailedmanifest",
+      "target": "ui_detailedmanifest_walkscript"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L89",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_detailedmanifest_computedetailedmanifest",
+      "target": "ui_detailedmanifest_emptymanifest"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L118",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_detailedmanifest_computedetailedmanifest",
+      "target": "ui_detailedmanifest_walkscript"
     },
     {
       "relation": "contains",
@@ -65372,7 +65982,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L398",
+      "source_location": "L408",
       "weight": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
       "target": "ui_assignmentauthorbar_apifetch",
@@ -65383,7 +65993,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L344",
+      "source_location": "L354",
       "weight": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
       "target": "ui_assignmentauthorbar_hintwhenlabel",
@@ -65443,7 +66053,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L326",
+      "source_location": "L332",
       "weight": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar",
       "target": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
@@ -65492,618 +66102,8 @@
       "source": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
       "target": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
       "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L95",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_apifetch",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L103",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L90",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_authheader",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L82",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_dismissedhintids",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L66",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_detailedmanifest",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L66",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_detailedmanifest_computedetailedmanifest",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L99",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_apifetch",
-      "target": "ui_assignmentbadge_authheader",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L107",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_init",
-      "target": "ui_assignmentbadge_apifetch",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L242",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "target": "ui_assignmentbadge_apifetch",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L259",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L460",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L490",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_closepopover",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L153",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_dismissbanner",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L306",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L341",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L160",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_hidebanner",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L360",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L104",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_init",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L498",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L475",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_openpopover",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L210",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L236",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L508",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_renderpopover",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L517",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_renderrow",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L181",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L428",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L135",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L167",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_startmission",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L467",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L127",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_init",
-      "target": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L129",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_init",
-      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L157",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_dismissbanner",
-      "target": "ui_assignmentbadge_assignmentbadge_hidebanner",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L171",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_startmission",
-      "target": "ui_assignmentbadge_assignmentbadge_hidebanner",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L177",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_startmission",
-      "target": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L190",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L198",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L222",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "target": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L227",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L256",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L286",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L276",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_renderpopover",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L287",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L319",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L320",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L314",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "target": "ui_detailedmanifest_computedetailedmanifest"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L374",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
-      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L433",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
-      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L469",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
-      "target": "ui_assignmentbadge_assignmentbadge_closepopover",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L471",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
-      "target": "ui_assignmentbadge_assignmentbadge_openpopover",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L478",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_openpopover",
-      "target": "ui_assignmentbadge_assignmentbadge_renderpopover",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L505",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
-      "target": "ui_assignmentbadge_assignmentbadge_closepopover",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L512",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_renderpopover",
-      "target": "ui_assignmentbadge_assignmentbadge_renderrow",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L38",
-      "weight": 1.0,
-      "source": "ui_detailedmanifest",
-      "target": "ui_detailedmanifest_caret_types",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L87",
-      "weight": 1.0,
-      "source": "ui_detailedmanifest",
-      "target": "ui_detailedmanifest_computedetailedmanifest",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L40",
-      "weight": 1.0,
-      "source": "ui_detailedmanifest",
-      "target": "ui_detailedmanifest_emptymanifest",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L55",
-      "weight": 1.0,
-      "source": "ui_detailedmanifest",
-      "target": "ui_detailedmanifest_walkscript",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L89",
-      "weight": 1.0,
-      "source": "ui_detailedmanifest_computedetailedmanifest",
-      "target": "ui_detailedmanifest_emptymanifest",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L118",
-      "weight": 1.0,
-      "source": "ui_detailedmanifest_computedetailedmanifest",
-      "target": "ui_detailedmanifest_walkscript",
-      "confidence_score": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "31a3d060c4d5d93b540f5c52dc154b034e5e1f85"
+  "built_at_commit": "b03a73a6a2b533666a94fc0d286cf3b80f7ec86f"
 }

@@ -1,7 +1,7 @@
 # Graph Report - .  (2026-08-24)
 
 ## Corpus Check
-- 4 files · ~107,935 words
+- 1 files · ~108,008 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -58,15 +58,15 @@
 - [[_COMMUNITY_Block Spec Catalog (Core)|Block Spec Catalog (Core)]]
 - [[_COMMUNITY_2D Vector Math|2D Vector Math]]
 - [[_COMMUNITY_Paint Undo Buffer|Paint Undo Buffer]]
+- [[_COMMUNITY_Paint Grid Overlay|Paint Grid Overlay]]
 - [[_COMMUNITY_2D Matrix Math|2D Matrix Math]]
-- [[_COMMUNITY_Camera Capture|Camera Capture]]
-- [[_COMMUNITY_Media Key Generation|Media Key Generation]]
+- [[_COMMUNITY_Canvas Draw Commands|Canvas Draw Commands]]
 - [[_COMMUNITY_Audio Playback Engine|Audio Playback Engine]]
 - [[_COMMUNITY_Sample Projects List|Sample Projects List]]
-- [[_COMMUNITY_Time Tracking|Time Tracking]]
 - [[_COMMUNITY_JSZip Shim|JSZip Shim]]
 - [[_COMMUNITY_Color Conversion Helpers|Color Conversion Helpers]]
 - [[_COMMUNITY_Mission Notification Bell|Mission Notification Bell]]
+- [[_COMMUNITY_Paint Side Palette|Paint Side Palette]]
 - [[_COMMUNITY_PNG Render Cache|PNG Render Cache]]
 - [[_COMMUNITY_Node Stream Shim|Node Stream Shim]]
 - [[_COMMUNITY_SVG Path Drawing Util|SVG Path Drawing Util]]
@@ -98,8 +98,8 @@
 
 ## Import Cycles
 - 3-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
-- 3-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
 - 3-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
+- 3-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
 - 3-file cycle: `src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Thumbs.js -> src/app/src/editor/ui/UI.js -> src/app/src/editor/ui/ScriptsPane.js`
 - 4-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/PaintUndo.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
 - 4-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
@@ -178,11 +178,11 @@ Nodes (3): SVGImage, getIdFor(), getIdForCamera()
 Cohesion: 0.25
 Nodes (8): apiFetch(), AssignmentAuthorBar, authHeader(), decodeJwtPayloadUnsafe(), getAuthorId(), HINT_WHEN_LABELS, hintWhenLabel(), isAllowedReturnUrl()
 
-### Community 68 - "Color Conversion Helpers"
+### Community 69 - "Mission Notification Bell"
 Cohesion: 0.25
 Nodes (7): getRGB(), rgb2hsb(), curveoptions, dispatchAbsouluteCmd, dispatchDrawCmd, qcurveoptions, strokevalues
 
-### Community 69 - "Mission Notification Bell"
+### Community 70 - "Paint Side Palette"
 Cohesion: 0.52
 Nodes (3): apiFetch(), AssignmentNotice, authHeader()
 
@@ -198,11 +198,11 @@ Nodes (3): Readable, Transform, Writable
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `gn()` connect `In-App Help Guides` to `Live Mirror Sync`, `Paint Action History`, `Execution Engine Core`, `Editor UI Core`, `iOS Platform Bridge`, `Block Rendering`, `Stage Engine`, `Page/Sprite Thumbnails`, `Vector Path Editing`, `Ghost Outline Tool`, `Player Mode Patches`, `Home Lobby Events`, `ScratchJr App Core`, `Block Spec Catalog`, `Palette Drag-and-Drop`, `Block Argument Menus`, `SVG Transform Matrix`, `Sound/Video Recording UI`, `Input Event Handling`, `Editor Entry Boot`, `Paint Layer Management`, `Undo/Redo Stack`, `Lobby-Viewport Wiring`, `Stage Grid Overlay`, `Path Background Cropping`, `SVG Image Element`, `Bezier Curve Drawing`, `Paint Undo Buffer`, `Path Edit Mode`, `Camera Capture`, `Sample Projects List`, `Mission Notification Bell`, `Path Point Manipulation`, `Path Intersection Detection`, `Path Dot Handles`?**
+- **Why does `gn()` connect `In-App Help Guides` to `Live Mirror Sync`, `Paint Action History`, `Execution Engine Core`, `Editor UI Core`, `iOS Platform Bridge`, `Block Rendering`, `Stage Engine`, `Page/Sprite Thumbnails`, `Vector Path Editing`, `Ghost Outline Tool`, `Player Mode Patches`, `Home Lobby Events`, `ScratchJr App Core`, `Block Spec Catalog`, `Palette Drag-and-Drop`, `Block Argument Menus`, `SVG Transform Matrix`, `Sound/Video Recording UI`, `Input Event Handling`, `Editor Entry Boot`, `Paint Layer Management`, `Undo/Redo Stack`, `Lobby-Viewport Wiring`, `Stage Grid Overlay`, `Path Background Cropping`, `SVG Image Element`, `Bezier Curve Drawing`, `Paint Undo Buffer`, `Path Edit Mode`, `2D Matrix Math`, `Sample Projects List`, `Paint Side Palette`, `Path Point Manipulation`, `Path Intersection Detection`, `Path Dot Handles`?**
   _High betweenness centrality (0.244) - this node is a cross-community bridge._
 - **Why does `ScratchJr` connect `ScratchJr Core State` to `App Boot Sequence`, `Execution Engine Core`, `Block Rendering`, `Stage Grid Overlay`, `Selection State`, `Argument Editing State`, `Fullscreen Control`, `Numeric Keypad Input`, `Player Mode Patches`, `ScratchJr App Core`, `Palette Drag-and-Drop`, `Block Argument Menus`?**
   _High betweenness centrality (0.102) - this node is a cross-community bridge._
-- **Why does `Paint` connect `Paint Editor Core` to `Paint Side Palette`, `Paint Gesture Detection`, `Paint Asset Import (XML)`, `Player Mode Patches`, `Paint Color/Size Picker`, `ScratchJr App Core`, `Paint Grid Overlay`, `Paint Canvas Positioning`, `Block Argument Menus`, `Paint Page Navigation`?**
+- **Why does `Paint` connect `Paint Editor Core` to `Time Tracking`, `Paint Gesture Detection`, `Paint Asset Import (XML)`, `Player Mode Patches`, `Paint Color/Size Picker`, `ScratchJr App Core`, `Paint Canvas Positioning`, `Block Argument Menus`, `Media Key Generation`, `Paint Page Navigation`?**
   _High betweenness centrality (0.094) - this node is a cross-community bridge._
 - **What connects `loadassets`, `fontcolors`, `fontsizes` to the rest of the system?**
   _50 weakly-connected nodes found - possible documentation gaps or missing edges._
