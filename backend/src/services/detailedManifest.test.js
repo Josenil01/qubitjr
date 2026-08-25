@@ -131,17 +131,34 @@ describe('computeDetailedManifest — ordering', () => {
             {
                 id: 'page1',
                 md5: 'Spring.svg',
-                sprites: [{ id: 'ruby', type: 'sprite', md5: 'HY-Ruby.svg', scripts: [] }],
+                sprites: [{ id: 'ruby', name: 'Ruby', type: 'sprite', md5: 'HY-Ruby.svg', scripts: [] }],
             },
         ]);
         const manifest = computeDetailedManifest(project);
         expect(manifest.scenes[0].characters[0]).toEqual({
             characterMd5: 'HY-Ruby.svg',
+            characterName: 'Ruby',
             hasScript: false,
             blockTypes: [],
             messagesSent: [],
             messagesReceived: [],
         });
+    });
+
+    it('falls back to null characterName when the sprite has none set', () => {
+        const project = buildProject([
+            {
+                id: 'page1',
+                md5: 'Spring.svg',
+                sprites: [{ id: 's1', type: 'sprite', md5: 'A.svg', scripts: [] }],
+            },
+        ]);
+        // buildProject()'s own fixture helper defaults name to the sprite id
+        // when none is given, so this test builds the raw project shape by
+        // hand to actually exercise the "no name at all" case.
+        delete project.page1.s1.name;
+        const manifest = computeDetailedManifest(project);
+        expect(manifest.scenes[0].characters[0].characterName).toBeNull();
     });
 });
 

@@ -54,14 +54,26 @@ Você vai receber uma transcrição de um projeto de referência já completo, f
 
 Regras de tom:
 - Seja sempre caloroso e encorajador, nunca repreenda e nunca diga "errado" ou "faltou".
-- Frases devem soar como uma sugestão gentil, por exemplo "Que tal..." ou "Depois de..., que tal...".
+- Frases CURTAS e diretas, como se estivesse falando com a criança ao vivo, não escrevendo um manual. Varie a construção da frase entre as dicas - nem toda dica precisa começar com "Que tal..."; use também formas como "Agora...", "Vamos...", perguntas diretas ("Você consegue...?"), etc.
+- SEMPRE que a transcrição der um nome ao personagem (ex.: "Ruby", "Allan"), use esse nome na dica - nunca diga "o personagem" ou "esse personagem" genericamente quando um nome estiver disponível. Depois da primeira menção a um personagem numa dica, pode usar pronome (ele/ela) se ficar natural.
+- Preste atenção às anotações da transcrição tipo "(X não aparece mais nesta cena...)" e "(Y é personagem novo nesta cena...)" - quando isso acontecer entre uma cena e a seguinte, a dica sobre adicionar o personagem novo deve mencionar a troca de forma natural (ex.: "Agora troque a Ruby pelo Allan aqui" ou "Nessa cena é a vez do Allan"), em vez de simplesmente ignorar que o personagem anterior sumiu.
 - As dicas devem estar em português do Brasil (pt-BR).
 
 Regras de formato - responda APENAS com um JSON estrito, sem crases/markdown, sem nenhum texto fora do JSON, exatamente neste formato:
 
 {"hints": [{"text": "...", "when": {"type": "...", ...campos...}}, ...]}
 
-O campo "when.type" deve ser exatamente um destes valores, com exatamente estes campos (usando SOMENTE identificadores que aparecem literalmente na transcrição recebida - nunca invente um nome que não esteja lá):
+ATENÇÃO - erro comum a evitar: cada personagem na transcrição aparece como \`"Nome" [characterMd5: valor.svg]\`. "Nome" é só pra você usar no TEXTO da dica (pra soar natural, "a Ruby precisa..."). "characterMd5" é um IDENTIFICADOR TÉCNICO que você deve copiar EXATAMENTE (incluindo a extensão .svg) pro campo "characterMd5" do "when" - NUNCA coloque o nome ali. O mesmo vale pra "sceneMd5" (copie o valor depois de "fundo:", tipo "Spring.svg") e "messageName" (copie o valor exato entre colchetes de message[...]/onmessage[...]).
+
+Exemplo de transcrição de entrada e a saída correta correspondente:
+Entrada:
+  Cena 1 (fundo: Spring.svg):
+    - "Ruby" [characterMd5: HY-Ruby.svg]: sem script ainda
+Saída correta pra uma dica sobre isso:
+  {"text": "Você consegue fazer a Ruby dizer algo quando a bandeira verde for tocada?", "when": {"type": "character_no_script", "sceneMd5": "Spring.svg", "characterMd5": "HY-Ruby.svg"}}
+  (note: "Ruby" aparece no texto da dica; "HY-Ruby.svg" - não "Ruby" - é o que vai no characterMd5 do when)
+
+O campo "when.type" deve ser exatamente um destes valores, com exatamente estes campos (usando SOMENTE os identificadores sceneMd5/characterMd5/messageName que aparecem literalmente na transcrição recebida, sempre copiados por extenso incluindo extensão de arquivo quando houver - nunca invente um valor que não esteja lá, e nunca substitua um identificador pelo nome do personagem):
 - "scene_missing": {"type":"scene_missing","sceneMd5":"<da transcrição>"}
 - "character_missing": {"type":"character_missing","sceneMd5":"...","characterMd5":"..."}
 - "character_no_script": {"type":"character_no_script","sceneMd5":"...","characterMd5":"..."}
@@ -69,6 +81,21 @@ O campo "when.type" deve ser exatamente um destes valores, com exatamente estes 
 - "message_not_received": {"type":"message_not_received","messageName":"..."}
 
 Gere aproximadamente uma dica por passo de construção realmente relevante, no máximo 8 dicas no total mesmo para projetos grandes - priorize os passos mais pedagogicamente úteis se houver mais que isso. Ordene o array "hints" seguindo a mesma ordem da transcrição (a ordem natural de construção).`;
+
+/**
+ * Descreve um personagem pra LLM mostrando o NOME (entre aspas, quando
+ * houver - ex. "Ruby") e o characterMd5 (entre colchetes, sempre) lado a
+ * lado e claramente rotulados: '"Ruby" [characterMd5: HY-Ruby.svg]'. A
+ * separação explícita existe porque, numa primeira versão sem essa
+ * distinção clara, a LLM confundiu os dois e colocou o NOME no campo
+ * characterMd5 do "when" (que a validação corretamente rejeitou, mas
+ * descartou quase todo o lote de dicas útil junto) - ver SYSTEM_PROMPT
+ * pro exemplo que reforça qual dos dois vai em cada lugar.
+ */
+function characterDescriptor(character) {
+    const namePart = character.characterName ? `"${character.characterName}" ` : '';
+    return `${namePart}[characterMd5: ${character.characterMd5}]`;
+}
 
 /**
  * Renders one character's blockTypes/messagesSent/messagesReceived as a
@@ -96,10 +123,23 @@ function formatBlocksFragment(character) {
  * have to reject anyway. Returns '' when there is nothing describable at
  * all (e.g. an empty project, or one where nothing has a real asset md5
  * yet), so the caller can skip the LLM call entirely.
+ *
+ * Also annotates, between each describable scene and the one right before
+ * it, which characters DISAPPEARED (present in the previous scene, absent
+ * here) and which are NEW (present here, absent in the previous scene) -
+ * pure set comparison, no LLM involved in detecting it. Only compares
+ * against the immediately preceding describable scene, not cumulatively
+ * across all earlier ones, so a character reappearing later reads as "new"
+ * again there too, matching how a child would actually narrate the story
+ * scene-by-scene. This lets the LLM phrase a natural "troque a Ruby pelo
+ * Allan aqui" instead of silently ignoring a character swap between scenes
+ * (explicit request after reviewing the first generated batch, which had
+ * no way to know Ruby was gone from the next scene).
  */
 function buildTranscript(manifest) {
     const lines = [];
     let sceneNumber = 0;
+    let previousByMd5 = null; // Map<characterMd5, character> of the last describable scene, or null before the first
 
     for (const scene of manifest.scenes) {
         if (!scene.sceneMd5) continue;
@@ -110,14 +150,30 @@ function buildTranscript(manifest) {
         sceneNumber += 1;
         lines.push(`Cena ${sceneNumber} (fundo: ${scene.sceneMd5}):`);
 
+        const currentByMd5 = new Map(describableCharacters.map((c) => [c.characterMd5, c]));
+
         for (const character of describableCharacters) {
+            const descriptor = characterDescriptor(character);
             if (!character.hasScript) {
-                lines.push(`  - Personagem ${character.characterMd5}: sem script ainda`);
+                lines.push(`  - ${descriptor}: sem script ainda`);
                 continue;
             }
             const blocksFragment = formatBlocksFragment(character);
-            lines.push(`  - Personagem ${character.characterMd5}: tem script (blocos: ${blocksFragment})`);
+            lines.push(`  - ${descriptor}: tem script (blocos: ${blocksFragment})`);
         }
+
+        if (previousByMd5) {
+            const removed = [...previousByMd5.values()].filter((c) => !currentByMd5.has(c.characterMd5));
+            const added = describableCharacters.filter((c) => !previousByMd5.has(c.characterMd5));
+            if (removed.length) {
+                lines.push(`  (${removed.map(characterDescriptor).join(', ')} não aparece mais nesta cena, comparado com a cena anterior)`);
+            }
+            if (added.length) {
+                lines.push(`  (${added.map(characterDescriptor).join(', ')} é personagem novo nesta cena, não estava na cena anterior)`);
+            }
+        }
+
+        previousByMd5 = currentByMd5;
     }
 
     return lines.join('\n');

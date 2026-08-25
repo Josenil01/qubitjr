@@ -122,6 +122,14 @@ function computeDetailedManifest(projectJson) {
 
             characters.push({
                 characterMd5: sprite.md5 || null,
+                // Nome dado pelo professor (ex. "Ruby"), NÃO o md5 do asset -
+                // sprite.name é a mesma propriedade que Sprite.js#getSpriteData()
+                // grava. Só usado pra deixar o texto das dicas mais natural
+                // ("a Ruby precisa..." em vez de "o personagem precisa...") -
+                // nunca entra na validação/no `when` (que continua por md5,
+                // estável independente de nome/idioma). null se o sprite não
+                // tiver nome definido.
+                characterName: sprite.name || null,
                 hasScript,
                 blockTypes: Array.from(agg.blockTypes),
                 messagesSent: Array.from(agg.messagesSent),

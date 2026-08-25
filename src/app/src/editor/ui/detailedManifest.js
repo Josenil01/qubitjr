@@ -120,6 +120,9 @@ export function computeDetailedManifest (projectJson) {
 
             characters.push({
                 characterMd5: sprite.md5 || null,
+                // Ver docblock do original em backend/src/services/detailedManifest.js -
+                // nome dado pelo professor, só pro texto das dicas, nunca pro `when`.
+                characterName: sprite.name || null,
                 hasScript,
                 blockTypes: Array.from(agg.blockTypes),
                 messagesSent: Array.from(agg.messagesSent),
