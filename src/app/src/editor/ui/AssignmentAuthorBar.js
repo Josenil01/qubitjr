@@ -399,6 +399,20 @@ export default class AssignmentAuthorBar {
                 return entry.hint;
             });
             if (!approved.length) {
+                // Achado em produção: "Concluir" sem aprovar NENHUMA dica
+                // individualmente (cada uma nasce neutra, ver docblock acima)
+                // saía do fluxo em silêncio, igual a "Pular por agora" - o
+                // professor lia "Concluir" como "terminei de revisar, tá tudo
+                // bem" e não fazia ideia de que nada tinha sido salvo (missão
+                // ficava sem nenhuma dica, sem aviso nenhum). Confirmação
+                // explícita fecha essa armadilha sem contradizer a regra de
+                // nunca aprovar em lote automaticamente.
+                var reallySkip = window.confirm(
+                    'Nenhuma dica foi aprovada - esta missão ficará SEM dicas de coaching. Continuar mesmo assim?'
+                );
+                if (!reallySkip) {
+                    return; // professor volta pra tela de revisão pra aprovar algo
+                }
                 closeOverlay();
                 onDone();
                 return;
