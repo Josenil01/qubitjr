@@ -57,6 +57,8 @@ Regras de tom:
 - Frases CURTAS e diretas, como se estivesse falando com a criança ao vivo, não escrevendo um manual. Varie a construção da frase entre as dicas - nem toda dica precisa começar com "Que tal..."; use também formas como "Agora...", "Vamos...", perguntas diretas ("Você consegue...?"), etc.
 - SEMPRE que a transcrição der um nome ao personagem (ex.: "Ruby", "Allan"), use esse nome na dica - nunca diga "o personagem" ou "esse personagem" genericamente quando um nome estiver disponível. Depois da primeira menção a um personagem numa dica, pode usar pronome (ele/ela) se ficar natural.
 - Preste atenção às anotações da transcrição tipo "(X não aparece mais nesta cena...)" e "(Y é personagem novo nesta cena...)" - quando isso acontecer entre uma cena e a seguinte, a dica sobre adicionar o personagem novo deve mencionar a troca de forma natural (ex.: "Agora troque a Ruby pelo Allan aqui" ou "Nessa cena é a vez do Allan"), em vez de simplesmente ignorar que o personagem anterior sumiu.
+- Quando um personagem tiver um bloco "say" com texto real na transcrição (ex.: say["Olá, primavera!"]), a dica sobre esse personagem falar algo deve sugerir ESSA fala exata (ex.: "Que tal fazer a Ruby dizer 'Olá, primavera!'?"), não uma fala genérica inventada - é a fala que o professor realmente usou no exemplo.
+- OBRIGATÓRIO: gere uma dica "scene_missing" pra CADA cena da transcrição, sem exceção (inclusive a primeira) - nunca pule direto pras dicas de personagem de uma cena sem antes ter uma dica pedindo pra trocar/escolher aquele cenário. Coloque a dica "scene_missing" de uma cena SEMPRE antes das dicas dos personagens daquela mesma cena na lista. Se o orçamento de 8 dicas apertar, é a dica de personagem que deve ser cortada primeiro, nunca a de cena.
 - As dicas devem estar em português do Brasil (pt-BR).
 
 Regras de formato - responda APENAS com um JSON estrito, sem crases/markdown, sem nenhum texto fora do JSON, exatamente neste formato:
@@ -68,10 +70,16 @@ ATENÇÃO - erro comum a evitar: cada personagem na transcrição aparece como \
 Exemplo de transcrição de entrada e a saída correta correspondente:
 Entrada:
   Cena 1 (fundo: Spring.svg):
-    - "Ruby" [characterMd5: HY-Ruby.svg]: sem script ainda
-Saída correta pra uma dica sobre isso:
-  {"text": "Você consegue fazer a Ruby dizer algo quando a bandeira verde for tocada?", "when": {"type": "character_no_script", "sceneMd5": "Spring.svg", "characterMd5": "HY-Ruby.svg"}}
-  (note: "Ruby" aparece no texto da dica; "HY-Ruby.svg" - não "Ruby" - é o que vai no characterMd5 do when)
+    - "Ruby" [characterMd5: HY-Ruby.svg]: tem script (blocos: onflag, say["Olá, primavera!"])
+  Cena 2 (fundo: Summer.svg):
+    - "Allan" [characterMd5: HY-Allan.svg]: sem script ainda
+    (Ruby não aparece mais nesta cena, comparado com a cena anterior)
+    (Allan é personagem novo nesta cena, não estava na cena anterior)
+Saída correta pra essas duas cenas (nesta ordem - reparem que a dica de cena vem ANTES das dicas de personagem de cada cena, e a fala sugerida é a MESMA que a Ruby já usa no exemplo, não uma inventada):
+  {"text": "Que tal escolher o fundo da primavera pra começar?", "when": {"type": "scene_missing", "sceneMd5": "Spring.svg"}}
+  {"text": "Agora faça a Ruby dizer 'Olá, primavera!' quando a bandeira verde for tocada.", "when": {"type": "character_missing_block_type", "sceneMd5": "Spring.svg", "characterMd5": "HY-Ruby.svg", "blockTypes": ["say"]}}
+  {"text": "Vamos mudar pro cenário de verão agora?", "when": {"type": "scene_missing", "sceneMd5": "Summer.svg"}}
+  {"text": "Nessa cena é a vez do Allan - a Ruby não aparece mais aqui.", "when": {"type": "character_missing", "sceneMd5": "Summer.svg", "characterMd5": "HY-Allan.svg"}}
 
 O campo "when.type" deve ser exatamente um destes valores, com exatamente estes campos (usando SOMENTE os identificadores sceneMd5/characterMd5/messageName que aparecem literalmente na transcrição recebida, sempre copiados por extenso incluindo extensão de arquivo quando houver - nunca invente um valor que não esteja lá, e nunca substitua um identificador pelo nome do personagem):
 - "scene_missing": {"type":"scene_missing","sceneMd5":"<da transcrição>"}
@@ -107,11 +115,16 @@ function characterDescriptor(character) {
 function formatBlocksFragment(character) {
     const parts = [];
     for (const blockType of character.blockTypes) {
-        if (blockType === 'message' || blockType === 'onmessage') continue; // rendered below, with their arg
+        if (blockType === 'message' || blockType === 'onmessage' || blockType === 'say') continue; // rendered below, with their real content
         parts.push(blockType);
     }
     for (const name of character.messagesSent) parts.push(`message["${name}"]`);
     for (const name of character.messagesReceived) parts.push(`onmessage["${name}"]`);
+    // Texto literal de cada say, na ordem em que aparece - sem isto a LLM só
+    // sabia "existe um say em algum lugar" e tinha que inventar uma fala
+    // genérica em vez de sugerir a que o professor realmente usou (pedido
+    // explícito depois de ver o segundo lote de dicas geradas).
+    for (const text of character.sayTexts) parts.push(`say["${text}"]`);
     return parts.join(', ');
 }
 

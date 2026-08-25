@@ -72,6 +72,15 @@ function walkScriptForDetail(script, agg) {
         if (blockType === 'onmessage' && hasRealArg) {
             agg.messagesReceived.add(arg);
         }
+        // Conteúdo literal de todo bloco `say` (o que o personagem realmente
+        // fala) - sem isto, a LLM só sabia "existe um bloco say em algum
+        // lugar", nunca O QUE ele diz, e tinha que inventar um texto genérico
+        // pra dica em vez de sugerir a fala real do exemplo do professor.
+        // Não deduplica (Array, não Set) - se o personagem fala a mesma
+        // coisa duas vezes isso é informação real sobre o script, não ruído.
+        if (blockType === 'say' && hasRealArg) {
+            agg.sayTexts.push(arg);
+        }
 
         const nested = block[4];
         if (Array.isArray(nested)) {
@@ -111,6 +120,7 @@ function computeDetailedManifest(projectJson) {
                 blockTypes: new Set(),
                 messagesSent: new Set(),
                 messagesReceived: new Set(),
+                sayTexts: [],
             };
             let hasScript = false;
 
@@ -134,6 +144,7 @@ function computeDetailedManifest(projectJson) {
                 blockTypes: Array.from(agg.blockTypes),
                 messagesSent: Array.from(agg.messagesSent),
                 messagesReceived: Array.from(agg.messagesReceived),
+                sayTexts: agg.sayTexts,
             });
         }
 

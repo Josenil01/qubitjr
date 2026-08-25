@@ -142,7 +142,48 @@ describe('computeDetailedManifest — ordering', () => {
             blockTypes: [],
             messagesSent: [],
             messagesReceived: [],
+            sayTexts: [],
         });
+    });
+
+    it('captures the literal text of every say block, in order, without deduplicating repeats', () => {
+        const project = buildProject([
+            {
+                id: 'page1',
+                sprites: [
+                    {
+                        id: 's1',
+                        type: 'sprite',
+                        md5: 'A.svg',
+                        scripts: [
+                            [['onflag', null, 0, 0], ['say', 'Olá!', 0, 0], ['say', 'Olá!', 0, 0]],
+                            [['onclick', null, 0, 0], ['say', 'Tchau!', 0, 0]],
+                        ],
+                    },
+                ],
+            },
+        ]);
+        const manifest = computeDetailedManifest(project);
+        expect(manifest.scenes[0].characters[0].sayTexts).toEqual(['Olá!', 'Olá!', 'Tchau!']);
+    });
+
+    it('excludes a say block with no real text chosen yet (arg = the string "null") from sayTexts', () => {
+        const project = buildProject([
+            {
+                id: 'page1',
+                sprites: [
+                    {
+                        id: 's1',
+                        type: 'sprite',
+                        md5: 'A.svg',
+                        scripts: [[['onflag', null, 0, 0], ['say', 'null', 0, 0]]],
+                    },
+                ],
+            },
+        ]);
+        const manifest = computeDetailedManifest(project);
+        expect(manifest.scenes[0].characters[0].sayTexts).toEqual([]);
+        expect(manifest.scenes[0].characters[0].blockTypes).toEqual(['onflag', 'say']);
     });
 
     it('falls back to null characterName when the sprite has none set', () => {

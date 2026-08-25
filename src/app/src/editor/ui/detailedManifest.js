@@ -70,6 +70,11 @@ function walkScript (script, agg) {
         } else if (blockType === 'onmessage' && hasRealArg) {
             agg.messagesReceived.add(arg);
         }
+        // Ver docblock do original (backend) - conteúdo literal de todo
+        // bloco `say`, sem deduplicar.
+        if (blockType === 'say' && hasRealArg) {
+            agg.sayTexts.push(arg);
+        }
 
         const nested = block[4];
         if (Array.isArray(nested)) {
@@ -110,6 +115,7 @@ export function computeDetailedManifest (projectJson) {
                 blockTypes: new Set(),
                 messagesSent: new Set(),
                 messagesReceived: new Set(),
+                sayTexts: [],
             };
 
             for (const script of scripts) {
@@ -127,6 +133,7 @@ export function computeDetailedManifest (projectJson) {
                 blockTypes: Array.from(agg.blockTypes),
                 messagesSent: Array.from(agg.messagesSent),
                 messagesReceived: Array.from(agg.messagesReceived),
+                sayTexts: agg.sayTexts,
             });
         }
 
