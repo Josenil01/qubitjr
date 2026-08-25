@@ -1,7 +1,7 @@
 # Graph Report - .  (2026-08-24)
 
 ## Corpus Check
-- 1 files · ~108,008 words
+- 1 files · ~108,033 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -58,15 +58,15 @@
 - [[_COMMUNITY_Block Spec Catalog (Core)|Block Spec Catalog (Core)]]
 - [[_COMMUNITY_2D Vector Math|2D Vector Math]]
 - [[_COMMUNITY_Paint Undo Buffer|Paint Undo Buffer]]
-- [[_COMMUNITY_Paint Grid Overlay|Paint Grid Overlay]]
 - [[_COMMUNITY_2D Matrix Math|2D Matrix Math]]
-- [[_COMMUNITY_Canvas Draw Commands|Canvas Draw Commands]]
+- [[_COMMUNITY_Camera Capture|Camera Capture]]
+- [[_COMMUNITY_Media Key Generation|Media Key Generation]]
 - [[_COMMUNITY_Audio Playback Engine|Audio Playback Engine]]
 - [[_COMMUNITY_Sample Projects List|Sample Projects List]]
+- [[_COMMUNITY_Time Tracking|Time Tracking]]
 - [[_COMMUNITY_JSZip Shim|JSZip Shim]]
 - [[_COMMUNITY_Color Conversion Helpers|Color Conversion Helpers]]
 - [[_COMMUNITY_Mission Notification Bell|Mission Notification Bell]]
-- [[_COMMUNITY_Paint Side Palette|Paint Side Palette]]
 - [[_COMMUNITY_PNG Render Cache|PNG Render Cache]]
 - [[_COMMUNITY_Node Stream Shim|Node Stream Shim]]
 - [[_COMMUNITY_SVG Path Drawing Util|SVG Path Drawing Util]]
@@ -126,45 +126,45 @@ Nodes (11): BlockArg, Alert, CSSTransition(), getStringSize(), newCanvas(), newF
 Cohesion: 0.10
 Nodes (16): apiFetch(), AssignmentBadge, authHeader(), dismissedHintIds, CARET_TYPES, compareManifests(), computeProjectManifest(), DATA_REPRESENTATION_TYPES (+8 more)
 
-### Community 21 - "Player Mode Patches"
+### Community 19 - "Paint Editor Core"
+Cohesion: 0.09
+Nodes (10): fontcolors, fontsizes, getshapes, loadassets, sendshapes, speeds, ScriptsPane, hit3DRect() (+2 more)
+
+### Community 22 - "Home Lobby Events"
 Cohesion: 0.10
 Nodes (15): applyScratchJrPlayerPatches(), applyPagePlayerPatches(), applySpritePlayerPatches(), applyStagePlayerPatches(), EMOJIS, LABELS, playerMain(), _prefetchMedia() (+7 more)
 
-### Community 24 - "ScratchJr App Core"
+### Community 25 - "Page Engine"
 Cohesion: 0.15
 Nodes (17): onBackButtonCallback, workingCanvas, workingCanvas2, maskCanvas, maskData, offscreen, targetOffscreen, deltaPoint (+9 more)
 
-### Community 26 - "Block Spec Catalog"
-Cohesion: 0.11
-Nodes (12): fontcolors, fontsizes, getshapes, loadassets, sendshapes, speeds, homeMain(), homeStrings() (+4 more)
-
 ### Community 27 - "Palette Drag-and-Drop"
-Cohesion: 0.12
-Nodes (4): ScriptsPane, hit3DRect(), localx(), localy()
-
-### Community 28 - "Block Argument Menus"
 Cohesion: 0.19
 Nodes (9): Menu, pinchcenter, drawThumbnail(), getDocumentHeight(), getDocumentWidth(), globalx(), globaly(), newHTML() (+1 more)
 
-### Community 30 - "Snap.svg Library (vendored)"
+### Community 29 - "SVG Transform Matrix"
 Cohesion: 0.32
 Nodes (26): a(), b(), c(), d(), e(), f(), g(), h() (+18 more)
 
-### Community 33 - "Editor Entry Boot"
+### Community 32 - "Input Event Handling"
 Cohesion: 0.11
 Nodes (10): gettingStartedMain(), indexFirstTime(), indexLoadOptions(), indexLoadStart(), indexLoadUsage(), indexMain(), indexSetUsage(), setClassOfElementById() (+2 more)
 
-### Community 35 - "In-App Help Guides"
+### Community 34 - "Paint Layer Management"
 Cohesion: 0.18
 Nodes (6): inappAbout(), inappBlocksGuide(), inappInterfaceGuide(), inappPaintEditorGuide(), Lobby, gn()
 
-### Community 38 - "Lobby-Viewport Wiring"
+### Community 37 - "Undo/Redo Stack"
 Cohesion: 0.13
 Nodes (17): css_vh(), css_vw(), drawScaled(), ensureEditorFrames(), fitInRect(), getFit(), getHex(), getViewportHeight() (+9 more)
 
-### Community 39 - "Snap.svg Shim"
+### Community 38 - "Lobby-Viewport Wiring"
 Cohesion: 0.09
 Nodes (3): SnapElement, SnapPaper, SnapShim
+
+### Community 39 - "Snap.svg Shim"
+Cohesion: 0.16
+Nodes (6): homeMain(), homeStrings(), keys, Cookie, Localization, localizationMessages
 
 ### Community 40 - "Stage Grid Overlay"
 Cohesion: 0.19
@@ -178,11 +178,11 @@ Nodes (3): SVGImage, getIdFor(), getIdForCamera()
 Cohesion: 0.25
 Nodes (8): apiFetch(), AssignmentAuthorBar, authHeader(), decodeJwtPayloadUnsafe(), getAuthorId(), HINT_WHEN_LABELS, hintWhenLabel(), isAllowedReturnUrl()
 
-### Community 69 - "Mission Notification Bell"
+### Community 68 - "Color Conversion Helpers"
 Cohesion: 0.25
 Nodes (7): getRGB(), rgb2hsb(), curveoptions, dispatchAbsouluteCmd, dispatchDrawCmd, qcurveoptions, strokevalues
 
-### Community 70 - "Paint Side Palette"
+### Community 69 - "Mission Notification Bell"
 Cohesion: 0.52
 Nodes (3): apiFetch(), AssignmentNotice, authHeader()
 
@@ -198,11 +198,11 @@ Nodes (3): Readable, Transform, Writable
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `gn()` connect `In-App Help Guides` to `Live Mirror Sync`, `Paint Action History`, `Execution Engine Core`, `Editor UI Core`, `iOS Platform Bridge`, `Block Rendering`, `Stage Engine`, `Page/Sprite Thumbnails`, `Vector Path Editing`, `Ghost Outline Tool`, `Player Mode Patches`, `Home Lobby Events`, `ScratchJr App Core`, `Block Spec Catalog`, `Palette Drag-and-Drop`, `Block Argument Menus`, `SVG Transform Matrix`, `Sound/Video Recording UI`, `Input Event Handling`, `Editor Entry Boot`, `Paint Layer Management`, `Undo/Redo Stack`, `Lobby-Viewport Wiring`, `Stage Grid Overlay`, `Path Background Cropping`, `SVG Image Element`, `Bezier Curve Drawing`, `Paint Undo Buffer`, `Path Edit Mode`, `2D Matrix Math`, `Sample Projects List`, `Paint Side Palette`, `Path Point Manipulation`, `Path Intersection Detection`, `Path Dot Handles`?**
+- **Why does `gn()` connect `Paint Layer Management` to `Live Mirror Sync`, `Paint Action History`, `Execution Engine Core`, `Editor UI Core`, `iOS Platform Bridge`, `Block Rendering`, `Stage Engine`, `Page/Sprite Thumbnails`, `Vector Path Editing`, `Paint Editor Core`, `Player Mode Patches`, `Home Lobby Events`, `Block Connection Logic`, `Page Engine`, `Palette Drag-and-Drop`, `Block Argument Menus`, `Snap.svg Library (vendored)`, `Sound/Video Recording UI`, `Input Event Handling`, `Editor Entry Boot`, `IO Persistence Layer`, `Undo/Redo Stack`, `Snap.svg Shim`, `Stage Grid Overlay`, `Path Background Cropping`, `SVG Image Element`, `Bezier Curve Drawing`, `Paint Undo Buffer`, `Path Edit Mode`, `Camera Capture`, `Sample Projects List`, `Mission Notification Bell`, `Path Point Manipulation`, `Path Intersection Detection`, `Path Dot Handles`?**
   _High betweenness centrality (0.244) - this node is a cross-community bridge._
-- **Why does `ScratchJr` connect `ScratchJr Core State` to `App Boot Sequence`, `Execution Engine Core`, `Block Rendering`, `Stage Grid Overlay`, `Selection State`, `Argument Editing State`, `Fullscreen Control`, `Numeric Keypad Input`, `Player Mode Patches`, `ScratchJr App Core`, `Palette Drag-and-Drop`, `Block Argument Menus`?**
+- **Why does `ScratchJr` connect `ScratchJr Core State` to `App Boot Sequence`, `Execution Engine Core`, `Block Rendering`, `Stage Grid Overlay`, `Selection State`, `Argument Editing State`, `Fullscreen Control`, `Numeric Keypad Input`, `Paint Editor Core`, `Home Lobby Events`, `Page Engine`, `Palette Drag-and-Drop`?**
   _High betweenness centrality (0.102) - this node is a cross-community bridge._
-- **Why does `Paint` connect `Paint Editor Core` to `Time Tracking`, `Paint Gesture Detection`, `Paint Asset Import (XML)`, `Player Mode Patches`, `Paint Color/Size Picker`, `ScratchJr App Core`, `Paint Canvas Positioning`, `Block Argument Menus`, `Media Key Generation`, `Paint Page Navigation`?**
+- **Why does `Paint` connect `Ghost Outline Tool` to `Paint Side Palette`, `Paint Gesture Detection`, `Paint Asset Import (XML)`, `Home Lobby Events`, `Paint Color/Size Picker`, `Paint Canvas Positioning`, `Page Engine`, `Palette Drag-and-Drop`, `Paint Page Navigation`, `Paint Grid Overlay`?**
   _High betweenness centrality (0.094) - this node is a cross-community bridge._
 - **What connects `loadassets`, `fontcolors`, `fontsizes` to the rest of the system?**
   _50 weakly-connected nodes found - possible documentation gaps or missing edges._
