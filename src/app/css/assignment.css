@@ -491,15 +491,65 @@
     display: none;
 }
 
-/* Aceno rápido (ver AssignmentBadge._flashHintButtonEmpty) pro clique que
- * não tinha nada pra mostrar ainda - só pra não parecer que o clique foi
- * ignorado. Reaproveita o próprio elemento, sem markup extra. */
-.assignmentHintButton.empty-flash {
-    animation: assignmentHintButtonShake 0.4s ease-in-out;
+/* ===== Painel navegável de dicas (aluno) =====
+ * Aberto pelo botão flutuante (.assignmentHintButton) - ver
+ * AssignmentBadge._openHintsPanel/_renderHintsPanel. Reaproveita a mesma
+ * estrutura .assignmentCompleteOverlay/.assignmentCompleteCard/
+ * .assignmentCompleteEmoji/.assignmentCompleteText/.assignmentCompleteClose
+ * do modal de parabéns/dica automática (mesmo acento âmbar de
+ * .assignmentCoachCard) - só soma .assignmentHintsPanelCard (um pouco mais
+ * largo, pra caber os botões de navegação lado a lado) e os elementos novos
+ * abaixo (status por dica + contador + Anterior/Próxima).
+ */
+.assignmentHintsPanelCard {
+    max-width: min(90vw, 420px);
 }
 
-@keyframes assignmentHintButtonShake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    75% { transform: translateX(3px); }
+.assignmentHintsPanelStatus {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: #fdf0dc;
+    color: #b9770e;
+    margin-bottom: 10px;
+}
+
+.assignmentHintsPanelStatus.done {
+    background: #eafaf1;
+    color: #1e8449;
+}
+
+.assignmentHintsPanelCounter {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 14px;
+}
+
+.assignmentHintsPanelNav {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.assignmentHintsPanelNavBtn {
+    border: 2px solid #f5a623;
+    border-radius: 18px;
+    padding: 8px 16px;
+    background: #fff;
+    color: #d68910;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.assignmentHintsPanelNavBtn:hover:not(:disabled) {
+    background: #fdf0dc;
+}
+
+.assignmentHintsPanelNavBtn:disabled {
+    opacity: 0.35;
+    cursor: default;
 }

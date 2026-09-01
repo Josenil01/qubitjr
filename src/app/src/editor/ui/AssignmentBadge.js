@@ -67,10 +67,15 @@
  *     (HINT_COOLDOWN_MS, 5s) entre uma dica fechar e a próxima aparecer
  *     sozinha evita que várias condições satisfeitas ao mesmo tempo (ex.:
  *     progresso feito com a aba oculta) apareçam em sequência rápida demais.
- *     O botão flutuante de dica (hintButtonEl, _createHintButton) é a via
- *     manual que ignora esse cooldown - clique força uma checagem imediata
- *     (_recomputeLocal(true)) e, se nada bater ainda, reabre a última dica
- *     já mostrada (lastShownHint) como fallback, nunca ficando sem reação.
+ *     O botão flutuante de dica (hintButtonEl, _createHintButton) NÃO
+ *     depende desse timing - clique abre um painel navegável
+ *     (hintsPanelEl, _openHintsPanel/_renderHintsPanel) com TODAS as dicas
+ *     da missão, Anterior/Próxima, cada uma com seu status (✅ já resolvida
+ *     / 💡 ainda vale) recalculado na hora. Existe em paralelo ao modal
+ *     automático (mantido de propósito, ver feedback de teste real) - os
+ *     dois se excluem mutuamente (_evaluateHints não interrompe com o
+ *     automático enquanto o painel está aberto; abrir o painel fecha o
+ *     automático primeiro) pra nunca ter dois overlays empilhados.
  */
 
 import ScratchJr from '../ScratchJr.js';
@@ -96,8 +101,9 @@ let lastProgress = null; // último resultado calculado (pro popover não ficar 
 let bannerEl = null;
 let badgeEl = null;
 let popoverEl = null;
-let hintButtonEl = null; // botão flutuante "💡" - abre a dica pronta agora, ou a última mostrada
-let coachModalEl = null; // um modal por vez - serve tanto pro "parabéns" quanto pra dica de coach
+let hintButtonEl = null; // botão flutuante "💡" - abre o painel com todas as dicas da missão
+let hintsPanelEl = null; // painel navegável (Anterior/Próxima) aberto pelo botão - ver _openHintsPanel
+let coachModalEl = null; // um modal por vez - serve tanto pro "parabéns" quanto pra dica de coach automática
 let actualTimer = null;
 let requirementsTimer = null;
 let dismissedThisSession = false;
@@ -273,8 +279,8 @@ export default class AssignmentBadge {
      * Lê o projeto direto do estado em memória do palco - mesmo snapshot
      * que Project.save() serializaria se salvasse agora (Project.getProject()
      * é a função usada nos dois lugares). Não bate no servidor - extraído de
-     * _recomputeLocal pra ser reaproveitado também pelo clique do botão
-     * flutuante (_onHintButtonClick), sem duplicar a leitura.
+     * _recomputeLocal pra ser reaproveitado também pelo painel de dicas
+     * (_openHintsPanel), sem duplicar a leitura.
      */
     static _readProjectJson () {
         if (!assignment || !ScratchJr.stage || !ScratchJr.stage.pages || !ScratchJr.stage.pages.length) {
@@ -287,18 +293,10 @@ export default class AssignmentBadge {
         }
     }
 
-    /**
-     * `forced` (default false) repassa pra _evaluateHints - true só no
-     * clique do botão flutuante, pra ignorar o cooldown entre dicas e
-     * mostrar a próxima pronta na hora, mesmo que o cooldown normal ainda
-     * não tenha passado. Retorna true se alguma dica foi de fato aberta
-     * nesta chamada (o botão flutuante usa isso pra saber se precisa cair
-     * no fallback de reabrir a última dica já mostrada).
-     */
-    static _recomputeLocal (forced) {
+    static _recomputeLocal () {
         const projectJson = AssignmentBadge._readProjectJson();
         if (!projectJson) {
-            return false;
+            return;
         }
         const actual = computeProjectManifest(projectJson);
         const comparison = compareManifests(assignment.requirements, actual);
@@ -307,7 +305,7 @@ export default class AssignmentBadge {
             projectName: assignment.projectName,
             ...comparison,
         });
-        return AssignmentBadge._evaluateHints(comparison.completed, projectJson, !!forced);
+        AssignmentBadge._evaluateHints(comparison.completed, projectJson);
     }
 
     /**
@@ -371,8 +369,12 @@ export default class AssignmentBadge {
             // vez) - fecha ela pra abrir a celebração no lugar. wasComplete
             // vira true logo abaixo de qualquer forma, então essa dica não
             // seria reavaliada de novo mesmo se a deixássemos aberta (missão
-            // completa nunca mostra dica - ver _evaluateHints).
+            // completa nunca mostra dica - ver _evaluateHints). Fecha
+            // também o painel navegável (_openHintsPanel), se estiver
+            // aberto - senão os dois overlays (mesma classe DOM/CSS)
+            // ficariam empilhados um por cima do outro.
             AssignmentBadge._closeCoachModal();
+            AssignmentBadge._closeHintsPanel();
             AssignmentBadge._showCoachModal({
                 icon: '🎉',
                 title: 'Parabéns!',
@@ -399,16 +401,16 @@ export default class AssignmentBadge {
      * completa - o modal de parabéns cobre esse caso e dica de coach nunca
      * aparece depois de concluído. Reaproveita o mesmo detailedManifest.js
      * pro projectJson já lido por _recomputeLocal, sem ida extra ao
-     * servidor. Retorna true se uma dica foi de fato aberta nesta chamada.
+     * servidor.
      */
-    static _evaluateHints (isComplete, projectJson, forced) {
+    static _evaluateHints (isComplete, projectJson) {
         if (isComplete) {
             AssignmentBadge._updateHintButton(false);
-            return false;
+            return;
         }
         const hints = (assignment && Array.isArray(assignment.hints)) ? assignment.hints : [];
         if (!hints.length) {
-            return false;
+            return;
         }
         const detailed = computeDetailedManifest(projectJson);
         const readyHint = hints.find(function (hint) {
@@ -416,12 +418,15 @@ export default class AssignmentBadge {
         });
         AssignmentBadge._updateHintButton(!!readyHint);
 
-        if (!readyHint || coachModalEl) {
-            return false;
+        if (!readyHint || coachModalEl || hintsPanelEl) {
+            // hintsPanelEl aberto: o aluno já está olhando as dicas por conta
+            // própria (ver _openHintsPanel) - não faz sentido interromper com
+            // o modal automático por cima nesse momento.
+            return;
         }
         const cooldownElapsed = (Date.now() - lastHintClosedAt) >= HINT_COOLDOWN_MS;
-        if (!forced && !cooldownElapsed) {
-            return false; // pronta, mas ainda dentro do intervalo mínimo entre dicas - espera
+        if (!cooldownElapsed) {
+            return; // pronta, mas ainda dentro do intervalo mínimo entre dicas - espera
         }
         AssignmentBadge._showCoachModal({
             icon: '💡',
@@ -433,7 +438,6 @@ export default class AssignmentBadge {
             },
         });
         lastShownHint = readyHint;
-        return true;
     }
 
     /**
@@ -528,11 +532,11 @@ export default class AssignmentBadge {
         hintButtonEl = newHTML('div', 'assignmentHintButton', document.body);
         hintButtonEl.setAttribute('role', 'button');
         hintButtonEl.tabIndex = 0;
-        hintButtonEl.title = 'Ver dica';
+        hintButtonEl.title = 'Ver todas as dicas';
         hintButtonEl.textContent = '💡';
         const dot = newHTML('span', 'assignmentHintButtonDot hidden', hintButtonEl);
         dot.setAttribute('aria-hidden', 'true');
-        hintButtonEl.onclick = AssignmentBadge._onHintButtonClick;
+        hintButtonEl.onclick = AssignmentBadge._openHintsPanel;
     }
 
     /**
@@ -551,63 +555,112 @@ export default class AssignmentBadge {
     }
 
     /**
-     * Clique no botão flutuante: força uma recomputação ignorando o
-     * cooldown (ver _recomputeLocal(true) -> _evaluateHints(..., true)). Se
-     * isso abrir uma dica nova, pronto. Se não (nenhuma condição bate
-     * agora), cai numa cadeia de fallback que NUNCA deixa o clique sem
-     * reação:
-     *  1. reabre a última dica já mostrada nesta sessão (lastShownHint);
-     *  2. se nenhuma foi mostrada ainda (aluno recarregou a aba, ou já
-     *     tinha adiantado o trabalho antes do poll avaliar - achado em
-     *     teste real: o clique ficava em silêncio total nesse caso), abre
-     *     a primeira dica ainda não dispensada do array - ou a primeira de
-     *     todas, se por algum motivo todas já tiverem sido dispensadas.
-     * Só fica de fato sem abrir nada se assignment.hints estiver vazio -
-     * caso em que o próprio botão nem existiria (ver _showBadge).
+     * Clique no botão flutuante: abre um painel navegável (Anterior/
+     * Próxima) com TODAS as dicas da missão, na ordem de assignment.hints -
+     * não depende de nenhuma condição estar "pronta" nem de cooldown (ver
+     * _showCoachModal/_evaluateHints pro modal automático, que continua
+     * existindo em paralelo - achado em teste real: a espera do automático
+     * "hora funciona hora não" por natureza, já que é baseado em timing;
+     * o painel é a via 100% determinística, sempre disponível). Recomputa
+     * o projeto antes de montar o painel pra cada dica mostrar seu status
+     * (✅ já resolvida / 💡 ainda vale) com base no estado ATUAL, não no
+     * momento em que a dica foi gerada. Não abre por cima do modal
+     * automático já aberto - fecha primeiro (clicar fora/Continuar) antes
+     * de abrir o painel.
      */
-    static _onHintButtonClick () {
-        if (!assignment || coachModalEl) {
-            return; // já tem modal aberto agora - nada a fazer
-        }
-        const shown = AssignmentBadge._recomputeLocal(true);
-        if (shown) {
+    static _openHintsPanel () {
+        if (!assignment || coachModalEl || hintsPanelEl) {
             return;
         }
         const hints = Array.isArray(assignment.hints) ? assignment.hints : [];
-        const fallbackHint = lastShownHint ||
-            hints.find(function (h) { return h && !dismissedHintIds.has(h.id); }) ||
-            hints[0];
-        if (!fallbackHint) {
-            AssignmentBadge._flashHintButtonEmpty(); // hints.length === 0 - nunca deveria chegar aqui
-            return;
+        if (!hints.length) {
+            return; // nunca deveria acontecer - o botão só existe com hints.length > 0
         }
-        AssignmentBadge._showCoachModal({
-            icon: '💡',
-            text: fallbackHint.text,
-            extraClass: 'assignmentCoachCard',
-            onClose: function () {
-                lastHintClosedAt = Date.now();
-            },
-        });
-        lastShownHint = fallbackHint;
+        AssignmentBadge._recomputeLocal(); // status de cada dica no painel reflete o projeto agora
+        const projectJson = AssignmentBadge._readProjectJson();
+        const detailed = projectJson ? computeDetailedManifest(projectJson) : {scenes: []};
+
+        // Começa na última dica mostrada automaticamente, se houver - é a
+        // mais provável de ser "onde o aluno parou". Sem isso, começa na
+        // primeira ainda não dispensada, ou simplesmente na primeira de todas.
+        let startIndex = 0;
+        if (lastShownHint) {
+            const idx = hints.findIndex(function (h) { return h && h.id === lastShownHint.id; });
+            if (idx >= 0) startIndex = idx;
+        } else {
+            const idx = hints.findIndex(function (h) { return h && !dismissedHintIds.has(h.id); });
+            if (idx >= 0) startIndex = idx;
+        }
+
+        AssignmentBadge._renderHintsPanel(hints, detailed, startIndex);
     }
 
     /**
-     * Feedback rápido (classe CSS temporária, ver assignment.css) pro
-     * clique no botão quando não há absolutamente nada pra mostrar ainda
-     * (nenhuma dica nunca foi mostrada E nenhuma condição bate agora) -
-     * evita a sensação de "cliquei e não aconteceu nada".
+     * Monta o painel uma única vez e reaproveita os mesmos elementos nos
+     * cliques de Anterior/Próxima (só troca texto/contador/status) - sem
+     * recriar DOM a cada navegação.
      */
-    static _flashHintButtonEmpty () {
-        if (!hintButtonEl) {
-            return;
-        }
-        hintButtonEl.classList.add('empty-flash');
-        window.setTimeout(function () {
-            if (hintButtonEl) {
-                hintButtonEl.classList.remove('empty-flash');
+    static _renderHintsPanel (hints, detailed, startIndex) {
+        let index = startIndex;
+
+        hintsPanelEl = newHTML('div', 'assignmentCompleteOverlay', document.body);
+        hintsPanelEl.onclick = function (e) {
+            if (e.target === hintsPanelEl) {
+                AssignmentBadge._closeHintsPanel();
             }
-        }, 600);
+        };
+        const card = newHTML('div', 'assignmentCompleteCard assignmentCoachCard assignmentHintsPanelCard', hintsPanelEl);
+        const emoji = newHTML('div', 'assignmentCompleteEmoji', card);
+        emoji.textContent = '💡';
+        const status = newHTML('div', 'assignmentHintsPanelStatus', card);
+        const textEl = newHTML('div', 'assignmentCompleteText', card);
+        const counter = newHTML('div', 'assignmentHintsPanelCounter', card);
+
+        const nav = newHTML('div', 'assignmentHintsPanelNav', card);
+        const prevBtn = newHTML('button', 'assignmentHintsPanelNavBtn', nav);
+        prevBtn.type = 'button';
+        prevBtn.textContent = '◀ Anterior';
+        const nextBtn = newHTML('button', 'assignmentHintsPanelNavBtn', nav);
+        nextBtn.type = 'button';
+        nextBtn.textContent = 'Próxima ▶';
+
+        const closeBtn = newHTML('button', 'assignmentCompleteClose', card);
+        closeBtn.type = 'button';
+        closeBtn.textContent = 'Fechar';
+
+        function render () {
+            const hint = hints[index];
+            textEl.textContent = (hint && hint.text) || '';
+            counter.textContent = (index + 1) + ' de ' + hints.length;
+            const stillNeeded = hint && AssignmentBadge._hintConditionHolds(hint, detailed);
+            status.textContent = stillNeeded ? '💡 ainda vale' : '✅ já resolvida';
+            status.classList.toggle('done', !stillNeeded);
+            prevBtn.disabled = index <= 0;
+            nextBtn.disabled = index >= hints.length - 1;
+        }
+
+        prevBtn.onclick = function () {
+            if (index > 0) {
+                index -= 1;
+                render();
+            }
+        };
+        nextBtn.onclick = function () {
+            if (index < hints.length - 1) {
+                index += 1;
+                render();
+            }
+        };
+        closeBtn.onclick = AssignmentBadge._closeHintsPanel;
+
+        render();
+    }
+
+    static _closeHintsPanel () {
+        if (hintsPanelEl && hintsPanelEl.parentNode) {
+            hintsPanelEl.parentNode.removeChild(hintsPanelEl);
+        }
+        hintsPanelEl = null;
     }
 
     /**
