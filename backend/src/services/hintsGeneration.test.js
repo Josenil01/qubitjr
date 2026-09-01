@@ -53,7 +53,14 @@ function buildProject(pageDefs) {
     return project;
 }
 
-/** A small two-scene project used across most tests below. */
+/**
+ * A small two-scene project used across most tests below. Both scenes
+ * include HY-Ruby.svg (the default character - see DEFAULT_CHARACTER_MD5)
+ * on purpose, so the fillMissingDefaultCharacterHints() safety net never
+ * fires here and doesn't leak an unrelated extra hint into tests that have
+ * nothing to do with that feature - see defaultCharacterProject() below for
+ * dedicated fixtures that DO omit Ruby from a scene.
+ */
 function twoSceneProject() {
     return buildProject([
         {
@@ -66,6 +73,7 @@ function twoSceneProject() {
                     md5: 'HY-Ball.svg',
                     scripts: [[['ontouch', null, 0, 0], ['message', 'gol', 10, 20]]],
                 },
+                { id: 'ruby0', type: 'sprite', md5: 'HY-Ruby.svg', scripts: [] },
             ],
         },
         {
@@ -289,10 +297,21 @@ describe('generateHints', () => {
         // Same background (Spring.svg) used twice: page1 has Ruby, page3 (the
         // reused Spring.svg) has Allan instead - distinguishing them is the
         // whole point of sceneOccurrence (see docblock at the top of the file).
+        // Both instances also carry a Ruby sprite of their own (unrelated id,
+        // 'ruby'/'ruby3') so fillMissingDefaultCharacterHints() never fires
+        // here - this test is about sceneOccurrence identity, not that
+        // feature; see the dedicated tests below for it.
         const project = buildProject([
             { id: 'page1', md5: 'Spring.svg', sprites: [{ id: 'ruby', type: 'sprite', md5: 'HY-Ruby.svg', scripts: [] }] },
             { id: 'page2', md5: 'Summer.svg', sprites: [] },
-            { id: 'page3', md5: 'Spring.svg', sprites: [{ id: 'allan', type: 'sprite', md5: 'HY-Allan.svg', scripts: [] }] },
+            {
+                id: 'page3',
+                md5: 'Spring.svg',
+                sprites: [
+                    { id: 'allan', type: 'sprite', md5: 'HY-Allan.svg', scripts: [] },
+                    { id: 'ruby3', type: 'sprite', md5: 'HY-Ruby.svg', scripts: [] },
+                ],
+            },
         ]);
         mockLlmResponse(
             JSON.stringify({
@@ -364,5 +383,213 @@ describe('generateHints', () => {
 
         expect(result).toEqual({ hints: [] });
         expect(mockCreate).not.toHaveBeenCalled();
+    });
+
+    describe('hintContext (contexto livre escrito pelo professor)', () => {
+        it('prepends a labeled CONTEXTO DO PROFESSOR block to the user message when hintContext is given', async () => {
+            mockLlmResponse(JSON.stringify({ hints: [] }));
+
+            await generateHints(twoSceneProject(), 'Uma história sobre o dia de um goleiro.');
+
+            const userMessage = mockCreate.mock.calls[0][0].messages[1].content;
+            expect(userMessage.startsWith('CONTEXTO DO PROFESSOR:\nUma história sobre o dia de um goleiro.\n\nTRANSCRIÇÃO DO PROJETO:\n')).toBe(true);
+        });
+
+        it('sends just the plain transcript, with no CONTEXTO block, when hintContext is omitted/blank', async () => {
+            mockLlmResponse(JSON.stringify({ hints: [] }));
+
+            await generateHints(twoSceneProject());
+            await generateHints(twoSceneProject(), '   ');
+
+            for (const call of mockCreate.mock.calls) {
+                expect(call[0].messages[1].content).not.toContain('CONTEXTO DO PROFESSOR');
+            }
+        });
+    });
+
+    describe('default_character_present (Ruby, o personagem default)', () => {
+        /** Woods.svg sem Ruby - o cenário legítimo do professor pra essa missão. */
+        function projectWithoutRuby() {
+            return buildProject([
+                { id: 'page1', md5: 'Woods.svg', sprites: [{ id: 'lobo', type: 'sprite', md5: 'HY-Lobsomem.svg', scripts: [] }] },
+            ]);
+        }
+
+        it('accepts a valid default_character_present hint from the LLM for a scene that really lacks Ruby', async () => {
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        { text: 'Que tal o Bosque?', when: { type: 'scene_missing', sceneMd5: 'Woods.svg', sceneOccurrence: 1 } },
+                        { text: 'Apague a Ruby, ela não é desta cena.', when: { type: 'default_character_present', sceneMd5: 'Woods.svg', sceneOccurrence: 1, characterMd5: 'HY-Ruby.svg' } },
+                    ],
+                })
+            );
+
+            const result = await generateHints(projectWithoutRuby());
+
+            expect(result.hints).toHaveLength(2);
+            expect(result.hints[1]).toMatchObject({ text: 'Apague a Ruby, ela não é desta cena.', when: { type: 'default_character_present' } });
+        });
+
+        it('rejects a default_character_present hint for a scene where Ruby really is part of the teacher\'s project', async () => {
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        // Summer.svg (twoSceneProject) HAS Ruby - this hint must be dropped.
+                        { text: 'Apague a Ruby (errado - ela faz parte daqui)', when: { type: 'default_character_present', sceneMd5: 'Summer.svg', sceneOccurrence: 1, characterMd5: 'HY-Ruby.svg' } },
+                    ],
+                })
+            );
+
+            const result = await generateHints(twoSceneProject());
+
+            expect(result.hints.filter((h) => h.when.type === 'default_character_present')).toHaveLength(0);
+        });
+
+        it('rejects a default_character_present hint that names any characterMd5 other than Ruby (falls back to the code-generated one instead)', async () => {
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        { text: 'Apague o Lobisomem (tipo errado pra este when)', when: { type: 'default_character_present', sceneMd5: 'Woods.svg', sceneOccurrence: 1, characterMd5: 'HY-Lobsomem.svg' } },
+                    ],
+                })
+            );
+
+            const result = await generateHints(projectWithoutRuby());
+
+            // A dica com characterMd5 errado é descartada pela validação -
+            // mas a cena AINDA carece de Ruby de verdade, então
+            // fillMissingDefaultCharacterHints() injeta a dela própria no
+            // lugar (rede de segurança, não um "sem dica nenhuma").
+            const matches = result.hints.filter((h) => h.when.type === 'default_character_present');
+            expect(matches).toHaveLength(1);
+            expect(matches[0].when.characterMd5).toBe('HY-Ruby.svg');
+            expect(matches[0].text).not.toContain('Lobisomem');
+        });
+
+        it('injects a fallback default_character_present hint, right after scene_missing, when the LLM forgets it entirely', async () => {
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        { text: 'Que tal o Bosque?', when: { type: 'scene_missing', sceneMd5: 'Woods.svg', sceneOccurrence: 1 } },
+                        { text: 'Faça o Lobisomem uivar.', when: { type: 'character_missing_block_type', sceneMd5: 'Woods.svg', sceneOccurrence: 1, characterMd5: 'HY-Lobsomem.svg', blockTypes: ['say'] } },
+                    ],
+                })
+            );
+
+            const result = await generateHints(projectWithoutRuby());
+
+            expect(result.hints.map((h) => h.when.type)).toEqual([
+                'scene_missing',
+                'default_character_present',
+                'character_missing_block_type',
+            ]);
+            expect(result.hints[1].when).toMatchObject({ sceneMd5: 'Woods.svg', sceneOccurrence: 1, characterMd5: 'HY-Ruby.svg' });
+        });
+
+        it('does not inject a fallback when the LLM already provided a valid one for that scene', async () => {
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        { text: 'Que tal o Bosque?', when: { type: 'scene_missing', sceneMd5: 'Woods.svg', sceneOccurrence: 1 } },
+                        { text: 'Apague a Ruby dessa vez.', when: { type: 'default_character_present', sceneMd5: 'Woods.svg', sceneOccurrence: 1, characterMd5: 'HY-Ruby.svg' } },
+                    ],
+                })
+            );
+
+            const result = await generateHints(projectWithoutRuby());
+
+            expect(result.hints.filter((h) => h.when.type === 'default_character_present')).toHaveLength(1);
+            expect(result.hints.filter((h) => h.when.type === 'default_character_present')[0].text).toBe('Apague a Ruby dessa vez.');
+        });
+
+        it('never removes a scene-less hint (message_not_received) or changes its relative order when injecting a fallback', async () => {
+            const project = buildProject([
+                {
+                    id: 'page1',
+                    md5: 'Woods.svg',
+                    sprites: [{ id: 'lobo', type: 'sprite', md5: 'HY-Lobsomem.svg', scripts: [[['ontouch', null, 0, 0], ['message', 'uivo', 0, 0]]] }],
+                },
+            ]);
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        { text: 'Que tal o Bosque?', when: { type: 'scene_missing', sceneMd5: 'Woods.svg', sceneOccurrence: 1 } },
+                        { text: 'Mensagem sem cena', when: { type: 'message_not_received', messageName: 'uivo' } },
+                    ],
+                })
+            );
+
+            const result = await generateHints(project);
+
+            expect(result.hints.map((h) => h.when.type)).toEqual([
+                'scene_missing',
+                'default_character_present',
+                'message_not_received',
+            ]);
+        });
+    });
+
+    describe('numeração de nomes de personagem duplicados', () => {
+        it('numbers a character name that recurs across the project, and never numbers a unique name', async () => {
+            // "Casa" (mesmo characterMd5) aparece no Bosque e, de novo, no
+            // Quarto - deve virar "Casa 1"/"Casa 2" no transcript. "Lobisomem"
+            // aparece só uma vez e nunca deve ganhar número.
+            const project = buildProject([
+                {
+                    id: 'page1',
+                    md5: 'Woods.svg',
+                    sprites: [
+                        { id: 'lobo', type: 'sprite', md5: 'HY-Lobsomem.svg', name: 'Lobisomem', scripts: [] },
+                        { id: 'casa1', type: 'sprite', md5: 'HY-Casa2.svg', name: 'Casa', scripts: [] },
+                    ],
+                },
+                {
+                    id: 'page2',
+                    md5: 'Bedroom.svg',
+                    sprites: [{ id: 'casa2', type: 'sprite', md5: 'HY-Casa2.svg', name: 'Casa', scripts: [] }],
+                },
+            ]);
+            mockLlmResponse(JSON.stringify({ hints: [] }));
+
+            await generateHints(project);
+
+            const transcript = mockCreate.mock.calls[0][0].messages[1].content;
+            expect(transcript).toContain('"Casa 1" [characterMd5: HY-Casa2.svg]');
+            expect(transcript).toContain('"Casa 2" [characterMd5: HY-Casa2.svg]');
+            expect(transcript).toContain('"Lobisomem" [characterMd5: HY-Lobsomem.svg]');
+            expect(transcript).not.toContain('"Lobisomem 1"');
+        });
+
+        it('keeps the same assigned number for a character instance when it is also referenced in the disappeared/new annotation lines', async () => {
+            // Cena 1 tem Casa (vira "Casa 1") - cena 2 não tem Casa nenhuma
+            // (Casa "não aparece mais", usando o número JÁ atribuído: 1) -
+            // cena 3 traz Casa de volta (2ª instância no projeto - vira
+            // "Casa 2", e é anotada como "personagem novo" ali).
+            const project = buildProject([
+                {
+                    id: 'page1',
+                    md5: 'Woods.svg',
+                    sprites: [{ id: 'casa1', type: 'sprite', md5: 'HY-Casa2.svg', name: 'Casa', scripts: [] }],
+                },
+                {
+                    id: 'page2',
+                    md5: 'Bedroom.svg',
+                    sprites: [{ id: 'lobo', type: 'sprite', md5: 'HY-Lobsomem.svg', name: 'Lobisomem', scripts: [] }],
+                },
+                {
+                    id: 'page3',
+                    md5: 'Woods.svg',
+                    sprites: [{ id: 'casa2', type: 'sprite', md5: 'HY-Casa2.svg', name: 'Casa', scripts: [] }],
+                },
+            ]);
+            mockLlmResponse(JSON.stringify({ hints: [] }));
+
+            await generateHints(project);
+
+            const transcript = mockCreate.mock.calls[0][0].messages[1].content;
+            expect(transcript).toContain('"Casa 1" [characterMd5: HY-Casa2.svg] não aparece mais nesta cena');
+            expect(transcript).toContain('"Casa 2" [characterMd5: HY-Casa2.svg] é personagem novo nesta cena');
+        });
     });
 });

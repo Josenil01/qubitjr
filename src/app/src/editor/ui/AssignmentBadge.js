@@ -539,6 +539,17 @@ export default class AssignmentBadge {
             return sent && !received;
         }
 
+        case 'default_character_present': {
+            // Toda página em branco no ScratchJr cria automaticamente um
+            // personagem com o asset default (ver Page.js#createCat/
+            // UI.js#mascotData) - inclusive toda vez que o aluno clica em
+            // "+ nova cena", não só na primeira. A dica bate ENQUANTO esse
+            // personagem ainda estiver na cena (quer dizer que o aluno ainda
+            // não removeu o que sobrou) - some sozinha assim que ele apagar.
+            const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
+            return !!found.character;
+        }
+
         default:
             return false;
         }

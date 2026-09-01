@@ -411,6 +411,31 @@
     cursor: default;
 }
 
+/* Caixa de contexto opcional (professor) - ver
+ * AssignmentAuthorBar.js#_showContextPrompt. Reaproveita a mesma estrutura
+ * .assignmentHintsOverlay/.assignmentHintsCard/.assignmentHintsTitle/
+ * .assignmentHintsSubtitle/.assignmentHintsFooter/.assignmentHintsSkipBtn/
+ * .assignmentHintsSaveBtn do resto do fluxo de dicas (mesma tela visual,
+ * um passo antes) - só a textarea abaixo é nova. */
+.assignmentContextTextarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 10px 12px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    color: #333;
+    resize: vertical;
+    box-sizing: border-box;
+    margin-bottom: 16px;
+}
+
+.assignmentContextTextarea:focus {
+    outline: none;
+    border-color: #01bebc;
+}
+
 /* ===== Coaching hint modal (student) =====
  * Reaproveita a mesma estrutura DOM/classes do modal de "Parabéns" logo
  * acima (.assignmentCompleteOverlay/.assignmentCompleteCard/

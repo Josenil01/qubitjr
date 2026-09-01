@@ -261,6 +261,20 @@ CREATE INDEX IF NOT EXISTS idx_assignments_template_id ON assignments(template_i
 -- merge/append aqui, de propósito.
 ALTER TABLE assignments ADD COLUMN IF NOT EXISTS hints JSONB;
 
+-- Contexto livre, escrito pelo PROFESSOR (não pela IA), sobre o que a
+-- atividade é ("uma história sobre folclore brasileiro, cada cena numa
+-- casa diferente" etc.) - alimenta hintsGeneration.js como um parágrafo
+-- extra antes da transcrição estruturada, ajudando a LLM a entender a
+-- intenção do projeto além do que dá pra inferir só da estrutura (cenas/
+-- personagens/blocos). Só existe na linha TEMPLATE (mesma regra de
+-- `hints` acima - uma referência nunca guarda o dela própria, herda do
+-- template via assignmentResolver.js). Persiste entre reautorias (não é
+-- sobrescrito por regenerar dicas sem digitar nada de novo - ver
+-- POST /api/assignments/:id/generate-hints) e é pré-preenchido na tela do
+-- professor na próxima vez que ele reabrir essa missão, editável antes de
+-- gerar de novo. NULL = professor nunca escreveu nada ainda.
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS hint_context TEXT;
+
 -- Migração: projeto vinculado a uma assignment (missão). NULL para projetos
 -- livres, criados fora de qualquer missão. ON DELETE SET NULL porque apagar
 -- a assignment não deve apagar os projetos que os alunos já entregaram nela.

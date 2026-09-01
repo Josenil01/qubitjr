@@ -23,7 +23,10 @@
  *  3. Mostra confirmação reaproveitando Alert.js (mesmo balão usado pelo
  *     indicador "Saving" em Project.js) - erros usam window.alert, mesmo
  *     padrão simples já usado por teacher.js pra essa classe de UI
- *     flutuante fora do palco.
+ *     flutuante fora do palco. Na sequência, _showContextPrompt() pede um
+ *     contexto opcional (texto livre, salvo em assignments.hint_context,
+ *     pré-preenchido da última vez) antes de _runHintFlow() gerar as
+ *     dicas - ver docblocks daquelas duas.
  *  4. Se a URL trouxer um `returnUrl` válido (pedido da HelloYotta, e-mail
  *     2026-08), navega de volta pra lá depois da confirmação - ver
  *     _isAllowedReturnUrl: só helloyotta.com/*.helloyotta.com, nunca um
@@ -114,6 +117,12 @@ const IDLE_LABEL = '📋 Cadastrar aula';
 
 let barEl = null;
 let busy = false;
+// Contexto livre (assignments.hint_context) da última vez que o professor
+// escreveu um pra esta missão - preenchido por _checkExistingMission() (ver
+// GET /assignments/by-project/:id) quando reabrindo um molde já existente;
+// fica '' pra uma missão nova (teacherMode=author, ainda sem hint_context
+// nenhum salvo). Pré-preenche a caixa de _showContextPrompt.
+let cachedHintContext = '';
 
 function authHeader () {
     var token = window.__AUTH_TOKEN__;
@@ -141,6 +150,7 @@ const HINT_WHEN_LABELS = {
     character_no_script: '📝 aparece quando esse personagem não tiver nenhum script',
     character_missing_block_type: '🧩 aparece quando faltar esse tipo de bloco',
     message_not_received: '✉️ aparece quando a mensagem não for recebida por ninguém',
+    default_character_present: '🧹 aparece quando o personagem default (Ruby) ainda estiver na cena',
 };
 
 function hintWhenLabel (when) {
@@ -191,6 +201,7 @@ export default class AssignmentAuthorBar {
             })
             .then(function (data) {
                 if (data && data.assignment) {
+                    cachedHintContext = data.assignment.hintContext || '';
                     AssignmentAuthorBar._show();
                 }
             })
@@ -258,15 +269,15 @@ export default class AssignmentAuthorBar {
                 Alert.open(frame, barEl, 'Aula cadastrada!', '#01bebc');
                 window.setTimeout(function () {
                     Alert.close();
-                    // Passo extra (dicas geradas por IA) entre a confirmação
-                    // acima e o fim do fluxo - ver _runHintFlow. O
+                    // Dois passos extras entre a confirmação acima e o fim do
+                    // fluxo - contexto opcional (_showContextPrompt) e depois
+                    // as dicas geradas por IA (_runHintFlow). O
                     // redirecionamento pro returnUrl (ou reset do botão, se
                     // não houver returnUrl) continua acontecendo sempre, só
-                    // que agora dentro de _finish(), chamado ao final desse
-                    // passo extra (professor aprovando dicas, rejeitando
-                    // todas, ou pulando) - o destino final não muda, só
-                    // adia por alguns segundos pra dar chance de revisão.
-                    AssignmentAuthorBar._runHintFlow(assignmentId, canReturn, returnUrl);
+                    // que agora dentro de _finish(), chamado ao final dos dois
+                    // passos - o destino final não muda, só adia por alguns
+                    // segundos pra dar chance de revisão.
+                    AssignmentAuthorBar._showContextPrompt(assignmentId, canReturn, returnUrl);
                 }, 2000);
             } else {
                 barEl.textContent = IDLE_LABEL;
@@ -284,11 +295,71 @@ export default class AssignmentAuthorBar {
     }
 
     /**
+     * Passo extra entre "aula cadastrada" e a geração de dicas em si
+     * (_runHintFlow): caixa de texto opcional pro professor descrever em
+     * poucas palavras do que se trata a atividade ("uma história sobre o
+     * folclore brasileiro, cada cena numa casa diferente...") - vira
+     * `hintContext`, incluído no corpo de POST /generate-hints e usado como
+     * contexto extra pra LLM (ver docblock de hintsGeneration.js). Pré-
+     * preenchida com o que o professor escreveu da última vez (ver
+     * cachedHintContext/_checkExistingMission), editável antes de gerar de
+     * novo. "Pular" segue com contexto vazio - a geração de dicas continua
+     * acontecendo normalmente, só sem esse extra (nunca é obrigatório
+     * escrever nada aqui). Mesma guarda contra empilhar tela repetida que
+     * _showHintReview já usa (professor clicando "Cadastrar aula" mais de
+     * uma vez antes de fechar a anterior).
+     */
+    static _showContextPrompt (assignmentId, canReturn, returnUrl) {
+        var proceed = function (hintContext) {
+            AssignmentAuthorBar._runHintFlow(assignmentId, canReturn, returnUrl, hintContext);
+        };
+        if (document.querySelector('.assignmentHintsOverlay')) {
+            proceed('');
+            return;
+        }
+
+        var overlayEl = newHTML('div', 'assignmentHintsOverlay', document.body);
+        var card = newHTML('div', 'assignmentHintsCard', overlayEl);
+        var title = newHTML('div', 'assignmentHintsTitle', card);
+        title.textContent = '📝 Sobre o que é esta atividade?';
+        var subtitle = newHTML('div', 'assignmentHintsSubtitle', card);
+        subtitle.textContent = 'Opcional - ajuda a IA a gerar dicas melhores. Fica salvo pra próxima vez que você reautorar esta missão.';
+        var textarea = newHTML('textarea', 'assignmentContextTextarea', card);
+        textarea.maxLength = 1000;
+        textarea.placeholder = 'Ex.: uma história sobre o folclore brasileiro, cada cena se passa numa casa diferente...';
+        textarea.value = cachedHintContext;
+
+        var footer = newHTML('div', 'assignmentHintsFooter', card);
+        var skipBtn = newHTML('button', 'assignmentHintsSkipBtn', footer);
+        skipBtn.type = 'button';
+        skipBtn.textContent = 'Pular';
+        var goBtn = newHTML('button', 'assignmentHintsSaveBtn', footer);
+        goBtn.type = 'button';
+        goBtn.textContent = 'Gerar dicas';
+
+        var close = function () {
+            if (overlayEl.parentNode) {
+                overlayEl.parentNode.removeChild(overlayEl);
+            }
+        };
+        skipBtn.onclick = function () {
+            close();
+            proceed('');
+        };
+        goBtn.onclick = function () {
+            var text = textarea.value.trim();
+            close();
+            proceed(text);
+        };
+    }
+
+    /**
      * Passo extra entre "aula cadastrada" e o fim do fluxo (redirecionamento
      * pro returnUrl, ou reset do botão): pede à IA um lote de dicas-rascunho
-     * pra esta missão (POST /assignments/:id/generate-hints) e, se vier
-     * alguma, abre a tela de revisão (_showHintReview) pro professor aprovar
-     * ou rejeitar cada uma. `finish` (definido aqui, repassado adiante) é o
+     * pra esta missão (POST /assignments/:id/generate-hints, com
+     * `hintContext` vindo de _showContextPrompt no corpo) e, se vier alguma,
+     * abre a tela de revisão (_showHintReview) pro professor aprovar ou
+     * rejeitar cada uma. `finish` (definido aqui, repassado adiante) é o
      * único jeito de sair desse passo - sempre encerra chamando _finish com
      * o mesmo (canReturn, returnUrl) calculados lá em _register, então o
      * destino final do fluxo original nunca muda, só o momento em que ele
@@ -296,7 +367,7 @@ export default class AssignmentAuthorBar {
      * vazio) cai direto em finish() - dica é extra, nunca pode travar o
      * cadastro da aula.
      */
-    static _runHintFlow (assignmentId, canReturn, returnUrl) {
+    static _runHintFlow (assignmentId, canReturn, returnUrl, hintContext) {
         var finish = function () {
             AssignmentAuthorBar._finish(canReturn, returnUrl);
         };
@@ -309,6 +380,7 @@ export default class AssignmentAuthorBar {
         }
         apiFetch('/assignments/' + encodeURIComponent(assignmentId) + '/generate-hints', {
             method: 'POST',
+            body: JSON.stringify({hintContext: hintContext || ''}),
         }).then(function (res) {
             return res.json().catch(function () {
                 return {};

@@ -437,6 +437,41 @@ router.get('/my-progress', async (req, res) => {
  * projeto (project.owner=si mesmo, passa no primeiro filtro) veria o botão
  * "Cadastrar aula" aparecer indevidamente.
  */
+/**
+ * SELECT de uma linha de assignments incluindo hint_context, tolerante a
+ * essa coluna ainda não existir no banco (código 42703 do Postgres,
+ * "undefined_column") - deploys do CÓDIGO e da MIGRAÇÃO SQL
+ * (backend/supabase-setup.sql) não são atômicos neste projeto (a migração é
+ * colada manualmente no SQL Editor do Supabase, sem runner automático - ver
+ * comentário no topo daquele arquivo), então existe uma janela real entre
+ * "código novo no ar" e "coluna criada" onde um SELECT que já pede
+ * hint_context quebraria toda a rota com 500 - inclusive a de reaparecer o
+ * botão "Cadastrar aula" ao reabrir (GET /by-project/:projectId), que NADA
+ * tem a ver com contexto e não devia ficar refém disso. Refaz a consulta sem
+ * hint_context nesse caso específico (hint_context: null no resultado);
+ * qualquer outro erro continua sendo propagado normalmente.
+ */
+async function selectAssignmentTolerantOfMissingHintContext(supabase, assignmentId) {
+    const { data, error } = await supabase
+        .from('assignments')
+        .select('id, template_id, teacher_id, project_name, hint_context')
+        .eq('id', assignmentId)
+        .maybeSingle();
+
+    if (!error) return data;
+    if (error.code !== '42703') throw error;
+
+    console.warn('[assignments] Coluna hint_context ainda não existe no banco - rode a migração em backend/supabase-setup.sql. Seguindo sem ela por enquanto.');
+    const { data: fallbackData, error: fallbackErr } = await supabase
+        .from('assignments')
+        .select('id, template_id, teacher_id, project_name')
+        .eq('id', assignmentId)
+        .maybeSingle();
+
+    if (fallbackErr) throw fallbackErr;
+    return fallbackData ? { ...fallbackData, hint_context: null } : null;
+}
+
 router.get('/by-project/:projectId', async (req, res) => {
     if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
 
@@ -460,18 +495,21 @@ router.get('/by-project/:projectId', async (req, res) => {
             return res.json({ assignment: null });
         }
 
-        const { data: assignment, error: assignmentErr } = await supabase
-            .from('assignments')
-            .select('id, template_id, teacher_id, project_name')
-            .eq('id', project.assignment_id)
-            .maybeSingle();
-
-        if (assignmentErr) throw assignmentErr;
+        const assignment = await selectAssignmentTolerantOfMissingHintContext(supabase, project.assignment_id);
         if (!assignment || assignment.template_id || assignment.teacher_id !== req.userId) {
             return res.json({ assignment: null }); // referência, ou não fui eu quem autorou - não é o dono/autor
         }
 
-        res.json({ assignment: { id: assignment.id, projectName: assignment.project_name } });
+        res.json({
+            assignment: {
+                id: assignment.id,
+                projectName: assignment.project_name,
+                // Pré-preenche a caixa de contexto na tela do professor (ver
+                // AssignmentAuthorBar.js/_showContextPrompt) com o que ele
+                // escreveu da última vez, se houver.
+                hintContext: assignment.hint_context || '',
+            },
+        });
     } catch (err) {
         console.error('[assignments] GET /by-project/:projectId error:', err);
         res.status(500).json({ error: err.message });
@@ -537,11 +575,23 @@ async function findOwnedTemplateProject(supabase, assignmentId, userId) {
 
 /**
  * POST /api/assignments/:id/generate-hints
+ * Body opcional: { hintContext: "<texto livre escrito pelo professor>" }
  *
  * Gera um RASCUNHO de dicas de coaching (LLM, ver services/hintsGeneration.js)
  * a partir do projeto-exemplo do professor vinculado à missão :id. NÃO
  * persiste nada em assignments.hints - é só preview, pro professor revisar/
  * editar/aprovar antes de decidir o que salvar via POST /:id/hints.
+ *
+ * `hintContext`, se vier, É persistido aqui mesmo (assignments.hint_context) -
+ * ao contrário das dicas em si, o contexto é escrito pelo PROFESSOR, não pela
+ * IA, então não precisa de revisão/aprovação separada; salvar já nesta rota
+ * garante que ele sobrevive mesmo se o professor acabar rejeitando todas as
+ * dicas geradas depois (ver AssignmentAuthorBar.js/_showContextPrompt - é
+ * pré-preenchido com isso na próxima vez que ele reabrir esta missão). Nunca
+ * bloqueia a geração de dicas se o UPDATE falhar - best-effort, só loga.
+ * Truncado em 1000 caracteres (mesmo limite do <textarea maxlength> no
+ * cliente) - contexto é pra um resumo curto, não um texto livre gigante
+ * competindo por atenção com a transcrição estruturada no prompt.
  */
 router.post('/:id/generate-hints', async (req, res) => {
     if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
@@ -552,9 +602,22 @@ router.post('/:id/generate-hints', async (req, res) => {
     const assignmentId = parseInt(req.params.id, 10);
     if (!Number.isFinite(assignmentId)) return res.status(400).json({ error: 'Invalid assignment id' });
 
+    const rawContext = req.body && req.body.hintContext;
+    const hintContext = typeof rawContext === 'string' ? rawContext.trim().slice(0, 1000) : '';
+
     try {
         const { project, httpError } = await findOwnedTemplateProject(supabase, assignmentId, req.userId);
         if (httpError) return res.status(httpError.status).json(httpError.body);
+
+        if (hintContext) {
+            const { error: contextErr } = await supabase
+                .from('assignments')
+                .update({ hint_context: hintContext })
+                .eq('id', assignmentId);
+            if (contextErr) {
+                console.warn('[assignments] Falha ao salvar hint_context (best-effort, não bloqueia a geração):', contextErr.message);
+            }
+        }
 
         let projectJson;
         try {
@@ -564,7 +627,7 @@ router.post('/:id/generate-hints', async (req, res) => {
             return res.status(500).json({ error: 'Projeto com json inválido' });
         }
 
-        const { hints } = await generateHints(projectJson);
+        const { hints } = await generateHints(projectJson, hintContext);
         res.json({ success: true, hints });
     } catch (err) {
         if (err.code === 'NOT_CONFIGURED') {
