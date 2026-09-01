@@ -1,7 +1,7 @@
-# Graph Report - .  (2026-09-01)
+# Graph Report - src/app/src  (2026-09-01)
 
 ## Corpus Check
-- 2 files · ~110,873 words
+- 1 files · ~110,969 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -61,16 +61,16 @@
 - [[_COMMUNITY_Block & Alert Drawing Utils|Block & Alert Drawing Utils]]
 - [[_COMMUNITY_Paint Page Navigation|Paint Page Navigation]]
 - [[_COMMUNITY_JSZip Shim|JSZip Shim]]
-- [[_COMMUNITY_Paint Grid Overlay|Paint Grid Overlay]]
-- [[_COMMUNITY_SVG Image Element|SVG Image Element]]
 - [[_COMMUNITY_2D Matrix Math|2D Matrix Math]]
+- [[_COMMUNITY_Media Library Catalog|Media Library Catalog]]
+- [[_COMMUNITY_Camera Capture|Camera Capture]]
 - [[_COMMUNITY_Player Mode Patches|Player Mode Patches]]
 - [[_COMMUNITY_Camera Capture|Camera Capture]]
 - [[_COMMUNITY_Sample Projects List|Sample Projects List]]
-- [[_COMMUNITY_Execution Engine Core|Execution Engine Core]]
+- [[_COMMUNITY_Time Tracking|Time Tracking]]
+- [[_COMMUNITY_JSZip Shim|JSZip Shim]]
+- [[_COMMUNITY_Block Spec Constants|Block Spec Constants]]
 - [[_COMMUNITY_Mission Notification Bell|Mission Notification Bell]]
-- [[_COMMUNITY_Page Engine|Page Engine]]
-- [[_COMMUNITY_Paint Side Palette|Paint Side Palette]]
 - [[_COMMUNITY_PNG Render Cache|PNG Render Cache]]
 - [[_COMMUNITY_Node Stream Shim|Node Stream Shim]]
 - [[_COMMUNITY_SVG Path Drawing Util|SVG Path Drawing Util]]
@@ -102,15 +102,15 @@
 
 ## Import Cycles
 - 3-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
-- 3-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
 - 3-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
+- 3-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
 - 3-file cycle: `src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Thumbs.js -> src/app/src/editor/ui/UI.js -> src/app/src/editor/ui/ScriptsPane.js`
 - 4-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/PaintUndo.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
 - 4-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
 - 4-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/PaintUndo.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
+- 5-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/PaintUndo.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
 - 5-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
 - 5-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/PaintUndo.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
-- 5-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/PaintUndo.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
 
 ## Communities (89 total, 46 thin omitted)
 
@@ -178,11 +178,11 @@ Nodes (4): keys, Cookie, Localization, localizationMessages
 Cohesion: 0.22
 Nodes (4): defaultSounds, projectSounds, uiSounds, Sound
 
-### Community 73 - "Page Engine"
+### Community 72 - "Block Spec Constants"
 Cohesion: 0.29
 Nodes (6): fontcolors, fontsizes, getshapes, loadassets, sendshapes, speeds
 
-### Community 74 - "Paint Side Palette"
+### Community 73 - "Mission Notification Bell"
 Cohesion: 0.52
 Nodes (3): apiFetch(), AssignmentNotice, authHeader()
 
@@ -198,12 +198,12 @@ Nodes (3): Readable, Transform, Writable
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `gn()` connect `Asset Library UI` to `Live Mirror Sync`, `Paint Action History`, `Editor UI Core`, `iOS Platform Bridge`, `Editor Entry & Mission Flow`, `Stage Engine`, `Execution Engine Core`, `ScratchJr Core State`, `Vector Path Editing`, `Home Lobby Events`, `Paint Editor Core`, `Onboarding & Paint Bridge`, `Page/Sprite Thumbnails`, `SVG Transform Matrix`, `Sound/Video Recording UI`, `Canvas Utilities & Block Drawing`, `Input Event Handling`, `Paint Layer Management`, `Scripts Pane & Stage UI`, `Undo/Redo Stack`, `Scripts Pane & Stage UI`, `Web Interface Bridge`, `Path Edit Mode`, `Snap.svg Shim`, `Page Engine`, `Rectangle Geometry`, `Paint Canvas Positioning`, `Paint Page Navigation`, `Bezier Curve Drawing`, `JSZip Shim`, `2D Matrix Math`, `Sample Projects List`, `Paint Side Palette`, `Path Point Manipulation`, `Paint Side Palette`, `Vector Path Editing`?**
+- **Why does `gn()` connect `Asset Library UI` to `Live Mirror Sync`, `Paint Action History`, `Editor UI Core`, `iOS Platform Bridge`, `Editor Entry & Mission Flow`, `Stage Engine`, `Execution Engine Core`, `ScratchJr Core State`, `Vector Path Editing`, `Home Lobby Events`, `Paint Editor Core`, `Onboarding & Paint Bridge`, `Page/Sprite Thumbnails`, `SVG Transform Matrix`, `Sound/Video Recording UI`, `Canvas Utilities & Block Drawing`, `Input Event Handling`, `Paint Layer Management`, `Scripts Pane & Stage UI`, `Undo/Redo Stack`, `Scripts Pane & Stage UI`, `Web Interface Bridge`, `Path Edit Mode`, `Snap.svg Shim`, `Page Engine`, `Rectangle Geometry`, `Paint Canvas Positioning`, `Paint Page Navigation`, `Bezier Curve Drawing`, `JSZip Shim`, `Camera Capture`, `Sample Projects List`, `Mission Notification Bell`, `Path Point Manipulation`, `Paint Side Palette`, `Vector Path Editing`?**
   _High betweenness centrality (0.244) - this node is a cross-community bridge._
 - **Why does `ScratchJr` connect `ScratchJr App Core` to `App Boot Sequence`, `Web Interface Bridge`, `Scripts Pane & Stage UI`, `Path Edit Mode`, `IO Persistence Layer`, `Scroll/Pan Control`, `Selection State`, `Fullscreen Control`, `Numeric Keypad Input`, `Onboarding & Paint Bridge`, `JSZip Shim`, `Page/Sprite Thumbnails`, `Canvas Utilities & Block Drawing`?**
   _High betweenness centrality (0.101) - this node is a cross-community bridge._
 - **Why does `newHTML()` connect `Scripts Pane & Stage UI` to `Live Mirror Sync`, `Editor UI Core`, `Mission Progress Badge`, `Editor Entry & Mission Flow`, `Execution Engine Core`, `Paint Editor Core`, `Onboarding & Paint Bridge`, `Asset Library UI`, `Page/Sprite Thumbnails`, `Sound/Video Recording UI`, `Canvas Utilities & Block Drawing`, `Scripts Pane & Stage UI`, `Undo/Redo Stack`, `Web Interface Bridge`, `Path Edit Mode`, `Web Interface Bridge`, `Page Engine`, `Mission Authoring Button`, `Paint Page Navigation`, `Sample Projects List`?**
-  _High betweenness centrality (0.086) - this node is a cross-community bridge._
+  _High betweenness centrality (0.085) - this node is a cross-community bridge._
 - **What connects `loadassets`, `fontcolors`, `fontsizes` to the rest of the system?**
   _50 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Live Mirror Sync` be split into smaller, more focused modules?**

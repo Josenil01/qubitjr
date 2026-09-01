@@ -669,7 +669,7 @@
       "source_file": "src/app/src/editor/blocks/BlockSpecs.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 73,
+      "community": 72,
       "norm_label": "blockspecs.js",
       "community_name": "Core Utils & App State",
       "id": "blocks_blockspecs"
@@ -680,7 +680,7 @@
       "source_file": "src/app/src/editor/blocks/BlockSpecs.js",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 73,
+      "community": 72,
       "norm_label": "loadassets",
       "community_name": "Core Utils & App State",
       "id": "blocks_blockspecs_loadassets"
@@ -691,7 +691,7 @@
       "source_file": "src/app/src/editor/blocks/BlockSpecs.js",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 73,
+      "community": 72,
       "norm_label": "fontcolors",
       "community_name": "Core Utils & App State",
       "id": "blocks_blockspecs_fontcolors"
@@ -702,7 +702,7 @@
       "source_file": "src/app/src/editor/blocks/BlockSpecs.js",
       "source_location": "L22",
       "_origin": "ast",
-      "community": 73,
+      "community": 72,
       "norm_label": "fontsizes",
       "community_name": "Core Utils & App State",
       "id": "blocks_blockspecs_fontsizes"
@@ -713,7 +713,7 @@
       "source_file": "src/app/src/editor/blocks/BlockSpecs.js",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 73,
+      "community": 72,
       "norm_label": "getshapes",
       "community_name": "Core Utils & App State",
       "id": "blocks_blockspecs_getshapes"
@@ -724,7 +724,7 @@
       "source_file": "src/app/src/editor/blocks/BlockSpecs.js",
       "source_location": "L26",
       "_origin": "ast",
-      "community": 73,
+      "community": 72,
       "norm_label": "sendshapes",
       "community_name": "Core Utils & App State",
       "id": "blocks_blockspecs_sendshapes"
@@ -735,7 +735,7 @@
       "source_file": "src/app/src/editor/blocks/BlockSpecs.js",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 73,
+      "community": 72,
       "norm_label": "speeds",
       "community_name": "Core Utils & App State",
       "id": "blocks_blockspecs_speeds"
@@ -3529,7 +3529,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 60,
+      "community": 61,
       "norm_label": "matrix.js",
       "community_name": "SVGImage",
       "id": "geom_matrix"
@@ -3540,7 +3540,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L5",
       "_origin": "ast",
-      "community": 60,
+      "community": 61,
       "norm_label": "matrix",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix"
@@ -3551,7 +3551,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 60,
+      "community": 61,
       "norm_label": ".constructor()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_constructor"
@@ -3562,7 +3562,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 60,
+      "community": 61,
       "norm_label": ".identity()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_identity"
@@ -3573,7 +3573,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 60,
+      "community": 61,
       "norm_label": ".setmatrix()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_setmatrix"
@@ -3584,7 +3584,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L33",
       "_origin": "ast",
-      "community": 60,
+      "community": 61,
       "norm_label": ".isidentity()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_isidentity"
@@ -3595,7 +3595,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L37",
       "_origin": "ast",
-      "community": 60,
+      "community": 61,
       "norm_label": ".rotate()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_rotate"
@@ -3606,7 +3606,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L46",
       "_origin": "ast",
-      "community": 60,
+      "community": 61,
       "norm_label": ".scale()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_scale"
@@ -3617,7 +3617,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L52",
       "_origin": "ast",
-      "community": 60,
+      "community": 61,
       "norm_label": ".translate()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_translate"
@@ -3628,7 +3628,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L57",
       "_origin": "ast",
-      "community": 60,
+      "community": 61,
       "norm_label": ".transformpoint()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_transformpoint"
@@ -3639,7 +3639,7 @@
       "source_file": "src/app/src/geom/Matrix.js",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 60,
+      "community": 61,
       "norm_label": ".multiply()",
       "community_name": "SVGImage",
       "id": "geom_matrix_matrix_multiply"
@@ -4002,7 +4002,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L11",
       "_origin": "ast",
-      "community": 62,
+      "community": 63,
       "norm_label": "medialib",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib"
@@ -4013,7 +4013,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 62,
+      "community": 63,
       "norm_label": ".path()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_path"
@@ -4024,7 +4024,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 62,
+      "community": 63,
       "norm_label": ".samples()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_samples"
@@ -4035,7 +4035,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L20",
       "_origin": "ast",
-      "community": 62,
+      "community": 63,
       "norm_label": ".sprites()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_sprites"
@@ -4046,7 +4046,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 62,
+      "community": 63,
       "norm_label": ".backgrounds()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_backgrounds"
@@ -4057,7 +4057,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L28",
       "_origin": "ast",
-      "community": 62,
+      "community": 63,
       "norm_label": ".sounds()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_sounds"
@@ -4068,7 +4068,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L32",
       "_origin": "ast",
-      "community": 62,
+      "community": 63,
       "norm_label": ".keys()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_keys"
@@ -4079,7 +4079,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L36",
       "_origin": "ast",
-      "community": 62,
+      "community": 63,
       "norm_label": ".loadmedialib()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_loadmedialib"
@@ -4090,7 +4090,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L52",
       "_origin": "ast",
-      "community": 62,
+      "community": 63,
       "norm_label": ".localizemedianames()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_localizemedianames"
@@ -4101,7 +4101,7 @@
       "source_file": "src/app/src/iPad/MediaLib.js",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 62,
+      "community": 63,
       "norm_label": ".generatekeys()",
       "community_name": "ScratchJr App State Control",
       "id": "ipad_medialib_medialib_generatekeys"
@@ -4442,7 +4442,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 63,
+      "community": 64,
       "norm_label": "camera",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera"
@@ -4453,7 +4453,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 63,
+      "community": 64,
       "norm_label": ".available()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_available"
@@ -4475,7 +4475,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L60",
       "_origin": "ast",
-      "community": 63,
+      "community": 64,
       "norm_label": ".prepareforlandscapemode()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_prepareforlandscapemode"
@@ -4486,7 +4486,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L78",
       "_origin": "ast",
-      "community": 63,
+      "community": 64,
       "norm_label": ".doaction()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_doaction"
@@ -4497,7 +4497,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L100",
       "_origin": "ast",
-      "community": 63,
+      "community": 64,
       "norm_label": ".close()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_close"
@@ -4508,7 +4508,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L111",
       "_origin": "ast",
-      "community": 63,
+      "community": 64,
       "norm_label": ".snapshot()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_snapshot"
@@ -4519,7 +4519,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L115",
       "_origin": "ast",
-      "community": 63,
+      "community": 64,
       "norm_label": ".getlayermask()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_getlayermask"
@@ -4530,7 +4530,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L159",
       "_origin": "ast",
-      "community": 63,
+      "community": 64,
       "norm_label": ".drawlayers()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_drawlayers"
@@ -4541,7 +4541,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L167",
       "_origin": "ast",
-      "community": 63,
+      "community": 64,
       "norm_label": ".drawhole()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_drawhole"
@@ -4552,7 +4552,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L185",
       "_origin": "ast",
-      "community": 63,
+      "community": 64,
       "norm_label": ".processimage()",
       "community_name": "Matrix.js",
       "id": "painteditor_camera_camera_processimage"
@@ -7863,7 +7863,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 72,
+      "community": 71,
       "norm_label": "jszip.js",
       "community_name": "Thread",
       "id": "shims_jszip"
@@ -7874,7 +7874,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L9",
       "_origin": "ast",
-      "community": 72,
+      "community": 71,
       "norm_label": "jszipshim",
       "community_name": "Thread",
       "id": "shims_jszip_jszipshim"
@@ -7885,7 +7885,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L10",
       "_origin": "ast",
-      "community": 72,
+      "community": 71,
       "norm_label": ".constructor()",
       "community_name": "Thread",
       "id": "shims_jszip_jszipshim_constructor"
@@ -7896,7 +7896,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 72,
+      "community": 71,
       "norm_label": ".file()",
       "community_name": "Thread",
       "id": "shims_jszip_jszipshim_file"
@@ -7907,7 +7907,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 72,
+      "community": 71,
       "norm_label": ".async()",
       "community_name": "Thread",
       "id": "shims_jszip_jszipshim_async"
@@ -7918,7 +7918,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 72,
+      "community": 71,
       "norm_label": ".generateasync()",
       "community_name": "Thread",
       "id": "shims_jszip_jszipshim_generateasync"
@@ -7929,7 +7929,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 72,
+      "community": 71,
       "norm_label": ".folder()",
       "community_name": "Thread",
       "id": "shims_jszip_jszipshim_folder"
@@ -7940,7 +7940,7 @@
       "source_file": "src/app/src/shims/jszip.js",
       "source_location": "L33",
       "_origin": "ast",
-      "community": 72,
+      "community": 71,
       "norm_label": ".loadasync()",
       "community_name": "Thread",
       "id": "shims_jszip_jszipshim_loadasync"
@@ -9084,7 +9084,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L339",
       "_origin": "ast",
-      "community": 61,
+      "community": 62,
       "norm_label": ".drawellipse()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_drawellipse"
@@ -9117,7 +9117,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L391",
       "_origin": "ast",
-      "community": 61,
+      "community": 62,
       "norm_label": ".renderpath()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_renderpath"
@@ -9128,7 +9128,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L416",
       "_origin": "ast",
-      "community": 61,
+      "community": 62,
       "norm_label": ".renderpathtips()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_renderpathtips"
@@ -9139,7 +9139,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L433",
       "_origin": "ast",
-      "community": 61,
+      "community": 62,
       "norm_label": ".drawtip()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_drawtip"
@@ -9183,7 +9183,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L502",
       "_origin": "ast",
-      "community": 61,
+      "community": 62,
       "norm_label": ".drawcommand()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_drawcommand"
@@ -9414,7 +9414,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L755",
       "_origin": "ast",
-      "community": 61,
+      "community": 62,
       "norm_label": ".setabsolutepath()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_setabsolutepath"
@@ -9425,7 +9425,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L766",
       "_origin": "ast",
-      "community": 61,
+      "community": 62,
       "norm_label": ".getsvgcommands()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_getsvgcommands"
@@ -9436,7 +9436,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L770",
       "_origin": "ast",
-      "community": 61,
+      "community": 62,
       "norm_label": ".getcommandlist()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_getcommandlist"
@@ -9447,7 +9447,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L789",
       "_origin": "ast",
-      "community": 61,
+      "community": 62,
       "norm_label": ".arraytostring()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_arraytostring"
@@ -9458,7 +9458,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L802",
       "_origin": "ast",
-      "community": 61,
+      "community": 62,
       "norm_label": ".getabsolutecommands()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_getabsolutecommands"
@@ -9469,7 +9469,7 @@
       "source_file": "src/app/src/utils/SVG2Canvas.js",
       "source_location": "L810",
       "_origin": "ast",
-      "community": 61,
+      "community": 62,
       "norm_label": ".getabsolutecommand()",
       "community_name": "Camera",
       "id": "utils_svg2canvas_svg2canvas_getabsolutecommand"
@@ -14100,7 +14100,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 71,
+      "community": 70,
       "community_name": "Live Session Observation",
       "norm_label": "timetracker.js",
       "id": "utils_timetracker"
@@ -14111,7 +14111,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L28",
       "_origin": "ast",
-      "community": 71,
+      "community": 70,
       "community_name": "Live Session Observation",
       "norm_label": "authheader()",
       "id": "utils_timetracker_authheader"
@@ -14122,7 +14122,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L33",
       "_origin": "ast",
-      "community": 71,
+      "community": 70,
       "community_name": "Live Session Observation",
       "norm_label": "timetracker",
       "id": "utils_timetracker_timetracker"
@@ -14133,7 +14133,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L34",
       "_origin": "ast",
-      "community": 71,
+      "community": 70,
       "community_name": "Live Session Observation",
       "norm_label": ".start()",
       "id": "utils_timetracker_timetracker_start"
@@ -14144,7 +14144,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L50",
       "_origin": "ast",
-      "community": 71,
+      "community": 70,
       "community_name": "Live Session Observation",
       "norm_label": "._accrue()",
       "id": "utils_timetracker_timetracker_accrue"
@@ -14155,7 +14155,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L63",
       "_origin": "ast",
-      "community": 71,
+      "community": 70,
       "community_name": "Live Session Observation",
       "norm_label": "._tick()",
       "id": "utils_timetracker_timetracker_tick"
@@ -14166,7 +14166,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L68",
       "_origin": "ast",
-      "community": 71,
+      "community": 70,
       "community_name": "Live Session Observation",
       "norm_label": "._onvisibilitychange()",
       "id": "utils_timetracker_timetracker_onvisibilitychange"
@@ -14177,7 +14177,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L77",
       "_origin": "ast",
-      "community": 71,
+      "community": 70,
       "community_name": "Live Session Observation",
       "norm_label": "._flushfinal()",
       "id": "utils_timetracker_timetracker_flushfinal"
@@ -14188,7 +14188,7 @@
       "source_file": "src/app/src/utils/TimeTracker.js",
       "source_location": "L85",
       "_origin": "ast",
-      "community": 71,
+      "community": 70,
       "community_name": "Live Session Observation",
       "norm_label": "._flush()",
       "id": "utils_timetracker_timetracker_flush"
@@ -17489,7 +17489,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L144",
       "_origin": "ast",
-      "community": 59,
+      "community": 60,
       "norm_label": ".init()",
       "id": "painteditor_paint_paint_init"
     },
@@ -17519,7 +17519,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L168",
       "_origin": "ast",
-      "community": 59,
+      "community": 60,
       "norm_label": ".open()",
       "id": "painteditor_paint_paint_open"
     },
@@ -17569,7 +17569,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L245",
       "_origin": "ast",
-      "community": 58,
+      "community": 59,
       "norm_label": ".scroll()",
       "id": "painteditor_paint_paint_scroll"
     },
@@ -17599,7 +17599,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L292",
       "_origin": "ast",
-      "community": 58,
+      "community": 59,
       "norm_label": ".gesturechange()",
       "id": "painteditor_paint_paint_gesturechange"
     },
@@ -17609,7 +17609,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L309",
       "_origin": "ast",
-      "community": 58,
+      "community": 59,
       "norm_label": ".gestureend()",
       "id": "painteditor_paint_paint_gestureend"
     },
@@ -17619,7 +17619,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L326",
       "_origin": "ast",
-      "community": 58,
+      "community": 59,
       "norm_label": ".canvasfits()",
       "id": "painteditor_paint_paint_canvasfits"
     },
@@ -17629,7 +17629,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L331",
       "_origin": "ast",
-      "community": 64,
+      "community": 65,
       "norm_label": ".mousedown()",
       "id": "painteditor_paint_paint_mousedown"
     },
@@ -17639,7 +17639,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L347",
       "_origin": "ast",
-      "community": 64,
+      "community": 65,
       "norm_label": ".close()",
       "id": "painteditor_paint_paint_close"
     },
@@ -17649,7 +17649,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L365",
       "_origin": "ast",
-      "community": 64,
+      "community": 65,
       "norm_label": ".backtoproject()",
       "id": "painteditor_paint_paint_backtoproject"
     },
@@ -17659,7 +17659,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L390",
       "_origin": "ast",
-      "community": 64,
+      "community": 65,
       "norm_label": ".saveeditstate()",
       "id": "painteditor_paint_paint_saveeditstate"
     },
@@ -17669,7 +17669,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L405",
       "_origin": "ast",
-      "community": 65,
+      "community": 53,
       "norm_label": ".setmode()",
       "id": "painteditor_paint_paint_setmode"
     },
@@ -17679,7 +17679,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L431",
       "_origin": "ast",
-      "community": 65,
+      "community": 53,
       "norm_label": ".selectbutton()",
       "id": "painteditor_paint_paint_selectbutton"
     },
@@ -17689,7 +17689,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L443",
       "_origin": "ast",
-      "community": 65,
+      "community": 53,
       "norm_label": ".selectbuttonfromdiv()",
       "id": "painteditor_paint_paint_selectbuttonfromdiv"
     },
@@ -17699,7 +17699,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L460",
       "_origin": "ast",
-      "community": 65,
+      "community": 53,
       "norm_label": ".getclass()",
       "id": "painteditor_paint_paint_getclass"
     },
@@ -17709,7 +17709,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L471",
       "_origin": "ast",
-      "community": 58,
+      "community": 59,
       "norm_label": ".setzoomto()",
       "id": "painteditor_paint_paint_setzoomto"
     },
@@ -17719,7 +17719,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L480",
       "_origin": "ast",
-      "community": 58,
+      "community": 59,
       "norm_label": ".updatezoomscale()",
       "id": "painteditor_paint_paint_updatezoomscale"
     },
@@ -17729,7 +17729,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L487",
       "_origin": "ast",
-      "community": 58,
+      "community": 59,
       "norm_label": ".setcanvastransform()",
       "id": "painteditor_paint_paint_setcanvastransform"
     },
@@ -17739,7 +17739,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L498",
       "_origin": "ast",
-      "community": 58,
+      "community": 59,
       "norm_label": ".adjustpos()",
       "id": "painteditor_paint_paint_adjustpos"
     },
@@ -17749,7 +17749,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L504",
       "_origin": "ast",
-      "community": 58,
+      "community": 59,
       "norm_label": ".bounceback()",
       "id": "painteditor_paint_paint_bounceback"
     },
@@ -17759,7 +17759,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L511",
       "_origin": "ast",
-      "community": 58,
+      "community": 59,
       "norm_label": ".getcoorx()",
       "id": "painteditor_paint_paint_getcoorx"
     },
@@ -17769,7 +17769,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L527",
       "_origin": "ast",
-      "community": 58,
+      "community": 59,
       "norm_label": ".getcoory()",
       "id": "painteditor_paint_paint_getcoory"
     },
@@ -17779,7 +17779,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L543",
       "_origin": "ast",
-      "community": 70,
+      "community": 53,
       "norm_label": ".scaletofit()",
       "id": "painteditor_paint_paint_scaletofit"
     },
@@ -17789,7 +17789,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L549",
       "_origin": "ast",
-      "community": 58,
+      "community": 59,
       "norm_label": ".dragbackground()",
       "id": "painteditor_paint_paint_dragbackground"
     },
@@ -17799,7 +17799,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L568",
       "_origin": "ast",
-      "community": 53,
+      "community": 74,
       "norm_label": ".layout()",
       "id": "painteditor_paint_paint_layout"
     },
@@ -17809,7 +17809,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L585",
       "_origin": "ast",
-      "community": 53,
+      "community": 74,
       "norm_label": ".topbar()",
       "id": "painteditor_paint_paint_topbar"
     },
@@ -17819,7 +17819,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L592",
       "_origin": "ast",
-      "community": 53,
+      "community": 74,
       "norm_label": ".checkmark()",
       "id": "painteditor_paint_paint_checkmark"
     },
@@ -17829,7 +17829,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L602",
       "_origin": "ast",
-      "community": 53,
+      "community": 74,
       "norm_label": ".nameofcostume()",
       "id": "painteditor_paint_paint_nameofcostume"
     },
@@ -17889,7 +17889,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L683",
       "_origin": "ast",
-      "community": 53,
+      "community": 58,
       "norm_label": ".leftpalette()",
       "id": "painteditor_paint_paint_leftpalette"
     },
@@ -17899,7 +17899,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L691",
       "_origin": "ast",
-      "community": 53,
+      "community": 58,
       "norm_label": ".setupeditpalette()",
       "id": "painteditor_paint_paint_setupeditpalette"
     },
@@ -17909,7 +17909,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L708",
       "_origin": "ast",
-      "community": 65,
+      "community": 58,
       "norm_label": ".createsizeselector()",
       "id": "painteditor_paint_paint_createsizeselector"
     },
@@ -17919,7 +17919,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L733",
       "_origin": "ast",
-      "community": 65,
+      "community": 58,
       "norm_label": ".drawpensizeincolor()",
       "id": "painteditor_paint_paint_drawpensizeincolor"
     },
@@ -17929,7 +17929,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L737",
       "_origin": "ast",
-      "community": 65,
+      "community": 58,
       "norm_label": ".updatestrokes()",
       "id": "painteditor_paint_paint_updatestrokes"
     },
@@ -17939,7 +17939,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L748",
       "_origin": "ast",
-      "community": 65,
+      "community": 58,
       "norm_label": ".selectpensize()",
       "id": "painteditor_paint_paint_selectpensize"
     },
@@ -17949,7 +17949,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L764",
       "_origin": "ast",
-      "community": 53,
+      "community": 74,
       "norm_label": ".rightpalette()",
       "id": "painteditor_paint_paint_rightpalette"
     },
@@ -17959,7 +17959,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L772",
       "_origin": "ast",
-      "community": 53,
+      "community": 74,
       "norm_label": ".addsidepalette()",
       "id": "painteditor_paint_paint_addsidepalette"
     },
@@ -17979,7 +17979,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L811",
       "_origin": "ast",
-      "community": 64,
+      "community": 65,
       "norm_label": ".closecameramode()",
       "id": "painteditor_paint_paint_closecameramode"
     },
@@ -17999,7 +17999,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L838",
       "_origin": "ast",
-      "community": 59,
+      "community": 60,
       "norm_label": ".setupcanvasarea()",
       "id": "painteditor_paint_paint_setupcanvasarea"
     },
@@ -18009,7 +18009,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L867",
       "_origin": "ast",
-      "community": 53,
+      "community": 58,
       "norm_label": ".colorpalette()",
       "id": "painteditor_paint_paint_colorpalette"
     },
@@ -18019,7 +18019,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L890",
       "_origin": "ast",
-      "community": 53,
+      "community": 58,
       "norm_label": ".setsplashcolor()",
       "id": "painteditor_paint_paint_setsplashcolor"
     },
@@ -18029,7 +18029,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L895",
       "_origin": "ast",
-      "community": 53,
+      "community": 58,
       "norm_label": ".addimageurl()",
       "id": "painteditor_paint_paint_addimageurl"
     },
@@ -18039,7 +18039,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L902",
       "_origin": "ast",
-      "community": 65,
+      "community": 58,
       "norm_label": ".selectswatch()",
       "id": "painteditor_paint_paint_selectswatch"
     },
@@ -18049,7 +18049,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L929",
       "_origin": "ast",
-      "community": 65,
+      "community": 58,
       "norm_label": ".setswatchcolor()",
       "id": "painteditor_paint_paint_setswatchcolor"
     },
@@ -18059,7 +18059,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L953",
       "_origin": "ast",
-      "community": 53,
+      "community": 58,
       "norm_label": ".initswatchlist()",
       "id": "painteditor_paint_paint_initswatchlist"
     },
@@ -18069,7 +18069,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L974",
       "_origin": "ast",
-      "community": 53,
+      "community": 74,
       "norm_label": ".createsvgeditor()",
       "id": "painteditor_paint_paint_createsvgeditor"
     },
@@ -18079,7 +18079,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L993",
       "_origin": "ast",
-      "community": 59,
+      "community": 60,
       "norm_label": ".clearworkspace()",
       "id": "painteditor_paint_paint_clearworkspace"
     },
@@ -18089,7 +18089,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1005",
       "_origin": "ast",
-      "community": 59,
+      "community": 60,
       "norm_label": ".drawgrid()",
       "id": "painteditor_paint_paint_drawgrid"
     },
@@ -18099,7 +18099,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1031",
       "_origin": "ast",
-      "community": 59,
+      "community": 60,
       "norm_label": ".getgridpath()",
       "id": "painteditor_paint_paint_getgridpath"
     },
@@ -18109,7 +18109,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1057",
       "_origin": "ast",
-      "community": 59,
+      "community": 60,
       "norm_label": ".initbkg()",
       "id": "painteditor_paint_paint_initbkg"
     },
@@ -18119,7 +18119,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1083",
       "_origin": "ast",
-      "community": 59,
+      "community": 60,
       "norm_label": ".loadbackground()",
       "id": "painteditor_paint_paint_loadbackground"
     },
@@ -18129,7 +18129,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1102",
       "_origin": "ast",
-      "community": 59,
+      "community": 60,
       "norm_label": ".getbkg()",
       "id": "painteditor_paint_paint_getbkg"
     },
@@ -18139,7 +18139,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1113",
       "_origin": "ast",
-      "community": 70,
+      "community": 53,
       "norm_label": ".loadbkg()",
       "id": "painteditor_paint_paint_loadbkg"
     },
@@ -18149,7 +18149,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1117",
       "_origin": "ast",
-      "community": 70,
+      "community": 53,
       "norm_label": ".createbkgfromxml()",
       "id": "painteditor_paint_paint_createbkgfromxml"
     },
@@ -18159,7 +18159,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1144",
       "_origin": "ast",
-      "community": 59,
+      "community": 60,
       "norm_label": ".initsprite()",
       "id": "painteditor_paint_paint_initsprite"
     },
@@ -18169,7 +18169,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1170",
       "_origin": "ast",
-      "community": 59,
+      "community": 60,
       "norm_label": ".loadcharacter()",
       "id": "painteditor_paint_paint_loadcharacter"
     },
@@ -18179,7 +18179,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1189",
       "_origin": "ast",
-      "community": 70,
+      "community": 53,
       "norm_label": ".loadsprite()",
       "id": "painteditor_paint_paint_loadsprite"
     },
@@ -18189,7 +18189,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1193",
       "_origin": "ast",
-      "community": 59,
+      "community": 60,
       "norm_label": ".loadchar()",
       "id": "painteditor_paint_paint_loadchar"
     },
@@ -18199,7 +18199,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1204",
       "_origin": "ast",
-      "community": 70,
+      "community": 53,
       "norm_label": ".adjustshapeposition()",
       "id": "painteditor_paint_paint_adjustshapeposition"
     },
@@ -18209,7 +18209,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1213",
       "_origin": "ast",
-      "community": 64,
+      "community": 65,
       "norm_label": ".savepageimage()",
       "id": "painteditor_paint_paint_savepageimage"
     },
@@ -18249,7 +18249,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1279",
       "_origin": "ast",
-      "community": 64,
+      "community": 65,
       "norm_label": ".changepage()",
       "id": "painteditor_paint_paint_changepage"
     },
@@ -18259,7 +18259,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1284",
       "_origin": "ast",
-      "community": 64,
+      "community": 65,
       "norm_label": ".savesprite()",
       "id": "painteditor_paint_paint_savesprite"
     },
@@ -18299,7 +18299,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1366",
       "_origin": "ast",
-      "community": 64,
+      "community": 65,
       "norm_label": ".changepagesprite()",
       "id": "painteditor_paint_paint_changepagesprite"
     },
@@ -18309,7 +18309,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1383",
       "_origin": "ast",
-      "community": 64,
+      "community": 65,
       "norm_label": ".getloadtype()",
       "id": "painteditor_paint_paint_getloadtype"
     },
@@ -18319,7 +18319,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1397",
       "_origin": "ast",
-      "community": 70,
+      "community": 53,
       "norm_label": ".skipunwantedelements()",
       "id": "painteditor_paint_paint_skipunwantedelements"
     },
@@ -18329,7 +18329,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1424",
       "_origin": "ast",
-      "community": 70,
+      "community": 53,
       "norm_label": ".reassingids()",
       "id": "painteditor_paint_paint_reassingids"
     },
@@ -18339,7 +18339,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1440",
       "_origin": "ast",
-      "community": 70,
+      "community": 53,
       "norm_label": ".createcharfromxml()",
       "id": "painteditor_paint_paint_createcharfromxml"
     },
@@ -18349,7 +18349,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1477",
       "_origin": "ast",
-      "community": 70,
+      "community": 53,
       "norm_label": ".doabsolute()",
       "id": "painteditor_paint_paint_doabsolute"
     },
@@ -19769,7 +19769,7 @@
       "source_file": "src/app/src/lobby/AssignmentNotice.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 74,
+      "community": 73,
       "norm_label": "assignmentnotice.js",
       "id": "lobby_assignmentnotice"
     },
@@ -19779,7 +19779,7 @@
       "source_file": "src/app/src/lobby/AssignmentNotice.js",
       "source_location": "L50",
       "_origin": "ast",
-      "community": 74,
+      "community": 73,
       "norm_label": "authheader()",
       "id": "lobby_assignmentnotice_authheader"
     },
@@ -19789,7 +19789,7 @@
       "source_file": "src/app/src/lobby/AssignmentNotice.js",
       "source_location": "L55",
       "_origin": "ast",
-      "community": 74,
+      "community": 73,
       "norm_label": "apifetch()",
       "id": "lobby_assignmentnotice_apifetch"
     },
@@ -19799,7 +19799,7 @@
       "source_file": "src/app/src/lobby/AssignmentNotice.js",
       "source_location": "L63",
       "_origin": "ast",
-      "community": 74,
+      "community": 73,
       "norm_label": "assignmentnotice",
       "id": "lobby_assignmentnotice_assignmentnotice"
     },
@@ -19809,7 +19809,7 @@
       "source_file": "src/app/src/lobby/AssignmentNotice.js",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 74,
+      "community": 73,
       "norm_label": ".init()",
       "id": "lobby_assignmentnotice_assignmentnotice_init"
     },
@@ -19819,7 +19819,7 @@
       "source_file": "src/app/src/lobby/AssignmentNotice.js",
       "source_location": "L109",
       "_origin": "ast",
-      "community": 74,
+      "community": 73,
       "norm_label": "._showbell()",
       "id": "lobby_assignmentnotice_assignmentnotice_showbell"
     },
@@ -19829,7 +19829,7 @@
       "source_file": "src/app/src/lobby/AssignmentNotice.js",
       "source_location": "L128",
       "_origin": "ast",
-      "community": 74,
+      "community": 73,
       "norm_label": "._gotoeditorformission()",
       "id": "lobby_assignmentnotice_assignmentnotice_gotoeditorformission"
     },
@@ -20074,64 +20074,14 @@
       "id": "entry_editor_editormain"
     },
     {
-      "label": "detailedManifest.js",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "detailedmanifest.js",
-      "id": "ui_detailedmanifest"
-    },
-    {
-      "label": "CARET_TYPES",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L38",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "caret_types",
-      "id": "ui_detailedmanifest_caret_types"
-    },
-    {
-      "label": "emptyManifest()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L40",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "emptymanifest()",
-      "id": "ui_detailedmanifest_emptymanifest"
-    },
-    {
-      "label": "walkScript()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L55",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "walkscript()",
-      "id": "ui_detailedmanifest_walkscript"
-    },
-    {
-      "label": "computeDetailedManifest()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L92",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "computedetailedmanifest()",
-      "id": "ui_detailedmanifest_computedetailedmanifest"
-    },
-    {
       "label": "AssignmentAuthorBar.js",
       "file_type": "code",
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar",
       "community": 8,
-      "norm_label": "assignmentauthorbar.js"
+      "norm_label": "assignmentauthorbar.js",
+      "id": "ui_assignmentauthorbar"
     },
     {
       "label": "isAllowedReturnUrl()",
@@ -20139,9 +20089,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L55",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_isallowedreturnurl",
       "community": 8,
-      "norm_label": "isallowedreturnurl()"
+      "norm_label": "isallowedreturnurl()",
+      "id": "ui_assignmentauthorbar_isallowedreturnurl"
     },
     {
       "label": "decodeJwtPayloadUnsafe()",
@@ -20149,9 +20099,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L79",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_decodejwtpayloadunsafe",
       "community": 8,
-      "norm_label": "decodejwtpayloadunsafe()"
+      "norm_label": "decodejwtpayloadunsafe()",
+      "id": "ui_assignmentauthorbar_decodejwtpayloadunsafe"
     },
     {
       "label": "getAuthorId()",
@@ -20159,9 +20109,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L105",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_getauthorid",
       "community": 8,
-      "norm_label": "getauthorid()"
+      "norm_label": "getauthorid()",
+      "id": "ui_assignmentauthorbar_getauthorid"
     },
     {
       "label": "authHeader()",
@@ -20169,9 +20119,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L127",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_authheader",
       "community": 8,
-      "norm_label": "authheader()"
+      "norm_label": "authheader()",
+      "id": "ui_assignmentauthorbar_authheader"
     },
     {
       "label": "apiFetch()",
@@ -20179,9 +20129,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L132",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_apifetch",
       "community": 8,
-      "norm_label": "apifetch()"
+      "norm_label": "apifetch()",
+      "id": "ui_assignmentauthorbar_apifetch"
     },
     {
       "label": "HINT_WHEN_LABELS",
@@ -20189,9 +20139,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L147",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_hint_when_labels",
       "community": 8,
-      "norm_label": "hint_when_labels"
+      "norm_label": "hint_when_labels",
+      "id": "ui_assignmentauthorbar_hint_when_labels"
     },
     {
       "label": "hintWhenLabel()",
@@ -20199,9 +20149,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L156",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_hintwhenlabel",
       "community": 8,
-      "norm_label": "hintwhenlabel()"
+      "norm_label": "hintwhenlabel()",
+      "id": "ui_assignmentauthorbar_hintwhenlabel"
     },
     {
       "label": "AssignmentAuthorBar",
@@ -20209,9 +20159,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L161",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar",
       "community": 8,
-      "norm_label": "assignmentauthorbar"
+      "norm_label": "assignmentauthorbar",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar"
     },
     {
       "label": ".init()",
@@ -20219,9 +20169,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L172",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_init",
       "community": 8,
-      "norm_label": ".init()"
+      "norm_label": ".init()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_init"
     },
     {
       "label": "._checkExistingMission()",
@@ -20229,9 +20179,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L190",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
       "community": 8,
-      "norm_label": "._checkexistingmission()"
+      "norm_label": "._checkexistingmission()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission"
     },
     {
       "label": "._show()",
@@ -20239,9 +20189,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L211",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_show",
       "community": 8,
-      "norm_label": "._show()"
+      "norm_label": "._show()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_show"
     },
     {
       "label": "._onClick()",
@@ -20249,9 +20199,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L221",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_onclick",
       "community": 8,
-      "norm_label": "._onclick()"
+      "norm_label": "._onclick()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_onclick"
     },
     {
       "label": "._register()",
@@ -20259,9 +20209,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L233",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_register",
       "community": 8,
-      "norm_label": "._register()"
+      "norm_label": "._register()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_register"
     },
     {
       "label": "._showContextPrompt()",
@@ -20269,9 +20219,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L312",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt",
       "community": 8,
-      "norm_label": "._showcontextprompt()"
+      "norm_label": "._showcontextprompt()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt"
     },
     {
       "label": "._runHintFlow()",
@@ -20279,9 +20229,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L370",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
       "community": 8,
-      "norm_label": "._runhintflow()"
+      "norm_label": "._runhintflow()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow"
     },
     {
       "label": "._finish()",
@@ -20289,9 +20239,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L426",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_finish",
       "community": 8,
-      "norm_label": "._finish()"
+      "norm_label": "._finish()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_finish"
     },
     {
       "label": "._showHintReview()",
@@ -20299,9 +20249,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L454",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
       "community": 8,
-      "norm_label": "._showhintreview()"
+      "norm_label": "._showhintreview()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview"
     },
     {
       "label": "AssignmentBadge.js",
@@ -20309,9 +20259,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "ui_assignmentbadge",
       "community": 7,
-      "norm_label": "assignmentbadge.js"
+      "norm_label": "assignmentbadge.js",
+      "id": "ui_assignmentbadge"
     },
     {
       "label": "dismissedHintIds",
@@ -20319,9 +20269,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L110",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_dismissedhintids",
       "community": 7,
-      "norm_label": "dismissedhintids"
+      "norm_label": "dismissedhintids",
+      "id": "ui_assignmentbadge_dismissedhintids"
     },
     {
       "label": "authHeader()",
@@ -20329,9 +20279,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L120",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_authheader",
       "community": 7,
-      "norm_label": "authheader()"
+      "norm_label": "authheader()",
+      "id": "ui_assignmentbadge_authheader"
     },
     {
       "label": "apiFetch()",
@@ -20339,9 +20289,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L125",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_apifetch",
       "community": 7,
-      "norm_label": "apifetch()"
+      "norm_label": "apifetch()",
+      "id": "ui_assignmentbadge_apifetch"
     },
     {
       "label": "AssignmentBadge",
@@ -20349,9 +20299,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L133",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge",
       "community": 7,
-      "norm_label": "assignmentbadge"
+      "norm_label": "assignmentbadge",
+      "id": "ui_assignmentbadge_assignmentbadge"
     },
     {
       "label": ".init()",
@@ -20359,9 +20309,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L134",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_init",
       "community": 7,
-      "norm_label": ".init()"
+      "norm_label": ".init()",
+      "id": "ui_assignmentbadge_assignmentbadge_init"
     },
     {
       "label": "._showStartBanner()",
@@ -20369,9 +20319,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L165",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_showstartbanner",
       "community": 7,
-      "norm_label": "._showstartbanner()"
+      "norm_label": "._showstartbanner()",
+      "id": "ui_assignmentbadge_assignmentbadge_showstartbanner"
     },
     {
       "label": "._dismissBanner()",
@@ -20379,9 +20329,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L183",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_dismissbanner",
       "community": 7,
-      "norm_label": "._dismissbanner()"
+      "norm_label": "._dismissbanner()",
+      "id": "ui_assignmentbadge_assignmentbadge_dismissbanner"
     },
     {
       "label": "._hideBanner()",
@@ -20389,9 +20339,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L190",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_hidebanner",
       "community": 7,
-      "norm_label": "._hidebanner()"
+      "norm_label": "._hidebanner()",
+      "id": "ui_assignmentbadge_assignmentbadge_hidebanner"
     },
     {
       "label": "._startMission()",
@@ -20399,9 +20349,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L197",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_startmission",
       "community": 7,
-      "norm_label": "._startmission()"
+      "norm_label": "._startmission()",
+      "id": "ui_assignmentbadge_assignmentbadge_startmission"
     },
     {
       "label": "._showBadge()",
@@ -20409,9 +20359,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L211",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_showbadge",
       "community": 7,
-      "norm_label": "._showbadge()"
+      "norm_label": "._showbadge()",
+      "id": "ui_assignmentbadge_assignmentbadge_showbadge"
     },
     {
       "label": "._onVisibilityChange()",
@@ -20419,9 +20369,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L249",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_onvisibilitychange",
       "community": 7,
-      "norm_label": "._onvisibilitychange()"
+      "norm_label": "._onvisibilitychange()",
+      "id": "ui_assignmentbadge_assignmentbadge_onvisibilitychange"
     },
     {
       "label": "._scheduleRecompute()",
@@ -20429,9 +20379,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L264",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_schedulerecompute",
       "community": 7,
-      "norm_label": "._schedulerecompute()"
+      "norm_label": "._schedulerecompute()",
+      "id": "ui_assignmentbadge_assignmentbadge_schedulerecompute"
     },
     {
       "label": "._readProjectJson()",
@@ -20439,9 +20389,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L285",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_readprojectjson",
       "community": 7,
-      "norm_label": "._readprojectjson()"
+      "norm_label": "._readprojectjson()",
+      "id": "ui_assignmentbadge_assignmentbadge_readprojectjson"
     },
     {
       "label": "._recomputeLocal()",
@@ -20449,9 +20399,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L296",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_recomputelocal",
       "community": 7,
-      "norm_label": "._recomputelocal()"
+      "norm_label": "._recomputelocal()",
+      "id": "ui_assignmentbadge_assignmentbadge_recomputelocal"
     },
     {
       "label": "._refreshRequirements()",
@@ -20459,9 +20409,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L317",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
       "community": 7,
-      "norm_label": "._refreshrequirements()"
+      "norm_label": "._refreshrequirements()",
+      "id": "ui_assignmentbadge_assignmentbadge_refreshrequirements"
     },
     {
       "label": "._applyProgress()",
@@ -20469,9 +20419,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L340",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_applyprogress",
       "community": 7,
-      "norm_label": "._applyprogress()"
+      "norm_label": "._applyprogress()",
+      "id": "ui_assignmentbadge_assignmentbadge_applyprogress"
     },
     {
       "label": "._evaluateHints()",
@@ -20479,9 +20429,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L406",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_evaluatehints",
       "community": 7,
-      "norm_label": "._evaluatehints()"
+      "norm_label": "._evaluatehints()",
+      "id": "ui_assignmentbadge_assignmentbadge_evaluatehints"
     },
     {
       "label": "._findSceneAndCharacter()",
@@ -20489,9 +20439,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L463",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter",
       "community": 7,
-      "norm_label": "._findsceneandcharacter()"
+      "norm_label": "._findsceneandcharacter()",
+      "id": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter"
     },
     {
       "label": "._hintConditionHolds()",
@@ -20499,9 +20449,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L483",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
       "community": 7,
-      "norm_label": "._hintconditionholds()"
+      "norm_label": "._hintconditionholds()",
+      "id": "ui_assignmentbadge_assignmentbadge_hintconditionholds"
     },
     {
       "label": "._createHintButton()",
@@ -20509,9 +20459,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L565",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_createhintbutton",
       "community": 7,
-      "norm_label": "._createhintbutton()"
+      "norm_label": "._createhintbutton()",
+      "id": "ui_assignmentbadge_assignmentbadge_createhintbutton"
     },
     {
       "label": "._updateHintButton()",
@@ -20519,9 +20469,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L581",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_updatehintbutton",
       "community": 7,
-      "norm_label": "._updatehintbutton()"
+      "norm_label": "._updatehintbutton()",
+      "id": "ui_assignmentbadge_assignmentbadge_updatehintbutton"
     },
     {
       "label": "._openHintsPanel()",
@@ -20529,9 +20479,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L605",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_openhintspanel",
       "community": 7,
-      "norm_label": "._openhintspanel()"
+      "norm_label": "._openhintspanel()",
+      "id": "ui_assignmentbadge_assignmentbadge_openhintspanel"
     },
     {
       "label": "._renderHintsPanel()",
@@ -20539,9 +20489,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L637",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_renderhintspanel",
       "community": 7,
-      "norm_label": "._renderhintspanel()"
+      "norm_label": "._renderhintspanel()",
+      "id": "ui_assignmentbadge_assignmentbadge_renderhintspanel"
     },
     {
       "label": "._closeHintsPanel()",
@@ -20549,9 +20499,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L693",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_closehintspanel",
       "community": 7,
-      "norm_label": "._closehintspanel()"
+      "norm_label": "._closehintspanel()",
+      "id": "ui_assignmentbadge_assignmentbadge_closehintspanel"
     },
     {
       "label": "._showCoachModal()",
@@ -20559,9 +20509,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L714",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
       "community": 7,
-      "norm_label": "._showcoachmodal()"
+      "norm_label": "._showcoachmodal()",
+      "id": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
     },
     {
       "label": "._closeCoachModal()",
@@ -20569,9 +20519,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L746",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_closecoachmodal",
       "community": 7,
-      "norm_label": "._closecoachmodal()"
+      "norm_label": "._closecoachmodal()",
+      "id": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
     },
     {
       "label": "._toggleExpanded()",
@@ -20579,9 +20529,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L753",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
       "community": 7,
-      "norm_label": "._toggleexpanded()"
+      "norm_label": "._toggleexpanded()",
+      "id": "ui_assignmentbadge_assignmentbadge_toggleexpanded"
     },
     {
       "label": "._openPopover()",
@@ -20589,9 +20539,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L761",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_openpopover",
       "community": 7,
-      "norm_label": "._openpopover()"
+      "norm_label": "._openpopover()",
+      "id": "ui_assignmentbadge_assignmentbadge_openpopover"
     },
     {
       "label": "._closePopover()",
@@ -20599,9 +20549,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L776",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_closepopover",
       "community": 7,
-      "norm_label": "._closepopover()"
+      "norm_label": "._closepopover()",
+      "id": "ui_assignmentbadge_assignmentbadge_closepopover"
     },
     {
       "label": "._onOutsideClick()",
@@ -20609,9 +20559,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L784",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
       "community": 7,
-      "norm_label": "._onoutsideclick()"
+      "norm_label": "._onoutsideclick()",
+      "id": "ui_assignmentbadge_assignmentbadge_onoutsideclick"
     },
     {
       "label": "._renderPopover()",
@@ -20619,9 +20569,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L794",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_renderpopover",
       "community": 7,
-      "norm_label": "._renderpopover()"
+      "norm_label": "._renderpopover()",
+      "id": "ui_assignmentbadge_assignmentbadge_renderpopover"
     },
     {
       "label": "._renderRow()",
@@ -20629,9 +20579,59 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L803",
       "_origin": "ast",
-      "id": "ui_assignmentbadge_assignmentbadge_renderrow",
       "community": 7,
-      "norm_label": "._renderrow()"
+      "norm_label": "._renderrow()",
+      "id": "ui_assignmentbadge_assignmentbadge_renderrow"
+    },
+    {
+      "label": "detailedManifest.js",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ui_detailedmanifest",
+      "community": 7,
+      "norm_label": "detailedmanifest.js"
+    },
+    {
+      "label": "CARET_TYPES",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "ui_detailedmanifest_caret_types",
+      "community": 7,
+      "norm_label": "caret_types"
+    },
+    {
+      "label": "emptyManifest()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "ui_detailedmanifest_emptymanifest",
+      "community": 7,
+      "norm_label": "emptymanifest()"
+    },
+    {
+      "label": "walkScript()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "ui_detailedmanifest_walkscript",
+      "community": 7,
+      "norm_label": "walkscript()"
+    },
+    {
+      "label": "computeDetailedManifest()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L108",
+      "_origin": "ast",
+      "id": "ui_detailedmanifest_computedetailedmanifest",
+      "community": 7,
+      "norm_label": "computedetailedmanifest()"
     }
   ],
   "links": [
@@ -51280,9 +51280,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar",
-      "target": "utils_lib_newhtml",
-      "confidence_score": 1.0
+      "target": "utils_lib_newhtml"
     },
     {
       "relation": "imports",
@@ -51291,9 +51291,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge",
-      "target": "utils_lib_newhtml",
-      "confidence_score": 1.0
+      "target": "utils_lib_newhtml"
     },
     {
       "relation": "imports",
@@ -51918,9 +51918,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar",
-      "target": "utils_lib_geturlvars",
-      "confidence_score": 1.0
+      "target": "utils_lib_geturlvars"
     },
     {
       "relation": "imports",
@@ -54265,9 +54265,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L84",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge",
-      "target": "ui_assignmentscoring_computeprojectmanifest",
-      "confidence_score": 1.0
+      "target": "ui_assignmentscoring_computeprojectmanifest"
     },
     {
       "relation": "imports",
@@ -54276,9 +54276,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L84",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge",
-      "target": "ui_assignmentscoring_comparemanifests",
-      "confidence_score": 1.0
+      "target": "ui_assignmentscoring_comparemanifests"
     },
     {
       "relation": "contains",
@@ -65356,85 +65356,12 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L38",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_detailedmanifest",
-      "target": "ui_detailedmanifest_caret_types"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L92",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_detailedmanifest",
-      "target": "ui_detailedmanifest_computedetailedmanifest"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L40",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_detailedmanifest",
-      "target": "ui_detailedmanifest_emptymanifest"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L55",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_detailedmanifest",
-      "target": "ui_detailedmanifest_walkscript"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L94",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_detailedmanifest_computedetailedmanifest",
-      "target": "ui_detailedmanifest_emptymanifest"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/detailedManifest.js",
-      "source_location": "L128",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_detailedmanifest_computedetailedmanifest",
-      "target": "ui_detailedmanifest_walkscript"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L85",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_detailedmanifest_computedetailedmanifest",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L132",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_apifetch",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_apifetch"
     },
     {
       "relation": "contains",
@@ -65442,9 +65369,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L161",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar"
     },
     {
       "relation": "contains",
@@ -65452,9 +65379,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L127",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_authheader",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_authheader"
     },
     {
       "relation": "contains",
@@ -65462,9 +65389,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L79",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_decodejwtpayloadunsafe",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_decodejwtpayloadunsafe"
     },
     {
       "relation": "contains",
@@ -65472,9 +65399,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L105",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_getauthorid",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_getauthorid"
     },
     {
       "relation": "contains",
@@ -65482,9 +65409,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L147",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_hint_when_labels",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_hint_when_labels"
     },
     {
       "relation": "contains",
@@ -65492,9 +65419,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L156",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_hintwhenlabel",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_hintwhenlabel"
     },
     {
       "relation": "contains",
@@ -65502,9 +65429,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L55",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_isallowedreturnurl",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_isallowedreturnurl"
     },
     {
       "relation": "calls",
@@ -65513,9 +65440,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L253",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_register",
-      "target": "ui_assignmentauthorbar_isallowedreturnurl",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_isallowedreturnurl"
     },
     {
       "relation": "calls",
@@ -65524,9 +65451,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L194",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
-      "target": "ui_assignmentauthorbar_decodejwtpayloadunsafe",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_decodejwtpayloadunsafe"
     },
     {
       "relation": "calls",
@@ -65535,9 +65462,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L106",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_getauthorid",
-      "target": "ui_assignmentauthorbar_decodejwtpayloadunsafe",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_decodejwtpayloadunsafe"
     },
     {
       "relation": "calls",
@@ -65546,9 +65473,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L258",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_register",
-      "target": "ui_assignmentauthorbar_getauthorid",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_getauthorid"
     },
     {
       "relation": "calls",
@@ -65557,9 +65484,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L136",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_apifetch",
-      "target": "ui_assignmentauthorbar_authheader",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_authheader"
     },
     {
       "relation": "calls",
@@ -65568,9 +65495,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L198",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
-      "target": "ui_assignmentauthorbar_apifetch",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_apifetch"
     },
     {
       "relation": "calls",
@@ -65579,9 +65506,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L235",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_register",
-      "target": "ui_assignmentauthorbar_apifetch",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_apifetch"
     },
     {
       "relation": "calls",
@@ -65590,9 +65517,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L381",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
-      "target": "ui_assignmentauthorbar_apifetch",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_apifetch"
     },
     {
       "relation": "calls",
@@ -65601,9 +65528,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L544",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
-      "target": "ui_assignmentauthorbar_apifetch",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_apifetch"
     },
     {
       "relation": "calls",
@@ -65612,9 +65539,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L476",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
-      "target": "ui_assignmentauthorbar_hintwhenlabel",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_hintwhenlabel"
     },
     {
       "relation": "method",
@@ -65622,9 +65549,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L190",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission"
     },
     {
       "relation": "method",
@@ -65632,9 +65559,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L426",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_finish",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_finish"
     },
     {
       "relation": "method",
@@ -65642,9 +65569,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L172",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_init",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_init"
     },
     {
       "relation": "method",
@@ -65652,9 +65579,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L221",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_onclick",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_onclick"
     },
     {
       "relation": "method",
@@ -65662,9 +65589,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L233",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_register",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_register"
     },
     {
       "relation": "method",
@@ -65672,9 +65599,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L370",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow"
     },
     {
       "relation": "method",
@@ -65682,9 +65609,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L211",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_show",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_show"
     },
     {
       "relation": "method",
@@ -65692,9 +65619,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L312",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt"
     },
     {
       "relation": "method",
@@ -65702,9 +65629,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L454",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview"
     },
     {
       "relation": "calls",
@@ -65713,9 +65640,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L177",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_init",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission"
     },
     {
       "relation": "calls",
@@ -65724,9 +65651,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L174",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_init",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_show",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_show"
     },
     {
       "relation": "calls",
@@ -65735,9 +65662,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L205",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_show",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_show"
     },
     {
       "relation": "calls",
@@ -65746,9 +65673,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L229",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_onclick",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_register",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_register"
     },
     {
       "relation": "calls",
@@ -65757,9 +65684,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L280",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_register",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt"
     },
     {
       "relation": "calls",
@@ -65768,9 +65695,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L314",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow"
     },
     {
       "relation": "calls",
@@ -65779,9 +65706,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L372",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_finish",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_finish"
     },
     {
       "relation": "calls",
@@ -65790,9 +65717,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L413",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview"
     },
     {
       "relation": "contains",
@@ -65800,9 +65727,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L125",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_apifetch",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_apifetch"
     },
     {
       "relation": "contains",
@@ -65810,9 +65737,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L133",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge"
     },
     {
       "relation": "contains",
@@ -65820,9 +65747,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L120",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_authheader",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_authheader"
     },
     {
       "relation": "contains",
@@ -65830,9 +65757,20 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L110",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_dismissedhintids",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_dismissedhintids"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L85",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_detailedmanifest_computedetailedmanifest"
     },
     {
       "relation": "calls",
@@ -65841,9 +65779,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L129",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_apifetch",
-      "target": "ui_assignmentbadge_authheader",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_authheader"
     },
     {
       "relation": "calls",
@@ -65852,9 +65790,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L137",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_init",
-      "target": "ui_assignmentbadge_apifetch",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_apifetch"
     },
     {
       "relation": "calls",
@@ -65863,9 +65801,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L323",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "target": "ui_assignmentbadge_apifetch",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_apifetch"
     },
     {
       "relation": "method",
@@ -65873,9 +65811,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L340",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_applyprogress"
     },
     {
       "relation": "method",
@@ -65883,9 +65821,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L746",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
     },
     {
       "relation": "method",
@@ -65893,9 +65831,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L693",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_closehintspanel",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_closehintspanel"
     },
     {
       "relation": "method",
@@ -65903,9 +65841,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L776",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_closepopover",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
     },
     {
       "relation": "method",
@@ -65913,9 +65851,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L565",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_createhintbutton",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_createhintbutton"
     },
     {
       "relation": "method",
@@ -65923,9 +65861,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L183",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_dismissbanner",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_dismissbanner"
     },
     {
       "relation": "method",
@@ -65933,9 +65871,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L406",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints"
     },
     {
       "relation": "method",
@@ -65943,9 +65881,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L463",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter"
     },
     {
       "relation": "method",
@@ -65953,9 +65891,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L190",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_hidebanner",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
     },
     {
       "relation": "method",
@@ -65963,9 +65901,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L483",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds"
     },
     {
       "relation": "method",
@@ -65973,9 +65911,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L134",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_init",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_init"
     },
     {
       "relation": "method",
@@ -65983,9 +65921,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L784",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_onoutsideclick"
     },
     {
       "relation": "method",
@@ -65993,9 +65931,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L249",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_onvisibilitychange",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_onvisibilitychange"
     },
     {
       "relation": "method",
@@ -66003,9 +65941,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L605",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_openhintspanel",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_openhintspanel"
     },
     {
       "relation": "method",
@@ -66013,9 +65951,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L761",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_openpopover",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_openpopover"
     },
     {
       "relation": "method",
@@ -66023,9 +65961,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L285",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
     },
     {
       "relation": "method",
@@ -66033,9 +65971,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L296",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
     },
     {
       "relation": "method",
@@ -66043,9 +65981,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L317",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements"
     },
     {
       "relation": "method",
@@ -66053,9 +65991,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L637",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_renderhintspanel",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_renderhintspanel"
     },
     {
       "relation": "method",
@@ -66063,9 +66001,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L794",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_renderpopover",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
     },
     {
       "relation": "method",
@@ -66073,9 +66011,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L803",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_renderrow",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_renderrow"
     },
     {
       "relation": "method",
@@ -66083,9 +66021,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L264",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_schedulerecompute",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_schedulerecompute"
     },
     {
       "relation": "method",
@@ -66093,9 +66031,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L211",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
     },
     {
       "relation": "method",
@@ -66103,9 +66041,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L714",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
     },
     {
       "relation": "method",
@@ -66113,9 +66051,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L165",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner"
     },
     {
       "relation": "method",
@@ -66123,9 +66061,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L197",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_startmission",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_startmission"
     },
     {
       "relation": "method",
@@ -66133,9 +66071,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L753",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_toggleexpanded"
     },
     {
       "relation": "method",
@@ -66143,9 +66081,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L581",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_updatehintbutton",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_updatehintbutton"
     },
     {
       "relation": "calls",
@@ -66154,9 +66092,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L157",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_init",
-      "target": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
     },
     {
       "relation": "calls",
@@ -66165,9 +66103,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L159",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_init",
-      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner"
     },
     {
       "relation": "calls",
@@ -66176,9 +66114,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L187",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_dismissbanner",
-      "target": "ui_assignmentbadge_assignmentbadge_hidebanner",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
     },
     {
       "relation": "calls",
@@ -66187,9 +66125,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L201",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_startmission",
-      "target": "ui_assignmentbadge_assignmentbadge_hidebanner",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
     },
     {
       "relation": "calls",
@@ -66198,9 +66136,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L207",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_startmission",
-      "target": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
     },
     {
       "relation": "calls",
@@ -66209,9 +66147,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L225",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_createhintbutton",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_createhintbutton"
     },
     {
       "relation": "calls",
@@ -66220,9 +66158,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L228",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
     },
     {
       "relation": "calls",
@@ -66231,9 +66169,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L244",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements"
     },
     {
       "relation": "calls",
@@ -66242,9 +66180,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L233",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_schedulerecompute",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_schedulerecompute"
     },
     {
       "relation": "calls",
@@ -66253,9 +66191,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L251",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_onvisibilitychange",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
     },
     {
       "relation": "calls",
@@ -66264,9 +66202,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L272",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_schedulerecompute",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
     },
     {
       "relation": "calls",
@@ -66275,9 +66213,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L614",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
-      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
     },
     {
       "relation": "calls",
@@ -66286,9 +66224,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L297",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
     },
     {
       "relation": "calls",
@@ -66297,9 +66235,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L613",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
     },
     {
       "relation": "calls",
@@ -66308,9 +66246,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L303",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "target": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_applyprogress"
     },
     {
       "relation": "calls",
@@ -66319,9 +66257,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L308",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints"
     },
     {
       "relation": "calls",
@@ -66330,9 +66268,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L337",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
     },
     {
       "relation": "calls",
@@ -66341,9 +66279,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L376",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
     },
     {
       "relation": "calls",
@@ -66352,9 +66290,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L377",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_closehintspanel",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_closehintspanel"
     },
     {
       "relation": "calls",
@@ -66363,9 +66301,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L363",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_renderpopover",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
     },
     {
       "relation": "calls",
@@ -66374,9 +66312,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L378",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
     },
     {
       "relation": "calls",
@@ -66385,9 +66323,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L417",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds"
     },
     {
       "relation": "calls",
@@ -66396,9 +66334,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L431",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
     },
     {
       "relation": "calls",
@@ -66407,9 +66345,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L408",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "target": "ui_assignmentbadge_assignmentbadge_updatehintbutton",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_updatehintbutton"
     },
     {
       "relation": "calls",
@@ -66418,9 +66356,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L507",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
-      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter"
     },
     {
       "relation": "calls",
@@ -66429,9 +66367,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L629",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
-      "target": "ui_assignmentbadge_assignmentbadge_renderhintspanel",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_renderhintspanel"
     },
     {
       "relation": "calls",
@@ -66440,9 +66378,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L643",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_renderhintspanel",
-      "target": "ui_assignmentbadge_assignmentbadge_closehintspanel",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_closehintspanel"
     },
     {
       "relation": "calls",
@@ -66451,9 +66389,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L719",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
-      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
     },
     {
       "relation": "calls",
@@ -66462,9 +66400,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L755",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
-      "target": "ui_assignmentbadge_assignmentbadge_closepopover",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
     },
     {
       "relation": "calls",
@@ -66473,9 +66411,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L757",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
-      "target": "ui_assignmentbadge_assignmentbadge_openpopover",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_openpopover"
     },
     {
       "relation": "calls",
@@ -66484,9 +66422,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L764",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_openpopover",
-      "target": "ui_assignmentbadge_assignmentbadge_renderpopover",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
     },
     {
       "relation": "calls",
@@ -66495,9 +66433,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L791",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
-      "target": "ui_assignmentbadge_assignmentbadge_closepopover",
-      "confidence_score": 1.0
+      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
     },
     {
       "relation": "calls",
@@ -66506,11 +66444,73 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L798",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentbadge_assignmentbadge_renderpopover",
-      "target": "ui_assignmentbadge_assignmentbadge_renderrow",
+      "target": "ui_assignmentbadge_assignmentbadge_renderrow"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "ui_detailedmanifest",
+      "target": "ui_detailedmanifest_caret_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L108",
+      "weight": 1.0,
+      "source": "ui_detailedmanifest",
+      "target": "ui_detailedmanifest_computedetailedmanifest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "ui_detailedmanifest",
+      "target": "ui_detailedmanifest_emptymanifest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "ui_detailedmanifest",
+      "target": "ui_detailedmanifest_walkscript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L110",
+      "weight": 1.0,
+      "source": "ui_detailedmanifest_computedetailedmanifest",
+      "target": "ui_detailedmanifest_emptymanifest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/detailedManifest.js",
+      "source_location": "L145",
+      "weight": 1.0,
+      "source": "ui_detailedmanifest_computedetailedmanifest",
+      "target": "ui_detailedmanifest_walkscript",
       "confidence_score": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d2e3bd40c882eaae563a12aef1e9e282bd37eb74"
+  "built_at_commit": "4a755f84ca4bda22a894b153f84ec8cf8dde223f"
 }
