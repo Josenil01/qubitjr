@@ -553,12 +553,17 @@ export default class AssignmentBadge {
     /**
      * Clique no botão flutuante: força uma recomputação ignorando o
      * cooldown (ver _recomputeLocal(true) -> _evaluateHints(..., true)). Se
-     * isso abrir uma dica nova, pronto. Se não (nada bateu agora), cai no
-     * fallback de reabrir a ÚLTIMA dica já mostrada nesta sessão, pra o
-     * clique nunca ficar sem reação nenhuma - e se nem isso existir ainda
-     * (aluno mal começou, nenhuma condição bateu ainda), um aceno visual
-     * rápido no próprio botão (ver _flashHintButtonEmpty) substitui o
-     * silêncio total.
+     * isso abrir uma dica nova, pronto. Se não (nenhuma condição bate
+     * agora), cai numa cadeia de fallback que NUNCA deixa o clique sem
+     * reação:
+     *  1. reabre a última dica já mostrada nesta sessão (lastShownHint);
+     *  2. se nenhuma foi mostrada ainda (aluno recarregou a aba, ou já
+     *     tinha adiantado o trabalho antes do poll avaliar - achado em
+     *     teste real: o clique ficava em silêncio total nesse caso), abre
+     *     a primeira dica ainda não dispensada do array - ou a primeira de
+     *     todas, se por algum motivo todas já tiverem sido dispensadas.
+     * Só fica de fato sem abrir nada se assignment.hints estiver vazio -
+     * caso em que o próprio botão nem existiria (ver _showBadge).
      */
     static _onHintButtonClick () {
         if (!assignment || coachModalEl) {
@@ -568,18 +573,23 @@ export default class AssignmentBadge {
         if (shown) {
             return;
         }
-        if (lastShownHint) {
-            AssignmentBadge._showCoachModal({
-                icon: '💡',
-                text: lastShownHint.text,
-                extraClass: 'assignmentCoachCard',
-                onClose: function () {
-                    lastHintClosedAt = Date.now();
-                },
-            });
+        const hints = Array.isArray(assignment.hints) ? assignment.hints : [];
+        const fallbackHint = lastShownHint ||
+            hints.find(function (h) { return h && !dismissedHintIds.has(h.id); }) ||
+            hints[0];
+        if (!fallbackHint) {
+            AssignmentBadge._flashHintButtonEmpty(); // hints.length === 0 - nunca deveria chegar aqui
             return;
         }
-        AssignmentBadge._flashHintButtonEmpty();
+        AssignmentBadge._showCoachModal({
+            icon: '💡',
+            text: fallbackHint.text,
+            extraClass: 'assignmentCoachCard',
+            onClose: function () {
+                lastHintClosedAt = Date.now();
+            },
+        });
+        lastShownHint = fallbackHint;
     }
 
     /**
