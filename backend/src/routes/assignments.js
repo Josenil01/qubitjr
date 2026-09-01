@@ -40,6 +40,11 @@
  * POST /api/assignments/:id/hints           — professor salva o subconjunto de dicas
  *                                              já aprovado (filtrado no cliente),
  *                                              substituindo o que houver antes.
+ * GET  /api/assignments/by-project/:projectId — dado um projeto que o professor abriu,
+ *                                              diz se é o molde de uma missão sua -
+ *                                              deixa o botão "Cadastrar aula" reaparecer
+ *                                              ao reabrir pela lobby normal, não só no
+ *                                              link de lançamento original da HelloYotta.
  */
 
 const express = require('express');
@@ -403,6 +408,72 @@ router.get('/my-progress', async (req, res) => {
         });
     } catch (err) {
         console.error('[assignments] GET /my-progress error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * GET /api/assignments/by-project/:projectId
+ *
+ * Dado um projeto que o professor está abrindo pela lobby normal (sem o
+ * teacherMode=author da URL de lançamento original da HelloYotta - ver
+ * AssignmentAuthorBar.js), diz se esse projeto É o exemplo-molde de alguma
+ * missão que ele mesmo autorou, pra decidir se mostra o botão "Cadastrar
+ * aula" de novo (reautoria) mesmo fora do fluxo de lançamento original.
+ * Achado em teste real: Home.gotoEditor (abrir projeto normal da lobby)
+ * NUNCA inclui teacherMode=author - então, sem esta rota, o professor
+ * perdia acesso ao botão (e à regeneração de dicas) pra sempre assim que
+ * fechava e reabria o próprio projeto-exemplo.
+ *
+ * `{ assignment: null }` (nunca erro) pra qualquer caso "não é uma missão
+ * minha" - projeto sem assignment_id, projeto de outro dono, vinculado a
+ * uma linha de REFERÊNCIA (template_id setado), OU (checagem que importa de
+ * verdade aqui) assignment.teacher_id != req.userId. Essa última é
+ * obrigatória e não pode ser substituída só pelo filtro de template_id: hoje
+ * NENHUMA linha de assignments tem template_id setado (a feature de
+ * "referenciar template de outra turma" está no modelo mas nunca é
+ * exercitada por /register), então o projeto de MISSÃO DE UM ALUNO também
+ * bate template_id=null - sem o teacher_id, um aluno abrindo o próprio
+ * projeto (project.owner=si mesmo, passa no primeiro filtro) veria o botão
+ * "Cadastrar aula" aparecer indevidamente.
+ */
+router.get('/by-project/:projectId', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    const projectId = parseInt(req.params.projectId, 10);
+    if (!Number.isFinite(projectId)) return res.status(400).json({ error: 'Invalid projectId' });
+
+    try {
+        const { data: project, error: projectErr } = await supabase
+            .from('projects')
+            .select('id, assignment_id')
+            .eq('id', projectId)
+            .eq('owner', req.userId)
+            .eq('deleted', 'NO')
+            .maybeSingle();
+
+        if (projectErr) throw projectErr;
+        if (!project || !project.assignment_id) {
+            return res.json({ assignment: null });
+        }
+
+        const { data: assignment, error: assignmentErr } = await supabase
+            .from('assignments')
+            .select('id, template_id, teacher_id, project_name')
+            .eq('id', project.assignment_id)
+            .maybeSingle();
+
+        if (assignmentErr) throw assignmentErr;
+        if (!assignment || assignment.template_id || assignment.teacher_id !== req.userId) {
+            return res.json({ assignment: null }); // referência, ou não fui eu quem autorou - não é o dono/autor
+        }
+
+        res.json({ assignment: { id: assignment.id, projectName: assignment.project_name } });
+    } catch (err) {
+        console.error('[assignments] GET /by-project/:projectId error:', err);
         res.status(500).json({ error: err.message });
     }
 });

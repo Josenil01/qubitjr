@@ -81,10 +81,16 @@ export function editorMain () { // eslint-disable-line import/prefer-default-exp
 
         function finishBoot () {
             ScratchJr.appinit(window.Settings.scratchJrVersion);
-            if (teacherMode === 'author') {
-                // Botão flutuante "Cadastrar aula" - só existe neste modo.
-                AssignmentAuthorBar.init();
-            } else {
+            // Botão flutuante "Cadastrar aula" - aparece tanto no lançamento
+            // original da HelloYotta (teacherMode=author) quanto ao reabrir
+            // um projeto-missão próprio pela lobby normal, sem esse parâmetro
+            // (Home.gotoEditor nunca inclui teacherMode=author - achado em
+            // teste real: sem isso, o professor perdia acesso ao botão pra
+            // sempre assim que fechava e reabria o próprio projeto-exemplo).
+            // AssignmentAuthorBar.init() decide sozinho qual dos dois casos é
+            // este (ver seu init()/_checkExistingMission) - sempre chamado.
+            AssignmentAuthorBar.init();
+            if (teacherMode !== 'author') {
                 // No-op silencioso se o aluno não estiver num contexto HelloYotta
                 // (token sem turma_id) — ver LiveWatch.js.
                 initLiveWatch();

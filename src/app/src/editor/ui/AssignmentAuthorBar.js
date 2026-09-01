@@ -1,12 +1,17 @@
 /**
  * src/app/src/editor/ui/AssignmentAuthorBar.js
  *
- * Botão flutuante "Cadastrar aula" - só existe quando o professor abre o
- * editor em modo autor: editor.html?token=...&teacherMode=author&
- * projectName=Sistema+Solar (URL construída pela HelloYotta). Ver
- * entry/editor.js (editorMain) pro fluxo que cria um projeto novo em
- * branco ANTES de ScratchJr.appinit() rodar nesse modo - este módulo só
- * cuida do botão e do registro da missão, não da criação do projeto.
+ * Botão flutuante "Cadastrar aula" - existe em dois contextos (ver init()):
+ * (1) quando o professor abre o editor em modo autor: editor.html?token=...
+ * &teacherMode=author&projectName=Sistema+Solar (URL construída pela
+ * HelloYotta, lançamento original de uma missão nova) - ver entry/editor.js
+ * (editorMain) pro fluxo que cria um projeto novo em branco ANTES de
+ * ScratchJr.appinit() rodar nesse modo; (2) quando o professor reabre um
+ * projeto que JÁ é o molde de uma missão sua pela lobby normal (sem esse
+ * parâmetro - Home.gotoEditor nunca inclui teacherMode=author, achado em
+ * teste real), via GET /assignments/by-project/:id (_checkExistingMission).
+ * Este módulo só cuida do botão e do registro da missão, não da criação do
+ * projeto (isso é entry/editor.js, só no caso (1)).
  *
  * Ao clicar:
  *  1. Salva o projeto atual - ScratchJr.saveAndFlip navegaria de volta pro
@@ -144,10 +149,55 @@ function hintWhenLabel (when) {
 }
 
 export default class AssignmentAuthorBar {
+    /**
+     * Dois jeitos de chegar no botão "Cadastrar aula":
+     *  1. Lançamento original da HelloYotta (URL com teacherMode=author) -
+     *     mostra na hora, sem round-trip nenhum.
+     *  2. Reabertura normal de um projeto pela lobby (Home.gotoEditor nunca
+     *     inclui teacherMode=author - achado em teste real) - só sabe se
+     *     este projeto é o molde de uma missão própria perguntando ao
+     *     servidor (_checkExistingMission), então tem uma pequena latência
+     *     assíncrona antes do botão aparecer, se aparecer.
+     */
     static init () {
-        if (getUrlVars().teacherMode !== 'author') {
+        if (getUrlVars().teacherMode === 'author') {
+            AssignmentAuthorBar._show();
             return;
         }
+        AssignmentAuthorBar._checkExistingMission();
+    }
+
+    /**
+     * Só vale a pena perguntar ao servidor se o token é de professor (role
+     * vem das claims, mesmo peek inseguro de decodeJwtPayloadUnsafe já usado
+     * acima pra authorId) - evita uma chamada de rede desperdiçada pro caso
+     * de longe mais comum (aluno abrindo o próprio projeto de missão, que
+     * também tem assignment_id setado mas não é dele autorar). A checagem
+     * de verdade (teacher_id da missão bate com quem está chamando) continua
+     * sendo feita no servidor (GET /assignments/by-project/:id) - este
+     * filtro client-side é só uma otimização, nunca uma fronteira de segurança.
+     */
+    static _checkExistingMission () {
+        if (barEl || !ScratchJr.currentProject) {
+            return;
+        }
+        var claims = decodeJwtPayloadUnsafe(window.__AUTH_TOKEN__);
+        if (!claims || claims.role !== 'professor') {
+            return;
+        }
+        apiFetch('/assignments/by-project/' + encodeURIComponent(ScratchJr.currentProject))
+            .then(function (res) {
+                return res.ok ? res.json() : null;
+            })
+            .then(function (data) {
+                if (data && data.assignment) {
+                    AssignmentAuthorBar._show();
+                }
+            })
+            .catch(function () {}); // best-effort - nunca quebra o boot do editor
+    }
+
+    static _show () {
         if (barEl) {
             return;
         } // já inicializado - evita duplicar o botão numa segunda chamada
