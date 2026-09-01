@@ -51,12 +51,26 @@
  *     (assignment.hints, geradas pelo professor - ver AssignmentAuthorBar.js
  *     e POST /assignments/:id/generate-hints) quando a condição de alguma
  *     delas está batendo AGORA no projeto do aluno. A avaliação roda dentro
- *     do mesmo tick de _recomputeLocal() (2s), usando computeDetailedManifest
+ *     do mesmo tick de _recomputeLocal(), usando computeDetailedManifest
  *     (detailedManifest.js) sobre o mesmíssimo projectJson já lido pra
  *     computeProjectManifest - sem round-trip extra ao servidor. Cada dica
- *     já mostrada+fechada nesta sessão de aba nunca reaparece (mesma
+ *     já mostrada+fechada nesta sessão de aba nunca reaparece sozinha (mesma
  *     filosofia não-chata de dismissedThisSession pro banner de início), e
  *     nenhuma dica aparece depois que a missão já completou de vez.
+ *
+ *     Cadência (achado em teste real - dica demorando/aparecendo em bloco):
+ *     o poll roda mais rápido (HINTS_PENDING_REFRESH_MS, 800ms) enquanto
+ *     houver dica pendente, volta pro ritmo normal (ACTUAL_REFRESH_MS, 2s)
+ *     quando não; um recheck imediato dispara em visibilitychange (o poll
+ *     PARA por completo com a aba oculta - sem isso, todo progresso feito
+ *     nesse meio-tempo só aparecia no próximo tick); e um cooldown
+ *     (HINT_COOLDOWN_MS, 5s) entre uma dica fechar e a próxima aparecer
+ *     sozinha evita que várias condições satisfeitas ao mesmo tempo (ex.:
+ *     progresso feito com a aba oculta) apareçam em sequência rápida demais.
+ *     O botão flutuante de dica (hintButtonEl, _createHintButton) é a via
+ *     manual que ignora esse cooldown - clique força uma checagem imediata
+ *     (_recomputeLocal(true)) e, se nada bater ainda, reabre a última dica
+ *     já mostrada (lastShownHint) como fallback, nunca ficando sem reação.
  */
 
 import ScratchJr from '../ScratchJr.js';
@@ -68,6 +82,13 @@ import {computeDetailedManifest} from './detailedManifest.js';
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
 const ACTUAL_REFRESH_MS = 2000; // recálculo local, em memória - barato, pode ser frequente
+const HINTS_PENDING_REFRESH_MS = 800; // cadência mais rápida enquanto há dica ainda não dispensada -
+// ver _scheduleRecompute(). Ainda é só um scan de JSON pequeno em memória, custo desprezível.
+const HINT_COOLDOWN_MS = 5000; // intervalo mínimo entre uma dica fechar e a próxima aparecer sozinha -
+// evita o "despejo" de várias dicas em sequência rápida quando mais de uma condição vira
+// verdadeira no mesmo instante (ex.: aluno voltou de outra aba depois de progredir bastante).
+// Só vale pro caminho automático (poll) - o botão flutuante (forced=true) ignora, de propósito:
+// é exatamente pra isso que ele existe.
 const REQUIREMENTS_REFRESH_MS = 30000; // ida ao servidor - só pra pegar reautoria do professor
 
 let assignment = null; // { id, projectName, requirements, nivel, turmaId, existingProjectId }
@@ -75,11 +96,14 @@ let lastProgress = null; // último resultado calculado (pro popover não ficar 
 let bannerEl = null;
 let badgeEl = null;
 let popoverEl = null;
+let hintButtonEl = null; // botão flutuante "💡" - abre a dica pronta agora, ou a última mostrada
 let coachModalEl = null; // um modal por vez - serve tanto pro "parabéns" quanto pra dica de coach
 let actualTimer = null;
 let requirementsTimer = null;
 let dismissedThisSession = false;
-let dismissedHintIds = new Set(); // ids de dica já mostrada+fechada nesta sessão de aba - nunca mais reexibida
+let dismissedHintIds = new Set(); // ids de dica já mostrada+fechada nesta sessão de aba - nunca mais reexibida automaticamente
+let lastShownHint = null; // última dica (objeto completo) mostrada nesta sessão - fallback do botão flutuante
+let lastHintClosedAt = 0; // Date.now() do fechamento da última dica - referência do cooldown acima
 // null = ainda não sabemos (primeiro cálculo desta sessão de aba) - fica
 // assim de propósito pra não disparar o modal de parabéns só por reabrir
 // uma missão que já estava completa antes. Só vira true/false depois do
@@ -187,12 +211,28 @@ export default class AssignmentBadge {
         badgeEl.tabIndex = 0;
         badgeEl.textContent = '🎯 …';
         badgeEl.onclick = AssignmentBadge._toggleExpanded;
+
+        // Botão flutuante de dica - só existe se a missão tiver dicas (ver
+        // docblock ponto 7). Escondido de novo em _applyProgress quando a
+        // missão completa (mesma hora que _evaluateHints para de rodar).
+        if (assignment && Array.isArray(assignment.hints) && assignment.hints.length) {
+            AssignmentBadge._createHintButton();
+        }
+
         AssignmentBadge._recomputeLocal();
-        actualTimer = window.setInterval(function () {
-            if (document.visibilityState === 'visible') {
-                AssignmentBadge._recomputeLocal();
-            }
-        }, ACTUAL_REFRESH_MS);
+        // Agendamento em cadeia (setTimeout que se reagenda), não setInterval
+        // fixo - deixa _scheduleRecompute() decidir o próximo atraso a cada
+        // rodada (mais rápido enquanto há dica pendente, ver constantes no
+        // topo do arquivo). Ver também o listener de visibilitychange abaixo.
+        AssignmentBadge._scheduleRecompute();
+        // Recheck IMEDIATO ao voltar o foco da aba - sem isso, qualquer
+        // progresso feito enquanto a aba estava oculta (poll pausado de
+        // propósito, ver _scheduleRecompute) só seria percebido no próximo
+        // tick agendado (até HINTS_PENDING_REFRESH_MS/ACTUAL_REFRESH_MS de
+        // atraso) - era a causa mais provável do "demora um monte" relatado
+        // em teste. Registrado uma única vez (ver guarda no topo de _showBadge).
+        document.addEventListener('visibilitychange', AssignmentBadge._onVisibilityChange);
+
         requirementsTimer = window.setInterval(function () {
             if (document.visibilityState === 'visible') {
                 AssignmentBadge._refreshRequirements();
@@ -200,22 +240,65 @@ export default class AssignmentBadge {
         }, REQUIREMENTS_REFRESH_MS);
     }
 
-    /**
-     * Recalcula o lado ATUAL do checklist direto do estado em memória do
-     * palco - mesmo snapshot que Project.save() serializaria se salvasse
-     * agora (Project.getProject() é a função usada nos dois lugares). Não
-     * bate no servidor - roda a cada ACTUAL_REFRESH_MS, então precisa ser
-     * barato (é: só uma varredura de JS puro sobre um JSON pequeno).
-     */
-    static _recomputeLocal () {
-        if (!assignment || !ScratchJr.stage || !ScratchJr.stage.pages || !ScratchJr.stage.pages.length) {
-            return; // palco ainda não montado - próximo tick tenta de novo
+    static _onVisibilityChange () {
+        if (document.visibilityState === 'visible' && badgeEl) {
+            AssignmentBadge._recomputeLocal();
         }
-        let projectJson;
+    }
+
+    /**
+     * Reagenda o próximo _recomputeLocal(). Atraso curto
+     * (HINTS_PENDING_REFRESH_MS) enquanto existir pelo menos uma dica ainda
+     * não dispensada nesta sessão - é justamente quando a cadência importa
+     * mais pro aluno. Volta pro atraso normal (ACTUAL_REFRESH_MS) assim que
+     * todas as dicas já tiverem sido mostradas+fechadas (ou a missão não tem
+     * dicas). setTimeout em cadeia (em vez de setInterval fixo) porque o
+     * atraso muda de tick pra tick, dependendo desse estado.
+     */
+    static _scheduleRecompute () {
+        const hasPendingHints = !!(assignment && Array.isArray(assignment.hints) &&
+            assignment.hints.some(function (h) {
+                return h && !dismissedHintIds.has(h.id);
+            }));
+        const delay = hasPendingHints ? HINTS_PENDING_REFRESH_MS : ACTUAL_REFRESH_MS;
+        actualTimer = window.setTimeout(function () {
+            if (document.visibilityState === 'visible') {
+                AssignmentBadge._recomputeLocal();
+            }
+            AssignmentBadge._scheduleRecompute();
+        }, delay);
+    }
+
+    /**
+     * Lê o projeto direto do estado em memória do palco - mesmo snapshot
+     * que Project.save() serializaria se salvasse agora (Project.getProject()
+     * é a função usada nos dois lugares). Não bate no servidor - extraído de
+     * _recomputeLocal pra ser reaproveitado também pelo clique do botão
+     * flutuante (_onHintButtonClick), sem duplicar a leitura.
+     */
+    static _readProjectJson () {
+        if (!assignment || !ScratchJr.stage || !ScratchJr.stage.pages || !ScratchJr.stage.pages.length) {
+            return null; // palco ainda não montado - próximo tick tenta de novo
+        }
         try {
-            projectJson = Project.getProject(ScratchJr.stage.pages[0].id);
+            return Project.getProject(ScratchJr.stage.pages[0].id);
         } catch (err) {
-            return; // best-effort - nunca deixa um erro de leitura quebrar o selo
+            return null; // best-effort - nunca deixa um erro de leitura quebrar o selo
+        }
+    }
+
+    /**
+     * `forced` (default false) repassa pra _evaluateHints - true só no
+     * clique do botão flutuante, pra ignorar o cooldown entre dicas e
+     * mostrar a próxima pronta na hora, mesmo que o cooldown normal ainda
+     * não tenha passado. Retorna true se alguma dica foi de fato aberta
+     * nesta chamada (o botão flutuante usa isso pra saber se precisa cair
+     * no fallback de reabrir a última dica já mostrada).
+     */
+    static _recomputeLocal (forced) {
+        const projectJson = AssignmentBadge._readProjectJson();
+        if (!projectJson) {
+            return false;
         }
         const actual = computeProjectManifest(projectJson);
         const comparison = compareManifests(assignment.requirements, actual);
@@ -224,7 +307,7 @@ export default class AssignmentBadge {
             projectName: assignment.projectName,
             ...comparison,
         });
-        AssignmentBadge._evaluateHints(comparison.completed, projectJson);
+        return AssignmentBadge._evaluateHints(comparison.completed, projectJson, !!forced);
     }
 
     /**
@@ -272,6 +355,12 @@ export default class AssignmentBadge {
             badgeEl.classList.toggle('completed', isComplete);
             badgeEl.textContent = isComplete ? '✅ Concluído' : ('🎯 ' + met + '/' + groups.length);
         }
+        if (hintButtonEl) {
+            // Escondido enquanto completo - mesma regra de _evaluateHints
+            // (dica de coach nunca aparece depois de concluído, então o
+            // botão que dá acesso a ela também não faz sentido aqui).
+            hintButtonEl.classList.toggle('hidden', isComplete);
+        }
         if (popoverEl) {
             AssignmentBadge._renderPopover(data);
         }
@@ -295,39 +384,56 @@ export default class AssignmentBadge {
 
     /**
      * Avalia assignment.hints (nesta ordem - ver docblock do topo do
-     * arquivo) e mostra a primeira cujo `when` está batendo agora no
-     * projeto do aluno, via _showCoachModal. Não faz nada se a missão já
-     * está completa (data.completed - o modal de parabéns cobre esse
-     * caso, dica de coach nunca aparece depois de concluído) nem se algum
-     * modal já está aberto agora (congrats ou outra dica - uma coisa de
-     * cada vez). Reaproveita o mesmo detailedManifest.js pro projectJson já
-     * lido por _recomputeLocal, sem ida extra ao servidor.
+     * arquivo) e acha a primeira ainda não dispensada cujo `when` está
+     * batendo agora no projeto do aluno. Duas coisas acontecem com esse
+     * resultado, independentemente uma da outra:
+     *  1. O ponto/indicador do botão flutuante é atualizado (ver
+     *     _updateHintButton) - reflete "há dica pronta" mesmo que ela não
+     *     seja mostrada AGORA por causa do cooldown abaixo. É assim que o
+     *     botão dá acesso imediato a algo que o poll automático ainda vai
+     *     demorar HINT_COOLDOWN_MS pra mostrar sozinho.
+     *  2. Se `forced` (clique no botão) OU o cooldown desde a última dica
+     *     fechada já passou, E nenhum modal está aberto agora (congrats ou
+     *     outra dica), a dica é mostrada de fato via _showCoachModal.
+     * Não faz nada (dica nenhuma, ponto nenhum) se a missão já está
+     * completa - o modal de parabéns cobre esse caso e dica de coach nunca
+     * aparece depois de concluído. Reaproveita o mesmo detailedManifest.js
+     * pro projectJson já lido por _recomputeLocal, sem ida extra ao
+     * servidor. Retorna true se uma dica foi de fato aberta nesta chamada.
      */
-    static _evaluateHints (isComplete, projectJson) {
-        if (isComplete || coachModalEl) {
-            return;
+    static _evaluateHints (isComplete, projectJson, forced) {
+        if (isComplete) {
+            AssignmentBadge._updateHintButton(false);
+            return false;
         }
         const hints = (assignment && Array.isArray(assignment.hints)) ? assignment.hints : [];
         if (!hints.length) {
-            return;
+            return false;
         }
         const detailed = computeDetailedManifest(projectJson);
-        for (const hint of hints) {
-            if (!hint || dismissedHintIds.has(hint.id)) {
-                continue; // sem id, ou já mostrada+fechada nesta sessão de aba - nunca mais
-            }
-            if (AssignmentBadge._hintConditionHolds(hint, detailed)) {
-                AssignmentBadge._showCoachModal({
-                    icon: '💡',
-                    text: hint.text,
-                    extraClass: 'assignmentCoachCard',
-                    onClose: function () {
-                        dismissedHintIds.add(hint.id);
-                    },
-                });
-                return; // uma dica por tick, mesmo que outras também estejam batendo
-            }
+        const readyHint = hints.find(function (hint) {
+            return hint && !dismissedHintIds.has(hint.id) && AssignmentBadge._hintConditionHolds(hint, detailed);
+        });
+        AssignmentBadge._updateHintButton(!!readyHint);
+
+        if (!readyHint || coachModalEl) {
+            return false;
         }
+        const cooldownElapsed = (Date.now() - lastHintClosedAt) >= HINT_COOLDOWN_MS;
+        if (!forced && !cooldownElapsed) {
+            return false; // pronta, mas ainda dentro do intervalo mínimo entre dicas - espera
+        }
+        AssignmentBadge._showCoachModal({
+            icon: '💡',
+            text: readyHint.text,
+            extraClass: 'assignmentCoachCard',
+            onClose: function () {
+                dismissedHintIds.add(readyHint.id);
+                lastHintClosedAt = Date.now();
+            },
+        });
+        lastShownHint = readyHint;
+        return true;
     }
 
     /**
@@ -409,6 +515,89 @@ export default class AssignmentBadge {
         default:
             return false;
         }
+    }
+
+    /**
+     * Botão flutuante de dica - via manual pro aluno/professor testando não
+     * ficar refém do poll automático (ver constantes HINTS_PENDING_REFRESH_MS/
+     * HINT_COOLDOWN_MS no topo do arquivo). Fica ao lado do selo de
+     * progresso, mesma linguagem visual (ver assignment.css). Criado uma
+     * única vez em _showBadge(), só se a missão tiver pelo menos uma dica.
+     */
+    static _createHintButton () {
+        hintButtonEl = newHTML('div', 'assignmentHintButton', document.body);
+        hintButtonEl.setAttribute('role', 'button');
+        hintButtonEl.tabIndex = 0;
+        hintButtonEl.title = 'Ver dica';
+        hintButtonEl.textContent = '💡';
+        const dot = newHTML('span', 'assignmentHintButtonDot hidden', hintButtonEl);
+        dot.setAttribute('aria-hidden', 'true');
+        hintButtonEl.onclick = AssignmentBadge._onHintButtonClick;
+    }
+
+    /**
+     * Liga/desliga o pontinho de "dica pronta" no botão - chamado a cada
+     * avaliação (_evaluateHints), então reflete o estado real mesmo quando
+     * a dica em si ainda não foi mostrada por causa do cooldown.
+     */
+    static _updateHintButton (hasReadyHint) {
+        if (!hintButtonEl) {
+            return;
+        }
+        const dot = hintButtonEl.querySelector('.assignmentHintButtonDot');
+        if (dot) {
+            dot.classList.toggle('hidden', !hasReadyHint);
+        }
+    }
+
+    /**
+     * Clique no botão flutuante: força uma recomputação ignorando o
+     * cooldown (ver _recomputeLocal(true) -> _evaluateHints(..., true)). Se
+     * isso abrir uma dica nova, pronto. Se não (nada bateu agora), cai no
+     * fallback de reabrir a ÚLTIMA dica já mostrada nesta sessão, pra o
+     * clique nunca ficar sem reação nenhuma - e se nem isso existir ainda
+     * (aluno mal começou, nenhuma condição bateu ainda), um aceno visual
+     * rápido no próprio botão (ver _flashHintButtonEmpty) substitui o
+     * silêncio total.
+     */
+    static _onHintButtonClick () {
+        if (!assignment || coachModalEl) {
+            return; // já tem modal aberto agora - nada a fazer
+        }
+        const shown = AssignmentBadge._recomputeLocal(true);
+        if (shown) {
+            return;
+        }
+        if (lastShownHint) {
+            AssignmentBadge._showCoachModal({
+                icon: '💡',
+                text: lastShownHint.text,
+                extraClass: 'assignmentCoachCard',
+                onClose: function () {
+                    lastHintClosedAt = Date.now();
+                },
+            });
+            return;
+        }
+        AssignmentBadge._flashHintButtonEmpty();
+    }
+
+    /**
+     * Feedback rápido (classe CSS temporária, ver assignment.css) pro
+     * clique no botão quando não há absolutamente nada pra mostrar ainda
+     * (nenhuma dica nunca foi mostrada E nenhuma condição bate agora) -
+     * evita a sensação de "cliquei e não aconteceu nada".
+     */
+    static _flashHintButtonEmpty () {
+        if (!hintButtonEl) {
+            return;
+        }
+        hintButtonEl.classList.add('empty-flash');
+        window.setTimeout(function () {
+            if (hintButtonEl) {
+                hintButtonEl.classList.remove('empty-flash');
+            }
+        }, 600);
     }
 
     /**

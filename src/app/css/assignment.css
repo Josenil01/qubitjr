@@ -435,3 +435,71 @@
 .assignmentCoachCard .assignmentCompleteClose:hover {
     background: #d68910;
 }
+
+/* ===== Botão flutuante de dica (aluno) =====
+ * Via manual pra abrir a dica pronta agora (ou reabrir a última mostrada),
+ * sem depender do poll automático - ver AssignmentBadge._createHintButton/
+ * _onHintButtonClick e o docblock do ponto 7 no topo daquele arquivo. Fica
+ * empilhado ACIMA do selo de progresso (.assignmentBadge, bottom:16px),
+ * mesmo canto/z-index - os dois nunca disputam espaço porque o selo é
+ * sempre visível e este botão só some quando a missão completa. Acento
+ * âmbar igual ao .assignmentCoachCard acima, pra ficar óbvio que os dois
+ * são a mesma "camada" de dica.
+ */
+.assignmentHintButton {
+    position: fixed;
+    right: 16px;
+    bottom: 76px;
+    z-index: 9000;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #f5a623;
+    color: #fff;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    user-select: none;
+}
+
+.assignmentHintButton:hover {
+    background: #d68910;
+}
+
+.assignmentHintButton.hidden {
+    display: none;
+}
+
+/* Pontinho de "dica pronta agora" - ver AssignmentBadge._updateHintButton.
+ * Fica ligado mesmo enquanto o cooldown ainda segura a dica de aparecer
+ * sozinha, então clicar o botão quando ele está aceso é sempre produtivo. */
+.assignmentHintButtonDot {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e74c3c;
+    border: 2px solid #fff;
+}
+
+.assignmentHintButtonDot.hidden {
+    display: none;
+}
+
+/* Aceno rápido (ver AssignmentBadge._flashHintButtonEmpty) pro clique que
+ * não tinha nada pra mostrar ainda - só pra não parecer que o clique foi
+ * ignorado. Reaproveita o próprio elemento, sem markup extra. */
+.assignmentHintButton.empty-flash {
+    animation: assignmentHintButtonShake 0.4s ease-in-out;
+}
+
+@keyframes assignmentHintButtonShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+}
