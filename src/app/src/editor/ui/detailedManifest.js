@@ -51,6 +51,10 @@ function emptyManifest () {
  * Recursa no strip aninhado de um `repeat` (block[4]) - mesmo walk de
  * assignmentScoring.js#walkScript, mesma razão (é o único bloco cuja
  * tupla carrega um array aninhado nesse índice).
+ *
+ * agg.blockSequence: ver docblock do original (backend) - o script inteiro,
+ * na ordem real, sem deduplicar (ao contrário de blockTypes) - só pra
+ * apresentação na transcrição da LLM, nunca usado em comparação/validação.
  */
 function walkScript (script, agg) {
     if (!Array.isArray(script)) return;
@@ -74,6 +78,18 @@ function walkScript (script, agg) {
         // bloco `say`, sem deduplicar.
         if (blockType === 'say' && hasRealArg) {
             agg.sayTexts.push(arg);
+        }
+
+        // Ver docblock do original (backend) - token já pronto pra exibição,
+        // na ORDEM real do script (nunca deduplicado, ao contrário de blockTypes).
+        if (blockType === 'message' && hasRealArg) {
+            agg.blockSequence.push(`message["${arg}"]`);
+        } else if (blockType === 'onmessage' && hasRealArg) {
+            agg.blockSequence.push(`onmessage["${arg}"]`);
+        } else if (blockType === 'say' && hasRealArg) {
+            agg.blockSequence.push(`say["${arg}"]`);
+        } else {
+            agg.blockSequence.push(blockType);
         }
 
         const nested = block[4];
@@ -120,6 +136,7 @@ export function computeDetailedManifest (projectJson) {
                 messagesSent: new Set(),
                 messagesReceived: new Set(),
                 sayTexts: [],
+                blockSequence: [],
             };
 
             for (const script of scripts) {
@@ -138,6 +155,7 @@ export function computeDetailedManifest (projectJson) {
                 messagesSent: Array.from(agg.messagesSent),
                 messagesReceived: Array.from(agg.messagesReceived),
                 sayTexts: agg.sayTexts,
+                blockSequence: agg.blockSequence,
             });
         }
 

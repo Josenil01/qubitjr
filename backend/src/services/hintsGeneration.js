@@ -27,11 +27,13 @@
  *      trust model output blindly: any hint whose `when` references a scene,
  *      character, or message that doesn't really exist in this project is
  *      dropped (logged via console.warn), never surfaced to the teacher.
- *   5.5. fillMissingDefaultCharacterHints() - a SECOND safety net, this one
- *      for completeness rather than hallucination: injects a
- *      default_character_present hint (code-generated text) for any scene
- *      where the LLM's "OBRIGATÓRIO" prompt rule was ignored - see that
- *      function's docblock.
+ *   5.5. fillMissingCharacterAddedHints() then fillMissingDefaultCharacterHints() -
+ *      two SAFETY NETS, both for completeness rather than hallucination:
+ *      the first guarantees a character_missing hint exists before any
+ *      behavior hint (character_no_script/character_missing_block_type) for
+ *      that same character; the second injects default_character_present
+ *      for any scene lacking Ruby. Both cover cases where the LLM's own
+ *      "OBRIGATÓRIO" prompt rule was ignored - see each function's docblock.
  *   6. Assign surviving hints sequential ids (h1, h2, ...) in final order.
  *
  * Scenes/characters with a null md5 (nothing stable to reference them by -
@@ -147,13 +149,15 @@ Regras de tom:
 - Seja sempre caloroso e encorajador, nunca repreenda e nunca diga "errado" ou "faltou".
 - Frases CURTAS e diretas, como se estivesse falando com a criança ao vivo, não escrevendo um manual. Varie a construção da frase entre as dicas - nem toda dica precisa começar com "Que tal..."; use também formas como "Agora...", "Vamos...", perguntas diretas ("Você consegue...?"), etc.
 - SEMPRE que a transcrição der um nome ao personagem (ex.: "Ruby", "Allan"), use esse nome na dica - nunca diga "o personagem" ou "esse personagem" genericamente quando um nome estiver disponível. Depois da primeira menção a um personagem numa dica, pode usar pronome (ele/ela) se ficar natural.
-- Preste atenção às anotações da transcrição tipo "(X não aparece mais nesta cena...)" e "(Y é personagem novo nesta cena...)" - quando isso acontecer entre uma cena e a seguinte, a dica sobre adicionar o personagem novo deve mencionar a troca de forma natural (ex.: "Agora troque a Ruby pelo Allan aqui" ou "Nessa cena é a vez do Allan"), em vez de simplesmente ignorar que o personagem anterior sumiu.
+- Preste atenção às linhas "➡️ TROCA DE CENA - saem: ...; entram: ..." entre duas cenas - quando isso acontecer, a dica sobre adicionar o personagem novo deve mencionar a troca de forma natural (ex.: "Agora troque a Ruby pelo Allan aqui" ou "Nessa cena é a vez do Allan"), em vez de simplesmente ignorar que o personagem anterior sumiu.
+- Cada linha relevante da transcrição vem numerada "PASSO N" (contador único, contínuo do início ao fim, nunca reinicia por cena) - gere as dicas RESPEITANDO ESSA ORDEM, na mesma sequência dos números, mesmo que agrupar de outro jeito pareça mais natural. As linhas "➡️ TROCA DE CENA" não têm PASSO (são só uma transição) e não geram dica própria.
 - Quando um personagem tiver um bloco "say" com texto real na transcrição (ex.: say["Olá, primavera!"]), a dica sobre esse personagem falar algo deve sugerir ESSA fala exata (ex.: "Que tal fazer a Ruby dizer 'Olá, primavera!'?"), não uma fala genérica inventada - é a fala que o professor realmente usou no exemplo.
 - OBRIGATÓRIO: gere uma dica "scene_missing" pra CADA cena da transcrição, sem exceção (inclusive a primeira, e inclusive quando o mesmo fundo já apareceu antes em outra cena - ver regra de "sceneOccurrence" abaixo) - nunca pule direto pras dicas de personagem de uma cena sem antes ter uma dica pedindo pra trocar/escolher aquele cenário. Coloque a dica "scene_missing" de uma cena SEMPRE antes das dicas dos personagens daquela mesma cena na lista.
 - Não existe limite de quantidade de dicas - gere uma pra cada passo de construção realmente relevante da transcrição inteira, mesmo que o projeto seja grande. Não corte cenas nem personagens pra caber num teto.
 - Toda dica "scene_missing" é sobre ADICIONAR uma página/cena nova (o aluno toca no "+" da faixa de cenas) - NUNCA use verbos de "mudar"/"trocar" pro cenário ("vamos mudar pro cenário X?", "troque pro cenário X"), que soam como se já existisse uma cena aberta esperando ser alterada. Use verbos de criar/adicionar: "Adicione o cenário X", "Crie uma cena com o X", "Que tal escolher o cenário X pra começar?". Quando uma cena reusa um fundo que já apareceu antes (a transcrição anota isso, ver "REGRA DE CENA REPETIDA" abaixo), ainda é adicionar uma página nova, mas a dica deve soar como um retorno da história pra esse cenário, não como a primeira vez (ex.: "Vamos voltar pro bosque agora?", "De novo no bosque - adicione essa cena outra vez"), nunca repetindo o mesmo texto de quando ele apareceu a primeira vez.
 - Quando o nome de um personagem vier seguido de um número (ex.: "Casa 2" em vez de só "Casa" - acontece quando o MESMO nome se repete em mais de uma instância no projeto inteiro, ver "REGRA DE NOME REPETIDO" abaixo), use o nome JUNTO com esse número no texto da dica (ex.: "adicione a Casa 2 aqui"), nunca omita o número - é o que diferencia essa instância das outras com o mesmo nome pro aluno.
 - OBRIGATÓRIO: pra CADA cena da transcrição que NÃO tiver a Ruby (HY-Ruby.svg) na lista de personagens dela, gere também uma dica "default_character_present" pra essa cena (ver formato abaixo) - a Ruby aparece sozinha em toda cena nova que o aluno criar, então ele precisa ser lembrado de apagá-la quando ela não faz parte do projeto de verdade ali. Coloque essa dica logo depois da dica "scene_missing" daquela cena, antes das dicas dos personagens de verdade. NUNCA gere essa dica pra uma cena que TEM a Ruby na lista de personagens - lá ela faz parte do projeto de verdade.
+- OBRIGATÓRIO: "adicionar um personagem" e "dar um comportamento a ele" (falar/andar/etc.) são SEMPRE dicas SEPARADAS, nunca uma só combinando os dois. Pra CADA personagem com script (que vai gerar uma dica "character_no_script" ou "character_missing_block_type"), gere TAMBÉM uma dica "character_missing" própria pra ele, ANTES da(s) dica(s) de comportamento - nunca pule direto pro "faça o Allan dizer algo" sem antes ter uma dica só de "adicione o Allan".
 - As dicas devem estar em português do Brasil (pt-BR).
 - Se a mensagem trouxer um bloco "CONTEXTO DO PROFESSOR" antes da transcrição, use-o pra entender melhor o TEMA/INTENÇÃO do projeto (ex.: é sobre folclore brasileiro, cada cena é uma casa diferente, etc.) e deixar o texto das dicas mais alinhado com isso. Esse contexto é só pra tom/entendimento - os identificadores técnicos (sceneMd5/characterMd5/messageName/sceneOccurrence) e os fatos sobre o que existe no projeto continuam vindo EXCLUSIVAMENTE da transcrição estruturada, nunca do contexto livre (que pode estar incompleto ou desatualizado).
 
@@ -171,15 +175,15 @@ REGRA DE NOME REPETIDO: quando o MESMO nome de personagem aparece em mais de uma
 
 Exemplo de transcrição de entrada e a saída correta correspondente:
 Entrada:
-  Cena 1 (fundo: Spring.svg, nome exibido ao aluno: "Primavera") [sceneOccurrence: 1]:
-    - "Ruby" [characterMd5: HY-Ruby.svg]: tem script (blocos: onflag, say["Olá, primavera!"])
-  Cena 2 (fundo: Summer.svg, nome exibido ao aluno: "Verão") [sceneOccurrence: 1]:
-    - "Allan" [characterMd5: HY-Allan.svg]: sem script ainda
-    (Ruby não aparece mais nesta cena, comparado com a cena anterior)
-    (Allan é personagem novo nesta cena, não estava na cena anterior)
-  Cena 3 (fundo: Spring.svg, nome exibido ao aluno: "Primavera") [sceneOccurrence: 2]:
-    - "Ruby" [characterMd5: HY-Ruby.svg]: tem script (blocos: onflag, say["Voltei!"])
-Saída correta pra essas três cenas (nesta ordem - reparem que a dica de cena vem ANTES das dicas de personagem de cada cena, a fala sugerida é a MESMA que o exemplo já usa, o nome "Primavera" é usado literalmente como veio da transcrição, e a Cena 3 tem sceneOccurrence 2 e um texto que deixa claro que é um RETORNO, não a primeira vez):
+  PASSO 1 - Cena 1 (fundo: Spring.svg, nome exibido ao aluno: "Primavera") [sceneOccurrence: 1]:
+    PASSO 2 - "Ruby" [characterMd5: HY-Ruby.svg]: tem script (sequência: onflag → say["Olá, primavera!"])
+➡️ TROCA DE CENA - saem: "Ruby" [characterMd5: HY-Ruby.svg]. entram: "Allan" [characterMd5: HY-Allan.svg].
+  PASSO 3 - Cena 2 (fundo: Summer.svg, nome exibido ao aluno: "Verão") [sceneOccurrence: 1]:
+    PASSO 4 - "Allan" [characterMd5: HY-Allan.svg]: sem script ainda
+➡️ TROCA DE CENA - saem: "Allan" [characterMd5: HY-Allan.svg]. entram: "Ruby" [characterMd5: HY-Ruby.svg].
+  PASSO 5 - Cena 3 (fundo: Spring.svg, nome exibido ao aluno: "Primavera") [sceneOccurrence: 2]:
+    PASSO 6 - "Ruby" [characterMd5: HY-Ruby.svg]: tem script (sequência: onflag → say["Voltei!"])
+Saída correta pra essas três cenas (NESTA ORDEM, seguindo os números PASSO 1 a 6 - reparem que a dica de cena vem ANTES das dicas de personagem de cada cena, a fala sugerida é a MESMA que o exemplo já usa, o nome "Primavera" é usado literalmente como veio da transcrição, e a Cena 3 tem sceneOccurrence 2 e um texto que deixa claro que é um RETORNO, não a primeira vez):
   {"text": "Que tal escolher o cenário da Primavera pra começar?", "when": {"type": "scene_missing", "sceneMd5": "Spring.svg", "sceneOccurrence": 1}}
   {"text": "Agora faça a Ruby dizer 'Olá, primavera!' quando a bandeira verde for tocada.", "when": {"type": "character_missing_block_type", "sceneMd5": "Spring.svg", "sceneOccurrence": 1, "characterMd5": "HY-Ruby.svg", "blockTypes": ["say"]}}
   {"text": "Agora adicione o cenário de Verão.", "when": {"type": "scene_missing", "sceneMd5": "Summer.svg", "sceneOccurrence": 1}}
@@ -197,12 +201,13 @@ O campo "when.type" deve ser exatamente um destes valores, com exatamente estes 
 
 Exemplo rápido de "default_character_present" (cena SEM a Ruby na transcrição) e "REGRA DE NOME REPETIDO" (a mesma "Casa" reaparecendo):
 Entrada (trecho):
-  Cena 1 (fundo: Woods.svg, nome exibido ao aluno: "Bosque") [sceneOccurrence: 1]:
-    - "Lobisomem" [characterMd5: HY-Lobsomem.svg]: tem script (blocos: onflag, say["Au!"])
-    - "Casa 1" [characterMd5: HY-Casa2.svg]: sem script ainda
-  Cena 2 (fundo: Woods.svg, nome exibido ao aluno: "Bosque") [sceneOccurrence: 2]:
-    - "Casa 2" [characterMd5: HY-Casa2.svg]: sem script ainda
-Saída correta (repare: dica default_character_present logo após scene_missing, ANTES das dicas de personagem; "Casa 1"/"Casa 2" usados com o número; a Ruby não aparece em nenhuma das duas cenas, então as duas ganham a dica):
+  PASSO 1 - Cena 1 (fundo: Woods.svg, nome exibido ao aluno: "Bosque") [sceneOccurrence: 1]:
+    PASSO 2 - "Lobisomem" [characterMd5: HY-Lobsomem.svg]: tem script (sequência: onflag → say["Au!"])
+    PASSO 3 - "Casa 1" [characterMd5: HY-Casa2.svg]: sem script ainda
+➡️ TROCA DE CENA - saem: "Lobisomem" [characterMd5: HY-Lobsomem.svg], "Casa 1" [characterMd5: HY-Casa2.svg].
+  PASSO 4 - Cena 2 (fundo: Woods.svg, nome exibido ao aluno: "Bosque") [sceneOccurrence: 2]:
+    PASSO 5 - "Casa 2" [characterMd5: HY-Casa2.svg]: sem script ainda
+Saída correta (repare: dica default_character_present logo após scene_missing, ANTES das dicas de personagem; "Casa 1"/"Casa 2" usados com o número; a Ruby não aparece em nenhuma das duas cenas, então as duas ganham a dica; ordem segue PASSO 1 a 5):
   {"text": "Que tal escolher o cenário do Bosque pra começar?", "when": {"type": "scene_missing", "sceneMd5": "Woods.svg", "sceneOccurrence": 1}}
   {"text": "A Ruby aparece sozinha aqui - pode apagar ela, essa cena não é dela!", "when": {"type": "default_character_present", "sceneMd5": "Woods.svg", "sceneOccurrence": 1, "characterMd5": "HY-Ruby.svg"}}
   {"text": "Faça o Lobisomem dizer 'Au!' quando a bandeira verde for tocada.", "when": {"type": "character_missing_block_type", "sceneMd5": "Woods.svg", "sceneOccurrence": 1, "characterMd5": "HY-Lobsomem.svg", "blockTypes": ["say"]}}
@@ -211,7 +216,7 @@ Saída correta (repare: dica default_character_present logo após scene_missing,
   {"text": "De novo, apague a Ruby - essa cena também não é dela!", "when": {"type": "default_character_present", "sceneMd5": "Woods.svg", "sceneOccurrence": 2, "characterMd5": "HY-Ruby.svg"}}
   {"text": "Agora adicione a Casa 2 aqui também.", "when": {"type": "character_missing", "sceneMd5": "Woods.svg", "sceneOccurrence": 2, "characterMd5": "HY-Casa2.svg"}}
 
-Gere uma dica por passo de construção realmente relevante da transcrição INTEIRA, sem se preocupar com uma quantidade máxima. Ordene o array "hints" seguindo a mesma ordem da transcrição (a ordem natural de construção).`;
+Gere uma dica por passo de construção realmente relevante da transcrição INTEIRA, sem se preocupar com uma quantidade máxima. Ordene o array "hints" seguindo EXATAMENTE a ordem dos números "PASSO N" da transcrição - nunca embaralhe, agrupe fora de ordem, ou pule pra frente/volte atrás.`;
 
 /**
  * Descreve um personagem pra LLM mostrando o NOME (entre aspas, quando
@@ -236,26 +241,24 @@ function characterDescriptor(character, number) {
 }
 
 /**
- * Renders one character's blockTypes/messagesSent/messagesReceived as a
- * single human-readable "blocos: ..." fragment, e.g. "ontouch, message[\"gol\"]".
- * message/onmessage are rendered with their argument in brackets (so the LLM
- * sees the actual message name, not just the bare block type); every other
- * block type is listed plainly.
+ * Renders one character's blockSequence (ver detailedManifest.js) como uma
+ * única string "onflag → say[\"Oi\"] → forward → say[\"Tchau\"]" - a ORDEM
+ * real do script, com repetições, não a lista deduplicada de blockTypes
+ * (achado em teste real: dicas às vezes saíam fora de ordem porque a LLM só
+ * via "quais tipos de bloco existem", nunca EM QUE ORDEM/quantas vezes). Sem
+ * blockSequence (formato antigo do manifesto, hints salvos antes desta
+ * mudança), cai pra montar a mesma coisa a partir de blockTypes/sayTexts,
+ * sem ordem garantida - melhor que nada, nunca quebra.
  */
 function formatBlocksFragment(character) {
-    const parts = [];
-    for (const blockType of character.blockTypes) {
-        if (blockType === 'message' || blockType === 'onmessage' || blockType === 'say') continue; // rendered below, with their real content
-        parts.push(blockType);
+    if (Array.isArray(character.blockSequence)) {
+        return character.blockSequence.join(' → ');
     }
+    const parts = character.blockTypes.filter((t) => t !== 'message' && t !== 'onmessage' && t !== 'say');
     for (const name of character.messagesSent) parts.push(`message["${name}"]`);
     for (const name of character.messagesReceived) parts.push(`onmessage["${name}"]`);
-    // Texto literal de cada say, na ordem em que aparece - sem isto a LLM só
-    // sabia "existe um say em algum lugar" e tinha que inventar uma fala
-    // genérica em vez de sugerir a que o professor realmente usou (pedido
-    // explícito depois de ver o segundo lote de dicas geradas).
     for (const text of character.sayTexts) parts.push(`say["${text}"]`);
-    return parts.join(', ');
+    return parts.join(' → ');
 }
 
 /**
@@ -278,10 +281,22 @@ function formatBlocksFragment(character) {
  * Allan aqui" instead of silently ignoring a character swap between scenes
  * (explicit request after reviewing the first generated batch, which had
  * no way to know Ruby was gone from the next scene).
+ *
+ * Cada linha de ação (cabeçalho de cena, linha de personagem) carrega um
+ * "PASSO N" - um contador ÚNICO, contínuo pro transcript inteiro (não reinicia
+ * por cena) - achado em teste real: a LLM ocasionalmente devolvia as dicas
+ * fora da ordem de construção; numerar toda linha relevante dá uma âncora
+ * explícita e inequívoca pra "gere as dicas nesta mesma ordem" (ver regra no
+ * SYSTEM_PROMPT). O marcador "➡️ TROCA DE CENA" substitui as antigas
+ * anotações separadas de "não aparece mais"/"é personagem novo" por uma
+ * única linha entre as duas cenas (não numerada - é uma transição, não uma
+ * ação em si), deixando o ponto exato da troca impossível de confundir com
+ * mais uma linha de personagem comum.
  */
 function buildTranscript(manifest) {
     const lines = [];
     let sceneNumber = 0;
+    let stepNumber = 0;
     let previousByMd5 = null; // Map<characterMd5, character> of the last describable scene, or null before the first
 
     // Pré-passo: conta quantas vezes cada NOME de personagem aparece no
@@ -324,33 +339,40 @@ function buildTranscript(manifest) {
         const describableCharacters = scene.characters.filter((c) => c.characterMd5);
         if (describableCharacters.length === 0) continue; // nothing referenceable to say about this scene either
 
-        sceneNumber += 1;
-        const displayName = getBackgroundDisplayName(scene.sceneMd5);
-        const nameFragment = displayName ? `, nome exibido ao aluno: "${displayName}"` : '';
-        const occurrence = scene.sceneOccurrence || 1;
-        lines.push(`Cena ${sceneNumber} (fundo: ${scene.sceneMd5}${nameFragment}) [sceneOccurrence: ${occurrence}]:`);
-
         const currentByMd5 = new Map(describableCharacters.map((c) => [c.characterMd5, c]));
 
-        for (const character of describableCharacters) {
-            const descriptor = characterDescriptor(character, numberFor(character));
-            if (!character.hasScript) {
-                lines.push(`  - ${descriptor}: sem script ainda`);
-                continue;
-            }
-            const blocksFragment = formatBlocksFragment(character);
-            lines.push(`  - ${descriptor}: tem script (blocos: ${blocksFragment})`);
-        }
-
+        // Marcador de transição ANTES do cabeçalho da nova cena (não depois
+        // dela) - lê como uma linha do tempo: "...última coisa da cena
+        // anterior → TROCA DE CENA → primeira coisa desta cena", em vez de
+        // uma nota de rodapé depois do fato. "saem"/"entram" evita
+        // concordância singular/plural (não aparece mais/aparecem mais).
         if (previousByMd5) {
             const removed = [...previousByMd5.values()].filter((c) => !currentByMd5.has(c.characterMd5));
             const added = describableCharacters.filter((c) => !previousByMd5.has(c.characterMd5));
-            if (removed.length) {
-                lines.push(`  (${removed.map((c) => characterDescriptor(c, numberFor(c))).join(', ')} não aparece mais nesta cena, comparado com a cena anterior)`);
+            if (removed.length || added.length) {
+                const parts = [];
+                if (removed.length) parts.push(`saem: ${removed.map((c) => characterDescriptor(c, numberFor(c))).join(', ')}`);
+                if (added.length) parts.push(`entram: ${added.map((c) => characterDescriptor(c, numberFor(c))).join(', ')}`);
+                lines.push(`➡️ TROCA DE CENA - ${parts.join('. ')}.`);
             }
-            if (added.length) {
-                lines.push(`  (${added.map((c) => characterDescriptor(c, numberFor(c))).join(', ')} é personagem novo nesta cena, não estava na cena anterior)`);
+        }
+
+        sceneNumber += 1;
+        stepNumber += 1;
+        const displayName = getBackgroundDisplayName(scene.sceneMd5);
+        const nameFragment = displayName ? `, nome exibido ao aluno: "${displayName}"` : '';
+        const occurrence = scene.sceneOccurrence || 1;
+        lines.push(`PASSO ${stepNumber} - Cena ${sceneNumber} (fundo: ${scene.sceneMd5}${nameFragment}) [sceneOccurrence: ${occurrence}]:`);
+
+        for (const character of describableCharacters) {
+            stepNumber += 1;
+            const descriptor = characterDescriptor(character, numberFor(character));
+            if (!character.hasScript) {
+                lines.push(`  PASSO ${stepNumber} - ${descriptor}: sem script ainda`);
+                continue;
             }
+            const blocksFragment = formatBlocksFragment(character);
+            lines.push(`  PASSO ${stepNumber} - ${descriptor}: tem script (sequência: ${blocksFragment})`);
         }
 
         previousByMd5 = currentByMd5;
@@ -535,6 +557,75 @@ function fillMissingDefaultCharacterHints(hints, manifest) {
 }
 
 /**
+ * Rede de segurança pra "adicionar o personagem" nunca ser pulado - achado
+ * em teste real: a LLM às vezes gera só a dica de COMPORTAMENTO
+ * (character_no_script/character_missing_block_type) sem nunca ter gerado
+ * uma character_missing separada pra aquele mesmo personagem, pulando direto
+ * pro "faça o Allan dizer algo" sem uma dica prévia de "adicione o Allan"
+ * (viola a regra OBRIGATÓRIO do SYSTEM_PROMPT - mesma lição já aprendida com
+ * scene_missing e default_character_present: regra só no prompt não basta).
+ *
+ * Só injeta character_missing pra (cena, personagem) que já tem alguma dica
+ * de COMPORTAMENTO no array mas nenhuma character_missing própria - nunca
+ * força uma dica pra um personagem que a LLM decidiu não mencionar de jeito
+ * nenhum (isso é julgamento legítimo dela, fora do escopo desta rede de
+ * segurança). Texto sempre code-gerado (não reaproveita texto de outra
+ * dica), inserido logo ANTES da primeira dica de comportamento daquele
+ * personagem - mesma posição que a LLM é instruída a usar.
+ */
+function findCharacterInManifest(manifest, sceneMd5, sceneOccurrence, characterMd5) {
+    const scene = manifest.scenes.find((s) => s.sceneMd5 === sceneMd5 && (s.sceneOccurrence || 1) === (sceneOccurrence || 1));
+    if (!scene) return null;
+    return scene.characters.find((c) => c.characterMd5 === characterMd5) || null;
+}
+
+function fillMissingCharacterAddedHints(hints, manifest) {
+    const BEHAVIOR_TYPES = new Set(['character_no_script', 'character_missing_block_type']);
+    const characterAddedCovered = new Set(); // sceneKey::characterMd5 já coberto por um character_missing
+
+    for (const hint of hints) {
+        if (hint.when && hint.when.type === 'character_missing') {
+            characterAddedCovered.add(`${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}`);
+        }
+    }
+
+    const result = hints.slice();
+    const seenBehaviorFor = new Set(); // já processamos o fallback pra este personagem (só a 1ª dica de comportamento importa - a posição de inserção)
+
+    for (let i = 0; i < hints.length; i += 1) {
+        const hint = hints[i];
+        if (!hint.when || !BEHAVIOR_TYPES.has(hint.when.type)) continue;
+
+        const scopeKey = `${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}`;
+        if (characterAddedCovered.has(scopeKey) || seenBehaviorFor.has(scopeKey)) continue;
+        seenBehaviorFor.add(scopeKey);
+
+        // Nome sem artigo (não dá pra saber o/a só pelo nome) - "adicione
+        // Ruby aqui" soa um pouco menos natural que "adicione a Ruby", mas
+        // evita chutar o gênero errado; melhor que o genérico "esse
+        // personagem" quando o nome está disponível.
+        const character = findCharacterInManifest(manifest, hint.when.sceneMd5, hint.when.sceneOccurrence, hint.when.characterMd5);
+        const text = character && character.characterName
+            ? `Antes disso, adicione ${character.characterName} aqui.`
+            : 'Antes disso, adicione esse personagem na cena.';
+
+        const fallback = {
+            text,
+            when: {
+                type: 'character_missing',
+                sceneMd5: hint.when.sceneMd5,
+                sceneOccurrence: hint.when.sceneOccurrence,
+                characterMd5: hint.when.characterMd5,
+            },
+        };
+        const insertAt = result.indexOf(hint); // reencontra - índices já podem ter mudado por inserções anteriores neste loop
+        result.splice(insertAt, 0, fallback);
+    }
+
+    return result;
+}
+
+/**
  * @param {object} projectJson - the teacher's PARSED (already JSON.parse()'d)
  *   reference project, same shape computeDetailedManifest() expects.
  * @param {string} [hintContext] - optional free text the TEACHER wrote
@@ -605,7 +696,8 @@ async function generateHints(projectJson, hintContext) {
         }
     }
 
-    const withDefaultCharacterHints = fillMissingDefaultCharacterHints(validHints, manifest);
+    const withCharacterAddedHints = fillMissingCharacterAddedHints(validHints, manifest);
+    const withDefaultCharacterHints = fillMissingDefaultCharacterHints(withCharacterAddedHints, manifest);
 
     const hints = withDefaultCharacterHints.map((hint, idx) => ({
         id: `h${idx + 1}`,

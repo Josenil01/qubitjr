@@ -73,7 +73,7 @@ function twoSceneProject() {
                     md5: 'HY-Ball.svg',
                     scripts: [[['ontouch', null, 0, 0], ['message', 'gol', 10, 20]]],
                 },
-                { id: 'ruby0', type: 'sprite', md5: 'HY-Ruby.svg', scripts: [] },
+                { id: 'ruby0', type: 'sprite', md5: 'HY-Ruby.svg', name: 'Ruby', scripts: [] },
             ],
         },
         {
@@ -84,9 +84,10 @@ function twoSceneProject() {
                     id: 'goalie',
                     type: 'sprite',
                     md5: 'HY-Goalie.svg',
+                    name: 'Goalie',
                     scripts: [[['onmessage', 'gol', 0, 0], ['say', 'Gol!', 10, 20]]],
                 },
-                { id: 'ruby', type: 'sprite', md5: 'HY-Ruby.svg', scripts: [] },
+                { id: 'ruby', type: 'sprite', md5: 'HY-Ruby.svg', name: 'Ruby', scripts: [] },
             ],
         },
     ]);
@@ -137,9 +138,14 @@ describe('generateHints', () => {
 
         const result = await generateHints(twoSceneProject());
 
-        expect(result.hints.map((h) => h.id)).toEqual(['h1', 'h2', 'h3']);
+        // h3 é fillMissingCharacterAddedHints() injetando um character_missing
+        // pra Ruby, já que o lote só trazia o character_no_script dela (sem
+        // uma dica própria de "adicionar") - ver describe dedicado abaixo.
+        expect(result.hints.map((h) => h.id)).toEqual(['h1', 'h2', 'h3', 'h4']);
         expect(result.hints[0].text).toBe('Que tal colocar o cenário Spring.svg?');
         expect(result.hints[1].when).toEqual({ type: 'message_not_received', messageName: 'gol' });
+        expect(result.hints[2].when.type).toBe('character_missing');
+        expect(result.hints[3].text).toBe('Que tal fazer a Ruby falar algo?');
     });
 
     it('parses a markdown-fence-wrapped JSON response despite instructions not to use fences', async () => {
@@ -193,8 +199,13 @@ describe('generateHints', () => {
 
         const result = await generateHints(twoSceneProject());
 
-        expect(result.hints).toHaveLength(1);
-        expect(result.hints[0].text).toBe('Personagem real');
+        // +1: fillMissingCharacterAddedHints() injeta um character_missing
+        // pra Ruby antes do character_no_script sobrevivente (ver describe
+        // dedicado abaixo) - não interfere no que este teste verifica de
+        // verdade (as duas dicas inventadas continuam descartadas).
+        expect(result.hints).toHaveLength(2);
+        expect(result.hints[0].when.type).toBe('character_missing');
+        expect(result.hints[1].text).toBe('Personagem real');
     });
 
     it('drops a hint with a hallucinated messageName not in the union of sent messages', async () => {
@@ -241,8 +252,12 @@ describe('generateHints', () => {
 
         const result = await generateHints(twoSceneProject());
 
-        expect(result.hints).toHaveLength(1);
-        expect(result.hints[0].text).toBe('Com blockTypes válido');
+        // +1: fillMissingCharacterAddedHints() injeta um character_missing
+        // pra Ruby antes da dica de comportamento sobrevivente (ver describe
+        // dedicado abaixo) - a dica com blockTypes vazio continua descartada.
+        expect(result.hints).toHaveLength(2);
+        expect(result.hints[0].when.type).toBe('character_missing');
+        expect(result.hints[1].text).toBe('Com blockTypes válido');
     });
 
     it('drops a character-scoped hint missing its required characterMd5, even though sceneMd5 alone is real', async () => {
@@ -472,6 +487,11 @@ describe('generateHints', () => {
                 JSON.stringify({
                     hints: [
                         { text: 'Que tal o Bosque?', when: { type: 'scene_missing', sceneMd5: 'Woods.svg', sceneOccurrence: 1 } },
+                        // character_missing próprio incluído aqui de propósito, pra
+                        // fillMissingCharacterAddedHints() (feature diferente, ver
+                        // describe dedicado) não injetar mais nada e este teste
+                        // ficar focado só no default_character_present.
+                        { text: 'Adicione o Lobisomem.', when: { type: 'character_missing', sceneMd5: 'Woods.svg', sceneOccurrence: 1, characterMd5: 'HY-Lobsomem.svg' } },
                         { text: 'Faça o Lobisomem uivar.', when: { type: 'character_missing_block_type', sceneMd5: 'Woods.svg', sceneOccurrence: 1, characterMd5: 'HY-Lobsomem.svg', blockTypes: ['say'] } },
                     ],
                 })
@@ -482,6 +502,7 @@ describe('generateHints', () => {
             expect(result.hints.map((h) => h.when.type)).toEqual([
                 'scene_missing',
                 'default_character_present',
+                'character_missing',
                 'character_missing_block_type',
             ]);
             expect(result.hints[1].when).toMatchObject({ sceneMd5: 'Woods.svg', sceneOccurrence: 1, characterMd5: 'HY-Ruby.svg' });
@@ -588,8 +609,117 @@ describe('generateHints', () => {
             await generateHints(project);
 
             const transcript = mockCreate.mock.calls[0][0].messages[1].content;
-            expect(transcript).toContain('"Casa 1" [characterMd5: HY-Casa2.svg] não aparece mais nesta cena');
-            expect(transcript).toContain('"Casa 2" [characterMd5: HY-Casa2.svg] é personagem novo nesta cena');
+            expect(transcript).toContain('➡️ TROCA DE CENA - saem: "Casa 1" [characterMd5: HY-Casa2.svg]. entram: "Lobisomem" [characterMd5: HY-Lobsomem.svg].');
+            expect(transcript).toContain('➡️ TROCA DE CENA - saem: "Lobisomem" [characterMd5: HY-Lobsomem.svg]. entram: "Casa 2" [characterMd5: HY-Casa2.svg].');
+        });
+    });
+
+    describe('fillMissingCharacterAddedHints (adicionar personagem nunca pulado)', () => {
+        function projectWithAllan() {
+            return buildProject([
+                {
+                    id: 'page1',
+                    md5: 'Bedroom.svg',
+                    sprites: [{ id: 'allan', type: 'sprite', md5: 'HY-Allan.svg', name: 'Allan', scripts: [[['onflag', null, 0, 0], ['say', 'olá', 0, 0]]] }],
+                },
+            ]);
+        }
+
+        it('injects a character_missing hint right before a behavior hint when the LLM skipped straight to behavior', async () => {
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        { text: 'Que tal o quarto?', when: { type: 'scene_missing', sceneMd5: 'Bedroom.svg', sceneOccurrence: 1 } },
+                        { text: 'Faça o Allan dizer olá.', when: { type: 'character_missing_block_type', sceneMd5: 'Bedroom.svg', sceneOccurrence: 1, characterMd5: 'HY-Allan.svg', blockTypes: ['say'] } },
+                    ],
+                })
+            );
+
+            const result = await generateHints(projectWithAllan());
+
+            expect(result.hints.map((h) => h.when.type)).toEqual([
+                'scene_missing',
+                'default_character_present', // Ruby não está nesta cena - também injetada
+                'character_missing', // injetada aqui, logo antes do comportamento
+                'character_missing_block_type',
+            ]);
+            expect(result.hints[2].text).toContain('Allan');
+        });
+
+        it('does not inject anything when the LLM already generated its own character_missing for that character', async () => {
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        { text: 'Que tal o quarto?', when: { type: 'scene_missing', sceneMd5: 'Bedroom.svg', sceneOccurrence: 1 } },
+                        { text: 'A Ruby não mora aqui.', when: { type: 'default_character_present', sceneMd5: 'Bedroom.svg', sceneOccurrence: 1, characterMd5: 'HY-Ruby.svg' } },
+                        { text: 'Adicione o Allan.', when: { type: 'character_missing', sceneMd5: 'Bedroom.svg', sceneOccurrence: 1, characterMd5: 'HY-Allan.svg' } },
+                        { text: 'Faça o Allan dizer olá.', when: { type: 'character_missing_block_type', sceneMd5: 'Bedroom.svg', sceneOccurrence: 1, characterMd5: 'HY-Allan.svg', blockTypes: ['say'] } },
+                    ],
+                })
+            );
+
+            const result = await generateHints(projectWithAllan());
+
+            expect(result.hints.filter((h) => h.when.type === 'character_missing')).toHaveLength(1);
+            expect(result.hints[2].text).toBe('Adicione o Allan.');
+        });
+    });
+
+    describe('numeração PASSO (linha do tempo contínua) e sequência ordenada de blocos', () => {
+        it('numbers every scene header and character line with a single continuous PASSO counter, never resetting per scene, and skips numbering the TROCA DE CENA marker', async () => {
+            const project = buildProject([
+                {
+                    id: 'page1',
+                    md5: 'Woods.svg',
+                    sprites: [{ id: 'lobo', type: 'sprite', md5: 'HY-Lobsomem.svg', name: 'Lobisomem', scripts: [] }],
+                },
+                {
+                    id: 'page2',
+                    md5: 'Bedroom.svg',
+                    sprites: [
+                        { id: 'ruby', type: 'sprite', md5: 'HY-Ruby.svg', name: 'Ruby', scripts: [] },
+                        { id: 'allan', type: 'sprite', md5: 'HY-Allan.svg', name: 'Allan', scripts: [] },
+                    ],
+                },
+            ]);
+            mockLlmResponse(JSON.stringify({ hints: [] }));
+
+            await generateHints(project);
+
+            const transcript = mockCreate.mock.calls[0][0].messages[1].content;
+            expect(transcript).toContain('PASSO 1 - Cena 1');
+            expect(transcript).toContain('PASSO 2 - "Lobisomem"');
+            // PASSO 3 é o cabeçalho da Cena 2 (não reinicia em 1) - Ruby e Allan
+            // vêm depois, então PASSO 4 e 5.
+            expect(transcript).toContain('PASSO 3 - Cena 2');
+            expect(transcript).toContain('PASSO 4 - "Ruby"');
+            expect(transcript).toContain('PASSO 5 - "Allan"');
+            expect(transcript).not.toMatch(/PASSO \d+ - ➡️/); // o marcador de transição nunca ganha número próprio
+        });
+
+        it('renders blockSequence as an arrow-joined "sequência:" fragment, in real script order (not the deduplicated blockTypes set)', async () => {
+            const project = buildProject([
+                {
+                    id: 'page1',
+                    md5: 'Woods.svg',
+                    sprites: [
+                        {
+                            id: 'lobo',
+                            type: 'sprite',
+                            md5: 'HY-Lobsomem.svg',
+                            name: 'Lobisomem',
+                            scripts: [[['onflag', null, 0, 0], ['say', 'Au!', 0, 0], ['forward', '2', 0, 0], ['say', 'Au de novo!', 0, 0]]],
+                        },
+                    ],
+                },
+            ]);
+            mockLlmResponse(JSON.stringify({ hints: [] }));
+
+            await generateHints(project);
+
+            const transcript = mockCreate.mock.calls[0][0].messages[1].content;
+            expect(transcript).toContain('sequência: onflag → say["Au!"] → forward → say["Au de novo!"]');
+            expect(transcript).not.toContain('blocos:');
         });
     });
 });

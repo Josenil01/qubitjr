@@ -45,6 +45,19 @@ const CARET_TYPES = new Set(['caretstart', 'caretend', 'caretrepeat', 'caretcmd'
  * carried by `message` (sent) and `onmessage` (received) blocks - the
  * `onmessage` trigger tuple is block[0] of a top-level script, which is just
  * the first element walked here, same as any other block.
+ *
+ * agg.blockSequence (achado em teste real - dicas às vezes saíam fora de
+ * ordem) é o script inteiro, na ORDEM REAL em que os blocos aparecem, SEM
+ * deduplicar - ao contrário de blockTypes (Set, colapsa repetições e perde a
+ * posição relativa entre elas), isto é o que permite a LLM ver a sequência
+ * exata de ações que o professor executou (ex.: "onflag → say[\"Oi\"] →
+ * forward → say[\"Tchau\"]"), em vez de só "quais tipos de bloco existem em
+ * algum lugar". say/message/onmessage entram já formatados com o argumento
+ * real, mesmo texto que sayTexts/messagesSent/messagesReceived carregam
+ * separadamente (blockTypes/messagesSent/messagesReceived/sayTexts
+ * continuam existindo do jeito que estão - usados pela VALIDAÇÃO de hints e
+ * pela avaliação de condição no cliente; blockSequence é só pra
+ * apresentação/transcrição, nunca usado numa comparação de igualdade).
  */
 function walkScriptForDetail(script, agg) {
     if (!Array.isArray(script)) return;
@@ -80,6 +93,18 @@ function walkScriptForDetail(script, agg) {
         // coisa duas vezes isso é informação real sobre o script, não ruído.
         if (blockType === 'say' && hasRealArg) {
             agg.sayTexts.push(arg);
+        }
+
+        // Ver docblock acima - token já pronto pra exibição, na ORDEM real
+        // do script (nunca deduplicado).
+        if (blockType === 'message' && hasRealArg) {
+            agg.blockSequence.push(`message["${arg}"]`);
+        } else if (blockType === 'onmessage' && hasRealArg) {
+            agg.blockSequence.push(`onmessage["${arg}"]`);
+        } else if (blockType === 'say' && hasRealArg) {
+            agg.blockSequence.push(`say["${arg}"]`);
+        } else {
+            agg.blockSequence.push(blockType);
         }
 
         const nested = block[4];
@@ -128,6 +153,7 @@ function computeDetailedManifest(projectJson) {
                 messagesSent: new Set(),
                 messagesReceived: new Set(),
                 sayTexts: [],
+                blockSequence: [],
             };
             let hasScript = false;
 
@@ -152,6 +178,7 @@ function computeDetailedManifest(projectJson) {
                 messagesSent: Array.from(agg.messagesSent),
                 messagesReceived: Array.from(agg.messagesReceived),
                 sayTexts: agg.sayTexts,
+                blockSequence: agg.blockSequence,
             });
         }
 

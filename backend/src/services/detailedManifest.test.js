@@ -143,6 +143,7 @@ describe('computeDetailedManifest — ordering', () => {
             messagesSent: [],
             messagesReceived: [],
             sayTexts: [],
+            blockSequence: [],
         });
     });
 
@@ -167,6 +168,49 @@ describe('computeDetailedManifest — ordering', () => {
         expect(manifest.scenes[0].characters[0].sayTexts).toEqual(['Olá!', 'Olá!', 'Tchau!']);
     });
 
+    it('captures blockSequence in the REAL order the blocks appear, with say formatted and repeats NOT deduplicated (unlike blockTypes)', () => {
+        const project = buildProject([
+            {
+                id: 'page1',
+                sprites: [
+                    {
+                        id: 's1',
+                        type: 'sprite',
+                        md5: 'A.svg',
+                        scripts: [
+                            [['onflag', null, 0, 0], ['say', 'Olá!', 0, 0], ['forward', '2', 0, 0], ['say', 'Olá!', 0, 0]],
+                            [['onclick', null, 0, 0], ['say', 'Tchau!', 0, 0]],
+                        ],
+                    },
+                ],
+            },
+        ]);
+        const manifest = computeDetailedManifest(project);
+        const character = manifest.scenes[0].characters[0];
+        // blockTypes (Set) colapsa 'say' repetido; blockSequence preserva as
+        // duas ocorrências, na ordem real, intercaladas com 'forward'.
+        expect(character.blockTypes).toEqual(['onflag', 'say', 'forward', 'onclick']);
+        expect(character.blockSequence).toEqual(['onflag', 'say["Olá!"]', 'forward', 'say["Olá!"]', 'onclick', 'say["Tchau!"]']);
+    });
+
+    it('formats message/onmessage tokens in blockSequence with their real argument, same as say', () => {
+        const project = buildProject([
+            {
+                id: 'page1',
+                sprites: [
+                    {
+                        id: 's1',
+                        type: 'sprite',
+                        md5: 'A.svg',
+                        scripts: [[['onmessage', 'gol', 0, 0], ['wait', '1', 0, 0], ['message', 'comemora', 0, 0]]],
+                    },
+                ],
+            },
+        ]);
+        const manifest = computeDetailedManifest(project);
+        expect(manifest.scenes[0].characters[0].blockSequence).toEqual(['onmessage["gol"]', 'wait', 'message["comemora"]']);
+    });
+
     it('excludes a say block with no real text chosen yet (arg = the string "null") from sayTexts', () => {
         const project = buildProject([
             {
@@ -184,6 +228,9 @@ describe('computeDetailedManifest — ordering', () => {
         const manifest = computeDetailedManifest(project);
         expect(manifest.scenes[0].characters[0].sayTexts).toEqual([]);
         expect(manifest.scenes[0].characters[0].blockTypes).toEqual(['onflag', 'say']);
+        // Sem argumento real, blockSequence usa o tipo puro ('say'), não
+        // 'say["null"]' - mesmo sentinela/filtro de hasRealArg do sayTexts acima.
+        expect(manifest.scenes[0].characters[0].blockSequence).toEqual(['onflag', 'say']);
     });
 
     it('numbers sceneOccurrence per sceneMd5, independent of other scenes in between', () => {
