@@ -273,7 +273,7 @@ describe('generateHints', () => {
         expect(result.hints).toHaveLength(0);
     });
 
-    it('caps the surviving hints at 8 even if the LLM returns more', async () => {
+    it('keeps every valid hint - no cap on how many survive, even for a large batch', async () => {
         const hints = [];
         for (let i = 0; i < 12; i += 1) {
             hints.push({ text: `Dica ${i}`, when: { type: 'scene_missing', sceneMd5: i % 2 === 0 ? 'Spring.svg' : 'Summer.svg' } });
@@ -281,8 +281,48 @@ describe('generateHints', () => {
         mockLlmResponse(JSON.stringify({ hints }));
 
         const result = await generateHints(twoSceneProject());
-        expect(result.hints).toHaveLength(8);
-        expect(result.hints[7].id).toBe('h8');
+        expect(result.hints).toHaveLength(12);
+        expect(result.hints[11].id).toBe('h12');
+    });
+
+    it('treats sceneOccurrence as part of the scene identity - a hint for the 2nd time a background is reused only validates against that 2nd scene', async () => {
+        // Same background (Spring.svg) used twice: page1 has Ruby, page3 (the
+        // reused Spring.svg) has Allan instead - distinguishing them is the
+        // whole point of sceneOccurrence (see docblock at the top of the file).
+        const project = buildProject([
+            { id: 'page1', md5: 'Spring.svg', sprites: [{ id: 'ruby', type: 'sprite', md5: 'HY-Ruby.svg', scripts: [] }] },
+            { id: 'page2', md5: 'Summer.svg', sprites: [] },
+            { id: 'page3', md5: 'Spring.svg', sprites: [{ id: 'allan', type: 'sprite', md5: 'HY-Allan.svg', scripts: [] }] },
+        ]);
+        mockLlmResponse(
+            JSON.stringify({
+                hints: [
+                    { text: '1a vez na Primavera - Ruby', when: { type: 'character_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 1, characterMd5: 'HY-Ruby.svg' } },
+                    { text: '2a vez na Primavera - Allan', when: { type: 'character_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 2, characterMd5: 'HY-Allan.svg' } },
+                    // Allan só existe na ocorrência 2, não na 1 - deve ser rejeitada.
+                    { text: 'Allan na ocorrencia errada', when: { type: 'character_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 1, characterMd5: 'HY-Allan.svg' } },
+                    // Só existem 2 ocorrências de Spring.svg - a 3a não existe.
+                    { text: 'Ocorrencia inexistente', when: { type: 'scene_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 3 } },
+                ],
+            })
+        );
+
+        const result = await generateHints(project);
+
+        expect(result.hints.map((h) => h.text)).toEqual(['1a vez na Primavera - Ruby', '2a vez na Primavera - Allan']);
+    });
+
+    it('defaults sceneOccurrence to 1 when the LLM omits it, for backward compatibility', async () => {
+        mockLlmResponse(
+            JSON.stringify({
+                hints: [{ text: 'Sem sceneOccurrence', when: { type: 'scene_missing', sceneMd5: 'Spring.svg' } }],
+            })
+        );
+
+        const result = await generateHints(twoSceneProject());
+
+        expect(result.hints).toHaveLength(1);
+        expect(result.hints[0].text).toBe('Sem sceneOccurrence');
     });
 
     it('throws a clear error when the LLM response is not valid JSON', async () => {
@@ -295,6 +335,26 @@ describe('generateHints', () => {
         mockCreate.mockRejectedValue(new Error('network down'));
 
         await expect(generateHints(twoSceneProject())).rejects.toThrow(/Falha ao chamar/);
+    });
+
+    it('feeds the LLM the real localized background name and the sceneOccurrence annotation, not just the raw filename', async () => {
+        // Farm.svg -> "Quinta" em src/app/localizations/pt.json (BACKGROUND_Farm.svg)
+        // - sem esse nome no transcript, a LLM só via "Farm.svg" e tinha que
+        // adivinhar uma tradução (foi assim que "Woods.svg" virou "floresta"
+        // numa dica real, quando o nome exibido de verdade é "Bosque").
+        const project = buildProject([
+            { id: 'page1', md5: 'Farm.svg', sprites: [{ id: 'ruby', type: 'sprite', md5: 'HY-Ruby.svg', scripts: [] }] },
+            { id: 'page2', md5: 'Summer.svg', sprites: [] },
+            { id: 'page3', md5: 'Farm.svg', sprites: [{ id: 'ruby2', type: 'sprite', md5: 'HY-Ruby.svg', scripts: [] }] },
+        ]);
+        mockLlmResponse(JSON.stringify({ hints: [] }));
+
+        await generateHints(project);
+
+        const transcript = mockCreate.mock.calls[0][0].messages[1].content;
+        expect(transcript).toContain('nome exibido ao aluno: "Quinta"');
+        expect(transcript).toContain('[sceneOccurrence: 1]');
+        expect(transcript).toContain('[sceneOccurrence: 2]');
     });
 
     it('returns an empty hints array without calling the LLM when the project has nothing describable', async () => {

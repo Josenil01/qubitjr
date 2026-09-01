@@ -95,6 +95,10 @@ export function computeDetailedManifest (projectJson) {
     }
 
     const scenes = [];
+    // Ver docblock do original em backend/src/services/detailedManifest.js -
+    // conta ocorrências do MESMO fundo (sceneMd5) pra distinguir cenas
+    // repetidas (ex.: volta pro "Bosque" depois de já tê-lo usado antes).
+    const sceneOccurrenceBySceneMd5 = new Map();
 
     for (const pageId of projectJson.pages) {
         const page = projectJson[pageId];
@@ -137,8 +141,16 @@ export function computeDetailedManifest (projectJson) {
             });
         }
 
+        const sceneMd5 = page.md5 || null;
+        let sceneOccurrence = null;
+        if (sceneMd5) {
+            sceneOccurrence = (sceneOccurrenceBySceneMd5.get(sceneMd5) || 0) + 1;
+            sceneOccurrenceBySceneMd5.set(sceneMd5, sceneOccurrence);
+        }
+
         scenes.push({
-            sceneMd5: page.md5 || null,
+            sceneMd5,
+            sceneOccurrence,
             characters,
         });
     }

@@ -186,6 +186,28 @@ describe('computeDetailedManifest — ordering', () => {
         expect(manifest.scenes[0].characters[0].blockTypes).toEqual(['onflag', 'say']);
     });
 
+    it('numbers sceneOccurrence per sceneMd5, independent of other scenes in between', () => {
+        const project = buildProject([
+            { id: 'page1', md5: 'Woods.svg', sprites: [] },
+            { id: 'page2', md5: 'Bedroom.svg', sprites: [] },
+            { id: 'page3', md5: 'Woods.svg', sprites: [] },
+            { id: 'page4', md5: 'Bedroom.svg', sprites: [] },
+        ]);
+        const manifest = computeDetailedManifest(project);
+        expect(manifest.scenes.map((s) => [s.sceneMd5, s.sceneOccurrence])).toEqual([
+            ['Woods.svg', 1],
+            ['Bedroom.svg', 1],
+            ['Woods.svg', 2],
+            ['Bedroom.svg', 2],
+        ]);
+    });
+
+    it('leaves sceneOccurrence null alongside a null sceneMd5', () => {
+        const project = buildProject([{ id: 'page1', sprites: [] }]);
+        const manifest = computeDetailedManifest(project);
+        expect(manifest.scenes[0].sceneOccurrence).toBeNull();
+    });
+
     it('falls back to null characterName when the sprite has none set', () => {
         const project = buildProject([
             {

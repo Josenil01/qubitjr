@@ -101,6 +101,13 @@ function computeDetailedManifest(projectJson) {
     }
 
     const scenes = [];
+    // sceneMd5 -> quantas cenas com esse MESMO fundo já foram vistas até agora
+    // (inclusive a atual) - um projeto que reusa um fundo (ex.: volta pro
+    // "Bosque" na cena 3 depois de já tê-lo usado na cena 1) precisa de algo
+    // além de sceneMd5 pra distinguir as duas ocorrências num `when` de dica
+    // (ver sceneOccurrence abaixo e services/hintsGeneration.js). Só conta
+    // cenas com md5 real - sceneOccurrence fica null junto com sceneMd5 null.
+    const sceneOccurrenceBySceneMd5 = new Map();
 
     for (const pageId of projectJson.pages) {
         const page = projectJson[pageId];
@@ -148,8 +155,18 @@ function computeDetailedManifest(projectJson) {
             });
         }
 
+        const sceneMd5 = page.md5 || null;
+        let sceneOccurrence = null;
+        if (sceneMd5) {
+            sceneOccurrence = (sceneOccurrenceBySceneMd5.get(sceneMd5) || 0) + 1;
+            sceneOccurrenceBySceneMd5.set(sceneMd5, sceneOccurrence);
+        }
+
         scenes.push({
-            sceneMd5: page.md5 || null,
+            sceneMd5,
+            // 1 na primeira cena a usar este fundo, 2 na segunda vez que o
+            // MESMO fundo aparece em outra cena, etc. - ver o Map acima.
+            sceneOccurrence,
             characters,
         });
     }

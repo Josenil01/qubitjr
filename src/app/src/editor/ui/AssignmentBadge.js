@@ -447,11 +447,24 @@ export default class AssignmentBadge {
      * dentro dela) simplesmente não existir ainda no projeto do aluno -
      * chamado só sabe decidir o que fazer com esse "não existe" (ver cada
      * ramo de _hintConditionHolds).
+     *
+     * sceneOccurrence (1-based, default 1) escolhe QUAL cena entre as que
+     * usam o mesmo fundo - um projeto pode reusar o mesmo sceneMd5 em mais
+     * de uma página (ex.: a história volta pro "Bosque" mais adiante), e sem
+     * distinguir a ocorrência, uma dica sobre a 2ª vez sempre acabava
+     * batendo (errado) na 1ª cena que usa aquele fundo, já que essa lista é
+     * filtrada e indexada na ORDEM em que as cenas aparecem no projeto do
+     * aluno (não precisa bater com a posição/página exata do professor -
+     * só com "qual em ordem, entre as que têm esse fundo"). Ausente/1 se
+     * comporta como antes (sempre a primeira ocorrência) - hints salvos
+     * antes deste campo existir (sem sceneOccurrence no `when`) continuam
+     * funcionando sem mudança.
      */
-    static _findSceneAndCharacter (scenes, sceneMd5, characterMd5) {
-        const scene = scenes.find(function (s) {
+    static _findSceneAndCharacter (scenes, sceneMd5, characterMd5, sceneOccurrence) {
+        const matches = scenes.filter(function (s) {
             return s.sceneMd5 === sceneMd5;
         });
+        const scene = matches[(sceneOccurrence || 1) - 1] || null;
         if (!scene) {
             return {scene: null, character: null};
         }
@@ -475,13 +488,23 @@ export default class AssignmentBadge {
         const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
 
         switch (when.type) {
-        case 'scene_missing':
-            return !scenes.some(function (s) {
+        case 'scene_missing': {
+            // "Faltando" agora é relativo à OCORRÊNCIA pedida, não só "existe
+            // uma cena qualquer com esse fundo" - senão, assim que a 1ª cena
+            // de um fundo reusado existisse, uma dica sobre trazer aquele
+            // fundo DE VOLTA numa cena posterior (sceneOccurrence >= 2) já
+            // apareceria como resolvida sem o aluno ter feito nada (bug real
+            // encontrado: duas dicas com o mesmo sceneMd5 e sem essa
+            // distinção nunca conseguiam representar "adicione mais uma
+            // cena" como uma tarefa própria).
+            const occurrencesSoFar = scenes.filter(function (s) {
                 return s.sceneMd5 === when.sceneMd5;
-            });
+            }).length;
+            return occurrencesSoFar < (when.sceneOccurrence || 1);
+        }
 
         case 'character_missing': {
-            const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5);
+            const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
             // Cena em si nem existindo ainda não conta como "personagem
             // faltando" - esse caso é coberto por um hint scene_missing
             // separado (ver comentário no topo do arquivo/spec).
@@ -489,12 +512,12 @@ export default class AssignmentBadge {
         }
 
         case 'character_no_script': {
-            const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5);
+            const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
             return !!found.character && !found.character.hasScript;
         }
 
         case 'character_missing_block_type': {
-            const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5);
+            const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
             if (!found.character || !found.character.hasScript) {
                 return false;
             }
