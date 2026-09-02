@@ -99,6 +99,18 @@ function mockLlmResponse(content) {
     });
 }
 
+/**
+ * generateHints() now always prepends a mission_intro hint (h1) - see
+ * describe('mission_intro...') below for its own dedicated tests. Every
+ * OTHER test in this file cares about the hints that came from the
+ * LLM/manifest, not the guaranteed intro, so they filter it out via this
+ * helper before asserting on content/count/order - keeps each test's
+ * original intent unchanged instead of hand-shifting every index/id.
+ */
+function stripIntro(hints) {
+    return hints.filter((h) => h.when.type !== 'mission_intro');
+}
+
 describe('generateHints', () => {
     const ORIGINAL_KEY = process.env.DEEPSEEK_API_KEY;
 
@@ -138,13 +150,15 @@ describe('generateHints', () => {
 
         const result = await generateHints(twoSceneProject());
 
-        // h3 é fillMissingCharacterAddedHints() injetando um character_missing
-        // pra Ruby, já que o lote só trazia o character_no_script dela (sem
-        // uma dica própria de "adicionar") - ver describe dedicado abaixo.
+        // h1 é sempre a dica de apresentação (mission_intro, ver describe
+        // dedicado abaixo) - os ids continuam sequenciais a partir daí. Ruby
+        // é isenta de fillMissingCharacterAddedHints() (ver outro describe -
+        // ela é o personagem default, "adicioná-la" nunca é um passo real),
+        // então nada extra é injetado - só os 3 originais depois da intro.
         expect(result.hints.map((h) => h.id)).toEqual(['h1', 'h2', 'h3', 'h4']);
-        expect(result.hints[0].text).toBe('Que tal colocar o cenário Spring.svg?');
-        expect(result.hints[1].when).toEqual({ type: 'message_not_received', messageName: 'gol' });
-        expect(result.hints[2].when.type).toBe('character_missing');
+        expect(result.hints[0].when.type).toBe('mission_intro');
+        expect(result.hints[1].text).toBe('Que tal colocar o cenário Spring.svg?');
+        expect(result.hints[2].when).toEqual({ type: 'message_not_received', messageName: 'gol' });
         expect(result.hints[3].text).toBe('Que tal fazer a Ruby falar algo?');
     });
 
@@ -155,9 +169,10 @@ describe('generateHints', () => {
         mockLlmResponse(fenced);
 
         const result = await generateHints(twoSceneProject());
+        const hints = stripIntro(result.hints);
 
-        expect(result.hints).toHaveLength(1);
-        expect(result.hints[0].when).toEqual({ type: 'scene_missing', sceneMd5: 'Summer.svg' });
+        expect(hints).toHaveLength(1);
+        expect(hints[0].when).toEqual({ type: 'scene_missing', sceneMd5: 'Summer.svg' });
     });
 
     it('drops a hint with a hallucinated sceneMd5 not present in the manifest', async () => {
@@ -171,9 +186,10 @@ describe('generateHints', () => {
         );
 
         const result = await generateHints(twoSceneProject());
+        const hints = stripIntro(result.hints);
 
-        expect(result.hints).toHaveLength(1);
-        expect(result.hints[0].text).toBe('Cena real');
+        expect(hints).toHaveLength(1);
+        expect(hints[0].text).toBe('Cena real');
     });
 
     it('drops a hint with a hallucinated characterMd5 not present in that scene', async () => {
@@ -198,14 +214,13 @@ describe('generateHints', () => {
         );
 
         const result = await generateHints(twoSceneProject());
+        const hints = stripIntro(result.hints);
 
-        // +1: fillMissingCharacterAddedHints() injeta um character_missing
-        // pra Ruby antes do character_no_script sobrevivente (ver describe
-        // dedicado abaixo) - não interfere no que este teste verifica de
-        // verdade (as duas dicas inventadas continuam descartadas).
-        expect(result.hints).toHaveLength(2);
-        expect(result.hints[0].when.type).toBe('character_missing');
-        expect(result.hints[1].text).toBe('Personagem real');
+        // Ruby é isenta de fillMissingCharacterAddedHints() (ver describe
+        // dedicado abaixo), então nada é injetado aqui - as duas dicas
+        // inventadas continuam descartadas e só "Personagem real" sobrevive.
+        expect(hints).toHaveLength(1);
+        expect(hints[0].text).toBe('Personagem real');
     });
 
     it('drops a hint with a hallucinated messageName not in the union of sent messages', async () => {
@@ -219,9 +234,10 @@ describe('generateHints', () => {
         );
 
         const result = await generateHints(twoSceneProject());
+        const hints = stripIntro(result.hints);
 
-        expect(result.hints).toHaveLength(1);
-        expect(result.hints[0].text).toBe('Mensagem real');
+        expect(hints).toHaveLength(1);
+        expect(hints[0].text).toBe('Mensagem real');
     });
 
     it('drops a character_missing_block_type hint with an empty/malformed blockTypes array', async () => {
@@ -251,13 +267,13 @@ describe('generateHints', () => {
         );
 
         const result = await generateHints(twoSceneProject());
+        const hints = stripIntro(result.hints);
 
-        // +1: fillMissingCharacterAddedHints() injeta um character_missing
-        // pra Ruby antes da dica de comportamento sobrevivente (ver describe
-        // dedicado abaixo) - a dica com blockTypes vazio continua descartada.
-        expect(result.hints).toHaveLength(2);
-        expect(result.hints[0].when.type).toBe('character_missing');
-        expect(result.hints[1].text).toBe('Com blockTypes válido');
+        // Ruby é isenta de fillMissingCharacterAddedHints() (ver describe
+        // dedicado abaixo) - a dica com blockTypes vazio continua descartada,
+        // e nada extra é injetado pra ela.
+        expect(hints).toHaveLength(1);
+        expect(hints[0].text).toBe('Com blockTypes válido');
     });
 
     it('drops a character-scoped hint missing its required characterMd5, even though sceneMd5 alone is real', async () => {
@@ -272,17 +288,22 @@ describe('generateHints', () => {
                     { text: 'Sem characterMd5', when: { type: 'character_missing', sceneMd5: 'Summer.svg' } },
                     { text: 'Sem characterMd5 (no-script)', when: { type: 'character_no_script', sceneMd5: 'Summer.svg' } },
                     {
+                        // Goalie, não Ruby - character_missing nunca é válida
+                        // pra Ruby (ver describe dedicado abaixo), o que
+                        // sabotaria este teste (que é só sobre o campo
+                        // characterMd5 ser obrigatório, nada a ver com ela).
                         text: 'Com characterMd5 válido',
-                        when: { type: 'character_missing', sceneMd5: 'Summer.svg', characterMd5: 'HY-Ruby.svg' },
+                        when: { type: 'character_missing', sceneMd5: 'Summer.svg', characterMd5: 'HY-Goalie.svg' },
                     },
                 ],
             })
         );
 
         const result = await generateHints(twoSceneProject());
+        const hints = stripIntro(result.hints);
 
-        expect(result.hints).toHaveLength(1);
-        expect(result.hints[0].text).toBe('Com characterMd5 válido');
+        expect(hints).toHaveLength(1);
+        expect(hints[0].text).toBe('Com characterMd5 válido');
     });
 
     it('drops a hint with an unrecognized when.type entirely', async () => {
@@ -293,31 +314,42 @@ describe('generateHints', () => {
         );
 
         const result = await generateHints(twoSceneProject());
-        expect(result.hints).toHaveLength(0);
+        expect(stripIntro(result.hints)).toHaveLength(0);
     });
 
     it('keeps every valid hint - no cap on how many survive, even for a large batch', async () => {
-        const hints = [];
+        const rawHints = [];
         for (let i = 0; i < 12; i += 1) {
-            hints.push({ text: `Dica ${i}`, when: { type: 'scene_missing', sceneMd5: i % 2 === 0 ? 'Spring.svg' : 'Summer.svg' } });
+            rawHints.push({ text: `Dica ${i}`, when: { type: 'scene_missing', sceneMd5: i % 2 === 0 ? 'Spring.svg' : 'Summer.svg' } });
         }
-        mockLlmResponse(JSON.stringify({ hints }));
+        mockLlmResponse(JSON.stringify({ hints: rawHints }));
 
         const result = await generateHints(twoSceneProject());
-        expect(result.hints).toHaveLength(12);
-        expect(result.hints[11].id).toBe('h12');
+        // +1: h1 é sempre a intro (mission_intro) - os 12 originais viram h2..h13.
+        expect(result.hints).toHaveLength(13);
+        expect(result.hints[12].id).toBe('h13');
     });
 
     it('treats sceneOccurrence as part of the scene identity - a hint for the 2nd time a background is reused only validates against that 2nd scene', async () => {
-        // Same background (Spring.svg) used twice: page1 has Ruby, page3 (the
-        // reused Spring.svg) has Allan instead - distinguishing them is the
-        // whole point of sceneOccurrence (see docblock at the top of the file).
-        // Both instances also carry a Ruby sprite of their own (unrelated id,
-        // 'ruby'/'ruby3') so fillMissingDefaultCharacterHints() never fires
-        // here - this test is about sceneOccurrence identity, not that
-        // feature; see the dedicated tests below for it.
+        // Same background (Spring.svg) used twice: page1 has Lobisomem, page3
+        // (the reused Spring.svg) has Allan instead - distinguishing them is
+        // the whole point of sceneOccurrence (see docblock at the top of the
+        // file). Both instances ALSO carry a Ruby sprite of their own
+        // (unrelated id, 'ruby'/'ruby3') so fillMissingDefaultCharacterHints()
+        // never fires here - this test is about sceneOccurrence identity, not
+        // that feature; see the dedicated tests below for it. Lobisomem (not
+        // Ruby) is the occurrence-1 subject on purpose - character_missing is
+        // never valid for Ruby (ver describe dedicado abaixo), which would
+        // sabotage this test's own assertions.
         const project = buildProject([
-            { id: 'page1', md5: 'Spring.svg', sprites: [{ id: 'ruby', type: 'sprite', md5: 'HY-Ruby.svg', scripts: [] }] },
+            {
+                id: 'page1',
+                md5: 'Spring.svg',
+                sprites: [
+                    { id: 'ruby', type: 'sprite', md5: 'HY-Ruby.svg', scripts: [] },
+                    { id: 'lobo', type: 'sprite', md5: 'HY-Lobsomem.svg', scripts: [] },
+                ],
+            },
             { id: 'page2', md5: 'Summer.svg', sprites: [] },
             {
                 id: 'page3',
@@ -331,7 +363,7 @@ describe('generateHints', () => {
         mockLlmResponse(
             JSON.stringify({
                 hints: [
-                    { text: '1a vez na Primavera - Ruby', when: { type: 'character_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 1, characterMd5: 'HY-Ruby.svg' } },
+                    { text: '1a vez na Primavera - Lobisomem', when: { type: 'character_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 1, characterMd5: 'HY-Lobsomem.svg' } },
                     { text: '2a vez na Primavera - Allan', when: { type: 'character_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 2, characterMd5: 'HY-Allan.svg' } },
                     // Allan só existe na ocorrência 2, não na 1 - deve ser rejeitada.
                     { text: 'Allan na ocorrencia errada', when: { type: 'character_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 1, characterMd5: 'HY-Allan.svg' } },
@@ -343,7 +375,7 @@ describe('generateHints', () => {
 
         const result = await generateHints(project);
 
-        expect(result.hints.map((h) => h.text)).toEqual(['1a vez na Primavera - Ruby', '2a vez na Primavera - Allan']);
+        expect(stripIntro(result.hints).map((h) => h.text)).toEqual(['1a vez na Primavera - Lobisomem', '2a vez na Primavera - Allan']);
     });
 
     it('defaults sceneOccurrence to 1 when the LLM omits it, for backward compatibility', async () => {
@@ -354,9 +386,10 @@ describe('generateHints', () => {
         );
 
         const result = await generateHints(twoSceneProject());
+        const hints = stripIntro(result.hints);
 
-        expect(result.hints).toHaveLength(1);
-        expect(result.hints[0].text).toBe('Sem sceneOccurrence');
+        expect(hints).toHaveLength(1);
+        expect(hints[0].text).toBe('Sem sceneOccurrence');
     });
 
     it('throws a clear error when the LLM response is not valid JSON', async () => {
@@ -391,13 +424,58 @@ describe('generateHints', () => {
         expect(transcript).toContain('[sceneOccurrence: 2]');
     });
 
-    it('returns an empty hints array without calling the LLM when the project has nothing describable', async () => {
+    it('returns just the generic mission_intro (no other hints) without calling the LLM when the project has nothing describable', async () => {
         const emptyProject = buildProject([{ id: 'page1', sprites: [] }]);
 
         const result = await generateHints(emptyProject);
 
-        expect(result).toEqual({ hints: [] });
+        expect(result.hints).toEqual([{ id: 'h1', text: '🎯 Vamos começar uma nova missão!', when: { type: 'mission_intro' } }]);
         expect(mockCreate).not.toHaveBeenCalled();
+    });
+
+    describe('mission_intro (dica de apresentação, sempre garantida)', () => {
+        it('is always the first hint (h1), never generated by the LLM, preferring hintContext over projectName', async () => {
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [{ text: 'Que tal colocar o cenário Spring.svg?', when: { type: 'scene_missing', sceneMd5: 'Spring.svg' } }],
+                })
+            );
+
+            const result = await generateHints(twoSceneProject(), 'Uma história sobre o dia de um goleiro.', 'Futebol');
+
+            expect(result.hints[0].id).toBe('h1');
+            expect(result.hints[0].when).toEqual({ type: 'mission_intro' });
+            expect(result.hints[0].text).toBe('📋 Desafio de hoje: Uma história sobre o dia de um goleiro.');
+            // A LLM não tenta gerar mission_intro sozinha aqui - se tentasse,
+            // isHintValid aceitaria (sempre válida), mas o mock não devolveu
+            // nenhuma, então só existe a injetada em código.
+            expect(result.hints.filter((h) => h.when.type === 'mission_intro')).toHaveLength(1);
+        });
+
+        it('falls back to the project name when hintContext is empty', async () => {
+            mockLlmResponse(JSON.stringify({ hints: [] }));
+
+            const result = await generateHints(twoSceneProject(), '', 'Futebol');
+
+            expect(result.hints[0]).toMatchObject({ text: '🎯 Hoje vamos construir: Futebol!', when: { type: 'mission_intro' } });
+        });
+
+        it('falls back to a generic welcome when neither hintContext nor projectName are given', async () => {
+            mockLlmResponse(JSON.stringify({ hints: [] }));
+
+            const result = await generateHints(twoSceneProject());
+
+            expect(result.hints[0]).toMatchObject({ text: '🎯 Vamos começar uma nova missão!', when: { type: 'mission_intro' } });
+        });
+
+        it('is still returned alone even when the project has nothing describable (no LLM call)', async () => {
+            const emptyProject = buildProject([{ id: 'page1', sprites: [] }]);
+
+            const result = await generateHints(emptyProject, 'Contexto qualquer', 'Nome qualquer');
+
+            expect(result.hints).toEqual([{ id: 'h1', text: '📋 Desafio de hoje: Contexto qualquer', when: { type: 'mission_intro' } }]);
+            expect(mockCreate).not.toHaveBeenCalled();
+        });
     });
 
     describe('hintContext (contexto livre escrito pelo professor)', () => {
@@ -441,9 +519,10 @@ describe('generateHints', () => {
             );
 
             const result = await generateHints(projectWithoutRuby());
+            const hints = stripIntro(result.hints);
 
-            expect(result.hints).toHaveLength(2);
-            expect(result.hints[1]).toMatchObject({ text: 'Apague a Ruby, ela não é desta cena.', when: { type: 'default_character_present' } });
+            expect(hints).toHaveLength(2);
+            expect(hints[1]).toMatchObject({ text: 'Apague a Ruby, ela não é desta cena.', when: { type: 'default_character_present' } });
         });
 
         it('rejects a default_character_present hint for a scene where Ruby really is part of the teacher\'s project', async () => {
@@ -498,14 +577,15 @@ describe('generateHints', () => {
             );
 
             const result = await generateHints(projectWithoutRuby());
+            const hints = stripIntro(result.hints);
 
-            expect(result.hints.map((h) => h.when.type)).toEqual([
+            expect(hints.map((h) => h.when.type)).toEqual([
                 'scene_missing',
                 'default_character_present',
                 'character_missing',
                 'character_missing_block_type',
             ]);
-            expect(result.hints[1].when).toMatchObject({ sceneMd5: 'Woods.svg', sceneOccurrence: 1, characterMd5: 'HY-Ruby.svg' });
+            expect(hints[1].when).toMatchObject({ sceneMd5: 'Woods.svg', sceneOccurrence: 1, characterMd5: 'HY-Ruby.svg' });
         });
 
         it('does not inject a fallback when the LLM already provided a valid one for that scene', async () => {
@@ -543,7 +623,7 @@ describe('generateHints', () => {
 
             const result = await generateHints(project);
 
-            expect(result.hints.map((h) => h.when.type)).toEqual([
+            expect(stripIntro(result.hints).map((h) => h.when.type)).toEqual([
                 'scene_missing',
                 'default_character_present',
                 'message_not_received',
@@ -636,14 +716,15 @@ describe('generateHints', () => {
             );
 
             const result = await generateHints(projectWithAllan());
+            const hints = stripIntro(result.hints);
 
-            expect(result.hints.map((h) => h.when.type)).toEqual([
+            expect(hints.map((h) => h.when.type)).toEqual([
                 'scene_missing',
                 'default_character_present', // Ruby não está nesta cena - também injetada
                 'character_missing', // injetada aqui, logo antes do comportamento
                 'character_missing_block_type',
             ]);
-            expect(result.hints[2].text).toContain('Allan');
+            expect(hints[2].text).toContain('Allan');
         });
 
         it('does not inject anything when the LLM already generated its own character_missing for that character', async () => {
@@ -659,9 +740,38 @@ describe('generateHints', () => {
             );
 
             const result = await generateHints(projectWithAllan());
+            const hints = stripIntro(result.hints);
 
-            expect(result.hints.filter((h) => h.when.type === 'character_missing')).toHaveLength(1);
-            expect(result.hints[2].text).toBe('Adicione o Allan.');
+            expect(hints.filter((h) => h.when.type === 'character_missing')).toHaveLength(1);
+            expect(hints[2].text).toBe('Adicione o Allan.');
+        });
+
+        it('never generates or injects a character_missing hint for Ruby - she is auto-created on every new page, so "adding" her is never a real step', async () => {
+            const project = buildProject([
+                {
+                    id: 'page1',
+                    md5: 'Spring.svg',
+                    sprites: [{ id: 'ruby', type: 'sprite', md5: 'HY-Ruby.svg', name: 'Ruby', scripts: [[['onflag', null, 0, 0], ['say', 'Oi!', 0, 0]]] }],
+                },
+            ]);
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        { text: 'Que tal a Primavera?', when: { type: 'scene_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 1 } },
+                        // A LLM tentando gerar character_missing pra Ruby mesmo assim - deve ser descartada pela validação.
+                        { text: 'Adicione a Ruby aqui.', when: { type: 'character_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 1, characterMd5: 'HY-Ruby.svg' } },
+                        { text: 'Faça a Ruby dizer Oi!', when: { type: 'character_missing_block_type', sceneMd5: 'Spring.svg', sceneOccurrence: 1, characterMd5: 'HY-Ruby.svg', blockTypes: ['say'] } },
+                    ],
+                })
+            );
+
+            const result = await generateHints(project);
+
+            // Nem a tentativa da LLM (rejeitada por isHintValid) nem a rede de
+            // segurança (fillMissingCharacterAddedHints, que pula a Ruby de
+            // propósito) devem produzir um character_missing pra ela.
+            expect(result.hints.filter((h) => h.when.type === 'character_missing' && h.when.characterMd5 === 'HY-Ruby.svg')).toHaveLength(0);
+            expect(stripIntro(result.hints).map((h) => h.when.type)).toEqual(['scene_missing', 'character_missing_block_type']);
         });
     });
 

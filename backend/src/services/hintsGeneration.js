@@ -100,6 +100,7 @@ const VALID_WHEN_TYPES = new Set([
     'character_missing_block_type',
     'message_not_received',
     'default_character_present',
+    'mission_intro',
 ]);
 
 // ScratchJr.defaultSprite (settings.json) - o personagem que toda página em
@@ -154,10 +155,10 @@ Regras de tom:
 - Quando um personagem tiver um bloco "say" com texto real na transcrição (ex.: say["Olá, primavera!"]), a dica sobre esse personagem falar algo deve sugerir ESSA fala exata (ex.: "Que tal fazer a Ruby dizer 'Olá, primavera!'?"), não uma fala genérica inventada - é a fala que o professor realmente usou no exemplo.
 - OBRIGATÓRIO: gere uma dica "scene_missing" pra CADA cena da transcrição, sem exceção (inclusive a primeira, e inclusive quando o mesmo fundo já apareceu antes em outra cena - ver regra de "sceneOccurrence" abaixo) - nunca pule direto pras dicas de personagem de uma cena sem antes ter uma dica pedindo pra trocar/escolher aquele cenário. Coloque a dica "scene_missing" de uma cena SEMPRE antes das dicas dos personagens daquela mesma cena na lista.
 - Não existe limite de quantidade de dicas - gere uma pra cada passo de construção realmente relevante da transcrição inteira, mesmo que o projeto seja grande. Não corte cenas nem personagens pra caber num teto.
-- Toda dica "scene_missing" é sobre ADICIONAR uma página/cena nova (o aluno toca no "+" da faixa de cenas) - NUNCA use verbos de "mudar"/"trocar" pro cenário ("vamos mudar pro cenário X?", "troque pro cenário X"), que soam como se já existisse uma cena aberta esperando ser alterada. Use verbos de criar/adicionar: "Adicione o cenário X", "Crie uma cena com o X", "Que tal escolher o cenário X pra começar?". Quando uma cena reusa um fundo que já apareceu antes (a transcrição anota isso, ver "REGRA DE CENA REPETIDA" abaixo), ainda é adicionar uma página nova, mas a dica deve soar como um retorno da história pra esse cenário, não como a primeira vez (ex.: "Vamos voltar pro bosque agora?", "De novo no bosque - adicione essa cena outra vez"), nunca repetindo o mesmo texto de quando ele apareceu a primeira vez.
+- Toda dica "scene_missing" é sobre ADICIONAR UMA PÁGINA NOVA (o aluno toca no "+" da faixa de páginas - é assim que a própria interface do ScratchJr chama essa ação) - "cenário"/"fundo" é só o QUE fica dentro dela, não a ação em si. NUNCA use verbos de "mudar"/"trocar" pro cenário ("vamos mudar pro cenário X?", "troque pro cenário X"), que soam como se já existisse uma cena aberta esperando ser alterada. Nomeie as duas coisas juntas: "Adicione uma página nova com o cenário X", "Toque no + e escolha o cenário X", "Que tal criar uma página com o X pra começar?". Quando uma cena reusa um fundo que já apareceu antes (a transcrição anota isso, ver "REGRA DE CENA REPETIDA" abaixo), ainda é adicionar uma página nova, mas a dica deve soar como um retorno da história pra esse cenário, não como a primeira vez (ex.: "Vamos voltar pro bosque agora? Adicione outra página com esse cenário.", "De novo no bosque - mais uma página com esse fundo"), nunca repetindo o mesmo texto de quando ele apareceu a primeira vez.
 - Quando o nome de um personagem vier seguido de um número (ex.: "Casa 2" em vez de só "Casa" - acontece quando o MESMO nome se repete em mais de uma instância no projeto inteiro, ver "REGRA DE NOME REPETIDO" abaixo), use o nome JUNTO com esse número no texto da dica (ex.: "adicione a Casa 2 aqui"), nunca omita o número - é o que diferencia essa instância das outras com o mesmo nome pro aluno.
 - OBRIGATÓRIO: pra CADA cena da transcrição que NÃO tiver a Ruby (HY-Ruby.svg) na lista de personagens dela, gere também uma dica "default_character_present" pra essa cena (ver formato abaixo) - a Ruby aparece sozinha em toda cena nova que o aluno criar, então ele precisa ser lembrado de apagá-la quando ela não faz parte do projeto de verdade ali. Coloque essa dica logo depois da dica "scene_missing" daquela cena, antes das dicas dos personagens de verdade. NUNCA gere essa dica pra uma cena que TEM a Ruby na lista de personagens - lá ela faz parte do projeto de verdade.
-- OBRIGATÓRIO: "adicionar um personagem" e "dar um comportamento a ele" (falar/andar/etc.) são SEMPRE dicas SEPARADAS, nunca uma só combinando os dois. Pra CADA personagem com script (que vai gerar uma dica "character_no_script" ou "character_missing_block_type"), gere TAMBÉM uma dica "character_missing" própria pra ele, ANTES da(s) dica(s) de comportamento - nunca pule direto pro "faça o Allan dizer algo" sem antes ter uma dica só de "adicione o Allan".
+- OBRIGATÓRIO: "adicionar um personagem" e "dar um comportamento a ele" (falar/andar/etc.) são SEMPRE dicas SEPARADAS, nunca uma só combinando os dois. Pra CADA personagem com script (que vai gerar uma dica "character_no_script" ou "character_missing_block_type"), gere TAMBÉM uma dica "character_missing" própria pra ele, ANTES da(s) dica(s) de comportamento - nunca pule direto pro "faça o Allan dizer algo" sem antes ter uma dica só de "adicione o Allan". EXCEÇÃO: nunca gere "character_missing" pra Ruby (HY-Ruby.svg) - ela já é criada automaticamente em toda página nova (é o personagem default do ScratchJr), então "adicioná-la" nunca é um passo real pro aluno; ele já a encontra lá. Quando a Ruby faz parte do projeto de verdade numa cena, vá direto pras dicas de comportamento dela (character_no_script/character_missing_block_type), sem uma character_missing antes.
 - As dicas devem estar em português do Brasil (pt-BR).
 - Se a mensagem trouxer um bloco "CONTEXTO DO PROFESSOR" antes da transcrição, use-o pra entender melhor o TEMA/INTENÇÃO do projeto (ex.: é sobre folclore brasileiro, cada cena é uma casa diferente, etc.) e deixar o texto das dicas mais alinhado com isso. Esse contexto é só pra tom/entendimento - os identificadores técnicos (sceneMd5/characterMd5/messageName/sceneOccurrence) e os fatos sobre o que existe no projeto continuam vindo EXCLUSIVAMENTE da transcrição estruturada, nunca do contexto livre (que pode estar incompleto ou desatualizado).
 
@@ -479,6 +480,12 @@ function isHintValid(hint, index) {
         case 'scene_missing':
             return hasValidScene;
         case 'character_missing':
+            // Achado em teste real - a Ruby (personagem default) é criada
+            // sozinha em toda página nova, então "adicioná-la" nunca é um
+            // passo de verdade (o aluno já a encontra lá) - rejeitada mesmo
+            // que a LLM ou a rede de segurança tentem gerar uma, ver
+            // fillMissingCharacterAddedHints() e docblock do topo do arquivo.
+            return hasValidCharacter && when.characterMd5 !== DEFAULT_CHARACTER_MD5;
         case 'character_no_script':
             return hasValidCharacter;
         case 'character_missing_block_type':
@@ -493,6 +500,11 @@ function isHintValid(hint, index) {
             // aluno apagá-la seria errado (ver docblock do topo do arquivo).
             return hasValidScene && when.characterMd5 === DEFAULT_CHARACTER_MD5 &&
                 !(charsInScene && charsInScene.has(DEFAULT_CHARACTER_MD5));
+        case 'mission_intro':
+            // Sem cena/personagem pra checar - é a dica de apresentação da
+            // missão inteira (ver buildIntroHint), sempre válida por
+            // construção (nunca vem da LLM, só do código - ver generateHints).
+            return true;
         default:
             return false; // unreachable (VALID_WHEN_TYPES already filtered), kept for exhaustiveness
     }
@@ -595,6 +607,10 @@ function fillMissingCharacterAddedHints(hints, manifest) {
     for (let i = 0; i < hints.length; i += 1) {
         const hint = hints[i];
         if (!hint.when || !BEHAVIOR_TYPES.has(hint.when.type)) continue;
+        // Ruby nunca ganha character_missing (ver isHintValid/docblock do
+        // topo do arquivo) - ela já está lá sozinha, "adicioná-la" nunca é
+        // um passo real, então esta rede de segurança não se aplica a ela.
+        if (hint.when.characterMd5 === DEFAULT_CHARACTER_MD5) continue;
 
         const scopeKey = `${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}`;
         if (characterAddedCovered.has(scopeKey) || seenBehaviorFor.has(scopeKey)) continue;
@@ -626,6 +642,28 @@ function fillMissingCharacterAddedHints(hints, manifest) {
 }
 
 /**
+ * Dica de apresentação da missão - achado em teste real (professor sentiu
+ * falta de uma abertura contextualizando "o desafio de hoje"). Ao contrário
+ * de todas as outras, NUNCA vem da LLM - é montada aqui, em código, garantida
+ * sempre presente (mesma lição das outras redes de segurança: uma regra só
+ * no prompt já foi ignorada antes, e esta é importante demais - a PRIMEIRA
+ * coisa que o aluno vê - pra correr esse risco). Prefere o hintContext
+ * (texto livre do professor, ver docblock do topo) quando houver; cai pro
+ * nome do projeto senão; cai pra um texto genérico se nem isso existir.
+ * `when: {type: 'mission_intro'}` não referencia cena/personagem nenhum -
+ * a condição do lado do aluno (AssignmentBadge.js) é sempre verdadeira até
+ * ele fechar, então é sempre a PRIMEIRA dica mostrada (ver generateHints,
+ * sempre inserida no início do array final).
+ */
+function buildIntroHint(hintContext, projectName) {
+    const trimmedContext = typeof hintContext === 'string' ? hintContext.trim() : '';
+    const text = trimmedContext
+        ? `📋 Desafio de hoje: ${trimmedContext}`
+        : (projectName ? `🎯 Hoje vamos construir: ${projectName}!` : '🎯 Vamos começar uma nova missão!');
+    return { text, when: { type: 'mission_intro' } };
+}
+
+/**
  * @param {object} projectJson - the teacher's PARSED (already JSON.parse()'d)
  *   reference project, same shape computeDetailedManifest() expects.
  * @param {string} [hintContext] - optional free text the TEACHER wrote
@@ -633,20 +671,26 @@ function fillMissingCharacterAddedHints(hints, manifest) {
  *   project's theme/intent - prepended to the user message as a labeled
  *   block the LLM is told to treat as tone/context only, never as a source
  *   of technical identifiers (see SYSTEM_PROMPT). Empty/whitespace-only is
- *   treated as "none" and omitted entirely.
+ *   treated as "none" and omitted entirely. Also feeds buildIntroHint() when
+ *   present (preferred over projectName there).
+ * @param {string} [projectName] - the reference project's name (assignments.
+ *   project_name / projects.name) - fallback source for buildIntroHint()'s
+ *   text when hintContext is empty.
  * @returns {Promise<{ hints: Array<{ id: string, text: string, when: object }> }>}
  * @throws with err.code === 'NOT_CONFIGURED' when DEEPSEEK_API_KEY is unset;
  *   throws a plain Error (unparseable/empty LLM response, API call failure)
  *   otherwise. Never returns hallucinated/invalid hints - see isHintValid().
  */
-async function generateHints(projectJson, hintContext) {
+async function generateHints(projectJson, hintContext, projectName) {
     const manifest = computeDetailedManifest(projectJson);
     const transcript = buildTranscript(manifest);
+    const introHint = buildIntroHint(hintContext, projectName);
 
     if (!transcript) {
         // Nothing describable yet (empty project, or nothing with a real
-        // asset md5 set) - no point spending an LLM call on it.
-        return { hints: [] };
+        // asset md5 set) - no point spending an LLM call on it, mas a dica
+        // de apresentação ainda faz sentido sozinha.
+        return { hints: [{ id: 'h1', text: introHint.text, when: introHint.when }] };
     }
 
     const trimmedContext = typeof hintContext === 'string' ? hintContext.trim() : '';
@@ -698,8 +742,9 @@ async function generateHints(projectJson, hintContext) {
 
     const withCharacterAddedHints = fillMissingCharacterAddedHints(validHints, manifest);
     const withDefaultCharacterHints = fillMissingDefaultCharacterHints(withCharacterAddedHints, manifest);
+    const withIntro = [introHint, ...withDefaultCharacterHints];
 
-    const hints = withDefaultCharacterHints.map((hint, idx) => ({
+    const hints = withIntro.map((hint, idx) => ({
         id: `h${idx + 1}`,
         text: hint.text,
         when: hint.when,

@@ -313,6 +313,8 @@
 }
 
 .assignmentHintRow {
+    display: flex;
+    gap: 8px;
     padding: 12px 4px;
     border-top: 1px solid #eee;
 }
@@ -321,10 +323,58 @@
     border-top: none;
 }
 
+/* Coluna estreita à esquerda com as setas de reordenar (ver
+ * AssignmentAuthorBar.js _showHintReview/renderList) - ▲ desabilitada na
+ * primeira dica, ▼ desabilitada na última. */
+.assignmentHintReorder {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.assignmentHintReorderBtn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    color: #555;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.assignmentHintReorderBtn:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.assignmentHintContent {
+    flex: 1;
+    min-width: 0; /* deixa a textarea encolher em vez de estourar a largura do card */
+}
+
 .assignmentHintText {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
     font-size: 15px;
     line-height: 1.4;
     margin-bottom: 4px;
+    padding: 6px 8px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    resize: vertical;
+    /* Maiúsculas - mesmo tratamento visual do texto que o aluno vai ver
+     * (.assignmentCoachCard .assignmentCompleteText abaixo) - a tela de
+     * revisão do professor mostra o texto igual ao que aparece de verdade,
+     * não uma prévia em caixa normal. */
+    text-transform: uppercase;
+}
+
+.assignmentHintText:focus {
+    outline: none;
+    border-color: #01bebc;
 }
 
 .assignmentHintWhen {
@@ -451,6 +501,13 @@
  */
 .assignmentCoachCard {
     border-color: #f5a623;
+}
+
+/* Maiúsculas nas dicas (pedido explícito, achado em teste real) - só nas
+ * dicas de coach (.assignmentCoachCard), nunca no modal de "Parabéns"
+ * (que não tem essa classe) - o texto de parabéns continua em caixa normal. */
+.assignmentCoachCard .assignmentCompleteText {
+    text-transform: uppercase;
 }
 
 .assignmentCoachCard .assignmentCompleteClose {

@@ -151,6 +151,7 @@ const HINT_WHEN_LABELS = {
     character_missing_block_type: '🧩 aparece quando faltar esse tipo de bloco',
     message_not_received: '✉️ aparece quando a mensagem não for recebida por ninguém',
     default_character_present: '🧹 aparece quando o personagem default (Ruby) ainda estiver na cena',
+    mission_intro: '🎬 sempre a primeira dica, assim que o aluno abrir a missão',
 };
 
 function hintWhenLabel (when) {
@@ -439,7 +440,14 @@ export default class AssignmentAuthorBar {
      * "Hints review UI"). Cada dica começa neutra (nem aprovada nem
      * rejeitada) - o professor decide uma a uma clicando em ✅ Aprovar ou
      * ❌ Rejeitar (clicar de novo no mesmo botão desfaz, voltando a neutro).
-     * "Concluir" salva só o subconjunto aprovado via POST
+     * O texto é editável (textarea, pré-preenchida com a sugestão da IA) -
+     * o professor pode ajustar a redação antes de aprovar, sem perder a
+     * dica em si; e a ordem é reordenável (▲/▼ trocam com o vizinho) - a
+     * ordem final na tela é a ordem salva (POST /:id/hints grava o array
+     * exatamente como enviado, sem reordenar/renumerar - por isso o `id`
+     * original de cada dica é preservado ao montar `approved` abaixo, só o
+     * texto e a posição no array mudam). "Concluir" salva só o subconjunto
+     * aprovado, com o texto JÁ editado, via POST
      * /assignments/:id/hints (se nada foi aprovado, nem chama o endpoint -
      * equivalente a pular). "Pular por agora" fecha sem salvar nada. Os dois
      * caminhos (e qualquer falha do POST de salvar) terminam chamando
@@ -456,8 +464,10 @@ export default class AssignmentAuthorBar {
             onDone(); // já tem uma revisão aberta - não empilha outra
             return;
         }
+        // `text` começa igual a hint.text mas é editável (ver textEl.oninput
+        // abaixo) - hint.when nunca muda aqui, só o texto que o aluno vê.
         var entries = hints.map(function (hint) {
-            return {hint: hint, status: null}; // null | 'approved' | 'rejected'
+            return {hint: hint, status: null, text: hint.text}; // status: null | 'approved' | 'rejected'
         });
 
         var overlayEl = newHTML('div', 'assignmentHintsOverlay', document.body);
@@ -465,35 +475,77 @@ export default class AssignmentAuthorBar {
         var title = newHTML('div', 'assignmentHintsTitle', card);
         title.textContent = '💡 Revisar dicas sugeridas';
         var subtitle = newHTML('div', 'assignmentHintsSubtitle', card);
-        subtitle.textContent = 'Aprove ou rejeite cada dica antes de salvar.';
+        subtitle.textContent = 'Aprove ou rejeite cada dica, edite o texto ou reordene com ▲▼ antes de salvar.';
         var list = newHTML('div', 'assignmentHintsList', card);
 
-        entries.forEach(function (entry) {
-            var row = newHTML('div', 'assignmentHintRow', list);
-            var textEl = newHTML('div', 'assignmentHintText', row);
-            textEl.textContent = entry.hint.text;
-            var whenEl = newHTML('div', 'assignmentHintWhen', row);
-            whenEl.textContent = hintWhenLabel(entry.hint.when);
-            var actions = newHTML('div', 'assignmentHintActions', row);
-            var approveBtn = newHTML('button', 'assignmentHintApproveBtn', actions);
-            approveBtn.type = 'button';
-            approveBtn.textContent = '✅ Aprovar';
-            var rejectBtn = newHTML('button', 'assignmentHintRejectBtn', actions);
-            rejectBtn.type = 'button';
-            rejectBtn.textContent = '❌ Rejeitar';
+        // Reconstrói list.innerHTML inteiro a cada mudança de ORDEM (não a
+        // cada tecla digitada - ver oninput, que só atualiza entry.text) -
+        // mais simples e robusto que mover nós do DOM na mão, ao custo de
+        // perder o foco/scroll momentaneamente num reorder (aceitável pra
+        // essa ação, o professor já está olhando pra nova posição mesmo).
+        function renderList () {
+            list.innerHTML = '';
+            entries.forEach(function (entry, index) {
+                var row = newHTML('div', 'assignmentHintRow', list);
 
-            var applyStatus = function (status) {
-                entry.status = status;
-                approveBtn.classList.toggle('selected', status === 'approved');
-                rejectBtn.classList.toggle('selected', status === 'rejected');
-            };
-            approveBtn.onclick = function () {
-                applyStatus(entry.status === 'approved' ? null : 'approved');
-            };
-            rejectBtn.onclick = function () {
-                applyStatus(entry.status === 'rejected' ? null : 'rejected');
-            };
-        });
+                var reorderCol = newHTML('div', 'assignmentHintReorder', row);
+                var upBtn = newHTML('button', 'assignmentHintReorderBtn', reorderCol);
+                upBtn.type = 'button';
+                upBtn.textContent = '▲';
+                upBtn.title = 'Mover pra cima';
+                upBtn.disabled = index === 0;
+                var downBtn = newHTML('button', 'assignmentHintReorderBtn', reorderCol);
+                downBtn.type = 'button';
+                downBtn.textContent = '▼';
+                downBtn.title = 'Mover pra baixo';
+                downBtn.disabled = index === entries.length - 1;
+
+                var contentCol = newHTML('div', 'assignmentHintContent', row);
+                var textEl = newHTML('textarea', 'assignmentHintText', contentCol);
+                textEl.value = entry.text;
+                textEl.rows = 2;
+                var whenEl = newHTML('div', 'assignmentHintWhen', contentCol);
+                whenEl.textContent = hintWhenLabel(entry.hint.when);
+                var actions = newHTML('div', 'assignmentHintActions', contentCol);
+                var approveBtn = newHTML('button', 'assignmentHintApproveBtn', actions);
+                approveBtn.type = 'button';
+                approveBtn.textContent = '✅ Aprovar';
+                var rejectBtn = newHTML('button', 'assignmentHintRejectBtn', actions);
+                rejectBtn.type = 'button';
+                rejectBtn.textContent = '❌ Rejeitar';
+                approveBtn.classList.toggle('selected', entry.status === 'approved');
+                rejectBtn.classList.toggle('selected', entry.status === 'rejected');
+
+                textEl.oninput = function () {
+                    entry.text = textEl.value;
+                };
+                approveBtn.onclick = function () {
+                    entry.status = entry.status === 'approved' ? null : 'approved';
+                    approveBtn.classList.toggle('selected', entry.status === 'approved');
+                    rejectBtn.classList.toggle('selected', entry.status === 'rejected');
+                };
+                rejectBtn.onclick = function () {
+                    entry.status = entry.status === 'rejected' ? null : 'rejected';
+                    approveBtn.classList.toggle('selected', entry.status === 'approved');
+                    rejectBtn.classList.toggle('selected', entry.status === 'rejected');
+                };
+                upBtn.onclick = function () {
+                    if (index === 0) return;
+                    var tmp = entries[index - 1];
+                    entries[index - 1] = entries[index];
+                    entries[index] = tmp;
+                    renderList();
+                };
+                downBtn.onclick = function () {
+                    if (index === entries.length - 1) return;
+                    var tmp = entries[index + 1];
+                    entries[index + 1] = entries[index];
+                    entries[index] = tmp;
+                    renderList();
+                };
+            });
+        }
+        renderList();
 
         var footer = newHTML('div', 'assignmentHintsFooter', card);
         var skipBtn = newHTML('button', 'assignmentHintsSkipBtn', footer);
@@ -515,10 +567,17 @@ export default class AssignmentAuthorBar {
         };
 
         saveBtn.onclick = function () {
+            // A ORDEM aqui é a ordem final salva (mesma ordem da tela,
+            // depois de qualquer reorder ▲▼), o texto é o JÁ EDITADO
+            // (entry.text, não o original de entry.hint.text), e o `id`
+            // é preservado do rascunho original (POST /:id/hints exige um
+            // id não-vazio por dica e nunca reatribui - ver docblock acima;
+            // não precisa ser sequencial pra continuar funcionando, só
+            // único, e cada dica já tem o seu desde generate-hints).
             var approved = entries.filter(function (entry) {
                 return entry.status === 'approved';
             }).map(function (entry) {
-                return entry.hint;
+                return {id: entry.hint.id, text: entry.text, when: entry.hint.when};
             });
             if (!approved.length) {
                 // Achado em produção: "Concluir" sem aprovar NENHUMA dica

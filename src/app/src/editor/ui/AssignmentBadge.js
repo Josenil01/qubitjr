@@ -550,6 +550,14 @@ export default class AssignmentBadge {
             return !!found.character;
         }
 
+        case 'mission_intro':
+            // Dica de apresentação (ver hintsGeneration.js#buildIntroHint) -
+            // não referencia cena/personagem nenhum, sempre "bate" - é sempre
+            // a primeira dica da missão (índice 0 no array assignment.hints)
+            // e some pra sempre nesta sessão assim que o aluno fechar, mesma
+            // regra de dismissedHintIds de qualquer outra dica.
+            return true;
+
         default:
             return false;
         }

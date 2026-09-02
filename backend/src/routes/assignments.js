@@ -627,7 +627,7 @@ router.post('/:id/generate-hints', async (req, res) => {
             return res.status(500).json({ error: 'Projeto com json inválido' });
         }
 
-        const { hints } = await generateHints(projectJson, hintContext);
+        const { hints } = await generateHints(projectJson, hintContext, project.name);
         res.json({ success: true, hints });
     } catch (err) {
         if (err.code === 'NOT_CONFIGURED') {
