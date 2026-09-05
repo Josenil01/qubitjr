@@ -555,9 +555,30 @@ export default class AssignmentBadge {
                 return false; // personagem nem existe ainda - character_missing cobre esse caso
             }
             const wanted = Array.isArray(when.blockTypes) ? when.blockTypes : [];
-            return !wanted.every(function (bt) {
+            const typesOk = wanted.every(function (bt) {
                 return found.character.blockTypes.includes(bt);
             });
+            if (!typesOk) return true; // ainda precisa
+
+            // Achado em teste real (3) - um tipo sozinho em blockTypes só diz
+            // "o personagem tem um forward/wait/setspeed/etc.", nunca COM QUE
+            // VALOR - uma dica que pede "3 passos"/"velocidade normal"
+            // ficava resolvida assim que QUALQUER bloco daquele tipo
+            // aparecesse, com qualquer valor (ex.: o aluno usa 5 passos, ou
+            // ainda está ajustando a velocidade, e o sistema já libera a
+            // próxima dica). when.blockArgs ({[blockType]: number}, só
+            // presente quando o VALOR daquele tipo é inequívoco no projeto
+            // do professor - ver fillBlockArgs no backend) precisa bater
+            // exatamente com um valor que o aluno já configurou nesse tipo -
+            // decisão explícita do usuário: "say" é o ÚNICO bloco cujo
+            // argumento pode divergir do professor, todos os outros exigem
+            // o valor exato (por isso "say" nunca aparece em blockArgs).
+            const wantedArgs = when.blockArgs && typeof when.blockArgs === 'object' ? when.blockArgs : {};
+            const argsOk = Object.keys(wantedArgs).every(function (blockType) {
+                const realValues = found.character.blockArgs && found.character.blockArgs[blockType];
+                return Array.isArray(realValues) && realValues.includes(wantedArgs[blockType]);
+            });
+            return !argsOk; // ainda precisa se algum valor exigido ainda não bate
         }
 
         case 'message_not_received': {

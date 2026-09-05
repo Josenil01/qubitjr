@@ -37,6 +37,34 @@
 const CARET_TYPES = new Set(['caretstart', 'caretend', 'caretrepeat', 'caretcmd']);
 
 /**
+ * Rótulos em PT-BR pro argumento (0/1/2) do bloco `setspeed` (ver
+ * Prims.js#SetSpeed: `speed = 2^num`, os ícones "andando/correndo/voando" no
+ * editor) - usados tanto no token de blockSequence quanto no texto das dicas
+ * geradas por código, pra bater com a mesma palavra que a LLM já usa
+ * ("velocidade lenta/normal/rápida").
+ */
+const SPEED_LABELS = ['lenta', 'normal', 'rápida'];
+
+/**
+ * Achado em teste real (decisão explícita do usuário) - "say" é o ÚNICO
+ * bloco cujo argumento pode divergir do que o professor usou (qualquer fala
+ * o aluno escrever conta - só a presença do bloco diga importa). TODO OUTRO
+ * bloco com argumento numérico precisa do valor EXATO conferido, senão o
+ * aluno fica em tentativa-e-erro (ex.: "ande pra frente" sem dizer quantos
+ * passos, ou "espere" sem dizer quanto tempo). BlockSpecs.js#setupBlocksSpecs
+ * mostra o argtype 'n' (campo numérico) desses blocos - listados aqui;
+ * 'setspeed' usa argtype 'd' (menu por índice numérico 0/1/2) mas é o MESMO
+ * tipo de valor (um inteiro), então entra na mesma lista/mecanismo.
+ * message/onmessage NÃO entram aqui - a mensagem exata já é conferida por um
+ * mecanismo próprio (messagesSent/messagesReceived + o hint
+ * "message_not_received", ver hintsGeneration.js), não precisam de blockArgs.
+ */
+const NUMERIC_ARG_TYPES = new Set([
+    'forward', 'back', 'up', 'down', 'left', 'right', 'hop',
+    'wait', 'repeat', 'grow', 'shrink', 'setspeed',
+]);
+
+/**
  * Recursively walks one script (array of block tuples), mirroring
  * assignmentScoring.js#walkScript's traversal exactly (same CARET_TYPES
  * exclusion, same "nested strip lives at block[4]" recursion for `repeat`),
@@ -58,6 +86,15 @@ const CARET_TYPES = new Set(['caretstart', 'caretend', 'caretrepeat', 'caretcmd'
  * continuam existindo do jeito que estão - usados pela VALIDAÇÃO de hints e
  * pela avaliação de condição no cliente; blockSequence é só pra
  * apresentação/transcrição, nunca usado numa comparação de igualdade).
+ *
+ * agg.blockArgs (Map<blockType, Set<number>>) - pra cada tipo em
+ * NUMERIC_ARG_TYPES, todo valor numérico já configurado nesse tipo de bloco
+ * deste personagem. Existe porque um TIPO em blockTypes só diz "o
+ * personagem tem um forward/wait/repeat/etc.", nunca COM QUAL valor - uma
+ * dica que pede "ande 3 passos" ou "espere um pouco" (número X) precisa
+ * conferir o valor exato, não só a presença do bloco (ver isHintValid/
+ * _hintConditionHolds). "say" fica de fora de propósito - ver
+ * NUMERIC_ARG_TYPES acima.
  */
 function walkScriptForDetail(script, agg) {
     if (!Array.isArray(script)) return;
@@ -95,14 +132,39 @@ function walkScriptForDetail(script, agg) {
             agg.sayTexts.push(arg);
         }
 
+        // Achado em teste real - um bloco com argumento numérico
+        // (forward/wait/repeat/setspeed/etc.) sempre caía no ramo genérico
+        // abaixo, contando só COMO TIPO ("o personagem tem um wait"), nunca
+        // COM QUAL VALOR. Uma dica que pede "espere 10" ficava satisfeita só
+        // por existir QUALQUER wait, com qualquer tempo - mesmo problema já
+        // tratado pra say/message, generalizado agora pra todo bloco
+        // numérico (ver NUMERIC_ARG_TYPES acima; "say" fica de fora de
+        // propósito). hasRealArg como pré-condição (não só checar NaN) -
+        // achado em teste real: `Number(null) === 0` em JS, então um bloco
+        // sem argumento de verdade (null/undefined) seria lido como valor 0
+        // por engano, mesmo cuidado já tomado com message/onmessage.
+        const numArg = NUMERIC_ARG_TYPES.has(blockType) && hasRealArg ? Number(arg) : NaN;
+        const hasRealNumArg = !Number.isNaN(numArg);
+        if (hasRealNumArg) {
+            const argSet = agg.blockArgs.get(blockType) || new Set();
+            argSet.add(numArg);
+            agg.blockArgs.set(blockType, argSet);
+        }
+
         // Ver docblock acima - token já pronto pra exibição, na ORDEM real
-        // do script (nunca deduplicado).
+        // do script (nunca deduplicado). setspeed usa o rótulo em PT-BR
+        // (SPEED_LABELS); os demais blocos numéricos mostram o valor cru
+        // (ex.: "forward[3]", "wait[10]", "repeat[4]").
         if (blockType === 'message' && hasRealArg) {
             agg.blockSequence.push(`message["${arg}"]`);
         } else if (blockType === 'onmessage' && hasRealArg) {
             agg.blockSequence.push(`onmessage["${arg}"]`);
         } else if (blockType === 'say' && hasRealArg) {
             agg.blockSequence.push(`say["${arg}"]`);
+        } else if (blockType === 'setspeed' && hasRealNumArg && numArg >= 0 && numArg < SPEED_LABELS.length) {
+            agg.blockSequence.push(`setspeed[${SPEED_LABELS[numArg]}]`);
+        } else if (hasRealNumArg) {
+            agg.blockSequence.push(`${blockType}[${numArg}]`);
         } else {
             agg.blockSequence.push(blockType);
         }
@@ -154,6 +216,7 @@ function computeDetailedManifest(projectJson) {
                 messagesReceived: new Set(),
                 sayTexts: [],
                 blockSequence: [],
+                blockArgs: new Map(),
             };
             let hasScript = false;
 
@@ -179,6 +242,12 @@ function computeDetailedManifest(projectJson) {
                 messagesReceived: Array.from(agg.messagesReceived),
                 sayTexts: agg.sayTexts,
                 blockSequence: agg.blockSequence,
+                // { [blockType]: number[] } - todo valor numérico já
+                // configurado em cada tipo de NUMERIC_ARG_TYPES pra este
+                // personagem (ordenado). Ex.: {"forward": [3], "wait": [10]}.
+                blockArgs: Object.fromEntries(
+                    Array.from(agg.blockArgs.entries(), ([type, values]) => [type, Array.from(values).sort((a, b) => a - b)])
+                ),
             });
         }
 

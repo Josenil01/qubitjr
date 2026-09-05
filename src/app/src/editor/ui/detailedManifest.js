@@ -37,6 +37,19 @@
  */
 const CARET_TYPES = new Set(['caretstart', 'caretend', 'caretrepeat', 'caretcmd']);
 
+// Ver docblock do original (backend) - rótulos PT-BR do argumento (0/1/2) do
+// bloco `setspeed`, usados no token de blockSequence.
+const SPEED_LABELS = ['lenta', 'normal', 'rápida'];
+
+// Ver docblock do original (backend) - "say" é o ÚNICO bloco cujo argumento
+// pode divergir do que o professor usou; todo bloco numérico listado aqui
+// precisa do valor EXATO conferido (blockArgs). message/onmessage ficam de
+// fora - a mensagem exata já é conferida por "message_not_received".
+const NUMERIC_ARG_TYPES = new Set([
+    'forward', 'back', 'up', 'down', 'left', 'right', 'hop',
+    'wait', 'repeat', 'grow', 'shrink', 'setspeed',
+]);
+
 function emptyManifest () {
     return {scenes: []};
 }
@@ -80,6 +93,19 @@ function walkScript (script, agg) {
             agg.sayTexts.push(arg);
         }
 
+        // Ver docblock do original (backend) - um tipo sozinho em blockTypes
+        // só diz "o personagem tem um forward/wait/repeat/etc.", nunca COM
+        // QUAL valor; blockArgs guarda todo valor já configurado por tipo.
+        // hasRealArg como pré-condição - `Number(null) === 0` em JS faria um
+        // bloco sem argumento de verdade contar como valor 0 por engano.
+        const numArg = NUMERIC_ARG_TYPES.has(blockType) && hasRealArg ? Number(arg) : NaN;
+        const hasRealNumArg = !Number.isNaN(numArg);
+        if (hasRealNumArg) {
+            const argSet = agg.blockArgs.get(blockType) || new Set();
+            argSet.add(numArg);
+            agg.blockArgs.set(blockType, argSet);
+        }
+
         // Ver docblock do original (backend) - token já pronto pra exibição,
         // na ORDEM real do script (nunca deduplicado, ao contrário de blockTypes).
         if (blockType === 'message' && hasRealArg) {
@@ -88,6 +114,10 @@ function walkScript (script, agg) {
             agg.blockSequence.push(`onmessage["${arg}"]`);
         } else if (blockType === 'say' && hasRealArg) {
             agg.blockSequence.push(`say["${arg}"]`);
+        } else if (blockType === 'setspeed' && hasRealNumArg && numArg >= 0 && numArg < SPEED_LABELS.length) {
+            agg.blockSequence.push(`setspeed[${SPEED_LABELS[numArg]}]`);
+        } else if (hasRealNumArg) {
+            agg.blockSequence.push(`${blockType}[${numArg}]`);
         } else {
             agg.blockSequence.push(blockType);
         }
@@ -137,6 +167,7 @@ export function computeDetailedManifest (projectJson) {
                 messagesReceived: new Set(),
                 sayTexts: [],
                 blockSequence: [],
+                blockArgs: new Map(),
             };
 
             for (const script of scripts) {
@@ -156,6 +187,11 @@ export function computeDetailedManifest (projectJson) {
                 messagesReceived: Array.from(agg.messagesReceived),
                 sayTexts: agg.sayTexts,
                 blockSequence: agg.blockSequence,
+                // Ver docblock do original (backend) - { [blockType]: number[] },
+                // todo valor numérico já configurado por tipo de bloco.
+                blockArgs: Object.fromEntries(
+                    Array.from(agg.blockArgs.entries(), ([type, values]) => [type, Array.from(values).sort((a, b) => a - b)])
+                ),
             });
         }
 

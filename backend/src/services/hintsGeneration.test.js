@@ -345,6 +345,135 @@ describe('generateHints', () => {
         expect(hints).toHaveLength(0);
     });
 
+    describe('fillBlockArgs (valor exato de blocos numéricos, decisão do usuário: só "say" pode divergir)', () => {
+        // Um tipo sozinho em blockTypes só diz "existe um forward/setspeed/
+        // wait/etc.", nunca COM QUE VALOR - decisão explícita do usuário: o
+        // ÚNICO bloco cujo argumento pode divergir do que o professor usou é
+        // "say" (qualquer fala do aluno conta); todo outro bloco numérico
+        // precisa do valor EXATO, e esse valor é sempre DERIVADO POR CÓDIGO
+        // a partir do manifesto real - nunca confiado ao que a LLM mandou em
+        // `when` (ver docblock de fillBlockArgs). Personagem de teste é a
+        // Ruby de propósito - isenta de fillMissingCharacterAddedHints() e
+        // de fillMissingDefaultCharacterHints() (ver describes dedicados
+        // acima), então os testes ficam focados só em blockArgs.
+        function projectWithSetspeed(speedArg) {
+            return buildProject([
+                {
+                    id: 'page1',
+                    md5: 'City.svg',
+                    sprites: [
+                        {
+                            id: 'ruby',
+                            type: 'sprite',
+                            md5: 'HY-Ruby.svg',
+                            name: 'Ruby',
+                            scripts: [[['onflag', null, 0, 0], ['setspeed', speedArg, 0, 0], ['forward', 3, 0, 0], ['say', 'Oi!', 0, 0]]],
+                        },
+                    ],
+                },
+            ]);
+        }
+
+        it('derives the exact blockArgs value for every unambiguous numeric type, ignoring whatever (if anything) the LLM sent', async () => {
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        {
+                            text: 'Faça a Ruby andar 3 passos pra frente com velocidade normal.',
+                            when: {
+                                type: 'character_missing_block_type',
+                                sceneMd5: 'City.svg',
+                                characterMd5: 'HY-Ruby.svg',
+                                blockTypes: ['setspeed', 'forward'],
+                                // A LLM não devia mandar isso (SYSTEM_PROMPT não pede),
+                                // mas mesmo que mande um valor ERRADO, é ignorado -
+                                // fillBlockArgs sempre deriva do manifesto real.
+                                blockArgs: { setspeed: 2, forward: 99 },
+                            },
+                        },
+                    ],
+                })
+            );
+
+            const result = await generateHints(projectWithSetspeed(1));
+            const hints = stripIntro(result.hints);
+
+            expect(hints).toHaveLength(1);
+            expect(hints[0].when.blockArgs).toEqual({ setspeed: 1, forward: 3 });
+        });
+
+        it('never includes "say" in blockArgs even when it is in blockTypes - the one block allowed to differ', async () => {
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        {
+                            text: 'Faça a Ruby dizer "Oi!".',
+                            when: {
+                                type: 'character_missing_block_type',
+                                sceneMd5: 'City.svg',
+                                characterMd5: 'HY-Ruby.svg',
+                                blockTypes: ['say'],
+                            },
+                        },
+                    ],
+                })
+            );
+
+            const result = await generateHints(projectWithSetspeed(1));
+            const hints = stripIntro(result.hints);
+
+            expect(hints).toHaveLength(1);
+            // blockArgs sempre presente (mesmo vazio) - "say" nunca entra.
+            expect(hints[0].when.blockArgs).toEqual({});
+        });
+
+        it('leaves a type out of blockArgs when the teacher\'s character uses it with two DIFFERENT values (ambiguous)', async () => {
+            const project = buildProject([
+                {
+                    id: 'page1',
+                    md5: 'City.svg',
+                    sprites: [
+                        {
+                            id: 'ruby',
+                            type: 'sprite',
+                            md5: 'HY-Ruby.svg',
+                            name: 'Ruby',
+                            // Dois scripts, mesmo personagem, 'forward' com
+                            // valores DIFERENTES (3 e 5) - não dá pra saber
+                            // qual dos dois esta dica descreve.
+                            scripts: [
+                                [['onflag', null, 0, 0], ['forward', 3, 0, 0]],
+                                [['onclick', null, 0, 0], ['forward', 5, 0, 0]],
+                            ],
+                        },
+                    ],
+                },
+            ]);
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        {
+                            text: 'Faça a Ruby andar pra frente.',
+                            when: {
+                                type: 'character_missing_block_type',
+                                sceneMd5: 'City.svg',
+                                characterMd5: 'HY-Ruby.svg',
+                                blockTypes: ['forward'],
+                            },
+                        },
+                    ],
+                })
+            );
+
+            const result = await generateHints(project);
+            const hints = stripIntro(result.hints);
+
+            expect(hints).toHaveLength(1);
+            // Ambíguo - fica de fora, sem travar a dica (só o tipo é exigido).
+            expect(hints[0].when.blockArgs).toEqual({});
+        });
+    });
+
     it('drops a character-scoped hint missing its required characterMd5, even though sceneMd5 alone is real', async () => {
         // A hint that names a real scene but omits characterMd5 entirely
         // must not slip through just because there was nothing invalid to
@@ -907,7 +1036,7 @@ describe('generateHints', () => {
             await generateHints(project);
 
             const transcript = mockCreate.mock.calls[0][0].messages[1].content;
-            expect(transcript).toContain('sequência: onflag → say["Au!"] → forward → say["Au de novo!"]');
+            expect(transcript).toContain('sequência: onflag → say["Au!"] → forward[2] → say["Au de novo!"]');
             expect(transcript).not.toContain('blocos:');
         });
     });

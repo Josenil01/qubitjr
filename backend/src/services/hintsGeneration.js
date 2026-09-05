@@ -27,13 +27,20 @@
  *      trust model output blindly: any hint whose `when` references a scene,
  *      character, or message that doesn't really exist in this project is
  *      dropped (logged via console.warn), never surfaced to the teacher.
- *   5.5. fillMissingCharacterAddedHints() then fillMissingDefaultCharacterHints() -
- *      two SAFETY NETS, both for completeness rather than hallucination:
- *      the first guarantees a character_missing hint exists before any
- *      behavior hint (character_no_script/character_missing_block_type) for
- *      that same character; the second injects default_character_present
- *      for any scene lacking Ruby. Both cover cases where the LLM's own
- *      "OBRIGATÓRIO" prompt rule was ignored - see each function's docblock.
+ *   5.5. fillBlockArgs() then fillMissingCharacterAddedHints() then
+ *      fillMissingDefaultCharacterHints() - three SAFETY NETS:
+ *      fillBlockArgs() OVERWRITES when.blockArgs on every
+ *      character_missing_block_type hint with the exact numeric argument
+ *      (forward steps, wait time, setspeed value, etc.) the teacher's own
+ *      character really uses - never trusted from the LLM, always derived
+ *      from the manifest (except "say", whose text may always differ - see
+ *      that function's docblock); fillMissingCharacterAddedHints() guarantees
+ *      a character_missing hint exists before any behavior hint
+ *      (character_no_script/character_missing_block_type) for that same
+ *      character; fillMissingDefaultCharacterHints() injects
+ *      default_character_present for any scene lacking Ruby. The latter two
+ *      cover cases where the LLM's own "OBRIGATÓRIO" prompt rule was
+ *      ignored - see each function's docblock.
  *   6. Assign surviving hints sequential ids (h1, h2, ...) in final order.
  *
  * Scenes/characters with a null md5 (nothing stable to reference them by -
@@ -159,6 +166,7 @@ Regras de tom:
 - Quando o nome de um personagem vier seguido de um número (ex.: "Casa 2" em vez de só "Casa" - acontece quando o MESMO nome se repete em mais de uma instância no projeto inteiro, ver "REGRA DE NOME REPETIDO" abaixo), use o nome JUNTO com esse número no texto da dica (ex.: "adicione a Casa 2 aqui"), nunca omita o número - é o que diferencia essa instância das outras com o mesmo nome pro aluno.
 - OBRIGATÓRIO: pra CADA cena da transcrição que NÃO tiver a Ruby (HY-Ruby.svg) na lista de personagens dela, gere também uma dica "default_character_present" pra essa cena (ver formato abaixo) - a Ruby aparece sozinha em toda cena nova que o aluno criar, então ele precisa ser lembrado de apagá-la quando ela não faz parte do projeto de verdade ali. Coloque essa dica logo depois da dica "scene_missing" daquela cena, antes das dicas dos personagens de verdade. NUNCA gere essa dica pra uma cena que TEM a Ruby na lista de personagens - lá ela faz parte do projeto de verdade.
 - OBRIGATÓRIO: "adicionar um personagem" e "dar um comportamento a ele" (falar/andar/etc.) são SEMPRE dicas SEPARADAS, nunca uma só combinando os dois. Pra CADA personagem com script (que vai gerar uma dica "character_no_script" ou "character_missing_block_type"), gere TAMBÉM uma dica "character_missing" própria pra ele, ANTES da(s) dica(s) de comportamento - nunca pule direto pro "faça o Allan dizer algo" sem antes ter uma dica só de "adicione o Allan". EXCEÇÃO: nunca gere "character_missing" pra Ruby (HY-Ruby.svg) - ela já é criada automaticamente em toda página nova (é o personagem default do ScratchJr), então "adicioná-la" nunca é um passo real pro aluno; ele já a encontra lá. Quando a Ruby faz parte do projeto de verdade numa cena, vá direto pras dicas de comportamento dela (character_no_script/character_missing_block_type), sem uma character_missing antes.
+- OBRIGATÓRIO: quando a "sequência" de um personagem mostrar um bloco com um valor entre colchetes que NÃO seja "say" (ex.: "forward[3]", "wait[10]", "repeat[4]", "setspeed[normal]"), o TEXTO da dica precisa mencionar esse valor explicitamente - NUNCA deixe implícito ("faça o Carro andar pra frente" sem dizer quanto), ou o aluno fica em tentativa e erro sem saber o número certo. "say" é a ÚNICA exceção - a fala pode ser sugerida (ver regra acima) mas o aluno pode escrever qualquer coisa, então não precisa de um número. Guia de como mencionar cada valor no texto: forward/back/up/down/left/right/hop → "ande/vá N passos" (o número entre colchetes é a quantidade de passos); repeat → "repita N vezes"; setspeed → use a palavra que já vem pronta entre colchetes ("lenta"/"normal"/"rápida"), ex. "com uma velocidade normal"; wait/grow/shrink (sem um jeito natural de nomear a unidade) → "aperte o bloco até aparecer o número N", ex. "espere até aparecer o número 10 no bloco". Exemplos: sequência "forward[3]" → "Faça o Carro andar 3 passos pra frente."; sequência "wait[10] → say[\"Oi!\"]" → "Faça o Allan esperar até aparecer o número 10, e depois dizer 'Oi!'.". Não existe um campo separado no JSON pra esse valor (ver "character_missing_block_type" abaixo) - é só o texto que precisa mencionar.
 - As dicas devem estar em português do Brasil (pt-BR).
 - Se a mensagem trouxer um bloco "CONTEXTO DO PROFESSOR" antes da transcrição, use-o pra entender melhor o TEMA/INTENÇÃO do projeto (ex.: é sobre folclore brasileiro, cada cena é uma casa diferente, etc.) e deixar o texto das dicas mais alinhado com isso. Esse contexto é só pra tom/entendimento - os identificadores técnicos (sceneMd5/characterMd5/messageName/sceneOccurrence) e os fatos sobre o que existe no projeto continuam vindo EXCLUSIVAMENTE da transcrição estruturada, nunca do contexto livre (que pode estar incompleto ou desatualizado).
 
@@ -196,9 +204,17 @@ O campo "when.type" deve ser exatamente um destes valores, com exatamente estes 
 - "scene_missing": {"type":"scene_missing","sceneMd5":"<da transcrição>","sceneOccurrence":<da transcrição>}
 - "character_missing": {"type":"character_missing","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"..."}
 - "character_no_script": {"type":"character_no_script","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"..."}
-- "character_missing_block_type": {"type":"character_missing_block_type","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"...","blockTypes":["wait","say"]} - blockTypes é a lista EXATA de tipos de bloco que essa dica pede - o aluno precisa colocar TODOS eles (não basta um só) pro personagem antes da dica ser considerada feita, então copie SOMENTE os tipos que aparecem de verdade na "sequência" da transcrição pra esse trecho, na mesma ordem. NUNCA liste um tipo que o personagem não usa de verdade (ex.: se a sequência mostra só "say", use ["say"]; se mostra "wait → say", use ["wait","say"]) - um tipo a mais deixaria a dica impossível de resolver.
+- "character_missing_block_type": {"type":"character_missing_block_type","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"...","blockTypes":["wait","say"]} - blockTypes é a lista EXATA de tipos de bloco que essa dica pede - o aluno precisa colocar TODOS eles (não basta um só) pro personagem antes da dica ser considerada feita, então copie SOMENTE os tipos que aparecem de verdade na "sequência" da transcrição pra esse trecho, na mesma ordem. NUNCA liste um tipo que o personagem não usa de verdade (ex.: se a sequência mostra só "say", use ["say"]; se mostra "wait → say", use ["wait","say"]) - um tipo a mais deixaria a dica impossível de resolver. NÃO inclua um campo separado pro valor numérico do bloco (isso é calculado por código, não pela LLM) - em vez disso, siga a regra OBRIGATÓRIO abaixo sobre mencionar o valor no TEXTO da dica.
 - "message_not_received": {"type":"message_not_received","messageName":"..."}
 - "default_character_present": {"type":"default_character_present","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"HY-Ruby.svg"} - characterMd5 é SEMPRE "HY-Ruby.svg" pra este tipo (é o personagem default, nunca outro) - só gere pra cenas que NÃO têm a Ruby na lista de personagens (ver regra OBRIGATÓRIA acima).
+
+Exemplo rápido de mencionar o valor exato de blocos numéricos no texto (sequência com "setspeed[normal]" e "forward[3]"):
+Entrada (trecho):
+  PASSO 1 - Cena 1 (fundo: City.svg, nome exibido ao aluno: "Cidade") [sceneOccurrence: 1]:
+    PASSO 2 - "Carro" [characterMd5: HY-Carro.svg]: tem script (sequência: onflag → setspeed[normal] → forward[3])
+Saída correta (o texto menciona a velocidade E a quantidade de passos - nenhum campo extra no "when", só blockTypes com os tipos):
+  {"text": "Que tal escolher o cenário da Cidade pra começar?", "when": {"type": "scene_missing", "sceneMd5": "City.svg", "sceneOccurrence": 1}}
+  {"text": "Faça o Carro andar 3 passos pra frente quando a bandeira verde for tocada, com uma velocidade normal.", "when": {"type": "character_missing_block_type", "sceneMd5": "City.svg", "sceneOccurrence": 1, "characterMd5": "HY-Carro.svg", "blockTypes": ["setspeed", "forward"]}}
 
 Exemplo rápido de "default_character_present" (cena SEM a Ruby na transcrição) e "REGRA DE NOME REPETIDO" (a mesma "Casa" reaparecendo):
 Entrada (trecho):
@@ -428,17 +444,22 @@ function sceneKey(sceneMd5, occurrence) {
  * every real (sceneMd5, sceneOccurrence) pair, every real characterMd5
  * (scoped per cena+ocorrência, já que um `when` de personagem sempre nomeia
  * os dois juntos), a união, no projeto inteiro, de todo nome de mensagem
- * enviada, e os blockTypes reais de cada personagem (scoped por
+ * enviada, os blockTypes reais de cada personagem (scoped por
  * cena+ocorrência+personagem) - usado pra impedir que "character_missing_block_type"
  * peça um tipo de bloco que o personagem do professor nem tem (ver
  * comentário de character_missing_block_type em isHintValid: como o cliente
  * agora exige TODOS os blockTypes listados - AND, não OR - um único tipo
- * inventado tornaria a dica impossível de resolver pra sempre).
+ * inventado tornaria a dica impossível de resolver pra sempre) - e, do mesmo
+ * jeito, os blockArgs reais de cada personagem (Map<blockType, Set<number>>,
+ * espelhando detailedManifest.js#blockArgs), consumido por fillBlockArgs()
+ * pra preencher o argumento EXATO de cada bloco numérico (ver docblock
+ * daquela função - por que isso é derivado por código, não confiado à LLM).
  */
 function buildValidationIndex(manifest) {
     const sceneKeySet = new Set();
     const charactersByScene = new Map(); // sceneKey(sceneMd5,occurrence) -> Set<characterMd5>
     const blockTypesByCharacter = new Map(); // sceneKey::characterMd5 -> Set<blockType>
+    const blockArgsByCharacter = new Map(); // sceneKey::characterMd5 -> Map<blockType, Set<number>>
     const allMessagesSent = new Set();
 
     for (const scene of manifest.scenes) {
@@ -454,13 +475,21 @@ function buildValidationIndex(manifest) {
                 const blockTypeSet = blockTypesByCharacter.get(blockTypeKey) || new Set();
                 for (const bt of character.blockTypes || []) blockTypeSet.add(bt);
                 blockTypesByCharacter.set(blockTypeKey, blockTypeSet);
+
+                const argsByType = blockArgsByCharacter.get(blockTypeKey) || new Map();
+                for (const [blockType, values] of Object.entries(character.blockArgs || {})) {
+                    const valueSet = argsByType.get(blockType) || new Set();
+                    for (const v of values) valueSet.add(v);
+                    argsByType.set(blockType, valueSet);
+                }
+                blockArgsByCharacter.set(blockTypeKey, argsByType);
             }
             for (const name of character.messagesSent) allMessagesSent.add(name);
         }
         charactersByScene.set(key, charSet);
     }
 
-    return { sceneKeySet, charactersByScene, blockTypesByCharacter, allMessagesSent };
+    return { sceneKeySet, charactersByScene, blockTypesByCharacter, blockArgsByCharacter, allMessagesSent };
 }
 
 /**
@@ -512,6 +541,13 @@ function isHintValid(hint, index) {
             // nunca teria como "completar o conjunto").
             const blockTypeKey = `${key}::${when.characterMd5}`;
             const realBlockTypes = index.blockTypesByCharacter.get(blockTypeKey);
+            // when.blockArgs (o valor exato de cada bloco numérico) NÃO é
+            // validado aqui de propósito - é derivado por código logo depois
+            // via fillBlockArgs(), que sobrescreve qualquer coisa que a LLM
+            // tenha mandado nesse campo com o valor REAL do manifesto (ver
+            // docblock de fillBlockArgs pra entender por quê). Confiar na
+            // LLM pra copiar o número certo seria só mais uma chance de
+            // alucinação sobre algo que o código já sabe com certeza.
             return !!realBlockTypes &&
                 when.blockTypes.every((t) => typeof t === 'string' && t.length > 0 && realBlockTypes.has(t));
         }
@@ -531,6 +567,57 @@ function isHintValid(hint, index) {
         default:
             return false; // unreachable (VALID_WHEN_TYPES already filtered), kept for exhaustiveness
     }
+}
+
+/**
+ * Preenche/sobrescreve `when.blockArgs` de toda dica "character_missing_block_type"
+ * com o valor EXATO que o personagem do PRÓPRIO professor usa pra cada bloco
+ * numérico em blockTypes (forward/back/up/down/left/right/hop/wait/repeat/
+ * grow/shrink/setspeed - ver NUMERIC_ARG_TYPES em detailedManifest.js) -
+ * NUNCA pra "say" (achado em teste real, decisão explícita do usuário: "say"
+ * é o único bloco cujo argumento pode divergir do que o professor usou -
+ * qualquer fala do aluno conta, então nunca entra em blockArgs).
+ *
+ * Por que isso é CÓDIGO e não confiado à LLM (mesma lição já aprendida com
+ * scene_missing/default_character_present/character_missing - uma regra só
+ * no prompt não é garantia, ver docblock do topo do arquivo): o valor exato
+ * já está 100% disponível no manifesto (é dado estruturado, não precisa de
+ * interpretação de linguagem natural) - pedir pra LLM copiar um número é só
+ * mais uma chance de alucinação sobre algo que o código já sabe com
+ * certeza. Por isso o valor da LLM pra este campo é IGNORADO por completo
+ * (isHintValid nem valida when.blockArgs - ver comentário lá) e
+ * substituído aqui.
+ *
+ * Só preenche quando o valor é INEQUÍVOCO - se o personagem usou o MESMO
+ * tipo de bloco com dois valores DIFERENTES em pontos diferentes do script
+ * (raro, mas possível - ex.: "forward 3" numa cena e "forward 5" depois),
+ * não tem como saber qual dos dois esta dica específica está descrevendo, e
+ * a dica não guarda "índice de ocorrência dentro do personagem" (só
+ * sceneOccurrence, que é por CENA) - nesses casos o tipo fica sem argumento
+ * associado, mantendo o comportamento anterior (só o tipo é exigido, sem
+ * checar o valor).
+ */
+function fillBlockArgs(hints, manifest) {
+    const index = buildValidationIndex(manifest);
+
+    for (const hint of hints) {
+        if (!hint.when || hint.when.type !== 'character_missing_block_type') continue;
+        const blockTypeKey = `${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}`;
+        const argsByType = index.blockArgsByCharacter.get(blockTypeKey);
+        if (!argsByType) continue;
+
+        const blockArgs = {};
+        for (const blockType of hint.when.blockTypes || []) {
+            if (blockType === 'say') continue; // nunca - ver docblock acima
+            const values = argsByType.get(blockType);
+            if (values && values.size === 1) {
+                blockArgs[blockType] = values.values().next().value;
+            }
+        }
+        hint.when.blockArgs = blockArgs;
+    }
+
+    return hints;
 }
 
 /**
@@ -763,7 +850,8 @@ async function generateHints(projectJson, hintContext, projectName) {
         }
     }
 
-    const withCharacterAddedHints = fillMissingCharacterAddedHints(validHints, manifest);
+    const withBlockArgs = fillBlockArgs(validHints, manifest);
+    const withCharacterAddedHints = fillMissingCharacterAddedHints(withBlockArgs, manifest);
     const withDefaultCharacterHints = fillMissingDefaultCharacterHints(withCharacterAddedHints, manifest);
     const withIntro = [introHint, ...withDefaultCharacterHints];
 

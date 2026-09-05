@@ -144,6 +144,7 @@ describe('computeDetailedManifest — ordering', () => {
             messagesReceived: [],
             sayTexts: [],
             blockSequence: [],
+            blockArgs: {},
         });
     });
 
@@ -188,9 +189,11 @@ describe('computeDetailedManifest — ordering', () => {
         const manifest = computeDetailedManifest(project);
         const character = manifest.scenes[0].characters[0];
         // blockTypes (Set) colapsa 'say' repetido; blockSequence preserva as
-        // duas ocorrências, na ordem real, intercaladas com 'forward'.
+        // duas ocorrências, na ordem real, intercaladas com 'forward' (que
+        // também mostra seu argumento numérico - 'forward[2]', ver
+        // NUMERIC_ARG_TYPES).
         expect(character.blockTypes).toEqual(['onflag', 'say', 'forward', 'onclick']);
-        expect(character.blockSequence).toEqual(['onflag', 'say["Olá!"]', 'forward', 'say["Olá!"]', 'onclick', 'say["Tchau!"]']);
+        expect(character.blockSequence).toEqual(['onflag', 'say["Olá!"]', 'forward[2]', 'say["Olá!"]', 'onclick', 'say["Tchau!"]']);
     });
 
     it('formats message/onmessage tokens in blockSequence with their real argument, same as say', () => {
@@ -208,7 +211,9 @@ describe('computeDetailedManifest — ordering', () => {
             },
         ]);
         const manifest = computeDetailedManifest(project);
-        expect(manifest.scenes[0].characters[0].blockSequence).toEqual(['onmessage["gol"]', 'wait', 'message["comemora"]']);
+        // 'wait' também mostra seu argumento numérico ('wait[1]'), mesmo
+        // padrão de say/message/onmessage - ver NUMERIC_ARG_TYPES.
+        expect(manifest.scenes[0].characters[0].blockSequence).toEqual(['onmessage["gol"]', 'wait[1]', 'message["comemora"]']);
     });
 
     it('excludes a say block with no real text chosen yet (arg = the string "null") from sayTexts', () => {
@@ -231,6 +236,77 @@ describe('computeDetailedManifest — ordering', () => {
         // Sem argumento real, blockSequence usa o tipo puro ('say'), não
         // 'say["null"]' - mesmo sentinela/filtro de hasRealArg do sayTexts acima.
         expect(manifest.scenes[0].characters[0].blockSequence).toEqual(['onflag', 'say']);
+    });
+
+    it('captures every distinct numeric arg configured per block type (blockArgs), sorted ascending, labeled/valued in blockSequence', () => {
+        const project = buildProject([
+            {
+                id: 'page1',
+                sprites: [
+                    {
+                        id: 's1',
+                        type: 'sprite',
+                        md5: 'A.svg',
+                        // setspeed fora de ordem crescente de propósito (2 antes
+                        // do 0) - blockArgs precisa vir ORDENADO mesmo assim,
+                        // mas blockSequence preserva a ordem REAL de execução.
+                        // forward/wait/repeat cobrem os blocos numéricos mais
+                        // usados de verdade (ver hintsGeneration.js - real
+                        // combos observados: forward+right, back+forward+left+
+                        // right+forever, back+say+wait).
+                        scripts: [[
+                            ['onflag', null, 0, 0],
+                            ['setspeed', 2, 0, 0],
+                            ['forward', 3, 0, 0],
+                            ['setspeed', 0, 0, 0],
+                            ['wait', 10, 0, 0],
+                        ]],
+                    },
+                ],
+            },
+        ]);
+        const manifest = computeDetailedManifest(project);
+        const character = manifest.scenes[0].characters[0];
+        expect(character.blockTypes).toEqual(['onflag', 'setspeed', 'forward', 'wait']);
+        expect(character.blockArgs).toEqual({ setspeed: [0, 2], forward: [3], wait: [10] }); // setspeed ordenado, não a ordem de aparição (2 depois 0)
+        expect(character.blockSequence).toEqual(['onflag', 'setspeed[rápida]', 'forward[3]', 'setspeed[lenta]', 'wait[10]']);
+    });
+
+    it('excludes "say" from blockArgs even though it has a real argument - it is the one block allowed to differ from the teacher\'s', () => {
+        const project = buildProject([
+            {
+                id: 'page1',
+                sprites: [{ id: 's1', type: 'sprite', md5: 'A.svg', scripts: [[['onflag', null, 0, 0], ['say', 'Oi!', 0, 0]]] }],
+            },
+        ]);
+        const manifest = computeDetailedManifest(project);
+        const character = manifest.scenes[0].characters[0];
+        expect(character.blockArgs).toEqual({});
+        expect(character.sayTexts).toEqual(['Oi!']); // o texto continua disponível, só não entra em blockArgs
+    });
+
+    it('does not register a null/undefined (no real argument) block as a real numeric value, but does register an out-of-range one', () => {
+        const project = buildProject([
+            {
+                id: 'page1',
+                sprites: [
+                    {
+                        id: 's1',
+                        type: 'sprite',
+                        md5: 'A.svg',
+                        // setspeed[null] (sem argumento de verdade) vs
+                        // setspeed[5] (fora da faixa 0-2, mas ainda um NÚMERO
+                        // real - blockArgs registra do jeito que está, só o
+                        // rótulo em PT-BR de blockSequence não se aplica).
+                        scripts: [[['onflag', null, 0, 0], ['setspeed', null, 0, 0], ['setspeed', 5, 0, 0]]],
+                    },
+                ],
+            },
+        ]);
+        const manifest = computeDetailedManifest(project);
+        const character = manifest.scenes[0].characters[0];
+        expect(character.blockArgs).toEqual({ setspeed: [5] });
+        expect(character.blockSequence).toEqual(['onflag', 'setspeed', 'setspeed[5]']);
     });
 
     it('numbers sceneOccurrence per sceneMd5, independent of other scenes in between', () => {
