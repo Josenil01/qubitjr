@@ -92,9 +92,16 @@ const HINTS_PENDING_REFRESH_MS = 800; // cadência mais rápida enquanto há dic
 const HINT_COOLDOWN_MS = 5000; // intervalo mínimo entre uma dica fechar e a próxima aparecer sozinha -
 // evita o "despejo" de várias dicas em sequência rápida quando mais de uma condição vira
 // verdadeira no mesmo instante (ex.: aluno voltou de outra aba depois de progredir bastante).
-// Só vale pro caminho automático (poll) - o botão flutuante (forced=true) ignora, de propósito:
-// é exatamente pra isso que ele existe.
+// Só vale pro caminho automático (poll) - o painel de dicas (_openHintsPanel) ignora, de
+// propósito: é exatamente pra isso que ele existe (ver docblock do ponto 7 no topo do arquivo).
 const REQUIREMENTS_REFRESH_MS = 30000; // ida ao servidor - só pra pegar reautoria do professor
+// Achado em teste real: fechar a dica/painel clicando fora do cartão, ou
+// clicando no botão de fechar rápido demais (reflexo/clique duplo), dispensava
+// a mensagem antes da criança dar tempo de ler. Agora só o botão dentro do
+// cartão fecha (nunca o clique no fundo), e esse botão fica desabilitado
+// pelos primeiros CLOSE_DELAY_MS depois de aberto - ver _showCoachModal/
+// _renderHintsPanel.
+const CLOSE_DELAY_MS = 2000;
 
 let assignment = null; // { id, projectName, requirements, nivel, turmaId, existingProjectId }
 let lastProgress = null; // último resultado calculado (pro popover não ficar vazio ao abrir)
@@ -517,9 +524,23 @@ export default class AssignmentBadge {
         }
 
         case 'character_missing_block_type': {
+            // Achado em teste real - "!hasScript => false" (por baixo,
+            // "resolvida") tratava "o personagem ainda nem tem NENHUM
+            // script" como se já tivesse feito o que a dica pede, mostrando
+            // "✅ já resolvida" pra um personagem com o script totalmente
+            // vazio. A ideia original parece ter sido "deixa o
+            // character_no_script cobrir esse caso primeiro" - mas como o
+            // personagem no projeto do professor TEM script (é por isso que
+            // esta dica de blockTypes existe pra ele), o pipeline nunca gera
+            // uma character_no_script companheira pra esse mesmo personagem,
+            // e a condição nunca tinha chance de bater "ainda precisa" nesse
+            // meio-tempo. Sem o atalho: blockTypes de um personagem sem
+            // nenhum script ainda é sempre [] (ver detailedManifest.js), então
+            // `wanted.some(...)` já dá false e a condição bate "ainda
+            // precisa" corretamente, sem precisar de um caso especial.
             const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
-            if (!found.character || !found.character.hasScript) {
-                return false;
+            if (!found.character) {
+                return false; // personagem nem existe ainda - character_missing cobre esse caso
             }
             const wanted = Array.isArray(when.blockTypes) ? when.blockTypes : [];
             return !wanted.some(function (bt) {
@@ -640,17 +661,16 @@ export default class AssignmentBadge {
     /**
      * Monta o painel uma única vez e reaproveita os mesmos elementos nos
      * cliques de Anterior/Próxima (só troca texto/contador/status) - sem
-     * recriar DOM a cada navegação.
+     * recriar DOM a cada navegação. Fecha só pelo botão "Fechar" (nunca
+     * clicando fora), e esse botão só funciona depois de CLOSE_DELAY_MS -
+     * ver docblock daquela constante no topo do arquivo.
      */
     static _renderHintsPanel (hints, detailed, startIndex) {
         let index = startIndex;
 
         hintsPanelEl = newHTML('div', 'assignmentCompleteOverlay', document.body);
-        hintsPanelEl.onclick = function (e) {
-            if (e.target === hintsPanelEl) {
-                AssignmentBadge._closeHintsPanel();
-            }
-        };
+        // Sem onclick no fundo - só o botão "Fechar" dentro do cartão fecha
+        // (ver CLOSE_DELAY_MS no topo do arquivo).
         const card = newHTML('div', 'assignmentCompleteCard assignmentCoachCard assignmentHintsPanelCard', hintsPanelEl);
         const emoji = newHTML('div', 'assignmentCompleteEmoji', card);
         emoji.textContent = '💡';
@@ -694,6 +714,12 @@ export default class AssignmentBadge {
             }
         };
         closeBtn.onclick = AssignmentBadge._closeHintsPanel;
+        // Navegar (Anterior/Próxima) fica liberado na hora - só o "Fechar"
+        // tem o delay, já que é a única ação que descarta o painel de vez.
+        closeBtn.disabled = true;
+        window.setTimeout(function () {
+            closeBtn.disabled = false;
+        }, CLOSE_DELAY_MS);
 
         render();
     }
@@ -715,9 +741,12 @@ export default class AssignmentBadge {
      * a mais no cartão (usado pela dica pra ganhar um acento visual
      * diferente - ver a seção nova em assignment.css). `title` omitido/
      * null pula o elemento de título inteiro (a dica é só ícone + texto,
-     * sem cabeçalho). Clicar no botão "Continuar" ou fora do cartão fecha
-     * e dispara `onClose`, se houver - _evaluateHints usa isso pra marcar
-     * a dica como dispensada nesta sessão (ver dismissedHintIds).
+     * sem cabeçalho). Só o botão "Continuar" fecha (clicar fora do cartão
+     * não faz mais nada - ver CLOSE_DELAY_MS no topo do arquivo), e mesmo
+     * esse botão só funciona depois de CLOSE_DELAY_MS (fica desabilitado
+     * até lá) - clicar dispara `onClose`, se houver: _evaluateHints usa
+     * isso pra marcar a dica como dispensada nesta sessão (ver
+     * dismissedHintIds).
      */
     static _showCoachModal ({icon, title, text, extraClass, onClose}) {
         if (coachModalEl) {
@@ -730,11 +759,8 @@ export default class AssignmentBadge {
             }
         };
         coachModalEl = newHTML('div', 'assignmentCompleteOverlay', document.body);
-        coachModalEl.onclick = function (e) {
-            if (e.target === coachModalEl) {
-                close();
-            }
-        };
+        // Sem onclick no fundo - só o botão dentro do cartão fecha (ver
+        // CLOSE_DELAY_MS acima).
         const cardClass = 'assignmentCompleteCard' + (extraClass ? (' ' + extraClass) : '');
         const card = newHTML('div', cardClass, coachModalEl);
         const emoji = newHTML('div', 'assignmentCompleteEmoji', card);
@@ -749,6 +775,10 @@ export default class AssignmentBadge {
         closeBtn.type = 'button';
         closeBtn.textContent = 'Continuar';
         closeBtn.onclick = close;
+        closeBtn.disabled = true;
+        window.setTimeout(function () {
+            closeBtn.disabled = false;
+        }, CLOSE_DELAY_MS);
     }
 
     static _closeCoachModal () {

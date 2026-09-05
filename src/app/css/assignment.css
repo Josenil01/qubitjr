@@ -247,6 +247,14 @@
     background: #019a98;
 }
 
+/* Desabilitado nos primeiros CLOSE_DELAY_MS depois de abrir (ver
+ * AssignmentBadge.js _showCoachModal/_renderHintsPanel) - opacidade reduzida
+ * deixa claro que o botão ainda não responde, sem esconder o texto. */
+.assignmentCompleteClose:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
 /* ===== Hints review UI (professor) =====
  * Overlay mostrado ao professor logo após "Aula cadastrada!" (barra
  * flutuante), ANTES do redirecionamento pro returnUrl ou do reset do botão -
