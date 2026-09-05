@@ -524,7 +524,7 @@ export default class AssignmentBadge {
         }
 
         case 'character_missing_block_type': {
-            // Achado em teste real - "!hasScript => false" (por baixo,
+            // Achado em teste real (1) - "!hasScript => false" (por baixo,
             // "resolvida") tratava "o personagem ainda nem tem NENHUM
             // script" como se já tivesse feito o que a dica pede, mostrando
             // "✅ já resolvida" pra um personagem com o script totalmente
@@ -536,14 +536,26 @@ export default class AssignmentBadge {
             // e a condição nunca tinha chance de bater "ainda precisa" nesse
             // meio-tempo. Sem o atalho: blockTypes de um personagem sem
             // nenhum script ainda é sempre [] (ver detailedManifest.js), então
-            // `wanted.some(...)` já dá false e a condição bate "ainda
-            // precisa" corretamente, sem precisar de um caso especial.
+            // já dá "ainda precisa" corretamente, sem precisar de um caso
+            // especial.
+            //
+            // Achado em teste real (2) - `wanted.some(...)` (OU) considerava
+            // a dica resolvida assim que QUALQUER UM dos blockTypes pedidos
+            // aparecesse, mesmo quando a dica descreve uma COMBINAÇÃO (ex.:
+            // blockTypes ["wait","say"] pra "espere um pouco e depois diga
+            // X") - bastava o aluno colocar só o "wait" (ou só o "say") pra a
+            // dica já sumir e a próxima aparecer, sem o comportamento
+            // completo ter sido montado. Trocado pra `wanted.every(...)` (E):
+            // só conta como feito quando TODOS os tipos pedidos já estão no
+            // personagem. isHintValid() no backend garante que todo tipo
+            // listado é um tipo que o personagem do professor de fato usa
+            // ali - então exigir todos nunca deixa a dica impossível.
             const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
             if (!found.character) {
                 return false; // personagem nem existe ainda - character_missing cobre esse caso
             }
             const wanted = Array.isArray(when.blockTypes) ? when.blockTypes : [];
-            return !wanted.some(function (bt) {
+            return !wanted.every(function (bt) {
                 return found.character.blockTypes.includes(bt);
             });
         }

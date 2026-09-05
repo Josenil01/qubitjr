@@ -196,7 +196,7 @@ O campo "when.type" deve ser exatamente um destes valores, com exatamente estes 
 - "scene_missing": {"type":"scene_missing","sceneMd5":"<da transcrição>","sceneOccurrence":<da transcrição>}
 - "character_missing": {"type":"character_missing","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"..."}
 - "character_no_script": {"type":"character_no_script","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"..."}
-- "character_missing_block_type": {"type":"character_missing_block_type","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"...","blockTypes":["forward","hop", ...]} - blockTypes é a lista de tipos de bloco de movimento/ação que, juntos, satisfariam essa dica (ex.: todos os blocos de movimento do ScratchJr juntos se a dica for sobre "andar": forward,back,up,down,left,right,hop; ou um único tipo, como ["say"], se a dica for sobre "falar")
+- "character_missing_block_type": {"type":"character_missing_block_type","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"...","blockTypes":["wait","say"]} - blockTypes é a lista EXATA de tipos de bloco que essa dica pede - o aluno precisa colocar TODOS eles (não basta um só) pro personagem antes da dica ser considerada feita, então copie SOMENTE os tipos que aparecem de verdade na "sequência" da transcrição pra esse trecho, na mesma ordem. NUNCA liste um tipo que o personagem não usa de verdade (ex.: se a sequência mostra só "say", use ["say"]; se mostra "wait → say", use ["wait","say"]) - um tipo a mais deixaria a dica impossível de resolver.
 - "message_not_received": {"type":"message_not_received","messageName":"..."}
 - "default_character_present": {"type":"default_character_present","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"HY-Ruby.svg"} - characterMd5 é SEMPRE "HY-Ruby.svg" pra este tipo (é o personagem default, nunca outro) - só gere pra cenas que NÃO têm a Ruby na lista de personagens (ver regra OBRIGATÓRIA acima).
 
@@ -427,12 +427,18 @@ function sceneKey(sceneMd5, occurrence) {
  * Builds the lookup sets used to validate hints against the REAL manifest:
  * every real (sceneMd5, sceneOccurrence) pair, every real characterMd5
  * (scoped per cena+ocorrência, já que um `when` de personagem sempre nomeia
- * os dois juntos), e a união, no projeto inteiro, de todo nome de mensagem
- * enviada.
+ * os dois juntos), a união, no projeto inteiro, de todo nome de mensagem
+ * enviada, e os blockTypes reais de cada personagem (scoped por
+ * cena+ocorrência+personagem) - usado pra impedir que "character_missing_block_type"
+ * peça um tipo de bloco que o personagem do professor nem tem (ver
+ * comentário de character_missing_block_type em isHintValid: como o cliente
+ * agora exige TODOS os blockTypes listados - AND, não OR - um único tipo
+ * inventado tornaria a dica impossível de resolver pra sempre).
  */
 function buildValidationIndex(manifest) {
     const sceneKeySet = new Set();
     const charactersByScene = new Map(); // sceneKey(sceneMd5,occurrence) -> Set<characterMd5>
+    const blockTypesByCharacter = new Map(); // sceneKey::characterMd5 -> Set<blockType>
     const allMessagesSent = new Set();
 
     for (const scene of manifest.scenes) {
@@ -442,13 +448,19 @@ function buildValidationIndex(manifest) {
 
         const charSet = charactersByScene.get(key) || new Set();
         for (const character of scene.characters) {
-            if (character.characterMd5) charSet.add(character.characterMd5);
+            if (character.characterMd5) {
+                charSet.add(character.characterMd5);
+                const blockTypeKey = `${key}::${character.characterMd5}`;
+                const blockTypeSet = blockTypesByCharacter.get(blockTypeKey) || new Set();
+                for (const bt of character.blockTypes || []) blockTypeSet.add(bt);
+                blockTypesByCharacter.set(blockTypeKey, blockTypeSet);
+            }
             for (const name of character.messagesSent) allMessagesSent.add(name);
         }
         charactersByScene.set(key, charSet);
     }
 
-    return { sceneKeySet, charactersByScene, allMessagesSent };
+    return { sceneKeySet, charactersByScene, blockTypesByCharacter, allMessagesSent };
 }
 
 /**
@@ -488,10 +500,21 @@ function isHintValid(hint, index) {
             return hasValidCharacter && when.characterMd5 !== DEFAULT_CHARACTER_MD5;
         case 'character_no_script':
             return hasValidCharacter;
-        case 'character_missing_block_type':
-            return hasValidCharacter &&
-                Array.isArray(when.blockTypes) && when.blockTypes.length > 0 &&
-                when.blockTypes.every((t) => typeof t === 'string' && t.length > 0);
+        case 'character_missing_block_type': {
+            if (!hasValidCharacter || !Array.isArray(when.blockTypes) || when.blockTypes.length === 0) {
+                return false;
+            }
+            // O cliente exige TODOS os blockTypes listados (AND) pra considerar
+            // a dica resolvida - ver _hintConditionHolds em AssignmentBadge.js.
+            // Por isso cada tipo listado aqui precisa ser um tipo que o
+            // personagem do PRÓPRIO professor de fato usa nessa cena; um tipo
+            // alucinado/errado tornaria a dica impossível de resolver (o aluno
+            // nunca teria como "completar o conjunto").
+            const blockTypeKey = `${key}::${when.characterMd5}`;
+            const realBlockTypes = index.blockTypesByCharacter.get(blockTypeKey);
+            return !!realBlockTypes &&
+                when.blockTypes.every((t) => typeof t === 'string' && t.length > 0 && realBlockTypes.has(t));
+        }
         case 'message_not_received':
             return typeof when.messageName === 'string' && index.allMessagesSent.has(when.messageName);
         case 'default_character_present':

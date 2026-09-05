@@ -241,6 +241,29 @@ describe('generateHints', () => {
     });
 
     it('drops a character_missing_block_type hint with an empty/malformed blockTypes array', async () => {
+        // Projeto local (não o twoSceneProject compartilhado, onde a Ruby não
+        // tem script) - a Ruby aqui precisa ter um script real com
+        // 'forward'/'hop' pra que o segundo hint (blockTypes válido)
+        // sobreviva à validação: isHintValid() agora exige que todo
+        // blockTypes listado seja um tipo que o personagem REALMENTE usa
+        // (ver comentário em isHintValid/buildValidationIndex), senão a dica
+        // ficaria impossível de resolver (o cliente exige TODOS eles - AND).
+        const project = buildProject([
+            {
+                id: 'page1',
+                md5: 'Summer.svg',
+                sprites: [
+                    {
+                        id: 'ruby',
+                        type: 'sprite',
+                        md5: 'HY-Ruby.svg',
+                        name: 'Ruby',
+                        scripts: [[['onflag', null, 0, 0], ['forward', 3, 0, 0], ['hop', 1, 0, 0]]],
+                    },
+                ],
+            },
+        ]);
+
         mockLlmResponse(
             JSON.stringify({
                 hints: [
@@ -266,7 +289,7 @@ describe('generateHints', () => {
             })
         );
 
-        const result = await generateHints(twoSceneProject());
+        const result = await generateHints(project);
         const hints = stripIntro(result.hints);
 
         // Ruby é isenta de fillMissingCharacterAddedHints() (ver describe
@@ -274,6 +297,52 @@ describe('generateHints', () => {
         // e nada extra é injetado pra ela.
         expect(hints).toHaveLength(1);
         expect(hints[0].text).toBe('Com blockTypes válido');
+    });
+
+    it('drops a character_missing_block_type hint listing a blockType the character does not really use', async () => {
+        // O cliente (_hintConditionHolds em AssignmentBadge.js) exige TODOS os
+        // blockTypes listados (AND, não OR) pra considerar a dica resolvida -
+        // então um tipo que o personagem do professor nunca usa de verdade
+        // (aqui: 'hop', quando o script real só tem 'forward') tornaria a dica
+        // impossível de resolver pra qualquer aluno. isHintValid() precisa
+        // descartar esse caso, mesmo com um tipo real ('forward') misturado
+        // no mesmo array.
+        const project = buildProject([
+            {
+                id: 'page1',
+                md5: 'Summer.svg',
+                sprites: [
+                    {
+                        id: 'ruby',
+                        type: 'sprite',
+                        md5: 'HY-Ruby.svg',
+                        name: 'Ruby',
+                        scripts: [[['onflag', null, 0, 0], ['forward', 3, 0, 0]]],
+                    },
+                ],
+            },
+        ]);
+
+        mockLlmResponse(
+            JSON.stringify({
+                hints: [
+                    {
+                        text: 'Tipo inventado misturado com um real',
+                        when: {
+                            type: 'character_missing_block_type',
+                            sceneMd5: 'Summer.svg',
+                            characterMd5: 'HY-Ruby.svg',
+                            blockTypes: ['forward', 'hop'],
+                        },
+                    },
+                ],
+            })
+        );
+
+        const result = await generateHints(project);
+        const hints = stripIntro(result.hints);
+
+        expect(hints).toHaveLength(0);
     });
 
     it('drops a character-scoped hint missing its required characterMd5, even though sceneMd5 alone is real', async () => {
@@ -504,7 +573,17 @@ describe('generateHints', () => {
         /** Woods.svg sem Ruby - o cenário legítimo do professor pra essa missão. */
         function projectWithoutRuby() {
             return buildProject([
-                { id: 'page1', md5: 'Woods.svg', sprites: [{ id: 'lobo', type: 'sprite', md5: 'HY-Lobsomem.svg', scripts: [] }] },
+                {
+                    id: 'page1',
+                    md5: 'Woods.svg',
+                    // Script com 'say' de verdade - alguns testes abaixo geram
+                    // um hint character_missing_block_type ["say"] pro Lobisomem
+                    // só pra checar que a injeção de default_character_present
+                    // não bagunça a ordem; isHintValid() agora exige que todo
+                    // blockTypes listado seja um tipo que o personagem REALMENTE
+                    // tem, então o fixture precisa ter um script condizente.
+                    sprites: [{ id: 'lobo', type: 'sprite', md5: 'HY-Lobsomem.svg', scripts: [[['onflag', null, 0, 0], ['say', 'Au!', 0, 0]]] }],
+                },
             ]);
         }
 
