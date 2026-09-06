@@ -14194,105 +14194,6 @@
       "norm_label": "._flush()"
     },
     {
-      "id": "ui_assignmentscoring",
-      "label": "assignmentScoring.js",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "assignmentscoring.js",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentscoring_trigger_types",
-      "label": "TRIGGER_TYPES",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L20",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "trigger_types",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentscoring_caret_types",
-      "label": "CARET_TYPES",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L21",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "caret_types",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentscoring_data_representation_types",
-      "label": "DATA_REPRESENTATION_TYPES",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L22",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "data_representation_types",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentscoring_sync_tier2_types",
-      "label": "SYNC_TIER2_TYPES",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L23",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "sync_tier2_types",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentscoring_emptymanifest",
-      "label": "emptyManifest()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L25",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "emptymanifest()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentscoring_walkscript",
-      "label": "walkScript()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L41",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "walkscript()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentscoring_computeprojectmanifest",
-      "label": "computeProjectManifest()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L65",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "computeprojectmanifest()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentscoring_comparemanifests",
-      "label": "compareManifests()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L171",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "comparemanifests()",
-      "community_name": null
-    },
-    {
       "id": "editor_scratchjr",
       "label": "ScratchJr.js",
       "file_type": "code",
@@ -21268,6 +21169,106 @@
       "source_location": "L650",
       "_origin": "ast",
       "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentscoring",
+      "label": "assignmentScoring.js",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentscoring_trigger_types",
+      "label": "TRIGGER_TYPES",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L20",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentscoring_caret_types",
+      "label": "CARET_TYPES",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L21",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentscoring_data_representation_types",
+      "label": "DATA_REPRESENTATION_TYPES",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L22",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentscoring_sync_tier2_types",
+      "label": "SYNC_TIER2_TYPES",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L23",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentscoring_numeric_arg_types",
+      "label": "NUMERIC_ARG_TYPES",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L26",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentscoring_emptymanifest",
+      "label": "emptyManifest()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L31",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentscoring_walkscript",
+      "label": "walkScript()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L47",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentscoring_computeprojectmanifest",
+      "label": "computeProjectManifest()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L84",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentscoring_comparemanifests",
+      "label": "compareManifests()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L190",
+      "_origin": "ast",
+      "community": 7,
       "community_name": null
     }
   ],
@@ -54778,139 +54779,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentscoring",
-      "target": "ui_assignmentscoring_caret_types"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L171",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentscoring",
-      "target": "ui_assignmentscoring_comparemanifests"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L65",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentscoring",
-      "target": "ui_assignmentscoring_computeprojectmanifest"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L22",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentscoring",
-      "target": "ui_assignmentscoring_data_representation_types"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L25",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentscoring",
-      "target": "ui_assignmentscoring_emptymanifest"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L23",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentscoring",
-      "target": "ui_assignmentscoring_sync_tier2_types"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L20",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentscoring",
-      "target": "ui_assignmentscoring_trigger_types"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L41",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentscoring",
-      "target": "ui_assignmentscoring_walkscript"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L172",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentscoring_comparemanifests",
-      "target": "ui_assignmentscoring_emptymanifest"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L66",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentscoring_computeprojectmanifest",
-      "target": "ui_assignmentscoring_emptymanifest"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
-      "source_location": "L126",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentscoring_computeprojectmanifest",
-      "target": "ui_assignmentscoring_walkscript"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L84",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentscoring_computeprojectmanifest"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L84",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentscoring_comparemanifests"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ScratchJr.js",
       "source_location": "L63",
       "weight": 1.0,
@@ -65661,6 +65529,26 @@
       "target": "ui_assignmentbadge_dismissedhintids"
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentscoring_comparemanifests"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentscoring_computeprojectmanifest"
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -67061,8 +66949,119 @@
       "weight": 1.0,
       "source": "ui_library_library_editresource",
       "target": "ui_library_library_editcostume"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "ui_assignmentscoring",
+      "target": "ui_assignmentscoring_caret_types"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L190",
+      "weight": 1.0,
+      "source": "ui_assignmentscoring",
+      "target": "ui_assignmentscoring_comparemanifests"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "ui_assignmentscoring",
+      "target": "ui_assignmentscoring_computeprojectmanifest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "ui_assignmentscoring",
+      "target": "ui_assignmentscoring_data_representation_types"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "ui_assignmentscoring",
+      "target": "ui_assignmentscoring_emptymanifest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "ui_assignmentscoring",
+      "target": "ui_assignmentscoring_numeric_arg_types"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "ui_assignmentscoring",
+      "target": "ui_assignmentscoring_sync_tier2_types"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "ui_assignmentscoring",
+      "target": "ui_assignmentscoring_trigger_types"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "ui_assignmentscoring",
+      "target": "ui_assignmentscoring_walkscript"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L191",
+      "weight": 1.0,
+      "source": "ui_assignmentscoring_comparemanifests",
+      "target": "ui_assignmentscoring_emptymanifest"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "ui_assignmentscoring_computeprojectmanifest",
+      "target": "ui_assignmentscoring_emptymanifest"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/assignmentScoring.js",
+      "source_location": "L145",
+      "weight": 1.0,
+      "source": "ui_assignmentscoring_computeprojectmanifest",
+      "target": "ui_assignmentscoring_walkscript"
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "076a03caf734622df49912013a259b52373bb6fb"
+  "built_at_commit": "152b6887ab886f4259d7b6fc2287fb5bf73cd397"
 }

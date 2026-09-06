@@ -1,11 +1,11 @@
 # Graph Report - .  (2026-09-05)
 
 ## Corpus Check
-- 78 files · ~112,500 words
+- 78 files · ~113,000 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1941 nodes · 4347 edges · 89 communities (43 shown, 46 thin omitted)
+- 1942 nodes · 4348 edges · 89 communities (43 shown, 46 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 16 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
@@ -61,7 +61,6 @@
 - [[_COMMUNITY_Live Mirror Sync|Live Mirror Sync]]
 - [[_COMMUNITY_Stage & Scripts UI Layer|Stage & Scripts UI Layer]]
 - [[_COMMUNITY_Time Tracking|Time Tracking]]
-- [[_COMMUNITY_Mission Progress Badge|Mission Progress Badge]]
 - [[_COMMUNITY_ScratchJr App Core|ScratchJr App Core]]
 - [[_COMMUNITY_Sprite Engine|Sprite Engine]]
 - [[_COMMUNITY_Block & Sprite Interaction Layer|Block & Sprite Interaction Layer]]
@@ -74,6 +73,7 @@
 - [[_COMMUNITY_SVG Drawing Tools|SVG Drawing Tools]]
 - [[_COMMUNITY_Mission Notification Bell|Mission Notification Bell]]
 - [[_COMMUNITY_Editor Entry & Mission Flow|Editor Entry & Mission Flow]]
+- [[_COMMUNITY_Mission Progress Badge|Mission Progress Badge]]
 - [[_COMMUNITY_Asset Library Picker|Asset Library Picker]]
 
 ## God Nodes (most connected - your core abstractions)
@@ -102,12 +102,12 @@
 
 ## Import Cycles
 - 3-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
-- 3-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
 - 3-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
+- 3-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
 - 3-file cycle: `src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Thumbs.js -> src/app/src/editor/ui/UI.js -> src/app/src/editor/ui/ScriptsPane.js`
-- 4-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/PaintUndo.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
 - 4-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
 - 4-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/PaintUndo.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
+- 4-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/PaintUndo.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
 - 5-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
 - 5-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/PaintUndo.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
 - 5-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/PaintUndo.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
@@ -178,10 +178,6 @@ Nodes (17): libInit(), ensureEditorFrames(), preprocess(), preprocessAndLoad(), 
 Cohesion: 0.06
 Nodes (66): _lastSpriteIds, resetMirrorState(), showLockOverlay(), hideLockOverlay(), isLockOverlayShown(), reserveFrameTopSpace(), reloadProjectFromBackend(), _shallowCopyStageData() (+58 more)
 
-### Community 7 - "Mission Progress Badge"
-Cohesion: 0.07
-Nodes (19): TRIGGER_TYPES, CARET_TYPES, DATA_REPRESENTATION_TYPES, SYNC_TIER2_TYPES, emptyManifest(), walkScript(), computeProjectManifest(), compareManifests() (+11 more)
-
 ### Community 74 - "Mission Notification Bell"
 Cohesion: 0.52
 Nodes (3): authHeader(), apiFetch(), AssignmentNotice
@@ -190,8 +186,12 @@ Nodes (3): authHeader(), apiFetch(), AssignmentNotice
 Cohesion: 0.19
 Nodes (7): isAllowedReturnUrl(), decodeJwtPayloadUnsafe(), getAuthorId(), authHeader(), apiFetch(), HINT_WHEN_LABELS, AssignmentAuthorBar
 
+### Community 7 - "Mission Progress Badge"
+Cohesion: 0.07
+Nodes (20): CARET_TYPES, SPEED_LABELS, NUMERIC_ARG_TYPES, emptyManifest(), walkScript(), computeDetailedManifest(), dismissedHintIds, authHeader() (+12 more)
+
 ## Knowledge Gaps
-- **52 isolated node(s):** `loadassets`, `fontcolors`, `fontsizes`, `getshapes`, `sendshapes` (+47 more)
+- **53 isolated node(s):** `loadassets`, `fontcolors`, `fontsizes`, `getshapes`, `sendshapes` (+48 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **46 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -199,13 +199,13 @@ Nodes (7): isAllowedReturnUrl(), decodeJwtPayloadUnsafe(), getAuthorId(), authHe
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `gn()` connect `Asset Library UI` to `Live Mirror Sync`, `Paint Action History`, `Editor UI Core`, `iOS Platform Bridge`, `Stage Engine`, `Execution Engine Core`, `ScratchJr Core State`, `Vector Path Editing`, `Scripts Pane & Stage UI`, `Paint Editor Core`, `Home Lobby Events`, `Page/Sprite Thumbnails`, `SVG Transform Matrix`, `Sound/Video Recording UI`, `Input Event Handling`, `Paint Layer Management`, `Undo/Redo Stack`, `Editor Bootstrap & Block Drag Utilities`, `Editor Entry & Mission Flow`, `Onboarding & Paint Bridge`, `Path Edit Mode`, `Page Engine`, `Snap.svg Shim`, `Web Interface Bridge`, `IO Persistence Layer`, `Scripts Pane & Stage UI`, `Rectangle Geometry`, `Paint Canvas Positioning`, `Onboarding & Paint Bridge`, `Paint Page Navigation`, `Bezier Curve Drawing`, `ScratchJr Core State`, `Camera Capture`, `Sample Projects List`, `Mission Notification Bell`, `Path Point Manipulation`, `Paint Side Palette`, `Vector Path Editing`?**
-  _High betweenness centrality (0.247) - this node is a cross-community bridge._
+  _High betweenness centrality (0.236) - this node is a cross-community bridge._
 - **Why does `ScratchJr` connect `ScratchJr App Core` to `Editor Bootstrap & Block Drag Utilities`, `Path Edit Mode`, `App Boot Sequence`, `Web Interface Bridge`, `IO Persistence Layer`, `Scroll/Pan Control`, `Selection State`, `Fullscreen Control`, `Numeric Keypad Input`, `Scripts Pane & Stage UI`, `Page/Sprite Thumbnails`, `ScratchJr Core State`?**
   _High betweenness centrality (0.100) - this node is a cross-community bridge._
-- **Why does `newHTML()` connect `Scripts Pane & Stage UI` to `Live Mirror Sync`, `Editor UI Core`, `Mission Progress Badge`, `Execution Engine Core`, `Paint Editor Core`, `Page/Sprite Thumbnails`, `Asset Library UI`, `Sound/Video Recording UI`, `Undo/Redo Stack`, `Editor Bootstrap & Block Drag Utilities`, `Onboarding & Paint Bridge`, `Path Edit Mode`, `Web Interface Bridge`, `Editor Entry & Mission Flow`, `Page Engine`, `Web Interface Bridge`, `IO Persistence Layer`, `Mission Authoring Button`, `Paint Page Navigation`, `Sample Projects List`?**
-  _High betweenness centrality (0.085) - this node is a cross-community bridge._
+- **Why does `Paint` connect `Block Connection Logic` to `Editor Bootstrap & Block Drag Utilities`, `Paint Save & Navigation`, `Paint Color & Pen Tools`, `Paint Asset Loading`, `IO Persistence Layer`, `Scripts Pane & Stage UI`, `Paint Gesture Detection`, `Paint Side Palette`, `Page/Sprite Thumbnails`, `Paint Canvas Pan & Zoom`, `Paint Workspace Setup`?**
+  _High betweenness centrality (0.092) - this node is a cross-community bridge._
 - **What connects `loadassets`, `fontcolors`, `fontsizes` to the rest of the system?**
-  _52 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _53 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Editor Bootstrap & Block Drag Utilities` be split into smaller, more focused modules?**
   _Cohesion score 0.12648221343873517 - nodes in this community are weakly interconnected._
 - **Should `Ghost Outline Tool` be split into smaller, more focused modules?**
