@@ -15921,435 +15921,6 @@
       "community_name": null
     },
     {
-      "id": "ui_library",
-      "label": "Library.js",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 19,
-      "norm_label": "library.js",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library",
-      "label": "Library",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L21",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": "library",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_isopen",
-      "label": ".isOpen()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L26",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".isopen()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_currenttype",
-      "label": ".currentType()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L40",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".currenttype()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_init",
-      "label": ".init()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L44",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".init()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_createscrollpanel",
-      "label": ".createScrollPanel()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L63",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".createscrollpanel()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_open",
-      "label": ".open()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L72",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".open()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_clean",
-      "label": ".clean()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L103",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".clean()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_close",
-      "label": ".close()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L110",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".close()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_layoutheader",
-      "label": ".layoutHeader()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L122",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".layoutheader()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_cancelpick",
-      "label": ".cancelPick()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L135",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".cancelpick()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_addthumbnails",
-      "label": ".addThumbnails()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L143",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".addthumbnails()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_skipuserassets",
-      "label": ".skipUserAssets()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L158",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".skipuserassets()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_getpadding",
-      "label": ".getpadding()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L166",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".getpadding()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_displayassets",
-      "label": ".displayAssets()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L177",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".displayassets()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_currentsprites",
-      "label": ".currentSprites()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L208",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".currentsprites()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_displaylibassets",
-      "label": ".displayLibAssets()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L214",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".displaylibassets()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_addassetthumbchoose",
-      "label": ".addAssetThumbChoose()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L237",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".addassetthumbchoose()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_addlocalthumbchoose",
-      "label": ".addLocalThumbChoose()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L268",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".addlocalthumbchoose()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_userassetthumbnail",
-      "label": ".userAssetThumbnail()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L305",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".userassetthumbnail()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_addemptythumb",
-      "label": ".addEmptyThumb()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L315",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".addemptythumb()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_addhr",
-      "label": ".addHR()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L334",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".addhr()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_selectasset",
-      "label": ".selectAsset()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L344",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".selectasset()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_startshaking",
-      "label": ".startShaking()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L410",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".startshaking()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_stopshaking",
-      "label": ".stopShaking()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L416",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".stopshaking()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_removefromassetlist",
-      "label": ".removeFromAssetList()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L429",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".removefromassetlist()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_assetthumbnailunique",
-      "label": ".assetThumbnailUnique()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L448",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".assetthumbnailunique()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_removeassetfromlib",
-      "label": ".removeAssetFromLib()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L461",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".removeassetfromlib()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_parseassetdata",
-      "label": ".parseAssetData()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L480",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".parseassetdata()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_selectthisasset",
-      "label": ".selectThisAsset()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L488",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".selectthisasset()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_clearallselections",
-      "label": ".clearAllSelections()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L514",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".clearallselections()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_unselect",
-      "label": ".unSelect()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L523",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".unselect()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_resizescroll",
-      "label": ".resizeScroll()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L535",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".resizescroll()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_editresource",
-      "label": ".editResource()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L550",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".editresource()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_editbackground",
-      "label": ".editBackground()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L559",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".editbackground()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_editcostume",
-      "label": ".editCostume()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L564",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".editcostume()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_closespriteselection",
-      "label": ".closeSpriteSelection()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L574",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".closespriteselection()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_closebkgselection",
-      "label": ".closeBkgSelection()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L593",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".closebkgselection()",
-      "community_name": null
-    },
-    {
-      "id": "ui_library_library_distance",
-      "label": ".distance()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L606",
-      "_origin": "ast",
-      "community": 12,
-      "norm_label": ".distance()",
-      "community_name": null
-    },
-    {
       "id": "ui_palette",
       "label": "Palette.js",
       "file_type": "code",
@@ -20860,336 +20431,6 @@
       "community_name": null
     },
     {
-      "id": "ui_assignmentbadge",
-      "label": "AssignmentBadge.js",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_dismissedhintids",
-      "label": "dismissedHintIds",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L117",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_authheader",
-      "label": "authHeader()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L127",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_apifetch",
-      "label": "apiFetch()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L132",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge",
-      "label": "AssignmentBadge",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L140",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_init",
-      "label": ".init()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L141",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_showstartbanner",
-      "label": "._showStartBanner()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L172",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_dismissbanner",
-      "label": "._dismissBanner()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L190",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_hidebanner",
-      "label": "._hideBanner()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L197",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_startmission",
-      "label": "._startMission()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L204",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "label": "._showBadge()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L218",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_onvisibilitychange",
-      "label": "._onVisibilityChange()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L256",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_schedulerecompute",
-      "label": "._scheduleRecompute()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L271",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_readprojectjson",
-      "label": "._readProjectJson()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L292",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "label": "._recomputeLocal()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L303",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "label": "._refreshRequirements()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L324",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "label": "._applyProgress()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L347",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "label": "._evaluateHints()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L413",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter",
-      "label": "._findSceneAndCharacter()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L470",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
-      "label": "._hintConditionHolds()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L490",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_createhintbutton",
-      "label": "._createHintButton()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L627",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_updatehintbutton",
-      "label": "._updateHintButton()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L643",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_openhintspanel",
-      "label": "._openHintsPanel()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L667",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_renderhintspanel",
-      "label": "._renderHintsPanel()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L701",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_closehintspanel",
-      "label": "._closeHintsPanel()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L760",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
-      "label": "._showCoachModal()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L784",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_closecoachmodal",
-      "label": "._closeCoachModal()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L817",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
-      "label": "._toggleExpanded()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L824",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_openpopover",
-      "label": "._openPopover()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L832",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_closepopover",
-      "label": "._closePopover()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L847",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
-      "label": "._onOutsideClick()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L855",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_renderpopover",
-      "label": "._renderPopover()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L865",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_renderrow",
-      "label": "._renderRow()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L874",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
       "id": "ui_detailedmanifest",
       "label": "detailedManifest.js",
       "file_type": "code",
@@ -21257,6 +20498,776 @@
       "source_location": "L138",
       "_origin": "ast",
       "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge",
+      "label": "AssignmentBadge.js",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_dismissedhintids",
+      "label": "dismissedHintIds",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L118",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_authheader",
+      "label": "authHeader()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L128",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_apifetch",
+      "label": "apiFetch()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L133",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge",
+      "label": "AssignmentBadge",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L141",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_galleryrestriction",
+      "label": ".galleryRestriction()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L159",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_init",
+      "label": ".init()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L171",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_showstartbanner",
+      "label": "._showStartBanner()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L202",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_dismissbanner",
+      "label": "._dismissBanner()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L220",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_hidebanner",
+      "label": "._hideBanner()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L227",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_startmission",
+      "label": "._startMission()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L234",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_showbadge",
+      "label": "._showBadge()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L248",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_onvisibilitychange",
+      "label": "._onVisibilityChange()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L286",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_schedulerecompute",
+      "label": "._scheduleRecompute()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L301",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_readprojectjson",
+      "label": "._readProjectJson()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L322",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_recomputelocal",
+      "label": "._recomputeLocal()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L333",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
+      "label": "._refreshRequirements()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L354",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_applyprogress",
+      "label": "._applyProgress()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L377",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_evaluatehints",
+      "label": "._evaluateHints()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L443",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter",
+      "label": "._findSceneAndCharacter()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L500",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
+      "label": "._hintConditionHolds()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L520",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_createhintbutton",
+      "label": "._createHintButton()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L657",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_updatehintbutton",
+      "label": "._updateHintButton()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L673",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_openhintspanel",
+      "label": "._openHintsPanel()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L697",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_renderhintspanel",
+      "label": "._renderHintsPanel()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L731",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_closehintspanel",
+      "label": "._closeHintsPanel()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L790",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
+      "label": "._showCoachModal()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L814",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_closecoachmodal",
+      "label": "._closeCoachModal()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L847",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
+      "label": "._toggleExpanded()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L854",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_openpopover",
+      "label": "._openPopover()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L862",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_closepopover",
+      "label": "._closePopover()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L877",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
+      "label": "._onOutsideClick()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L885",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_renderpopover",
+      "label": "._renderPopover()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L895",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_renderrow",
+      "label": "._renderRow()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L904",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_galleryrestriction",
+      "label": "GalleryRestriction.js",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_galleryrestriction_registergalleryrestrictionprovider",
+      "label": "registerGalleryRestrictionProvider()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
+      "source_location": "L36",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_galleryrestriction_getgalleryrestriction",
+      "label": "getGalleryRestriction()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
+      "source_location": "L40",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library",
+      "label": "Library.js",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library",
+      "label": "Library",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L22",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_isopen",
+      "label": ".isOpen()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L27",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_currenttype",
+      "label": ".currentType()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L41",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_init",
+      "label": ".init()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L45",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_createscrollpanel",
+      "label": ".createScrollPanel()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L64",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_open",
+      "label": ".open()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L73",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_clean",
+      "label": ".clean()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L104",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_close",
+      "label": ".close()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L111",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_layoutheader",
+      "label": ".layoutHeader()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L123",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_cancelpick",
+      "label": ".cancelPick()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L136",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_addthumbnails",
+      "label": ".addThumbnails()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L144",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_skipuserassets",
+      "label": ".skipUserAssets()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L174",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_getpadding",
+      "label": ".getpadding()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L182",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_displayassets",
+      "label": ".displayAssets()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L193",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_currentsprites",
+      "label": ".currentSprites()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L224",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_libraryassetsfortype",
+      "label": ".libraryAssetsForType()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L242",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_displaylibassets",
+      "label": ".displayLibAssets()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L258",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_addassetthumbchoose",
+      "label": ".addAssetThumbChoose()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L281",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_addlocalthumbchoose",
+      "label": ".addLocalThumbChoose()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L312",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_userassetthumbnail",
+      "label": ".userAssetThumbnail()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L349",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_addemptythumb",
+      "label": ".addEmptyThumb()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L359",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_addhr",
+      "label": ".addHR()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L378",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_selectasset",
+      "label": ".selectAsset()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L388",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_startshaking",
+      "label": ".startShaking()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L454",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_stopshaking",
+      "label": ".stopShaking()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L460",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_removefromassetlist",
+      "label": ".removeFromAssetList()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L473",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_assetthumbnailunique",
+      "label": ".assetThumbnailUnique()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L492",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_removeassetfromlib",
+      "label": ".removeAssetFromLib()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L505",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_parseassetdata",
+      "label": ".parseAssetData()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L524",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_selectthisasset",
+      "label": ".selectThisAsset()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L532",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_clearallselections",
+      "label": ".clearAllSelections()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L558",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_unselect",
+      "label": ".unSelect()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L567",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_resizescroll",
+      "label": ".resizeScroll()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L579",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_editresource",
+      "label": ".editResource()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L594",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_editbackground",
+      "label": ".editBackground()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L603",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_editcostume",
+      "label": ".editCostume()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L608",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_closespriteselection",
+      "label": ".closeSpriteSelection()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L618",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_closebkgselection",
+      "label": ".closeBkgSelection()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L637",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": null
+    },
+    {
+      "id": "ui_library_library_distance",
+      "label": ".distance()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L650",
+      "_origin": "ast",
+      "community": 12,
       "community_name": null
     }
   ],
@@ -51783,9 +51794,8 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "ui_library",
       "target": "utils_lib_newcanvas"
     },
@@ -51925,9 +51935,8 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "ui_library",
       "target": "utils_lib_newhtml"
     },
@@ -52178,9 +52187,8 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "ui_library",
       "target": "utils_lib_setprops"
     },
@@ -52310,9 +52318,8 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "ui_library",
       "target": "utils_lib_getdocumentheight"
     },
@@ -52321,9 +52328,8 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "ui_library",
       "target": "utils_lib_getdocumentwidth"
     },
@@ -52464,9 +52470,8 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "ui_library",
       "target": "utils_lib_gn"
     },
@@ -55910,17 +55915,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library",
-      "target": "editor_scratchjr_scratchjr"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/Palette.js",
       "source_location": "L5",
       "weight": 1.0,
@@ -57979,793 +57973,6 @@
       "confidence_score": 1.0,
       "source": "engine_sprite_sprite_getdata",
       "target": "engine_sprite_sprite_gettextboxdata"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library",
-      "target": "ipad_io"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library",
-      "target": "ipad_io_io"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library",
-      "target": "painteditor_paint"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library",
-      "target": "painteditor_paint_paint"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library",
-      "target": "ui_library_library"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L237",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_addassetthumbchoose"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L315",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_addemptythumb"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L334",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_addhr"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L268",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_addlocalthumbchoose"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L143",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_addthumbnails"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L448",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_assetthumbnailunique"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L135",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_cancelpick"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L103",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_clean"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L514",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_clearallselections"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L110",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_close"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L593",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_closebkgselection"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L574",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_closespriteselection"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L63",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_createscrollpanel"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L208",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_currentsprites"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L40",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_currenttype"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L177",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_displayassets"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L214",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_displaylibassets"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L606",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_distance"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L559",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_editbackground"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L564",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_editcostume"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L550",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_editresource"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L166",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_getpadding"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L44",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_init"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L26",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_isopen"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L122",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_layoutheader"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L72",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_open"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L480",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_parseassetdata"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L461",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_removeassetfromlib"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L429",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_removefromassetlist"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L535",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_resizescroll"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L344",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_selectasset"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L488",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_selectthisasset"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L158",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_skipuserassets"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L410",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_startshaking"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L416",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_stopshaking"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L523",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_unselect"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L305",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library",
-      "target": "ui_library_library_userassetthumbnail"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L60",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_init",
-      "target": "ui_library_library_layoutheader"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L69",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_createscrollpanel",
-      "target": "ui_library_library_resizescroll"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L82",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_open",
-      "target": "ui_library_library_createscrollpanel"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L83",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_open",
-      "target": "ui_library_library_addthumbnails"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L99",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_open",
-      "target": "ui_library_library_cancelpick"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L81",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_open",
-      "target": "ui_library_library_clean"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L137",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_cancelpick",
-      "target": "ui_library_library_close"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L599",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_closebkgselection",
-      "target": "ui_library_library_close"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L590",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_closespriteselection",
-      "target": "ui_library_library_close"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L551",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_editresource",
-      "target": "ui_library_library_close"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L145",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_addthumbnails",
-      "target": "ui_library_library_addemptythumb"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L160",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_skipuserassets",
-      "target": "ui_library_library_addemptythumb"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L162",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_skipuserassets",
-      "target": "ui_library_library_addhr"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L163",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_skipuserassets",
-      "target": "ui_library_library_currentsprites"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L163",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_skipuserassets",
-      "target": "ui_library_library_displaylibassets"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L195",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_displayassets",
-      "target": "ui_library_library_addassetthumbchoose"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L199",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_displayassets",
-      "target": "ui_library_library_addhr"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L201",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_displayassets",
-      "target": "ui_library_library_currentsprites"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L202",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_displayassets",
-      "target": "ui_library_library_displaylibassets"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L225",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_displaylibassets",
-      "target": "ui_library_library_addhr"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L231",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_displaylibassets",
-      "target": "ui_library_library_addlocalthumbchoose"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L238",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_addassetthumbchoose",
-      "target": "ui_library_library_parseassetdata"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L330",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_addemptythumb",
-      "target": "ui_library_library_selectasset"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L362",
-      "weight": 1.0,
-      "source": "ui_library_library_selectasset",
-      "target": "painteditor_paint_paint_clearevents"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L347",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_selectasset",
-      "target": "ui_library_library_removefromassetlist"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L350",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_selectasset",
-      "target": "ui_library_library_stopshaking"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L470",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_removeassetfromlib",
-      "target": "ui_library_library_assetthumbnailunique"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L464",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_removeassetfromlib",
-      "target": "ui_library_library_parseassetdata"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L496",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_selectthisasset",
-      "target": "ui_library_library_clearallselections"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L493",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_selectthisasset",
-      "target": "ui_library_library_closebkgselection"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L491",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_selectthisasset",
-      "target": "ui_library_library_closespriteselection"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L553",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_editresource",
-      "target": "ui_library_library_editbackground"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/Library.js",
-      "source_location": "L555",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_library_library_editresource",
-      "target": "ui_library_library_editcostume"
     },
     {
       "relation": "contains",
@@ -66336,686 +65543,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L132",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_apifetch"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L140",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L127",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_authheader"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L117",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_dismissedhintids"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L85",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_detailedmanifest"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L85",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_detailedmanifest_computedetailedmanifest"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L136",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_apifetch",
-      "target": "ui_assignmentbadge_authheader"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L144",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_init",
-      "target": "ui_assignmentbadge_apifetch"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L330",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "target": "ui_assignmentbadge_apifetch"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L347",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_applyprogress"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L817",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L760",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_closehintspanel"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L847",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L627",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_createhintbutton"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L190",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_dismissbanner"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L413",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L470",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L197",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L490",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L141",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_init"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L855",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_onoutsideclick"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L256",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_onvisibilitychange"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L667",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_openhintspanel"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L832",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_openpopover"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L292",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L303",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L324",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L701",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_renderhintspanel"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L865",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L874",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_renderrow"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L271",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_schedulerecompute"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L218",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L784",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L172",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L204",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_startmission"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L824",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_toggleexpanded"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L643",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_updatehintbutton"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L164",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_init",
-      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L166",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_init",
-      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L194",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_dismissbanner",
-      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L208",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_startmission",
-      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L214",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_startmission",
-      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L232",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_createhintbutton"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L235",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L251",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L240",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_schedulerecompute"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L258",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_onvisibilitychange",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L279",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_schedulerecompute",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L676",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
-      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L304",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L675",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L310",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "target": "ui_assignmentbadge_assignmentbadge_applyprogress"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L315",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L344",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L383",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L384",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_closehintspanel"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L370",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L385",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L424",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L438",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L415",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "target": "ui_assignmentbadge_assignmentbadge_updatehintbutton"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L422",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "target": "ui_detailedmanifest_computedetailedmanifest"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L514",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
-      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L691",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
-      "target": "ui_assignmentbadge_assignmentbadge_renderhintspanel"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L677",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
-      "target": "ui_detailedmanifest_computedetailedmanifest"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L789",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
-      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L826",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
-      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L828",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
-      "target": "ui_assignmentbadge_assignmentbadge_openpopover"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L835",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_openpopover",
-      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L862",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
-      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L869",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_renderpopover",
-      "target": "ui_assignmentbadge_assignmentbadge_renderrow"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/detailedManifest.js",
       "source_location": "L38",
       "weight": 1.0,
@@ -67086,8 +65613,1456 @@
       "weight": 1.0,
       "source": "ui_detailedmanifest_computedetailedmanifest",
       "target": "ui_detailedmanifest_walkscript"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_detailedmanifest_computedetailedmanifest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L133",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentbadge_apifetch"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L141",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L128",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentbadge_authheader"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L118",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentbadge_dismissedhintids"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L86",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_galleryrestriction"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L86",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_galleryrestriction_registergalleryrestrictionprovider"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L137",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_apifetch",
+      "target": "ui_assignmentbadge_authheader"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L174",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_init",
+      "target": "ui_assignmentbadge_apifetch"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L360",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
+      "target": "ui_assignmentbadge_apifetch"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L377",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_applyprogress"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L847",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L790",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_closehintspanel"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L877",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L657",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_createhintbutton"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L220",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_dismissbanner"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L443",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L500",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L159",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_galleryrestriction"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L227",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L520",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L171",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_init"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L885",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_onoutsideclick"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L286",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_onvisibilitychange"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L697",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_openhintspanel"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L862",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_openpopover"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L322",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L333",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L354",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L731",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_renderhintspanel"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L895",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L904",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_renderrow"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L301",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_schedulerecompute"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L248",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L814",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L202",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L234",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_startmission"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L854",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_toggleexpanded"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L673",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_updatehintbutton"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L194",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_init",
+      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L196",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_init",
+      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L224",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_dismissbanner",
+      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L238",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_startmission",
+      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L244",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_startmission",
+      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L262",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_createhintbutton"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L265",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L281",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L270",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_schedulerecompute"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L288",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_onvisibilitychange",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L309",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_schedulerecompute",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L706",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
+      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L334",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
+      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L705",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L340",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
+      "target": "ui_assignmentbadge_assignmentbadge_applyprogress"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L345",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
+      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L374",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L413",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
+      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L414",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
+      "target": "ui_assignmentbadge_assignmentbadge_closehintspanel"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L400",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
+      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L415",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
+      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L454",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
+      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L468",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
+      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L445",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
+      "target": "ui_assignmentbadge_assignmentbadge_updatehintbutton"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L544",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
+      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L721",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
+      "target": "ui_assignmentbadge_assignmentbadge_renderhintspanel"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L819",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
+      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L856",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
+      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L858",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
+      "target": "ui_assignmentbadge_assignmentbadge_openpopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L865",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_openpopover",
+      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L892",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
+      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L899",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_renderpopover",
+      "target": "ui_assignmentbadge_assignmentbadge_renderrow"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "ui_galleryrestriction",
+      "target": "ui_galleryrestriction_getgalleryrestriction"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "ui_galleryrestriction",
+      "target": "ui_galleryrestriction_registergalleryrestrictionprovider"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "ui_library",
+      "target": "ui_galleryrestriction"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "ui_library",
+      "target": "ui_galleryrestriction_getgalleryrestriction"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L157",
+      "weight": 1.0,
+      "source": "ui_library_library_addthumbnails",
+      "target": "ui_galleryrestriction_getgalleryrestriction"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L244",
+      "weight": 1.0,
+      "source": "ui_library_library_libraryassetsfortype",
+      "target": "ui_galleryrestriction_getgalleryrestriction"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "ui_library",
+      "target": "ui_library_library"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L281",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_addassetthumbchoose"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L359",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_addemptythumb"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L378",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_addhr"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L312",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_addlocalthumbchoose"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L144",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_addthumbnails"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L492",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_assetthumbnailunique"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L136",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_cancelpick"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L104",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_clean"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L558",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_clearallselections"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L111",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_close"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L637",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_closebkgselection"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L618",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_closespriteselection"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_createscrollpanel"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L224",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_currentsprites"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_currenttype"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L193",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_displayassets"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L258",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_displaylibassets"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L650",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_distance"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L603",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_editbackground"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L608",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_editcostume"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L594",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_editresource"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L182",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_getpadding"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_init"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_isopen"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L123",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_layoutheader"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L242",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_libraryassetsfortype"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_open"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L524",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_parseassetdata"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L505",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_removeassetfromlib"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L473",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_removefromassetlist"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L579",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_resizescroll"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L388",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_selectasset"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L532",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_selectthisasset"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L174",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_skipuserassets"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L454",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_startshaking"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L460",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_stopshaking"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L567",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_unselect"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L349",
+      "weight": 1.0,
+      "source": "ui_library_library",
+      "target": "ui_library_library_userassetthumbnail"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "ui_library_library_init",
+      "target": "ui_library_library_layoutheader"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L70",
+      "weight": 1.0,
+      "source": "ui_library_library_createscrollpanel",
+      "target": "ui_library_library_resizescroll"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "ui_library_library_open",
+      "target": "ui_library_library_createscrollpanel"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "ui_library_library_open",
+      "target": "ui_library_library_addthumbnails"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L100",
+      "weight": 1.0,
+      "source": "ui_library_library_open",
+      "target": "ui_library_library_cancelpick"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "ui_library_library_open",
+      "target": "ui_library_library_clean"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L138",
+      "weight": 1.0,
+      "source": "ui_library_library_cancelpick",
+      "target": "ui_library_library_close"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L643",
+      "weight": 1.0,
+      "source": "ui_library_library_closebkgselection",
+      "target": "ui_library_library_close"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L634",
+      "weight": 1.0,
+      "source": "ui_library_library_closespriteselection",
+      "target": "ui_library_library_close"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L595",
+      "weight": 1.0,
+      "source": "ui_library_library_editresource",
+      "target": "ui_library_library_close"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L146",
+      "weight": 1.0,
+      "source": "ui_library_library_addthumbnails",
+      "target": "ui_library_library_addemptythumb"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L158",
+      "weight": 1.0,
+      "source": "ui_library_library_addthumbnails",
+      "target": "ui_library_library_addhr"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L159",
+      "weight": 1.0,
+      "source": "ui_library_library_addthumbnails",
+      "target": "ui_library_library_displaylibassets"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L159",
+      "weight": 1.0,
+      "source": "ui_library_library_addthumbnails",
+      "target": "ui_library_library_libraryassetsfortype"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L176",
+      "weight": 1.0,
+      "source": "ui_library_library_skipuserassets",
+      "target": "ui_library_library_addemptythumb"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L178",
+      "weight": 1.0,
+      "source": "ui_library_library_skipuserassets",
+      "target": "ui_library_library_addhr"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L179",
+      "weight": 1.0,
+      "source": "ui_library_library_skipuserassets",
+      "target": "ui_library_library_currentsprites"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L179",
+      "weight": 1.0,
+      "source": "ui_library_library_skipuserassets",
+      "target": "ui_library_library_displaylibassets"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L211",
+      "weight": 1.0,
+      "source": "ui_library_library_displayassets",
+      "target": "ui_library_library_addassetthumbchoose"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L215",
+      "weight": 1.0,
+      "source": "ui_library_library_displayassets",
+      "target": "ui_library_library_addhr"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L218",
+      "weight": 1.0,
+      "source": "ui_library_library_displayassets",
+      "target": "ui_library_library_displaylibassets"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L217",
+      "weight": 1.0,
+      "source": "ui_library_library_displayassets",
+      "target": "ui_library_library_libraryassetsfortype"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L243",
+      "weight": 1.0,
+      "source": "ui_library_library_libraryassetsfortype",
+      "target": "ui_library_library_currentsprites"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L269",
+      "weight": 1.0,
+      "source": "ui_library_library_displaylibassets",
+      "target": "ui_library_library_addhr"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L275",
+      "weight": 1.0,
+      "source": "ui_library_library_displaylibassets",
+      "target": "ui_library_library_addlocalthumbchoose"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L282",
+      "weight": 1.0,
+      "source": "ui_library_library_addassetthumbchoose",
+      "target": "ui_library_library_parseassetdata"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L374",
+      "weight": 1.0,
+      "source": "ui_library_library_addemptythumb",
+      "target": "ui_library_library_selectasset"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L391",
+      "weight": 1.0,
+      "source": "ui_library_library_selectasset",
+      "target": "ui_library_library_removefromassetlist"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L394",
+      "weight": 1.0,
+      "source": "ui_library_library_selectasset",
+      "target": "ui_library_library_stopshaking"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L514",
+      "weight": 1.0,
+      "source": "ui_library_library_removeassetfromlib",
+      "target": "ui_library_library_assetthumbnailunique"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L508",
+      "weight": 1.0,
+      "source": "ui_library_library_removeassetfromlib",
+      "target": "ui_library_library_parseassetdata"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L540",
+      "weight": 1.0,
+      "source": "ui_library_library_selectthisasset",
+      "target": "ui_library_library_clearallselections"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L537",
+      "weight": 1.0,
+      "source": "ui_library_library_selectthisasset",
+      "target": "ui_library_library_closebkgselection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L535",
+      "weight": 1.0,
+      "source": "ui_library_library_selectthisasset",
+      "target": "ui_library_library_closespriteselection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L597",
+      "weight": 1.0,
+      "source": "ui_library_library_editresource",
+      "target": "ui_library_library_editbackground"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/Library.js",
+      "source_location": "L599",
+      "weight": 1.0,
+      "source": "ui_library_library_editresource",
+      "target": "ui_library_library_editcostume"
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b10d7050fde0f2cda0fc0b939f36e3558998d737"
+  "built_at_commit": "076a03caf734622df49912013a259b52373bb6fb"
 }
