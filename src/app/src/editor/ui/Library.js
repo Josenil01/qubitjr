@@ -7,6 +7,7 @@ import Paint from '../../painteditor/Paint.js';
 import Events from '../../utils/Events.js';
 import Localization from '../../utils/Localization.js';
 import ScratchAudio from '../../utils/ScratchAudio.js';
+import {getGalleryRestriction} from './GalleryRestriction.js';
 import {gn, newHTML, scaleMultiplier,
     getDocumentWidth, getDocumentHeight, setProps, newCanvas, frame} from '../../utils/lib.js';
 
@@ -144,6 +145,21 @@ export default class Library {
         var div = gn('scrollarea');
         Library.addEmptyThumb(div, (type == 'costumes') ? (118 * scaleMultiplier) : (120 * scaleMultiplier),
             (type == 'costumes') ? (90 * scaleMultiplier) : (90 * scaleMultiplier));
+
+        // Achado em teste real (decisão explícita do usuário) - enquanto uma
+        // missão ativa não foi concluída, a galeria "siga o exemplo do
+        // professor primeiro" - e isso inclui esconder a aba de assets
+        // PRÓPRIOS do aluno (desenhos/fotos de OUTROS projetos), não só
+        // filtrar o catálogo embutido, senão ele ainda escolheria um
+        // personagem/fundo fora do que a missão pede. Ver
+        // GalleryRestriction.js#getGalleryRestriction (null = sem restrição,
+        // mostra tudo como sempre foi).
+        if (getGalleryRestriction()) {
+            Library.addHR(div);
+            Library.displayLibAssets(Library.libraryAssetsForType());
+            return;
+        }
+
         var key = (type == 'costumes') ? 'usershapes' : 'userbkgs';
         // Student' assets
         var json = {};
@@ -198,7 +214,7 @@ export default class Library {
         }
         Library.addHR(div);
         nativeJr = false;
-        data = (type == 'costumes') ? Library.currentSprites() : MediaLib.backgrounds;
+        data = Library.libraryAssetsForType();
         Library.displayLibAssets(data);
     }
 
@@ -209,6 +225,34 @@ export default class Library {
         return MediaLib.sprites.filter(function (spr) {
             return !spr.legacy;
         });
+    }
+
+    /**
+     * Catálogo embutido (personagens ou fundos, conforme `type`) que a
+     * galeria deve mostrar agora - o catálogo INTEIRO quando não há
+     * restrição ativa (mesmo comportamento de sempre), ou só os md5 que o
+     * professor usou no projeto de referência desta missão enquanto ela não
+     * foi concluída (ver GalleryRestriction.js#getGalleryRestriction).
+     *
+     * Filtra a partir de MediaLib.sprites BRUTO (não currentSprites(), que
+     * já exclui "legacy") quando há restrição - um personagem legacy que o
+     * professor tenha usado numa missão antiga precisa continuar escolhível
+     * pro aluno, mesmo que legacy normalmente suma da galeria livre.
+     */
+    static libraryAssetsForType () {
+        var all = (type == 'costumes') ? Library.currentSprites() : MediaLib.backgrounds;
+        var restriction = getGalleryRestriction();
+        if (!restriction) return all;
+        var wanted = (type == 'costumes') ? restriction.characterMd5s : restriction.sceneMd5s;
+        if (!wanted) return all; // sem requirements úteis pra esta galeria específica - mostra tudo (fallback seguro)
+        var source = (type == 'costumes') ? MediaLib.sprites : MediaLib.backgrounds;
+        var filtered = source.filter(function (item) {
+            return wanted.has(item.md5);
+        });
+        // Nenhum dos md5 do professor bateu com o catálogo atual (ex.: asset
+        // removido/renomeado desde que a missão foi criada) - mesma regra de
+        // nunca travar o aluno sem NENHUMA opção pra escolher.
+        return filtered.length > 0 ? filtered : all;
     }
 
     static displayLibAssets (data) {

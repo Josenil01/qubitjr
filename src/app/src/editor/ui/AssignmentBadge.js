@@ -83,6 +83,7 @@ import Project from './Project.js';
 import {newHTML} from '../../utils/lib.js';
 import {computeProjectManifest, compareManifests} from './assignmentScoring.js';
 import {computeDetailedManifest} from './detailedManifest.js';
+import {registerGalleryRestrictionProvider} from './GalleryRestriction.js';
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
@@ -138,6 +139,35 @@ function apiFetch (path, options) {
 }
 
 export default class AssignmentBadge {
+    /**
+     * Consultado por Library.js pra restringir a galeria de personagens/
+     * fundos ao que o professor usou no projeto de referência desta missão -
+     * "siga o exemplo do professor primeiro, libere tudo depois que
+     * concluir" (decisão explícita do usuário). Retorna `null` quando a
+     * restrição NÃO deve valer - nenhum caso trava a galeria por acidente:
+     *  - sem missão ativa (projeto livre/lobby, `assignment` nunca setado);
+     *  - `assignment.requirements` ausente (dado antigo/nunca calculado);
+     *  - missão já concluída (`wasComplete === true` - ver _applyProgress).
+     * Quando não-null, characterMd5s/sceneMd5s podem INDIVIDUALMENTE ser
+     * `null` (não só o objeto inteiro) - decisão explícita do usuário:
+     * requirements vazios/ausentes pra UMA das duas galerias (ex.: projeto
+     * de referência sem nenhum personagem, o que não devia acontecer mas
+     * não custa proteger) nunca deve travar o aluno sem NENHUMA opção
+     * pra escolher - melhor liberar aquela galeria específica do que
+     * mostrar uma lista vazia.
+     */
+    static get galleryRestriction () {
+        if (!assignment || !assignment.requirements) return null;
+        if (wasComplete === true) return null;
+        const req = assignment.requirements;
+        const characterMd5s = (req.characters && Array.isArray(req.characters.used)) ? req.characters.used : [];
+        const sceneMd5s = (req.scenes && Array.isArray(req.scenes.used)) ? req.scenes.used : [];
+        return {
+            characterMd5s: characterMd5s.length > 0 ? new Set(characterMd5s) : null,
+            sceneMd5s: sceneMd5s.length > 0 ? new Set(sceneMd5s) : null,
+        };
+    }
+
     static async init () {
         let res;
         try {
@@ -882,3 +912,10 @@ export default class AssignmentBadge {
         val.textContent = group.actual + '/' + group.required + (group.met ? ' ✓' : '');
     }
 }
+
+// Registra-se como fonte de verdade de GalleryRestriction.js - ver docblock
+// daquele arquivo pra entender por quê isso não é um import direto no
+// sentido contrário (Library.js -> este arquivo).
+registerGalleryRestrictionProvider(function () {
+    return AssignmentBadge.galleryRestriction;
+});
