@@ -21,12 +21,18 @@ const TRIGGER_TYPES = new Set(['onflag', 'onmessage', 'onclick', 'ontouch']);
 const CARET_TYPES = new Set(['caretstart', 'caretend', 'caretrepeat', 'caretcmd']);
 const DATA_REPRESENTATION_TYPES = new Set(['grow', 'shrink', 'setspeed', 'say']);
 const SYNC_TIER2_TYPES = new Set(['message', 'stopmine']);
+// Ver docblock do original (backend) - "say" é o único bloco cujo argumento
+// pode divergir do professor; todo tipo aqui exige o valor exato (byTypeValue).
+const NUMERIC_ARG_TYPES = new Set([
+    'forward', 'back', 'up', 'down', 'left', 'right', 'hop',
+    'wait', 'repeat', 'grow', 'shrink', 'setspeed',
+]);
 
 function emptyManifest () {
     return {
         scenes: {count: 0, used: []},
         characters: {count: 0, used: []},
-        blocks: {count: 0, byType: {}},
+        blocks: {count: 0, byType: {}, byTypeValue: {}},
         ctScores: {
             parallelism: 0,
             flowControl: 0,
@@ -49,6 +55,19 @@ function walkScript (script, agg) {
 
         agg.blocks.count += 1;
         agg.blocks.byType[blockType] = (agg.blocks.byType[blockType] || 0) + 1;
+
+        // Ver docblock do original (backend) - hasRealArg como pré-condição
+        // (Number(null) === 0 em JS contaria um bloco sem argumento como valor 0).
+        if (NUMERIC_ARG_TYPES.has(blockType)) {
+            const arg = block[1];
+            const hasRealArg = arg !== null && arg !== undefined && arg !== 'null' && arg !== '';
+            const numArg = hasRealArg ? Number(arg) : NaN;
+            if (!Number.isNaN(numArg)) {
+                const byValue = agg.blocks.byTypeValue[blockType] || {};
+                byValue[numArg] = (byValue[numArg] || 0) + 1;
+                agg.blocks.byTypeValue[blockType] = byValue;
+            }
+        }
 
         if (blockType === 'repeat' || blockType === 'forever') agg.hasLoop = true;
         if (SYNC_TIER2_TYPES.has(blockType)) agg.hasSyncTier2 = true;
@@ -188,13 +207,30 @@ export function compareManifests (required, actual) {
     const actBlocks = act.blocks || {count: 0, byType: {}};
     const reqByType = reqBlocks.byType || {};
     const actByType = actBlocks.byType || {};
+    const reqByTypeValue = reqBlocks.byTypeValue || {};
+    const actByTypeValue = actBlocks.byTypeValue || {};
 
     const byType = {};
     let blocksMet = true;
     for (const type of Object.keys(reqByType)) {
         const requiredCount = reqByType[type];
         const actualCount = actByType[type] || 0;
-        const met = actualCount >= requiredCount;
+        let met = actualCount >= requiredCount;
+
+        // Ver docblock do original (backend) - requirements antigos sem
+        // byTypeValue pra este tipo pulam a checagem extra (reqByValue
+        // undefined), preservando o comportamento anterior até reautorar.
+        const reqByValue = reqByTypeValue[type];
+        if (reqByValue) {
+            const actByValue = actByTypeValue[type] || {};
+            for (const value of Object.keys(reqByValue)) {
+                if ((actByValue[value] || 0) < reqByValue[value]) {
+                    met = false;
+                    break;
+                }
+            }
+        }
+
         byType[type] = {required: requiredCount, actual: actualCount, met};
         if (!met) blocksMet = false;
     }

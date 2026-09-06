@@ -46,7 +46,7 @@ function buildProject(pageDefs) {
 const ZERO_MANIFEST = {
     scenes: { count: 0, used: [] },
     characters: { count: 0, used: [] },
-    blocks: { count: 0, byType: {} },
+    blocks: { count: 0, byType: {}, byTypeValue: {} },
     ctScores: {
         parallelism: 0,
         flowControl: 0,
@@ -248,6 +248,55 @@ describe('computeProjectManifest — block tallying', () => {
         expect(manifest.blocks.byType).toEqual({ onflag: 1, forward: 1 });
         expect(manifest.blocks.byType.caretstart).toBeUndefined();
         expect(manifest.blocks.byType.caretend).toBeUndefined();
+    });
+
+    it('tallies byTypeValue per exact numeric argument, but never for "say" (the one block allowed to differ)', () => {
+        const project = buildProject([
+            {
+                id: 'page1',
+                sprites: [
+                    {
+                        id: 's1',
+                        type: 'sprite',
+                        md5: 'A.svg',
+                        scripts: [[
+                            ['onflag', null, 0, 0],
+                            ['setspeed', 0, 0, 0],
+                            ['forward', 16, 0, 0],
+                            ['say', 'Oi!', 0, 0],
+                        ]],
+                    },
+                ],
+            },
+        ]);
+
+        const manifest = computeProjectManifest(project);
+
+        expect(manifest.blocks.byTypeValue).toEqual({
+            setspeed: { 0: 1 },
+            forward: { 16: 1 },
+        });
+        expect(manifest.blocks.byTypeValue.say).toBeUndefined();
+    });
+
+    it('does not register a null/undefined (no real argument) block as a real numeric value', () => {
+        const project = buildProject([
+            {
+                id: 'page1',
+                sprites: [
+                    {
+                        id: 's1',
+                        type: 'sprite',
+                        md5: 'A.svg',
+                        scripts: [[['onflag', null, 0, 0], ['setspeed', null, 0, 0]]],
+                    },
+                ],
+            },
+        ]);
+
+        const manifest = computeProjectManifest(project);
+
+        expect(manifest.blocks.byTypeValue.setspeed).toBeUndefined();
     });
 });
 
@@ -521,5 +570,72 @@ describe('compareManifests', () => {
             ctScores: { userInteractivity: 2 },
         };
         expect(compareManifests(required, shortOnBlocks).completed).toBe(false);
+    });
+
+    describe('byTypeValue (valor exato de blocos numéricos, achado em teste real)', () => {
+        // Achado em teste real (screenshot do usuário) - "forward: 1 exigido,
+        // 1 encontrado" batia met=true mesmo quando o professor exigia 16
+        // passos e o aluno só tinha 1 - contar só a QUANTIDADE do tipo não
+        // bastava. Esta suíte prova que o bug real está corrigido.
+        function requiredWithForwardSteps(steps) {
+            return {
+                scenes: { count: 0, used: [] },
+                characters: { count: 0, used: [] },
+                blocks: { count: 1, byType: { forward: 1 }, byTypeValue: { forward: { [steps]: 1 } } },
+                ctScores: {},
+            };
+        }
+        function actualWithForwardSteps(steps) {
+            return {
+                scenes: { count: 0, used: [] },
+                characters: { count: 0, used: [] },
+                blocks: { count: 1, byType: { forward: 1 }, byTypeValue: { forward: { [steps]: 1 } } },
+                ctScores: {},
+            };
+        }
+
+        it('fails blocks.met (and completed) when the student\'s forward step count does not match the teacher\'s exact value', () => {
+            const result = compareManifests(requiredWithForwardSteps(16), actualWithForwardSteps(1));
+            expect(result.blocks.byType.forward.met).toBe(false);
+            expect(result.blocks.met).toBe(false);
+            expect(result.completed).toBe(false);
+        });
+
+        it('passes when the student\'s forward step count matches exactly', () => {
+            const result = compareManifests(requiredWithForwardSteps(16), actualWithForwardSteps(16));
+            expect(result.blocks.byType.forward.met).toBe(true);
+            expect(result.completed).toBe(true);
+        });
+
+        it('does not apply the exact-value check to a required manifest with no byTypeValue for that type (old data, backward-compatible)', () => {
+            // Sem byTypeValue nenhum (simula um assignments.requirements salvo
+            // antes desta mudança) - a checagem extra é pulada, preservando o
+            // comportamento antigo (só a contagem por tipo) até o professor reautorar.
+            const required = {
+                scenes: { count: 0, used: [] },
+                characters: { count: 0, used: [] },
+                blocks: { count: 1, byType: { forward: 1 } }, // sem byTypeValue
+                ctScores: {},
+            };
+            const result = compareManifests(required, actualWithForwardSteps(1));
+            expect(result.blocks.byType.forward.met).toBe(true);
+            expect(result.completed).toBe(true);
+        });
+
+        it('never applies an exact-value check to "say" - the one block allowed to differ', () => {
+            const required = {
+                scenes: { count: 0, used: [] },
+                characters: { count: 0, used: [] },
+                blocks: { count: 1, byType: { say: 1 }, byTypeValue: {} }, // say nunca entra em byTypeValue
+                ctScores: {},
+            };
+            const actual = {
+                scenes: { count: 0, used: [] },
+                characters: { count: 0, used: [] },
+                blocks: { count: 1, byType: { say: 1 }, byTypeValue: {} },
+                ctScores: {},
+            };
+            expect(compareManifests(required, actual).blocks.byType.say.met).toBe(true);
+        });
     });
 });

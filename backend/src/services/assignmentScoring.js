@@ -45,11 +45,28 @@ const DATA_REPRESENTATION_TYPES = new Set(['grow', 'shrink', 'setspeed', 'say'])
 /** Blocks whose presence signals "synchronization" tier 2 (see ctScores below). */
 const SYNC_TIER2_TYPES = new Set(['message', 'stopmine']);
 
+/**
+ * Achado em teste real (decisão explícita do usuário) - contar só QUANTOS
+ * blocos de um tipo existem (byType) deixava uma missão "concluída" mesmo
+ * com o valor errado (ex.: exigia "forward" com 16 passos, aluno colocava
+ * "forward" com 1 passo - byType.forward já batia 1>=1, completed=true).
+ * "say" é o ÚNICO bloco cujo argumento pode divergir do que o professor
+ * usou (mesma regra já aplicada em detailedManifest.js#blockArgs - ver
+ * aquele arquivo pro racional completo); todo bloco NUMERIC_ARG_TYPES exige
+ * o valor exato, contado por valor (byTypeValue), não só por tipo.
+ */
+const NUMERIC_ARG_TYPES = new Set([
+    'forward', 'back', 'up', 'down', 'left', 'right', 'hop',
+    'wait', 'repeat', 'grow', 'shrink', 'setspeed',
+]);
+
 function emptyManifest() {
     return {
         scenes: { count: 0, used: [] },
         characters: { count: 0, used: [] },
-        blocks: { count: 0, byType: {} },
+        // byTypeValue: { [blockType]: { [valorExato]: quantas vezes } } - só
+        // pra tipos em NUMERIC_ARG_TYPES; ver docblock daquele Set.
+        blocks: { count: 0, byType: {}, byTypeValue: {} },
         ctScores: {
             parallelism: 0,
             flowControl: 0,
@@ -80,6 +97,20 @@ function walkScript(script, agg) {
 
         agg.blocks.count += 1;
         agg.blocks.byType[blockType] = (agg.blocks.byType[blockType] || 0) + 1;
+
+        // Mesmo cuidado de detailedManifest.js#walkScriptForDetail - hasRealArg
+        // como pré-condição (não só checar NaN), porque `Number(null) === 0`
+        // em JS contaria um bloco sem argumento de verdade como valor 0.
+        if (NUMERIC_ARG_TYPES.has(blockType)) {
+            const arg = block[1];
+            const hasRealArg = arg !== null && arg !== undefined && arg !== 'null' && arg !== '';
+            const numArg = hasRealArg ? Number(arg) : NaN;
+            if (!Number.isNaN(numArg)) {
+                const byValue = agg.blocks.byTypeValue[blockType] || {};
+                byValue[numArg] = (byValue[numArg] || 0) + 1;
+                agg.blocks.byTypeValue[blockType] = byValue;
+            }
+        }
 
         if (blockType === 'repeat' || blockType === 'forever') agg.hasLoop = true;
         if (SYNC_TIER2_TYPES.has(blockType)) agg.hasSyncTier2 = true;
@@ -241,13 +272,33 @@ function compareManifests(required, actual) {
     const actBlocks = act.blocks || { count: 0, byType: {} };
     const reqByType = reqBlocks.byType || {};
     const actByType = actBlocks.byType || {};
+    const reqByTypeValue = reqBlocks.byTypeValue || {};
+    const actByTypeValue = actBlocks.byTypeValue || {};
 
     const byType = {};
     let blocksMet = true;
     for (const type of Object.keys(reqByType)) {
         const requiredCount = reqByType[type];
         const actualCount = actByType[type] || 0;
-        const met = actualCount >= requiredCount;
+        let met = actualCount >= requiredCount;
+
+        // Achado em teste real - contar só a QUANTIDADE de um tipo deixava
+        // "forward: 1 exigido, 1 encontrado" bater mesmo com o valor errado
+        // (ex.: exigia 16 passos, aluno usou 1). requirements antigos (de
+        // antes desta mudança) não têm byTypeValue pra este tipo - reqByValue
+        // fica undefined e a checagem extra é pulada, preservando o
+        // comportamento anterior até o professor reautorar a missão.
+        const reqByValue = reqByTypeValue[type];
+        if (reqByValue) {
+            const actByValue = actByTypeValue[type] || {};
+            for (const value of Object.keys(reqByValue)) {
+                if ((actByValue[value] || 0) < reqByValue[value]) {
+                    met = false;
+                    break;
+                }
+            }
+        }
+
         byType[type] = { required: requiredCount, actual: actualCount, met };
         if (!met) blocksMet = false;
     }
