@@ -20134,204 +20134,6 @@
       "community_name": null
     },
     {
-      "id": "ui_assignmentauthorbar",
-      "label": "AssignmentAuthorBar.js",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "assignmentauthorbar.js",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_isallowedreturnurl",
-      "label": "isAllowedReturnUrl()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L55",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "isallowedreturnurl()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_decodejwtpayloadunsafe",
-      "label": "decodeJwtPayloadUnsafe()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L79",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "decodejwtpayloadunsafe()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_getauthorid",
-      "label": "getAuthorId()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L105",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "getauthorid()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_authheader",
-      "label": "authHeader()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L127",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "authheader()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_apifetch",
-      "label": "apiFetch()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L132",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "apifetch()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_hint_when_labels",
-      "label": "HINT_WHEN_LABELS",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L147",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "hint_when_labels",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_hintwhenlabel",
-      "label": "hintWhenLabel()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L157",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "hintwhenlabel()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_assignmentauthorbar",
-      "label": "AssignmentAuthorBar",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L162",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "assignmentauthorbar",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_init",
-      "label": ".init()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L173",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": ".init()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
-      "label": "._checkExistingMission()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L191",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "._checkexistingmission()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_show",
-      "label": "._show()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L212",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "._show()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_onclick",
-      "label": "._onClick()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L222",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "._onclick()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_register",
-      "label": "._register()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L234",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "._register()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt",
-      "label": "._showContextPrompt()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L313",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "._showcontextprompt()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
-      "label": "._runHintFlow()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L371",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "._runhintflow()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_finish",
-      "label": "._finish()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L427",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "._finish()",
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
-      "label": "._showHintReview()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L462",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "._showhintreview()",
-      "community_name": null
-    },
-    {
       "id": "ui_detailedmanifest",
       "label": "detailedManifest.js",
       "file_type": "code",
@@ -20397,346 +20199,6 @@
       "file_type": "code",
       "source_file": "src/app/src/editor/ui/detailedManifest.js",
       "source_location": "L138",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge",
-      "label": "AssignmentBadge.js",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_dismissedhintids",
-      "label": "dismissedHintIds",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L118",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_authheader",
-      "label": "authHeader()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L128",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_apifetch",
-      "label": "apiFetch()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L133",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge",
-      "label": "AssignmentBadge",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L141",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_galleryrestriction",
-      "label": ".galleryRestriction()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L159",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_init",
-      "label": ".init()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L171",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_showstartbanner",
-      "label": "._showStartBanner()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L202",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_dismissbanner",
-      "label": "._dismissBanner()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L220",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_hidebanner",
-      "label": "._hideBanner()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L227",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_startmission",
-      "label": "._startMission()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L234",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "label": "._showBadge()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L248",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_onvisibilitychange",
-      "label": "._onVisibilityChange()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L286",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_schedulerecompute",
-      "label": "._scheduleRecompute()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L301",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_readprojectjson",
-      "label": "._readProjectJson()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L322",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "label": "._recomputeLocal()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L333",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "label": "._refreshRequirements()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L354",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "label": "._applyProgress()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L377",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "label": "._evaluateHints()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L443",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter",
-      "label": "._findSceneAndCharacter()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L500",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
-      "label": "._hintConditionHolds()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L520",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_createhintbutton",
-      "label": "._createHintButton()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L657",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_updatehintbutton",
-      "label": "._updateHintButton()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L673",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_openhintspanel",
-      "label": "._openHintsPanel()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L697",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_renderhintspanel",
-      "label": "._renderHintsPanel()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L731",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_closehintspanel",
-      "label": "._closeHintsPanel()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L790",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
-      "label": "._showCoachModal()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L814",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_closecoachmodal",
-      "label": "._closeCoachModal()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L847",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
-      "label": "._toggleExpanded()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L854",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_openpopover",
-      "label": "._openPopover()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L862",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_closepopover",
-      "label": "._closePopover()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L877",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
-      "label": "._onOutsideClick()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L885",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_renderpopover",
-      "label": "._renderPopover()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L895",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": null
-    },
-    {
-      "id": "ui_assignmentbadge_assignmentbadge_renderrow",
-      "label": "._renderRow()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L904",
       "_origin": "ast",
       "community": 7,
       "community_name": null
@@ -21267,6 +20729,526 @@
       "file_type": "code",
       "source_file": "src/app/src/editor/ui/assignmentScoring.js",
       "source_location": "L190",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar",
+      "label": "AssignmentAuthorBar.js",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_isallowedreturnurl",
+      "label": "isAllowedReturnUrl()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L55",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_decodejwtpayloadunsafe",
+      "label": "decodeJwtPayloadUnsafe()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L79",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_getauthorid",
+      "label": "getAuthorId()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L105",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_authheader",
+      "label": "authHeader()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L127",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_apifetch",
+      "label": "apiFetch()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L132",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_hint_when_labels",
+      "label": "HINT_WHEN_LABELS",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L147",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_hintwhenlabel",
+      "label": "hintWhenLabel()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L158",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_assignmentauthorbar",
+      "label": "AssignmentAuthorBar",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L163",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_init",
+      "label": ".init()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L174",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
+      "label": "._checkExistingMission()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L192",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_show",
+      "label": "._show()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L213",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_onclick",
+      "label": "._onClick()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L223",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_register",
+      "label": "._register()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L235",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt",
+      "label": "._showContextPrompt()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L314",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
+      "label": "._runHintFlow()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L372",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_finish",
+      "label": "._finish()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L428",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
+      "label": "._showHintReview()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L463",
+      "_origin": "ast",
+      "community": 39,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge",
+      "label": "AssignmentBadge.js",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_dismissedhintids",
+      "label": "dismissedHintIds",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L118",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_authheader",
+      "label": "authHeader()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L128",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_apifetch",
+      "label": "apiFetch()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L133",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge",
+      "label": "AssignmentBadge",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L141",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_galleryrestriction",
+      "label": ".galleryRestriction()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L159",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_init",
+      "label": ".init()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L171",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_showstartbanner",
+      "label": "._showStartBanner()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L202",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_dismissbanner",
+      "label": "._dismissBanner()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L220",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_hidebanner",
+      "label": "._hideBanner()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L227",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_startmission",
+      "label": "._startMission()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L234",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_showbadge",
+      "label": "._showBadge()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L248",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_onvisibilitychange",
+      "label": "._onVisibilityChange()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L286",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_schedulerecompute",
+      "label": "._scheduleRecompute()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L301",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_readprojectjson",
+      "label": "._readProjectJson()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L322",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_recomputelocal",
+      "label": "._recomputeLocal()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L333",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
+      "label": "._refreshRequirements()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L354",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_applyprogress",
+      "label": "._applyProgress()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L377",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_evaluatehints",
+      "label": "._evaluateHints()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L443",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter",
+      "label": "._findSceneAndCharacter()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L500",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
+      "label": "._hintConditionHolds()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L520",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_createhintbutton",
+      "label": "._createHintButton()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L668",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_updatehintbutton",
+      "label": "._updateHintButton()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L684",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_openhintspanel",
+      "label": "._openHintsPanel()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L708",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_renderhintspanel",
+      "label": "._renderHintsPanel()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L742",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_closehintspanel",
+      "label": "._closeHintsPanel()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L801",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
+      "label": "._showCoachModal()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L825",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_closecoachmodal",
+      "label": "._closeCoachModal()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L858",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
+      "label": "._toggleExpanded()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L865",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_openpopover",
+      "label": "._openPopover()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L873",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_closepopover",
+      "label": "._closePopover()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L888",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
+      "label": "._onOutsideClick()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L896",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_renderpopover",
+      "label": "._renderPopover()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L906",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": null
+    },
+    {
+      "id": "ui_assignmentbadge_assignmentbadge_renderrow",
+      "label": "._renderRow()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L915",
       "_origin": "ast",
       "community": 7,
       "community_name": null
@@ -51917,7 +51899,6 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L51",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar",
       "target": "utils_lib_newhtml"
     },
@@ -52549,7 +52530,6 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L51",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar",
       "target": "utils_lib_geturlvars"
     },
@@ -65054,363 +65034,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L132",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_apifetch"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L162",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L127",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_authheader"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L79",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_decodejwtpayloadunsafe"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L105",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_getauthorid"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L147",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_hint_when_labels"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L157",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_hintwhenlabel"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L55",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_isallowedreturnurl"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L254",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_register",
-      "target": "ui_assignmentauthorbar_isallowedreturnurl"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L195",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
-      "target": "ui_assignmentauthorbar_decodejwtpayloadunsafe"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L106",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_getauthorid",
-      "target": "ui_assignmentauthorbar_decodejwtpayloadunsafe"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L259",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_register",
-      "target": "ui_assignmentauthorbar_getauthorid"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L136",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_apifetch",
-      "target": "ui_assignmentauthorbar_authheader"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L199",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
-      "target": "ui_assignmentauthorbar_apifetch"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L236",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_register",
-      "target": "ui_assignmentauthorbar_apifetch"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L382",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
-      "target": "ui_assignmentauthorbar_apifetch"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L603",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
-      "target": "ui_assignmentauthorbar_apifetch"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L191",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L427",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_finish"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L173",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_init"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L222",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_onclick"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L234",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_register"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L371",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L212",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_show"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L313",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L462",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L178",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_init",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L175",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_init",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_show"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L206",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_show"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L230",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_onclick",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_register"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L281",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_register",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L315",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L373",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_finish"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L414",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/detailedManifest.js",
       "source_location": "L38",
       "weight": 1.0,
@@ -65495,693 +65118,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L133",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_apifetch"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L141",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L128",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_authheader"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L118",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentbadge_dismissedhintids"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L84",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentscoring_comparemanifests"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L84",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_assignmentscoring_computeprojectmanifest"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L86",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_galleryrestriction"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L86",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge",
-      "target": "ui_galleryrestriction_registergalleryrestrictionprovider"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L137",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_apifetch",
-      "target": "ui_assignmentbadge_authheader"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L174",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_init",
-      "target": "ui_assignmentbadge_apifetch"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L360",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "target": "ui_assignmentbadge_apifetch"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L377",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_applyprogress"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L847",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L790",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_closehintspanel"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L877",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L657",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_createhintbutton"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L220",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_dismissbanner"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L443",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L500",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L159",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_galleryrestriction"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L227",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L520",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L171",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_init"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L885",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_onoutsideclick"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L286",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_onvisibilitychange"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L697",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_openhintspanel"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L862",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_openpopover"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L322",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L333",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L354",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L731",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_renderhintspanel"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L895",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L904",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_renderrow"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L301",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_schedulerecompute"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L248",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L814",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L202",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L234",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_startmission"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L854",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_toggleexpanded"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L673",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_updatehintbutton"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L194",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_init",
-      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L196",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_init",
-      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L224",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_dismissbanner",
-      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L238",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_startmission",
-      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L244",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_startmission",
-      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L262",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_createhintbutton"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L265",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L281",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L270",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
-      "target": "ui_assignmentbadge_assignmentbadge_schedulerecompute"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L288",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_onvisibilitychange",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L309",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_schedulerecompute",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L706",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
-      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L334",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L705",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L340",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "target": "ui_assignmentbadge_assignmentbadge_applyprogress"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L345",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
-      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L374",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
-      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L413",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L414",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_closehintspanel"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L400",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L415",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
-      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L454",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L468",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L445",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
-      "target": "ui_assignmentbadge_assignmentbadge_updatehintbutton"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L544",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
-      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L721",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
-      "target": "ui_assignmentbadge_assignmentbadge_renderhintspanel"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L819",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
-      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L856",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
-      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L858",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
-      "target": "ui_assignmentbadge_assignmentbadge_openpopover"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L865",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_openpopover",
-      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L892",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
-      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
-      "source_location": "L899",
-      "weight": 1.0,
-      "source": "ui_assignmentbadge_assignmentbadge_renderpopover",
-      "target": "ui_assignmentbadge_assignmentbadge_renderrow"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
       "source_location": "L40",
       "weight": 1.0,
@@ -66206,6 +65142,16 @@
       "weight": 1.0,
       "source": "ui_library",
       "target": "ui_galleryrestriction"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L86",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_galleryrestriction_registergalleryrestrictionprovider"
     },
     {
       "relation": "imports",
@@ -67060,8 +66006,998 @@
       "weight": 1.0,
       "source": "ui_assignmentscoring_computeprojectmanifest",
       "target": "ui_assignmentscoring_walkscript"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentscoring_computeprojectmanifest"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentscoring_comparemanifests"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L132",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_apifetch"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L163",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L127",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_authheader"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L79",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_decodejwtpayloadunsafe"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_getauthorid"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L147",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_hint_when_labels"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L158",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_hintwhenlabel"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_isallowedreturnurl"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L255",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_register",
+      "target": "ui_assignmentauthorbar_isallowedreturnurl"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L196",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
+      "target": "ui_assignmentauthorbar_decodejwtpayloadunsafe"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L106",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_getauthorid",
+      "target": "ui_assignmentauthorbar_decodejwtpayloadunsafe"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L260",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_register",
+      "target": "ui_assignmentauthorbar_getauthorid"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L136",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_apifetch",
+      "target": "ui_assignmentauthorbar_authheader"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L200",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
+      "target": "ui_assignmentauthorbar_apifetch"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L237",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_register",
+      "target": "ui_assignmentauthorbar_apifetch"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L383",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
+      "target": "ui_assignmentauthorbar_apifetch"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L655",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
+      "target": "ui_assignmentauthorbar_apifetch"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L192",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L428",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_finish"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L174",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_init"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L223",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_onclick"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L235",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_register"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L372",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L213",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_show"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L314",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L463",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L179",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_init",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L176",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_init",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_show"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L207",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_show"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L231",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_onclick",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_register"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L282",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_register",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L316",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L374",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_finish"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L415",
+      "weight": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L133",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentbadge_apifetch"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L141",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L128",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentbadge_authheader"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L118",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge",
+      "target": "ui_assignmentbadge_dismissedhintids"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L137",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_apifetch",
+      "target": "ui_assignmentbadge_authheader"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L174",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_init",
+      "target": "ui_assignmentbadge_apifetch"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L360",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
+      "target": "ui_assignmentbadge_apifetch"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L377",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_applyprogress"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L858",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L801",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_closehintspanel"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L888",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L668",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_createhintbutton"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L220",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_dismissbanner"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L443",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L500",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L159",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_galleryrestriction"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L227",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L520",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L171",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_init"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L896",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_onoutsideclick"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L286",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_onvisibilitychange"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L708",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_openhintspanel"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L873",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_openpopover"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L322",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L333",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L354",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L742",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_renderhintspanel"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L906",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L915",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_renderrow"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L301",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_schedulerecompute"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L248",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L825",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L202",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L234",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_startmission"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L865",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_toggleexpanded"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L684",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_updatehintbutton"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L194",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_init",
+      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L196",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_init",
+      "target": "ui_assignmentbadge_assignmentbadge_showstartbanner"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L224",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_dismissbanner",
+      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L238",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_startmission",
+      "target": "ui_assignmentbadge_assignmentbadge_hidebanner"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L244",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_startmission",
+      "target": "ui_assignmentbadge_assignmentbadge_showbadge"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L262",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_createhintbutton"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L265",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L281",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_refreshrequirements"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L270",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_showbadge",
+      "target": "ui_assignmentbadge_assignmentbadge_schedulerecompute"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L288",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_onvisibilitychange",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L309",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_schedulerecompute",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L717",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
+      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L334",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
+      "target": "ui_assignmentbadge_assignmentbadge_readprojectjson"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L716",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L340",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
+      "target": "ui_assignmentbadge_assignmentbadge_applyprogress"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L345",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_recomputelocal",
+      "target": "ui_assignmentbadge_assignmentbadge_evaluatehints"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L374",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_refreshrequirements",
+      "target": "ui_assignmentbadge_assignmentbadge_recomputelocal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L413",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
+      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L414",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
+      "target": "ui_assignmentbadge_assignmentbadge_closehintspanel"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L400",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
+      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L415",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_applyprogress",
+      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L454",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
+      "target": "ui_assignmentbadge_assignmentbadge_hintconditionholds"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L468",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
+      "target": "ui_assignmentbadge_assignmentbadge_showcoachmodal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L445",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_evaluatehints",
+      "target": "ui_assignmentbadge_assignmentbadge_updatehintbutton"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L544",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_hintconditionholds",
+      "target": "ui_assignmentbadge_assignmentbadge_findsceneandcharacter"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L732",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_openhintspanel",
+      "target": "ui_assignmentbadge_assignmentbadge_renderhintspanel"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L830",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_showcoachmodal",
+      "target": "ui_assignmentbadge_assignmentbadge_closecoachmodal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L867",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
+      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L869",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_toggleexpanded",
+      "target": "ui_assignmentbadge_assignmentbadge_openpopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L876",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_openpopover",
+      "target": "ui_assignmentbadge_assignmentbadge_renderpopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L903",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_onoutsideclick",
+      "target": "ui_assignmentbadge_assignmentbadge_closepopover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
+      "source_location": "L910",
+      "weight": 1.0,
+      "source": "ui_assignmentbadge_assignmentbadge_renderpopover",
+      "target": "ui_assignmentbadge_assignmentbadge_renderrow"
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "152b6887ab886f4259d7b6fc2287fb5bf73cd397"
+  "built_at_commit": "b0630d4295f6c9030941a0dad1ba65c89375b521"
 }
