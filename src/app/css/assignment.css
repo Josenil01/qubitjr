@@ -313,6 +313,29 @@
     text-align: center;
 }
 
+/* Botão "＋ Adicionar dica manualmente" (ver AssignmentAuthorBar.js
+ * _showHintReview) - borda tracejada, visual de "criar item novo",
+ * distinto dos botões de Aprovar/Rejeitar/reordenar de cada linha. Fica
+ * entre o subtítulo e a lista, sempre no topo (a nova dica em si entra no
+ * FIM da lista - o professor reordena com ▲▼ se quiser mudar a posição). */
+.assignmentHintsAddBtn {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 12px;
+    border: 2px dashed #01bebc;
+    border-radius: 12px;
+    background: #fff;
+    color: #01bebc;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 12px;
+    cursor: pointer;
+}
+
+.assignmentHintsAddBtn:hover {
+    background: #e6faf9;
+}
+
 .assignmentHintsList {
     overflow-y: auto;
     flex: 1;

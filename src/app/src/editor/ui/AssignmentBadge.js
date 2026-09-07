@@ -642,6 +642,17 @@ export default class AssignmentBadge {
             // regra de dismissedHintIds de qualquer outra dica.
             return true;
 
+        case 'manual':
+            // Dica escrita à mão pelo professor na tela de revisão (ver
+            // AssignmentAuthorBar.js#_showHintReview addBtn) - não referencia
+            // nenhuma cena/personagem/bloco do projeto, então não tem como
+            // checar automaticamente se "já foi feita". Sempre bate (igual
+            // mission_intro) - fica disponível no painel até o aluno mesmo
+            // fechar, nunca marcada "✅ já resolvida" sozinha. Sem este caso
+            // explícito, cairia no `default: return false` abaixo e apareceria
+            // como resolvida na hora, antes mesmo do aluno ler.
+            return true;
+
         default:
             return false;
         }

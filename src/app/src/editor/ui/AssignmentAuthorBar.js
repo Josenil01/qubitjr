@@ -152,6 +152,7 @@ const HINT_WHEN_LABELS = {
     message_not_received: '✉️ aparece quando a mensagem não for recebida por ninguém',
     default_character_present: '🧹 aparece quando o personagem default (Ruby) ainda estiver na cena',
     mission_intro: '🎬 sempre a primeira dica, assim que o aluno abrir a missão',
+    manual: '✍️ escrita por você - fica disponível até o aluno fechar, sem checagem automática',
 };
 
 function hintWhenLabel (when) {
@@ -476,6 +477,18 @@ export default class AssignmentAuthorBar {
         title.textContent = '💡 Revisar dicas sugeridas';
         var subtitle = newHTML('div', 'assignmentHintsSubtitle', card);
         subtitle.textContent = 'Aprove ou rejeite cada dica, edite o texto ou reordene com ▲▼ antes de salvar.';
+
+        // Dica escrita à mão pelo professor - vai pro FIM da lista, quem
+        // decide a posição final é o próprio ▲▼ já existente (mesmo
+        // mecanismo de reordenar das dicas geradas pela LLM). when.manual
+        // nunca é checado contra o projeto do aluno (ver
+        // AssignmentBadge._hintConditionHolds#'manual') - fica disponível
+        // pro aluno até ele mesmo fechar, sem resolver sozinha.
+        var addBtn = newHTML('button', 'assignmentHintsAddBtn', card);
+        addBtn.type = 'button';
+        addBtn.textContent = '＋ Adicionar dica manualmente';
+        var justAddedIndex = -1;
+
         var list = newHTML('div', 'assignmentHintsList', card);
 
         // Reconstrói list.innerHTML inteiro a cada mudança de ORDEM (não a
@@ -543,9 +556,32 @@ export default class AssignmentAuthorBar {
                     entries[index] = tmp;
                     renderList();
                 };
+
+                // Foca a textarea da dica recém-adicionada manualmente, pra
+                // o professor já poder digitar sem precisar procurar/clicar
+                // nela primeiro (ver addBtn.onclick abaixo).
+                if (index === justAddedIndex) {
+                    justAddedIndex = -1;
+                    textEl.focus();
+                }
             });
         }
         renderList();
+
+        addBtn.onclick = function () {
+            var newEntry = {
+                hint: {
+                    id: 'manual-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+                    text: '',
+                    when: {type: 'manual'},
+                },
+                status: null,
+                text: '',
+            };
+            entries.push(newEntry);
+            justAddedIndex = entries.length - 1;
+            renderList();
+        };
 
         var footer = newHTML('div', 'assignmentHintsFooter', card);
         var skipBtn = newHTML('button', 'assignmentHintsSkipBtn', footer);
@@ -579,6 +615,22 @@ export default class AssignmentAuthorBar {
             }).map(function (entry) {
                 return {id: entry.hint.id, text: entry.text, when: entry.hint.when};
             });
+
+            // Achado ao adicionar dica manual (texto livre, sem garantia de
+            // não-vazio como as geradas pela LLM) - POST /:id/hints rejeita
+            // o LOTE INTEIRO se qualquer dica tiver texto vazio
+            // (isValidHintShape no backend), então uma única dica manual
+            // esquecida em branco travaria o salvamento de TODAS as outras
+            // já aprovadas, sem aviso nenhum pro professor. Barra aqui antes
+            // de nem tentar.
+            var hasEmptyText = approved.some(function (h) {
+                return !h.text || !h.text.trim();
+            });
+            if (hasEmptyText) {
+                window.alert('Uma das dicas aprovadas está sem texto - escreva algo nela (ou rejeite-a) antes de salvar.');
+                return;
+            }
+
             if (!approved.length) {
                 // Achado em produção: "Concluir" sem aprovar NENHUMA dica
                 // individualmente (cada uma nasce neutra, ver docblock acima)
@@ -606,8 +658,12 @@ export default class AssignmentAuthorBar {
             }).catch(function (err) {
                 // Best-effort: salvar dicas é um extra sobre um cadastro que
                 // já teve sucesso - uma falha aqui não pode travar o professor
-                // nesta tela nem reverter a aula já cadastrada.
+                // nesta tela nem reverter a aula já cadastrada. Mas ele
+                // precisa SABER que falhou (achado ao adicionar dica manual -
+                // antes disso só ia pro console, nunca pra tela), senão
+                // acha que salvou e a missão fica sem as dicas revisadas.
                 console.error('[AssignmentAuthorBar] save hints error:', err);
+                window.alert('Não foi possível salvar as dicas agora. A aula já foi cadastrada normalmente - tente "Cadastrar aula" de novo depois pra tentar salvar as dicas outra vez.');
             }).then(function () {
                 closeOverlay();
                 onDone();
