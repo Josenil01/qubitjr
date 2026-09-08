@@ -63,10 +63,17 @@
  *     houver dica pendente, volta pro ritmo normal (ACTUAL_REFRESH_MS, 2s)
  *     quando não; um recheck imediato dispara em visibilitychange (o poll
  *     PARA por completo com a aba oculta - sem isso, todo progresso feito
- *     nesse meio-tempo só aparecia no próximo tick); e um cooldown
- *     (HINT_COOLDOWN_MS, 5s) entre uma dica fechar e a próxima aparecer
- *     sozinha evita que várias condições satisfeitas ao mesmo tempo (ex.:
- *     progresso feito com a aba oculta) apareçam em sequência rápida demais.
+ *     nesse meio-tempo só aparecia no próximo tick); e uma dica só aparece
+ *     sozinha depois que o aluno fica PARADO (sem clicar/arrastar/digitar,
+ *     ver lastActivityAt/IDLE_BEFORE_HINT_MS) por um tempo - achado em teste
+ *     real (2ª rodada, "cadência desordenada"): um cooldown de tempo FIXO
+ *     desde a última dica fechada (a versão anterior deste mecanismo) não
+ *     tinha relação nenhuma com o que o aluno estava fazendo - podia
+ *     interromper ele no meio de um arrasto, ou várias condições satisfeitas
+ *     ao mesmo tempo (ex.: progresso feito com a aba oculta) apareciam em
+ *     sequência rígida de X em X segundos independente de estar mexendo ou
+ *     não. Esperar o aluno ficar ocioso garante que a próxima dica só
+ *     interrompe numa pausa natural, nunca no meio de uma ação.
  *     O botão flutuante de dica (hintButtonEl, _createHintButton) NÃO
  *     depende desse timing - clique abre um painel navegável
  *     (hintsPanelEl, _openHintsPanel/_renderHintsPanel) com TODAS as dicas
@@ -90,11 +97,13 @@ const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : 
 const ACTUAL_REFRESH_MS = 2000; // recálculo local, em memória - barato, pode ser frequente
 const HINTS_PENDING_REFRESH_MS = 800; // cadência mais rápida enquanto há dica ainda não dispensada -
 // ver _scheduleRecompute(). Ainda é só um scan de JSON pequeno em memória, custo desprezível.
-const HINT_COOLDOWN_MS = 5000; // intervalo mínimo entre uma dica fechar e a próxima aparecer sozinha -
-// evita o "despejo" de várias dicas em sequência rápida quando mais de uma condição vira
-// verdadeira no mesmo instante (ex.: aluno voltou de outra aba depois de progredir bastante).
-// Só vale pro caminho automático (poll) - o painel de dicas (_openHintsPanel) ignora, de
-// propósito: é exatamente pra isso que ele existe (ver docblock do ponto 7 no topo do arquivo).
+const IDLE_BEFORE_HINT_MS = 3000; // aluno precisa ficar esse tempo sem clicar/arrastar/digitar em
+// lugar NENHUM da página antes da próxima dica poder aparecer sozinha - achado em teste real
+// ("cadência desordenada"): um tempo fixo desde o fechamento da dica anterior (mecanismo
+// antigo) não tinha relação com o que o aluno estava fazendo, podendo interromper ele no meio
+// de uma ação. Ver lastActivityAt/_trackActivity abaixo. Só vale pro caminho automático (poll) -
+// o painel de dicas (_openHintsPanel) ignora, de propósito: é exatamente pra isso que ele
+// existe (ver docblock do ponto 7 no topo do arquivo).
 const REQUIREMENTS_REFRESH_MS = 30000; // ida ao servidor - só pra pegar reautoria do professor
 // Achado em teste real: fechar a dica/painel clicando fora do cartão, ou
 // clicando no botão de fechar rápido demais (reflexo/clique duplo), dispensava
@@ -117,7 +126,12 @@ let requirementsTimer = null;
 let dismissedThisSession = false;
 let dismissedHintIds = new Set(); // ids de dica já mostrada+fechada nesta sessão de aba - nunca mais reexibida automaticamente
 let lastShownHint = null; // última dica (objeto completo) mostrada nesta sessão - fallback do botão flutuante
-let lastHintClosedAt = 0; // Date.now() do fechamento da última dica - referência do cooldown acima
+// Date.now() da última interação REAL do aluno em qualquer lugar da página
+// (clique/toque/arrasto/tecla - ver _trackActivity/CADÊNCIA acima). 0 (nunca
+// tocou em nada ainda) conta como "já ocioso há muito tempo" de propósito -
+// é o que deixa a primeira dica (mission_intro) aparecer imediatamente ao
+// abrir a missão, sem esperar 3s de inatividade que ainda nem começaram.
+let lastActivityAt = 0;
 // null = ainda não sabemos (primeiro cálculo desta sessão de aba) - fica
 // assim de propósito pra não disparar o modal de parabéns só por reabrir
 // uma missão que já estava completa antes. Só vira true/false depois do
@@ -249,6 +263,7 @@ export default class AssignmentBadge {
         if (badgeEl) {
             return;
         }
+        AssignmentBadge._trackActivity();
         badgeEl = newHTML('div', 'assignmentBadge', document.body);
         badgeEl.setAttribute('role', 'button');
         badgeEl.tabIndex = 0;
@@ -287,6 +302,34 @@ export default class AssignmentBadge {
         if (document.visibilityState === 'visible' && badgeEl) {
             AssignmentBadge._recomputeLocal();
         }
+    }
+
+    /**
+     * Registra (uma única vez - chamado só de dentro do guard `if (badgeEl)
+     * return` de _showBadge) um listener global de "o aluno tocou em algo"
+     * pra alimentar lastActivityAt/IDLE_BEFORE_HINT_MS (ver _evaluateHints).
+     * Fase de CAPTURA (terceiro argumento `true`) - dispara ANTES de
+     * qualquer handler no elemento clicado poder chamar stopPropagation(),
+     * então nunca perde um clique real só porque o alvo específico
+     * (ex.: o botão de fechar da própria dica) parou a propagação.
+     * mousemove/touchmove entram de propósito, não só mousedown/touchstart -
+     * sem eles, um arrasto longo (segurar e mover um bloco por vários
+     * segundos) só contaria como atividade no instante em que começou, e o
+     * relógio de ociosidade já teria passado dos 3s ENQUANTO o aluno ainda
+     * está arrastando - a dica apareceria bem no pior momento possível.
+     * {passive:true} - nunca chama preventDefault, então não atrapalha
+     * scroll/drag nativo do navegador.
+     */
+    static _trackActivity () {
+        const mark = function () {
+            lastActivityAt = Date.now();
+        };
+        const opts = {capture: true, passive: true};
+        document.addEventListener('mousedown', mark, opts);
+        document.addEventListener('mousemove', mark, opts);
+        document.addEventListener('touchstart', mark, opts);
+        document.addEventListener('touchmove', mark, opts);
+        document.addEventListener('keydown', mark, true);
     }
 
     /**
@@ -428,11 +471,12 @@ export default class AssignmentBadge {
      * resultado, independentemente uma da outra:
      *  1. O ponto/indicador do botão flutuante é atualizado (ver
      *     _updateHintButton) - reflete "há dica pronta" mesmo que ela não
-     *     seja mostrada AGORA por causa do cooldown abaixo. É assim que o
-     *     botão dá acesso imediato a algo que o poll automático ainda vai
-     *     demorar HINT_COOLDOWN_MS pra mostrar sozinho.
-     *  2. Se `forced` (clique no botão) OU o cooldown desde a última dica
-     *     fechada já passou, E nenhum modal está aberto agora (congrats ou
+     *     seja mostrada AGORA por causa da espera de ociosidade abaixo. É
+     *     assim que o botão dá acesso imediato a algo que o poll automático
+     *     ainda vai esperar o aluno ficar parado (IDLE_BEFORE_HINT_MS) pra
+     *     mostrar sozinho.
+     *  2. Se o aluno está ocioso há IDLE_BEFORE_HINT_MS (ver lastActivityAt/
+     *     _trackActivity), E nenhum modal está aberto agora (congrats ou
      *     outra dica), a dica é mostrada de fato via _showCoachModal.
      * Não faz nada (dica nenhuma, ponto nenhum) se a missão já está
      * completa - o modal de parabéns cobre esse caso e dica de coach nunca
@@ -461,9 +505,9 @@ export default class AssignmentBadge {
             // o modal automático por cima nesse momento.
             return;
         }
-        const cooldownElapsed = (Date.now() - lastHintClosedAt) >= HINT_COOLDOWN_MS;
-        if (!cooldownElapsed) {
-            return; // pronta, mas ainda dentro do intervalo mínimo entre dicas - espera
+        const idleElapsed = (Date.now() - lastActivityAt) >= IDLE_BEFORE_HINT_MS;
+        if (!idleElapsed) {
+            return; // pronta, mas o aluno ainda está mexendo em algo - espera ele parar
         }
         AssignmentBadge._showCoachModal({
             icon: '💡',
@@ -471,7 +515,10 @@ export default class AssignmentBadge {
             extraClass: 'assignmentCoachCard',
             onClose: function () {
                 dismissedHintIds.add(readyHint.id);
-                lastHintClosedAt = Date.now();
+                // Não precisa marcar lastActivityAt aqui - o próprio clique no
+                // botão de fechar já passa pelo listener global de
+                // _trackActivity (fase de captura, ver docblock daquela
+                // função), reiniciando a espera de ociosidade sozinho.
             },
         });
         lastShownHint = readyHint;
@@ -661,7 +708,7 @@ export default class AssignmentBadge {
     /**
      * Botão flutuante de dica - via manual pro aluno/professor testando não
      * ficar refém do poll automático (ver constantes HINTS_PENDING_REFRESH_MS/
-     * HINT_COOLDOWN_MS no topo do arquivo). Fica ao lado do selo de
+     * IDLE_BEFORE_HINT_MS no topo do arquivo). Fica ao lado do selo de
      * progresso, mesma linguagem visual (ver assignment.css). Criado uma
      * única vez em _showBadge(), só se a missão tiver pelo menos uma dica.
      */
