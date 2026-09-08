@@ -109,10 +109,18 @@ async function getTurmaAndNivel(req) {
  *      deste MESMO projeto) — o autor está apenas editando seu exemplo
  *      canônico, não criando uma nova missão. Faz UPDATE no MESMO id da
  *      missão-template existente (project_name/requirements/nivel), sem
- *      mexer em active/turma_id. Isso é o que faz a edição propagar pra
- *      toda turma que referencia esse template via assignments.template_id
- *      (ver services/assignmentResolver.js) — sem isso, cada "Cadastrar
- *      aula" criaria um template novo e quebraria as referências existentes.
+ *      mexer em turma_id. Isso é o que faz a edição propagar pra toda turma
+ *      que referencia esse template via assignments.template_id (ver
+ *      services/assignmentResolver.js) — sem isso, cada "Cadastrar aula"
+ *      criaria um template novo e quebraria as referências existentes.
+ *      TAMBÉM reativa esta missão (active=true), desativando qualquer OUTRA
+ *      ativa da MESMA turma primeiro - achado em teste real: sem isso, uma
+ *      missão que tinha sido desativada por uma mais recente da mesma
+ *      turma continuava invisível pra HelloYotta (GET /teachers/:teacherId/
+ *      activities só é consumido mostrando active=true de cada turma) mesmo
+ *      depois do professor "cadastrar a aula" de novo nela - mesma regra de
+ *      "só uma ativa por turma" do primeiro cadastro (passo 1 acima),
+ *      agora consistente nos dois caminhos.
  *
  * Notificação à HelloYotta é best-effort e não bloqueia a resposta (ver
  * services/helloyotta.js#notifyAssignmentRegistered - vira no-op enquanto a
@@ -166,7 +174,7 @@ router.post('/register', async (req, res) => {
         if (project.assignment_id) {
             const { data: existingAssignment, error: existingErr } = await supabase
                 .from('assignments')
-                .select('id, template_id')
+                .select('id, template_id, turma_id')
                 .eq('id', project.assignment_id)
                 .maybeSingle();
 
@@ -176,12 +184,35 @@ router.post('/register', async (req, res) => {
             }
 
             if (existingAssignment && !existingAssignment.template_id) {
+                // Achado em teste real (urgente) - reautoria nunca tocava em
+                // `active`, então uma missão desativada por uma OUTRA mais
+                // recente da MESMA turma (ver passo 1 do primeiro cadastro
+                // abaixo) continuava inativa mesmo depois do professor
+                // "cadastrar a aula" de novo nela - a HelloYotta (que só
+                // mostra active=true pro professor escolher, ver
+                // GET /teachers/:teacherId/activities) nunca via ela voltar.
+                // Mesma regra de "só uma missão ativa por turma" do primeiro
+                // cadastro: desativa qualquer OUTRA ativa da mesma turma
+                // antes de reativar esta.
+                const { error: deactivateSiblingsErr } = await supabase
+                    .from('assignments')
+                    .update({ active: false })
+                    .eq('turma_id', existingAssignment.turma_id)
+                    .eq('active', true)
+                    .neq('id', existingAssignment.id);
+
+                if (deactivateSiblingsErr) {
+                    console.error('[assignments] Falha ao desativar outras missões da turma', existingAssignment.turma_id, 'ao reautorar', existingAssignment.id, ':', deactivateSiblingsErr);
+                    return res.status(500).json({ error: 'Falha ao desativar outras missões da turma: ' + deactivateSiblingsErr.message });
+                }
+
                 const { error: updateErr } = await supabase
                     .from('assignments')
                     .update({
                         project_name: project.name,
                         requirements,
                         nivel,
+                        active: true,
                     })
                     .eq('id', existingAssignment.id);
 
