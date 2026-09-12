@@ -97,7 +97,15 @@ const OpenAI = require('openai');
 const { computeDetailedManifest } = require('./detailedManifest');
 
 const DEEPSEEK_BASE_URL = 'https://api.deepseek.com';
-const DEEPSEEK_MODEL = 'deepseek-chat';
+// Achado em teste real (aviso oficial da DeepSeek, set/2026) - 'deepseek-chat'
+// é um alias LEGADO (mapeia pra V4-Flash desde 24/04/2026) que a própria
+// DeepSeek já tinha sinalizado pra aposentar em 24/07/2026 - continuava
+// respondendo até aqui, mas sem garantia de suporte contínuo. 'deepseek-flash'
+// é o nome atual e oficial do mesmo nível (V4.1 Flash, lançado 10/09/2026,
+// é pra onde inclusive o tráfego do V4 Pro passa a ir a partir de 14/09/2026)
+// - ver https://api-docs.deepseek.com/updates/. Testado ao vivo com a API
+// real antes de trocar.
+const DEEPSEEK_MODEL = 'deepseek-flash';
 
 /** The only `when.type` values a hint is allowed to carry - anything else is dropped. */
 const VALID_WHEN_TYPES = new Set([
