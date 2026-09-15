@@ -125,7 +125,6 @@ let actualTimer = null;
 let requirementsTimer = null;
 let dismissedThisSession = false;
 let dismissedHintIds = new Set(); // ids de dica já mostrada+fechada nesta sessão de aba - nunca mais reexibida automaticamente
-let lastShownHint = null; // última dica (objeto completo) mostrada nesta sessão - fallback do botão flutuante
 // Date.now() da última interação REAL do aluno em qualquer lugar da página
 // (clique/toque/arrasto/tecla - ver _trackActivity/CADÊNCIA acima). 0 (nunca
 // tocou em nada ainda) conta como "já ocioso há muito tempo" de propósito -
@@ -521,7 +520,6 @@ export default class AssignmentBadge {
                 // função), reiniciando a espera de ociosidade sozinho.
             },
         });
-        lastShownHint = readyHint;
     }
 
     /**
@@ -764,16 +762,19 @@ export default class AssignmentBadge {
         const projectJson = AssignmentBadge._readProjectJson();
         const detailed = projectJson ? computeDetailedManifest(projectJson) : {scenes: []};
 
-        // Começa na última dica mostrada automaticamente, se houver - é a
-        // mais provável de ser "onde o aluno parou". Sem isso, começa na
-        // primeira ainda não dispensada, ou simplesmente na primeira de todas.
-        let startIndex = 0;
-        if (lastShownHint) {
-            const idx = hints.findIndex(function (h) { return h && h.id === lastShownHint.id; });
-            if (idx >= 0) startIndex = idx;
-        } else {
-            const idx = hints.findIndex(function (h) { return h && !dismissedHintIds.has(h.id); });
-            if (idx >= 0) startIndex = idx;
+        // Sempre começa na primeira dica, em ordem, cuja condição ainda
+        // esteja batendo no projeto do aluno agora (primeira tarefa ainda
+        // não concluída) - decisão explícita do usuário: clicar na dica deve
+        // levar direto pro que falta fazer. Não depende de dismissedHintIds
+        // (que controla só o modal automático - uma dica dispensada pode
+        // voltar a valer se o aluno desfizer progresso). Só cai pra 0 se
+        // todas já estiverem resolvidas (não deveria acontecer - o botão
+        // some quando a missão completa, ver _applyProgress).
+        let startIndex = hints.findIndex(function (h) {
+            return h && AssignmentBadge._hintConditionHolds(h, detailed);
+        });
+        if (startIndex < 0) {
+            startIndex = 0;
         }
 
         AssignmentBadge._renderHintsPanel(hints, detailed, startIndex);
