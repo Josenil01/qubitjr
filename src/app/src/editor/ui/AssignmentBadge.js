@@ -557,6 +557,36 @@ export default class AssignmentBadge {
     }
 
     /**
+     * Rótulo "🧑 Nome" mostrado acima do texto da dica no painel navegável -
+     * pedido explícito do usuário depois de um teste real: o texto da dica
+     * às vezes só usa pronome ("faça ELE dizer...", regra de tom do
+     * SYSTEM_PROMPT do backend permite isso depois da primeira menção ao
+     * personagem numa SEQUÊNCIA de dicas, mas ao navegar solto pelo painel -
+     * Anterior/Próxima, ou abrindo direto numa dica no meio - essa primeira
+     * menção pode nunca ter sido lida) e a criança ficava sem saber de quem
+     * a dica estava falando. Deriva o nome do characterMd5+sceneMd5+
+     * sceneOccurrence do próprio `when` da dica, contra o projeto ATUAL do
+     * aluno (mesmo detailed manifest já calculado por _openHintsPanel) -
+     * nunca do projeto de referência do professor, que o aluno nunca vê.
+     * Retorna null (painel esconde a linha) pra dicas sem personagem
+     * (scene_missing/message_not_received/mission_intro/manual) ou quando o
+     * personagem ainda nem existe no projeto do aluno (nada pra nomear
+     * ainda) ou não tem nome salvo.
+     */
+    static _actorLabelFor (hint, detailed) {
+        const when = hint && hint.when;
+        if (!when || !when.characterMd5 || !when.sceneMd5) {
+            return null;
+        }
+        const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
+        const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
+        if (!found.character || !found.character.characterName) {
+            return null;
+        }
+        return '🧑 ' + found.character.characterName;
+    }
+
+    /**
      * Regras de cada when.type - ver o docblock do Part 2 desta feature
      * (mesma nomenclatura/contrato que AssignmentAuthorBar.js usa pra
      * rotular as dicas na tela do professor). Nunca lança - when.type
@@ -797,6 +827,7 @@ export default class AssignmentBadge {
         const emoji = newHTML('div', 'assignmentCompleteEmoji', card);
         emoji.textContent = '💡';
         const status = newHTML('div', 'assignmentHintsPanelStatus', card);
+        const actorEl = newHTML('div', 'assignmentHintsPanelActor', card);
         const textEl = newHTML('div', 'assignmentCompleteText', card);
         const counter = newHTML('div', 'assignmentHintsPanelCounter', card);
 
@@ -815,6 +846,9 @@ export default class AssignmentBadge {
         function render () {
             const hint = hints[index];
             textEl.textContent = (hint && hint.text) || '';
+            const actorLabel = hint ? AssignmentBadge._actorLabelFor(hint, detailed) : null;
+            actorEl.textContent = actorLabel || '';
+            actorEl.classList.toggle('hidden', !actorLabel);
             counter.textContent = (index + 1) + ' de ' + hints.length;
             const stillNeeded = hint && AssignmentBadge._hintConditionHolds(hint, detailed);
             status.textContent = stillNeeded ? '💡 ainda vale' : '✅ já resolvida';

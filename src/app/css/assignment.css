@@ -634,6 +634,17 @@
     color: #1e8449;
 }
 
+.assignmentHintsPanelActor {
+    font-size: 14px;
+    font-weight: 700;
+    color: #6c4a1e;
+    margin-bottom: 6px;
+}
+
+.assignmentHintsPanelActor.hidden {
+    display: none;
+}
+
 .assignmentHintsPanelCounter {
     font-size: 13px;
     color: #888;
