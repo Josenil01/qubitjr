@@ -797,11 +797,19 @@ export default class AssignmentBadge {
         // não concluída) - decisão explícita do usuário: clicar na dica deve
         // levar direto pro que falta fazer. Não depende de dismissedHintIds
         // (que controla só o modal automático - uma dica dispensada pode
-        // voltar a valer se o aluno desfizer progresso). Só cai pra 0 se
-        // todas já estiverem resolvidas (não deveria acontecer - o botão
-        // some quando a missão completa, ver _applyProgress).
+        // voltar a valer se o aluno desfizer progresso).
+        //
+        // "mission_intro" NUNCA conta como tarefa pra esse cálculo - achado em
+        // teste real (2ª rodada): ela é a apresentação da missão inteira, sem
+        // cena/personagem nenhum pra checar, então _hintConditionHolds sempre
+        // devolve true pra ela (ver aquele switch case) - sem essa exclusão,
+        // o painel sempre abria de volta na intro (ela é sempre hints[0]),
+        // nunca avançava pra tarefa de verdade mesmo com progresso real já
+        // feito. Filtrada só AQUI (navegação); ela continua contando
+        // normalmente pro modal automático (_evaluateHints) e pro botão
+        // Anterior/Próxima dentro do painel já aberto.
         let startIndex = hints.findIndex(function (h) {
-            return h && AssignmentBadge._hintConditionHolds(h, detailed);
+            return h && h.when && h.when.type !== 'mission_intro' && AssignmentBadge._hintConditionHolds(h, detailed);
         });
         if (startIndex < 0) {
             startIndex = 0;
