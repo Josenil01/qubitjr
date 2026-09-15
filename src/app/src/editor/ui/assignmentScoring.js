@@ -30,8 +30,8 @@ const NUMERIC_ARG_TYPES = new Set([
 
 function emptyManifest () {
     return {
-        scenes: {count: 0, used: []},
-        characters: {count: 0, used: []},
+        scenes: {count: 0, used: [], present: []},
+        characters: {count: 0, used: [], present: []},
         blocks: {count: 0, byType: {}, byTypeValue: {}},
         ctScores: {
             parallelism: 0,
@@ -89,6 +89,11 @@ export function computeProjectManifest (projectJson) {
     }
 
     const characterMd5Set = new Set();
+    // Ver docblock do original (backend) - present tallying TODO personagem/
+    // cena que existe fisicamente no projeto, scriptado ou não; used/count
+    // continuam exigindo script (scoring intocado).
+    const presentCharacterMd5Set = new Set();
+    const presentSceneMd5Set = new Set();
 
     let onmessageTriggerCount = 0;
     let onclickOrTouchTriggerCount = 0;
@@ -115,6 +120,8 @@ export function computeProjectManifest (projectJson) {
 
             const scripts = Array.isArray(sprite.scripts) ? sprite.scripts : [];
             const isCharacter = sprite.type === 'sprite';
+
+            if (isCharacter && sprite.md5) presentCharacterMd5Set.add(sprite.md5);
 
             let spriteHasRealScript = false;
 
@@ -156,6 +163,8 @@ export function computeProjectManifest (projectJson) {
             }
         }
 
+        if (page.md5) presentSceneMd5Set.add(page.md5);
+
         if (pageQualifies) {
             manifest.scenes.count += 1;
             if (page.md5) manifest.scenes.used.push(page.md5);
@@ -163,6 +172,8 @@ export function computeProjectManifest (projectJson) {
     }
 
     manifest.characters.used = Array.from(characterMd5Set);
+    manifest.characters.present = Array.from(presentCharacterMd5Set);
+    manifest.scenes.present = Array.from(presentSceneMd5Set);
 
     if (onmessageTriggerCount >= 2) manifest.ctScores.parallelism = 3;
     else if (onclickOrTouchTriggerCount >= 2) manifest.ctScores.parallelism = 2;

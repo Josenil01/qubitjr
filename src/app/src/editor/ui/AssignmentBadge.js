@@ -168,13 +168,27 @@ export default class AssignmentBadge {
      * não custa proteger) nunca deve travar o aluno sem NENHUMA opção
      * pra escolher - melhor liberar aquela galeria específica do que
      * mostrar uma lista vazia.
+     *
+     * Prefere `req.characters.present`/`req.scenes.present` (todo md5 que
+     * existe FISICAMENTE no projeto do professor, script ou não) a
+     * `.used` (que exige pelo menos um script não-vazio pro CT scoring -
+     * ver docblock de assignmentScoring.js#presentCharacterMd5Set). Achado
+     * em teste real - "coloquei o vovô na missão e ele não aparecia pro
+     * aluno escolher": o professor tinha posto o personagem na cena sem
+     * ainda dar script a ele, então `.used` nunca o incluía, e a galeria
+     * filtrava por `.used` - o personagem sumia da lista de opções por
+     * completo, não só da contagem de progresso. Cai pra `.used` só quando
+     * `.present` está ausente (requirements antigos, calculados antes
+     * desta mudança, sem o campo novo ainda salvo).
      */
     static get galleryRestriction () {
         if (!assignment || !assignment.requirements) return null;
         if (wasComplete === true) return null;
         const req = assignment.requirements;
-        const characterMd5s = (req.characters && Array.isArray(req.characters.used)) ? req.characters.used : [];
-        const sceneMd5s = (req.scenes && Array.isArray(req.scenes.used)) ? req.scenes.used : [];
+        const characterMd5s = (req.characters && Array.isArray(req.characters.present)) ? req.characters.present :
+            (req.characters && Array.isArray(req.characters.used)) ? req.characters.used : [];
+        const sceneMd5s = (req.scenes && Array.isArray(req.scenes.present)) ? req.scenes.present :
+            (req.scenes && Array.isArray(req.scenes.used)) ? req.scenes.used : [];
         return {
             characterMd5s: characterMd5s.length > 0 ? new Set(characterMd5s) : null,
             sceneMd5s: sceneMd5s.length > 0 ? new Set(sceneMd5s) : null,

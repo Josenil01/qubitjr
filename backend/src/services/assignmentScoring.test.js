@@ -44,8 +44,8 @@ function buildProject(pageDefs) {
 }
 
 const ZERO_MANIFEST = {
-    scenes: { count: 0, used: [] },
-    characters: { count: 0, used: [] },
+    scenes: { count: 0, used: [], present: [] },
+    characters: { count: 0, used: [], present: [] },
     blocks: { count: 0, byType: {}, byTypeValue: {} },
     ctScores: {
         parallelism: 0,
@@ -104,6 +104,11 @@ describe('computeProjectManifest — scene/character qualification', () => {
         expect(manifest.characters.used).not.toContain('Deco.svg');
         expect(manifest.scenes.count).toBe(1);
         expect(manifest.scenes.used).toEqual(['Farm.svg']);
+        // Regression - a decorative/unscripted character must still be
+        // selectable in the student's gallery (GalleryRestriction.js reads
+        // .present, not .used) even though it doesn't count for CT scoring.
+        expect(manifest.characters.present).toEqual(expect.arrayContaining(['Deco.svg', 'Func.svg']));
+        expect(manifest.scenes.present).toEqual(['Farm.svg']);
     });
 
     it('never counts a text sprite as a character, even with a non-empty script array', () => {

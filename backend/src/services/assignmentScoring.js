@@ -62,8 +62,13 @@ const NUMERIC_ARG_TYPES = new Set([
 
 function emptyManifest() {
     return {
-        scenes: { count: 0, used: [] },
-        characters: { count: 0, used: [] },
+        // `present` (added alongside `used`, never replacing it - see docblock
+        // above `presentCharacterMd5Set`/`presentSceneMd5Set` below) is every
+        // scene/character md5 actually PLACED in the project, script or no
+        // script - `used` stays scoped to "counts for CT scoring", `present`
+        // is scoped to "exists here, professor put it there on purpose".
+        scenes: { count: 0, used: [], present: [] },
+        characters: { count: 0, used: [], present: [] },
         // byTypeValue: { [blockType]: { [valorExato]: quantas vezes } } - só
         // pra tipos em NUMERIC_ARG_TYPES; ver docblock daquele Set.
         blocks: { count: 0, byType: {}, byTypeValue: {} },
@@ -138,6 +143,24 @@ function computeProjectManifest(projectJson) {
     }
 
     const characterMd5Set = new Set();
+    // Achado em teste real - "vovô adicionado à missão não aparecia pro
+    // aluno escolher": GalleryRestriction.js/AssignmentBadge.js consultavam
+    // characters.used (e scenes.used) pra restringir a galeria do aluno ao
+    // que o professor usou - mas esses dois campos SÓ contam um
+    // personagem/cena "qualifying" (ver docblock do topo do arquivo: precisa
+    // de pelo menos um script não-vazio, decisão deliberada pra CT scoring
+    // não supercreditar assets decorativos). Um personagem que o professor
+    // arrastou pra cena mas ainda não deu script (ex.: vai scriptar depois,
+    // ou é só cenário mesmo) nunca entrava em characters.used - e como a
+    // galeria do aluno é filtrada por ESSE mesmo campo, o personagem sumia
+    // da lista de opções por completo, não só da contagem de progresso.
+    // presentCharacterMd5Set/presentSceneMd5Set (abaixo) tallying TODO
+    // personagem/cena que existe fisicamente no projeto do professor,
+    // scriptado ou não - vira manifest.characters.present/scenes.present,
+    // um campo NOVO e SEPARADO de used/count (scoring intocado) que a
+    // galeria passa a preferir (ver AssignmentBadge.galleryRestriction).
+    const presentCharacterMd5Set = new Set();
+    const presentSceneMd5Set = new Set();
 
     // Cross-project tallies feeding the ctScores rules below.
     let onmessageTriggerCount = 0;
@@ -165,6 +188,9 @@ function computeProjectManifest(projectJson) {
 
             const scripts = Array.isArray(sprite.scripts) ? sprite.scripts : [];
             const isCharacter = sprite.type === 'sprite';
+
+            // Present regardless of script - ver docblock de presentCharacterMd5Set acima.
+            if (isCharacter && sprite.md5) presentCharacterMd5Set.add(sprite.md5);
 
             let spriteHasRealScript = false;
 
@@ -206,6 +232,9 @@ function computeProjectManifest(projectJson) {
             }
         }
 
+        // Present regardless of pageQualifies - ver docblock de presentSceneMd5Set acima.
+        if (page.md5) presentSceneMd5Set.add(page.md5);
+
         if (pageQualifies) {
             manifest.scenes.count += 1;
             if (page.md5) manifest.scenes.used.push(page.md5);
@@ -213,6 +242,8 @@ function computeProjectManifest(projectJson) {
     }
 
     manifest.characters.used = Array.from(characterMd5Set);
+    manifest.characters.present = Array.from(presentCharacterMd5Set);
+    manifest.scenes.present = Array.from(presentSceneMd5Set);
 
     // parallelism (0-3): most-parallel trigger style wins, by count of scripts using it.
     if (onmessageTriggerCount >= 2) manifest.ctScores.parallelism = 3;
