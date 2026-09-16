@@ -40,6 +40,11 @@
  * POST /api/assignments/:id/hints           — professor salva o subconjunto de dicas
  *                                              já aprovado (filtrado no cliente),
  *                                              substituindo o que houver antes.
+ * POST /api/assignments/:id/hints/:hintId/event — aluno registra "dica mostrada" ou
+ *                                              "dica dispensada" (hint_events) - sinal
+ *                                              de dificuldade/engajamento por missão,
+ *                                              consumido em GET /api/public/students/
+ *                                              :id/assignment-score (routes/share.js).
  * GET  /api/assignments/by-project/:projectId — dado um projeto que o professor abriu,
  *                                              diz se é o molde de uma missão sua -
  *                                              deixa o botão "Cadastrar aula" reaparecer
@@ -439,6 +444,67 @@ router.get('/my-progress', async (req, res) => {
         });
     } catch (err) {
         console.error('[assignments] GET /my-progress error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+const HINT_EVENT_TYPES = new Set(['shown', 'dismissed']);
+
+/**
+ * POST /api/assignments/:id/hints/:hintId/event
+ * Body: { eventType: 'shown' | 'dismissed' }
+ *
+ * Chamada pelo badge flutuante do aluno (AssignmentBadge.js#_evaluateHints)
+ * nos dois momentos reais de "o sistema decidiu que essa dica importa agora":
+ * quando o modal automático de coach é aberto pra ela (shown) e quando o
+ * aluno o fecha (dismissed). Navegar solto pelo painel de dicas
+ * (Anterior/Próxima) NÃO chama esta rota - ver docblock da tabela hint_events
+ * em backend/supabase-setup.sql pro racional completo.
+ *
+ * Fire-and-forget do lado do cliente (nunca bloqueia o fluxo do aluno) - e
+ * aqui, tolerante à tabela hint_events ainda não existir (42P01 do Postgres,
+ * "undefined_table") até a migração em supabase-setup.sql ser rodada, mesmo
+ * espírito de selectAssignmentTolerantOfMissingHintContext acima: descarta o
+ * evento e responde sucesso mesmo assim, em vez de devolver 500 por causa de
+ * telemetria opcional.
+ */
+router.post('/:id/hints/:hintId/event', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+
+    const assignmentId = parseInt(req.params.id, 10);
+    if (!Number.isFinite(assignmentId)) return res.status(400).json({ error: 'Invalid assignment id' });
+
+    const { hintId } = req.params;
+    const eventType = req.body && req.body.eventType;
+    if (!hintId || !HINT_EVENT_TYPES.has(eventType)) {
+        return res.status(400).json({ error: 'Invalid hintId/eventType' });
+    }
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    try {
+        const { turmaId } = await getTurmaAndNivel(req);
+
+        const { error } = await supabase.from('hint_events').insert({
+            student_id: req.userId,
+            assignment_id: assignmentId,
+            turma_id: turmaId || null,
+            hint_id: hintId,
+            event_type: eventType,
+        });
+
+        if (error) {
+            if (error.code === '42P01') {
+                console.warn('[assignments] Tabela hint_events ainda não existe - rode a migração em backend/supabase-setup.sql. Evento descartado.');
+                return res.json({ success: true });
+            }
+            throw error;
+        }
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error('[assignments] POST /:id/hints/:hintId/event error:', err);
         res.status(500).json({ error: err.message });
     }
 });

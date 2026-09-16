@@ -16,10 +16,19 @@
  * chave estática HELLOYOTTA_INBOUND_API_KEY protege as cinco):
  *   GET    /api/public/students/:studentId/time-spent       → tempo total do aluno
  *                                                               + quantidade de projetos
+ *                                                               + reações somadas
+ *                                                               + última sessão ao vivo
+ *                                                               (professor observando)
  *                                                               + métricas completas do
  *                                                               projeto mais recente
+ *                                                               (id, share token, última
+ *                                                               edição, reações)
  *   GET    /api/public/students/:studentId/assignment-score → progresso do aluno na
  *                                                               missão ativa da turma
+ *                                                               (inclui id/share token/
+ *                                                               última edição do projeto
+ *                                                               + contagem de dicas
+ *                                                               mostradas/dispensadas)
  *   GET    /api/public/teachers/:teacherId/activities        → missões cadastradas por
  *                                                               um professor num nível
  *   POST   /api/public/activities/:activityId/adopt          → turma adota um molde de
@@ -332,7 +341,7 @@ publicRouter.get('/students/:studentId/time-spent', async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('projects')
-            .select('name, json, mtime, time_spent_seconds')
+            .select('id, name, json, mtime, time_spent_seconds, share_token')
             .eq('owner', studentId)
             .eq('deleted', 'NO')
             .order('mtime', { ascending: false });
@@ -341,6 +350,46 @@ publicRouter.get('/students/:studentId/time-spent', async (req, res) => {
 
         const rows = data || [];
         const totalTimeSeconds = rows.reduce((sum, p) => sum + (p.time_spent_seconds || 0), 0);
+        const projectIds = rows.map((p) => p.id);
+
+        // Reações somadas entre todos os projetos do aluno - mesma tabela usada
+        // em GET /api/public/project/:token, aqui agregada por dono em vez de
+        // por projeto individual (sinal de engajamento social/dos pares).
+        let totalReactions = 0;
+        let reactionsByProject = {};
+        if (projectIds.length > 0) {
+            const { data: reactionRows } = await supabase
+                .from('reactions')
+                .select('project_id, count')
+                .in('project_id', projectIds);
+            (reactionRows || []).forEach((r) => {
+                totalReactions += r.count;
+                reactionsByProject[r.project_id] = (reactionsByProject[r.project_id] || 0) + r.count;
+            });
+        }
+
+        // Sessão ao vivo mais recente (professor observando/assumindo o editor
+        // do aluno) - sinal de intervenção/dificuldade que hoje não existia em
+        // nenhum endpoint pull. Nunca expor channel_token/device_id daqui: são
+        // segredos que autorizam entrar no canal Realtime da sessão (ver
+        // docblock de live_sessions em supabase-setup.sql).
+        const { data: lastSessionRows } = await supabase
+            .from('live_sessions')
+            .select('teacher_id, turma_id, project_id, started_at, ended_at, end_reason')
+            .eq('student_id', studentId)
+            .order('started_at', { ascending: false })
+            .limit(1);
+        const lastSession = lastSessionRows && lastSessionRows[0];
+        const lastLiveSession = lastSession
+            ? {
+                  teacherId: lastSession.teacher_id,
+                  turmaId: lastSession.turma_id,
+                  projectId: lastSession.project_id,
+                  startedAt: lastSession.started_at,
+                  endedAt: lastSession.ended_at,
+                  endReason: lastSession.end_reason,
+              }
+            : null;
 
         let latestProject = null;
         if (rows.length > 0) {
@@ -351,10 +400,17 @@ publicRouter.get('/students/:studentId/time-spent', async (req, res) => {
                 console.error('[public] time-spent: projeto mais recente de', studentId, 'com json inválido:', parseErr.message);
                 manifest = computeProjectManifest(null); // zerado - não derruba o endpoint inteiro por causa de 1 projeto
             }
-            latestProject = { projectName: rows[0].name, ...manifest };
+            latestProject = {
+                projectId: rows[0].id,
+                projectName: rows[0].name,
+                lastEditedAt: rows[0].mtime,
+                shareToken: rows[0].share_token || null,
+                reactionsCount: reactionsByProject[rows[0].id] || 0,
+                ...manifest,
+            };
         }
 
-        res.json({ studentId, totalTimeSeconds, projectCount: rows.length, latestProject });
+        res.json({ studentId, totalTimeSeconds, projectCount: rows.length, totalReactions, lastLiveSession, latestProject });
     } catch (err) {
         console.error('[public] GET students/:studentId/time-spent error:', err);
         res.status(500).json({ error: err.message });
@@ -396,7 +452,7 @@ publicRouter.get('/students/:studentId/assignment-score', async (req, res) => {
         // por assignments.active = true na mesma query.
         const { data: rows, error } = await supabase
             .from('projects')
-            .select('id, json, assignment_id, assignments!inner(id, template_id, project_name, requirements, active)')
+            .select('id, json, mtime, share_token, assignment_id, assignments!inner(id, template_id, project_name, requirements, active)')
             .eq('owner', studentId)
             .eq('deleted', 'NO')
             .eq('assignments.active', true)
@@ -431,10 +487,35 @@ publicRouter.get('/students/:studentId/assignment-score', async (req, res) => {
         const actualManifest = computeProjectManifest(projectJson);
         const comparison = compareManifests(resolved.requirements, actualManifest);
 
+        // Contagem de dicas de coaching mostradas/dispensadas nesta missão
+        // (hint_events, alimentada por POST /api/assignments/:id/hints/:hintId/
+        // event em routes/assignments.js) - sinal de dificuldade/engajamento.
+        // Tolerante à tabela ainda não existir (42P01) até a migração em
+        // supabase-setup.sql ser rodada - conta 0/0 em vez de derrubar o
+        // endpoint inteiro por causa de telemetria opcional.
+        let hintsShown = 0;
+        let hintsDismissed = 0;
+        const { data: hintEventRows, error: hintEventsErr } = await supabase
+            .from('hint_events')
+            .select('event_type')
+            .eq('student_id', studentId)
+            .eq('assignment_id', assignment.id);
+
+        if (hintEventsErr && hintEventsErr.code !== '42P01') throw hintEventsErr;
+        (hintEventRows || []).forEach((row) => {
+            if (row.event_type === 'shown') hintsShown += 1;
+            else if (row.event_type === 'dismissed') hintsDismissed += 1;
+        });
+
         res.json({
             studentId,
             hasAssignment: true,
+            projectId: project.id,
             projectName: resolved.projectName,
+            lastEditedAt: project.mtime,
+            shareToken: project.share_token || null,
+            hintsShown,
+            hintsDismissed,
             ...comparison,
         });
     } catch (err) {

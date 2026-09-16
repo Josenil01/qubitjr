@@ -284,6 +284,37 @@ ALTER TABLE assignments ADD COLUMN IF NOT EXISTS hint_context TEXT;
 ALTER TABLE projects ADD COLUMN IF NOT EXISTS assignment_id INTEGER REFERENCES assignments(id) ON DELETE SET NULL;
 CREATE INDEX IF NOT EXISTS idx_projects_assignment_id ON projects(assignment_id);
 
+-- Tabela: hint_events (auditoria de dicas de coaching mostradas/dispensadas
+-- pelo aluno). Antes desta tabela, "dica mostrada"/"dica dispensada" só
+-- existia como estado em memória no navegador (dismissedHintIds em
+-- AssignmentBadge.js), perdido ao fechar a aba - sem sinal nenhum pro
+-- professor ou pra HelloYotta de quantas dicas um aluno precisou numa
+-- missão. Alimentada por POST /api/assignments/:id/hints/:hintId/event
+-- (backend/src/routes/assignments.js), chamada pelo cliente só nos dois
+-- momentos reais de "o sistema decidiu mostrar a dica" (modal automático) -
+-- navegar solto pelo painel de dicas (Anterior/Próxima) NÃO gera evento, de
+-- propósito, pra não confundir "aluno passeando pelas dicas" com "aluno
+-- precisou da dica".
+--
+-- assignment_id aponta pra linha ATIVA da turma no momento (pode ser
+-- template ou referência - ver docblock de assignments.template_id acima),
+-- não pro template resolvido - mesmo id que já aparece em GET
+-- /api/assignments/active e é reaproveitado pelo cliente pra chamar esta
+-- rota, sem round-trip extra pra resolver o template.
+-- turma_id sem NOT NULL de propósito - é telemetria best-effort, nunca deve
+-- falhar uma gravação só por uma claim ausente num caso extremo.
+CREATE TABLE IF NOT EXISTS hint_events (
+  id             SERIAL PRIMARY KEY,
+  student_id     TEXT    NOT NULL,
+  assignment_id  INTEGER NOT NULL REFERENCES assignments(id) ON DELETE CASCADE,
+  turma_id       TEXT,
+  hint_id        TEXT    NOT NULL,
+  event_type     TEXT    NOT NULL, -- 'shown' | 'dismissed'
+  created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_hint_events_student_assignment ON hint_events(student_id, assignment_id);
+
 -- ============================================
 -- Cole o conteúdo acima no Supabase SQL Editor
 -- ============================================
