@@ -485,7 +485,7 @@ router.get('/my-progress', async (req, res) => {
 async function selectAssignmentTolerantOfMissingHintContext(supabase, assignmentId) {
     const { data, error } = await supabase
         .from('assignments')
-        .select('id, template_id, teacher_id, project_name, hint_context')
+        .select('id, template_id, teacher_id, project_name, hint_context, hints')
         .eq('id', assignmentId)
         .maybeSingle();
 
@@ -495,7 +495,7 @@ async function selectAssignmentTolerantOfMissingHintContext(supabase, assignment
     console.warn('[assignments] Coluna hint_context ainda não existe no banco - rode a migração em backend/supabase-setup.sql. Seguindo sem ela por enquanto.');
     const { data: fallbackData, error: fallbackErr } = await supabase
         .from('assignments')
-        .select('id, template_id, teacher_id, project_name')
+        .select('id, template_id, teacher_id, project_name, hints')
         .eq('id', assignmentId)
         .maybeSingle();
 
@@ -539,6 +539,13 @@ router.get('/by-project/:projectId', async (req, res) => {
                 // AssignmentAuthorBar.js/_showContextPrompt) com o que ele
                 // escreveu da última vez, se houver.
                 hintContext: assignment.hint_context || '',
+                // Dicas JÁ salvas desta missão (assignments.hints, ver docblock
+                // daquela coluna em supabase-setup.sql) - permite ao cliente
+                // oferecer um botão "Editar dicas" que abre a mesma tela de
+                // revisão (AssignmentAuthorBar.js#_showHintReview) direto sobre
+                // o que já está publicado, sem precisar regenerar via IA
+                // primeiro. [] quando a missão nunca teve dicas aprovadas.
+                hints: Array.isArray(assignment.hints) ? assignment.hints : [],
             },
         });
     } catch (err) {

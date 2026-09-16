@@ -53,6 +53,32 @@
     cursor: default;
 }
 
+/* Botão "Editar dicas" (professor) - só existe quando reabrindo um molde
+ * que já tem pelo menos uma dica salva (ver AssignmentAuthorBar.js#_show).
+ * Empilhado ACIMA de .assignmentAuthorBtn (mesmo canto, bottom maior) -
+ * nunca aparecem um por cima do outro.
+ */
+.assignmentEditHintsBtn {
+    position: fixed;
+    right: 16px;
+    bottom: 68px;
+    z-index: 9000;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    padding: 10px 16px;
+    border-radius: 24px;
+    background: #fff;
+    color: #01bebc;
+    font-size: 14px;
+    font-weight: 700;
+    border: 2px solid #01bebc;
+}
+
+.assignmentEditHintsBtn:hover {
+    background: #e6f9f9;
+}
+
 /* Selo colapsado de progresso (aluno) */
 .assignmentBadge {
     padding: 10px 16px;

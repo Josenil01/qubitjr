@@ -116,6 +116,7 @@ const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : 
 const IDLE_LABEL = '📋 Cadastrar aula';
 
 let barEl = null;
+let editHintsBtnEl = null;
 let busy = false;
 // Contexto livre (assignments.hint_context) da última vez que o professor
 // escreveu um pra esta missão - preenchido por _checkExistingMission() (ver
@@ -123,6 +124,15 @@ let busy = false;
 // fica '' pra uma missão nova (teacherMode=author, ainda sem hint_context
 // nenhum salvo). Pré-preenche a caixa de _showContextPrompt.
 let cachedHintContext = '';
+// Dicas JÁ salvas desta missão (assignments.hints) e o id da missão -
+// preenchidos junto de cachedHintContext por _checkExistingMission(), só
+// quando reabrindo um molde já existente (nunca no lançamento original
+// via teacherMode=author, onde a missão ainda nem foi registrada). Alimenta
+// o botão "✏️ Editar dicas" (_show()) e _openHintsEditor() - permite abrir a
+// mesma tela de revisão (_showHintReview) direto sobre o que já está
+// publicado, sem precisar regenerar via IA primeiro.
+let cachedHints = [];
+let cachedAssignmentId = null;
 
 function authHeader () {
     var token = window.__AUTH_TOKEN__;
@@ -204,6 +214,8 @@ export default class AssignmentAuthorBar {
             .then(function (data) {
                 if (data && data.assignment) {
                     cachedHintContext = data.assignment.hintContext || '';
+                    cachedHints = Array.isArray(data.assignment.hints) ? data.assignment.hints : [];
+                    cachedAssignmentId = data.assignment.id;
                     AssignmentAuthorBar._show();
                 }
             })
@@ -211,13 +223,51 @@ export default class AssignmentAuthorBar {
     }
 
     static _show () {
-        if (barEl) {
+        if (!barEl) {
+            barEl = newHTML('button', 'assignmentAuthorBtn', document.body);
+            barEl.type = 'button';
+            barEl.textContent = IDLE_LABEL;
+            barEl.onclick = AssignmentAuthorBar._onClick;
+        }
+        // Só existe quando reabrindo um molde que JÁ tem pelo menos uma dica
+        // salva (cachedHints preenchido por _checkExistingMission logo antes
+        // desta chamada) - nunca no lançamento original de uma missão nova
+        // (teacherMode=author chama _show() direto, sem passar por
+        // _checkExistingMission, então cachedHints continua [] nesse caso).
+        if (!editHintsBtnEl && cachedHints.length > 0) {
+            editHintsBtnEl = newHTML('button', 'assignmentEditHintsBtn', document.body);
+            editHintsBtnEl.type = 'button';
+            editHintsBtnEl.textContent = '✏️ Editar dicas';
+            editHintsBtnEl.onclick = AssignmentAuthorBar._openHintsEditor;
+        }
+    }
+
+    /**
+     * Abre a mesma tela de revisão (_showHintReview) usada logo após gerar um
+     * lote novo via IA, só que sobre as dicas JÁ PUBLICADAS desta missão
+     * (cachedHints) - permite corrigir o texto de uma dica confusa, remover
+     * uma que não faz sentido, reordenar, ou adicionar uma manual, sem
+     * precisar reautorar/regenerar tudo de novo primeiro. Cada dica começa
+     * `approved` (não neutra como no fluxo de revisão de rascunho) - elas já
+     * estão ao vivo pro aluno, então "não mexer em nada e clicar Concluir"
+     * precisa continuar salvando o mesmo conjunto, não esvaziar a missão.
+     * `onSaved` atualiza cachedHints com o que foi de fato salvo, pra reabrir
+     * o editor de novo na mesma sessão (sem reload) já refletir a edição
+     * anterior, em vez de voltar pro estado pré-edição.
+     */
+    static _openHintsEditor () {
+        if (busy || !cachedAssignmentId || document.querySelector('.assignmentHintsOverlay')) {
             return;
-        } // já inicializado - evita duplicar o botão numa segunda chamada
-        barEl = newHTML('button', 'assignmentAuthorBtn', document.body);
-        barEl.type = 'button';
-        barEl.textContent = IDLE_LABEL;
-        barEl.onclick = AssignmentAuthorBar._onClick;
+        }
+        AssignmentAuthorBar._showHintReview(cachedAssignmentId, cachedHints, function () {}, {
+            startApproved: true,
+            title: '✏️ Editar dicas desta missão',
+            subtitle: 'Edite o texto, aprove/rejeite ou reordene com ▲▼, depois clique em Concluir pra salvar.',
+            skipLabel: 'Cancelar',
+            onSaved: function (approved) {
+                cachedHints = approved;
+            },
+        });
     }
 
     static _onClick () {
@@ -459,24 +509,40 @@ export default class AssignmentAuthorBar {
      * clique duplo) antes de fechar a revisão anterior, sem isso cada
      * chamada empilhava mais uma tela por baixo/por cima da anterior -
      * nunca removidas, só acumulando no body.
+     *
+     * `opts` (todos opcionais) generalizam esta tela pro caso de EDITAR
+     * dicas já publicadas (_openHintsEditor), reaproveitando a mesma UI do
+     * fluxo original de revisão de rascunho pós-IA:
+     *  - `startApproved`: cada entrada nasce com status 'approved' em vez de
+     *    neutra (null) - as dicas de `hints` já estão ao vivo pro aluno
+     *    nesse caso, então "não mexer em nada e clicar Concluir" precisa
+     *    continuar salvando o mesmo conjunto, não esvaziar a missão.
+     *  - `title`/`subtitle`: sobrescrevem o texto padrão da tela (que fala
+     *    de "dicas sugeridas", errado pra edição de algo já aprovado antes).
+     *  - `onSaved(approved)`: chamado com o array `approved` (mesmo formato
+     *    salvo no POST) logo após o save ter sido tentado - usado por
+     *    _openHintsEditor pra manter cachedHints em dia com a última edição,
+     *    sem precisar recarregar a página pra reabrir o editor de novo.
      */
-    static _showHintReview (assignmentId, hints, onDone) {
+    static _showHintReview (assignmentId, hints, onDone, opts) {
+        opts = opts || {};
         if (document.querySelector('.assignmentHintsOverlay')) {
             onDone(); // já tem uma revisão aberta - não empilha outra
             return;
         }
+        var initialStatus = opts.startApproved ? 'approved' : null;
         // `text` começa igual a hint.text mas é editável (ver textEl.oninput
         // abaixo) - hint.when nunca muda aqui, só o texto que o aluno vê.
         var entries = hints.map(function (hint) {
-            return {hint: hint, status: null, text: hint.text}; // status: null | 'approved' | 'rejected'
+            return {hint: hint, status: initialStatus, text: hint.text}; // status: null | 'approved' | 'rejected'
         });
 
         var overlayEl = newHTML('div', 'assignmentHintsOverlay', document.body);
         var card = newHTML('div', 'assignmentHintsCard', overlayEl);
         var title = newHTML('div', 'assignmentHintsTitle', card);
-        title.textContent = '💡 Revisar dicas sugeridas';
+        title.textContent = opts.title || '💡 Revisar dicas sugeridas';
         var subtitle = newHTML('div', 'assignmentHintsSubtitle', card);
-        subtitle.textContent = 'Aprove ou rejeite cada dica, edite o texto ou reordene com ▲▼ antes de salvar.';
+        subtitle.textContent = opts.subtitle || 'Aprove ou rejeite cada dica, edite o texto ou reordene com ▲▼ antes de salvar.';
 
         // Dica escrita à mão pelo professor - vai pro FIM da lista, quem
         // decide a posição final é o próprio ▲▼ já existente (mesmo
@@ -586,7 +652,7 @@ export default class AssignmentAuthorBar {
         var footer = newHTML('div', 'assignmentHintsFooter', card);
         var skipBtn = newHTML('button', 'assignmentHintsSkipBtn', footer);
         skipBtn.type = 'button';
-        skipBtn.textContent = 'Pular por agora';
+        skipBtn.textContent = opts.skipLabel || 'Pular por agora';
         var saveBtn = newHTML('button', 'assignmentHintsSaveBtn', footer);
         saveBtn.type = 'button';
         saveBtn.textContent = 'Concluir';
@@ -646,15 +712,21 @@ export default class AssignmentAuthorBar {
                 if (!reallySkip) {
                     return; // professor volta pra tela de revisão pra aprovar algo
                 }
+                if (opts.onSaved) {
+                    opts.onSaved(approved); // approved é [] aqui - missão fica mesmo sem dicas
+                }
                 closeOverlay();
                 onDone();
                 return;
             }
             saveBtn.disabled = true;
             saveBtn.textContent = 'Salvando...';
+            var saveSucceeded = false;
             apiFetch('/assignments/' + encodeURIComponent(assignmentId) + '/hints', {
                 method: 'POST',
                 body: JSON.stringify({hints: approved}),
+            }).then(function (res) {
+                saveSucceeded = res.ok;
             }).catch(function (err) {
                 // Best-effort: salvar dicas é um extra sobre um cadastro que
                 // já teve sucesso - uma falha aqui não pode travar o professor
@@ -665,6 +737,15 @@ export default class AssignmentAuthorBar {
                 console.error('[AssignmentAuthorBar] save hints error:', err);
                 window.alert('Não foi possível salvar as dicas agora. A aula já foi cadastrada normalmente - tente "Cadastrar aula" de novo depois pra tentar salvar as dicas outra vez.');
             }).then(function () {
+                // Só atualiza o estado local (cachedHints, via onSaved) quando
+                // o POST realmente confirmou sucesso - numa falha de rede/
+                // servidor, o que está salvo no banco continua sendo o
+                // conjunto ANTERIOR à edição, e reabrir o editor precisa
+                // continuar mostrando esse estado real, não a tentativa que
+                // não foi persistida.
+                if (saveSucceeded && opts.onSaved) {
+                    opts.onSaved(approved);
+                }
                 closeOverlay();
                 onDone();
             });
