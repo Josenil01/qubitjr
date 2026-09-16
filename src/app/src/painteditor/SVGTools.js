@@ -867,7 +867,12 @@ export default class SVGTools {
             if (spriteName && window.PNGCache) {
                 var cachedCanvas = window.PNGCache.get(spriteName);
                 if (cachedCanvas) {
-                    return cachedCanvas;
+                    // O PNG cru é a foto colorida original - sem isto, a
+                    // "sombra" atrás dos blocos aparecia em cor cheia em vez
+                    // da silhueta cinza que setObjectWaterMark() já produz
+                    // pro caminho vetorial abaixo (achado real: Ruby, Qubit,
+                    // Allan e Cris mostrando a sombra em cores vivas).
+                    return SVGTools.recolorCanvasSilhouette(cachedCanvas, color);
                 }
             }
         }
@@ -877,6 +882,26 @@ export default class SVGTools {
         SVGTools.removeExtras(svg);
         SVGTools.changeShape(svg, color);
         return svg;
+    }
+
+    /**
+     * Recolore um canvas (raster) pra silhueta sólida de uma cor, preservando
+     * só o canal alpha original - equivalente, pra imagem raster, ao que
+     * changeShape()/setObjectWaterMark() fazem pra path vetorial (troca o
+     * fill pela cor da sombra, ignora a cor original do desenho). Usa
+     * 'source-in': o retângulo preenchido com `color` só aparece onde o
+     * desenho de origem já tinha pixel opaco, no formato exato da silhueta.
+     */
+    static recolorCanvasSilhouette (sourceCanvas, color) {
+        var out = document.createElement('canvas');
+        out.width = sourceCanvas.width;
+        out.height = sourceCanvas.height;
+        var ctx = out.getContext('2d');
+        ctx.drawImage(sourceCanvas, 0, 0);
+        ctx.globalCompositeOperation = 'source-in';
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 0, out.width, out.height);
+        return out;
     }
 
     static getWatermarkFromPNG (shape, color, spriteName) {

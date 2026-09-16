@@ -151,6 +151,26 @@ function apiFetch (path, options) {
     });
 }
 
+/**
+ * Fire-and-forget: registra no servidor (hint_events, ver backend/src/routes/
+ * assignments.js) que uma dica de coach foi mostrada/dispensada nesta missão -
+ * sinal de dificuldade/engajamento que antes só existia como dismissedHintIds
+ * em memória, perdido ao fechar a aba. Nunca bloqueia nem interrompe o fluxo
+ * do aluno: erro de rede aqui é só um log, o badge continua funcionando
+ * normalmente mesmo sem persistir o evento.
+ */
+function recordHintEvent (hintId, eventType) {
+    if (!assignment || !assignment.id) {
+        return;
+    }
+    apiFetch('/assignments/' + assignment.id + '/hints/' + encodeURIComponent(hintId) + '/event', {
+        method: 'POST',
+        body: JSON.stringify({eventType: eventType}),
+    }).catch(function (err) {
+        console.warn('[AssignmentBadge] recordHintEvent falhou (não-fatal):', err && err.message);
+    });
+}
+
 export default class AssignmentBadge {
     /**
      * Consultado por Library.js pra restringir a galeria de personagens/
@@ -522,12 +542,14 @@ export default class AssignmentBadge {
         if (!idleElapsed) {
             return; // pronta, mas o aluno ainda está mexendo em algo - espera ele parar
         }
+        recordHintEvent(readyHint.id, 'shown');
         AssignmentBadge._showCoachModal({
             icon: '💡',
             text: readyHint.text,
             extraClass: 'assignmentCoachCard',
             onClose: function () {
                 dismissedHintIds.add(readyHint.id);
+                recordHintEvent(readyHint.id, 'dismissed');
                 // Não precisa marcar lastActivityAt aqui - o próprio clique no
                 // botão de fechar já passa pelo listener global de
                 // _trackActivity (fase de captura, ver docblock daquela
