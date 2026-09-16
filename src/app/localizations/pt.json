@@ -39,7 +39,7 @@
     "BLOCKS_TURN_RIGHT_DESCRIPTION": "Gira o actor para a direita uma dada quantidade. Gire 12 para uma rotação completa.",
     "BLOCKS_TURN_LEFT": "Girar para a Esquerda",
     "BLOCKS_TURN_LEFT_DESCRIPTION": "Gira o actor para a esquerda uma dada quantidade. Gire 12 para uma rotação completa.",
-    "BLOCKS_HOP": "Saltar",
+    "BLOCKS_HOP": "Pular",
     "BLOCKS_HOP_DESCRIPTION": "Move o actor para cima e para baixo um dado número de quadrados.",
     "BLOCKS_GO_HOME": "Voltar ao Início",
     "BLOCKS_GO_HOME_DESCRIPTION": "Faz o actor voltar à sua posição inicial. (Para definir uma nova posição inicial, arraste o actor para o local desejado).",
