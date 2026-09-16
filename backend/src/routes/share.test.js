@@ -226,3 +226,99 @@ describe('publicRouter — outras rotas continuam registradas', () => {
         expect(() => findRoute(publicRouter, 'get', '/teachers/:teacherId/activities')).not.toThrow();
     });
 });
+
+describe('publicRouter GET /students/:studentId/projects', () => {
+    const ROUTE = '/students/:studentId/projects';
+    const ORIGINAL_ENV = { ...process.env };
+
+    beforeEach(() => {
+        jest.resetModules();
+        process.env = { ...ORIGINAL_ENV };
+    });
+
+    afterAll(() => {
+        process.env = ORIGINAL_ENV;
+    });
+
+    test('503 quando HELLOYOTTA_INBOUND_API_KEY não está configurada', async () => {
+        delete process.env.HELLOYOTTA_INBOUND_API_KEY;
+        const { publicRouter } = loadRouterFresh();
+        const handler = findRoute(publicRouter, 'get', ROUTE);
+
+        const req = mockReq({ params: { studentId: 'aluno-1' } });
+        const res = mockRes();
+
+        await handler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(503);
+        expect(res.body).toEqual({ error: 'Endpoint not configured' });
+    });
+
+    test('401 quando a chave enviada está errada', async () => {
+        process.env.HELLOYOTTA_INBOUND_API_KEY = 'chave-correta';
+        const { publicRouter } = loadRouterFresh();
+        const handler = findRoute(publicRouter, 'get', ROUTE);
+
+        const req = mockReq({
+            params: { studentId: 'aluno-1' },
+            headers: { authorization: 'Bearer chave-errada' },
+        });
+        const res = mockRes();
+
+        await handler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(401);
+    });
+
+    test('401 quando não envia nenhum header de autorização', async () => {
+        process.env.HELLOYOTTA_INBOUND_API_KEY = 'chave-correta';
+        const { publicRouter } = loadRouterFresh();
+        const handler = findRoute(publicRouter, 'get', ROUTE);
+
+        const req = mockReq({ params: { studentId: 'aluno-1' }, headers: {} });
+        const res = mockRes();
+
+        await handler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(401);
+    });
+
+    test('503 quando Supabase não está configurado (mesmo com chave OK)', async () => {
+        process.env.HELLOYOTTA_INBOUND_API_KEY = 'chave-correta';
+        delete process.env.SUPABASE_URL;
+        delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+        const { publicRouter } = loadRouterFresh();
+        const handler = findRoute(publicRouter, 'get', ROUTE);
+
+        const req = mockReq({
+            params: { studentId: 'aluno-1' },
+            headers: { authorization: 'Bearer chave-correta' },
+        });
+        const res = mockRes();
+
+        await handler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(503);
+        expect(res.body).toEqual({ error: 'Database not configured' });
+    });
+
+    test('400 quando updatedSince não é uma data válida (checado antes de tocar o Supabase)', async () => {
+        process.env.HELLOYOTTA_INBOUND_API_KEY = 'chave-correta';
+        process.env.SUPABASE_URL = 'https://example.supabase.co';
+        process.env.SUPABASE_SERVICE_ROLE_KEY = 'fake-service-role-key';
+        const { publicRouter } = loadRouterFresh();
+        const handler = findRoute(publicRouter, 'get', ROUTE);
+
+        const req = mockReq({
+            params: { studentId: 'aluno-1' },
+            query: { updatedSince: 'não-é-uma-data' },
+            headers: { authorization: 'Bearer chave-correta' },
+        });
+        const res = mockRes();
+
+        await handler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.body.error).toMatch(/updatedSince/);
+    });
+});

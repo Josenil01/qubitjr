@@ -23,6 +23,12 @@
  *                                                               projeto mais recente
  *                                                               (id, share token, última
  *                                                               edição, reações)
+ *   GET    /api/public/students/:studentId/projects          → lista TODOS os projetos
+ *                                                               do aluno (mesmas métricas
+ *                                                               do latestProject acima,
+ *                                                               em lista), com suporte a
+ *                                                               sync incremental via
+ *                                                               ?updatedSince=<ISO8601>
  *   GET    /api/public/students/:studentId/assignment-score → progresso do aluno na
  *                                                               missão ativa da turma
  *                                                               (inclui id/share token/
@@ -413,6 +419,111 @@ publicRouter.get('/students/:studentId/time-spent', async (req, res) => {
         res.json({ studentId, totalTimeSeconds, projectCount: rows.length, totalReactions, lastLiveSession, latestProject });
     } catch (err) {
         console.error('[public] GET students/:studentId/time-spent error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * GET /api/public/students/:studentId/projects?updatedSince=<ISO8601>
+ * Endpoint servidor-a-servidor (mesma chave HELLOYOTTA_INBOUND_API_KEY dos
+ * outros endpoints pull) pra fechar a lacuna que time-spent deixa: aquele
+ * endpoint manda métricas completas só do projeto MAIS RECENTE
+ * (latestProject), de propósito, pra não deixar o payload crescer sem limite
+ * a cada save - quem precisa do histórico completo (todos os N projetos do
+ * aluno) usa este aqui.
+ *
+ * updatedSince (querystring, ISO 8601) é o que permite sync incremental:
+ * sem ele, devolve todos os projetos não apagados do aluno (uso esperado:
+ * primeira sincronização do aluno). Com ele, só os projetos cujo mtime é
+ * posterior à data informada - mesma noção de "última edição" que
+ * time-spent/latestProject já usa pra ordenar (ver comentário lá: é
+ * projects.mtime, não updated_at, que só muda ao salvar o projeto de
+ * verdade). Quem chama sincroniza por turma periodicamente, então a maioria
+ * das chamadas com updatedSince devolve uma lista vazia ou pequena, em vez
+ * de reler a tabela inteira do aluno a cada sync.
+ *
+ * Cada item da lista tem o mesmo formato de latestProject (time-spent), só
+ * que em lista, ordenada por mtime desc (mais recente primeiro). studentId
+ * desconhecido/sem projetos devolve projects: [] em vez de 404 - mesma
+ * filosofia de não vazar existência via status code que os outros endpoints
+ * pull já seguem.
+ */
+publicRouter.get('/students/:studentId/projects', async (req, res) => {
+    const expectedKey = process.env.HELLOYOTTA_INBOUND_API_KEY;
+    if (!expectedKey) return res.status(503).json({ error: 'Endpoint not configured' });
+
+    const auth = req.headers.authorization || '';
+    const providedKey = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+    if (!providedKey || !timingSafeEqual(providedKey, expectedKey)) {
+        return res.status(401).json({ error: 'Invalid or missing API key' });
+    }
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    const { studentId } = req.params;
+    if (!studentId) return res.status(400).json({ error: 'Invalid studentId' });
+
+    let updatedSinceIso = null;
+    if (req.query.updatedSince !== undefined) {
+        const parsed = new Date(req.query.updatedSince);
+        if (isNaN(parsed.getTime())) {
+            return res.status(400).json({ error: 'Invalid updatedSince (expected ISO 8601)' });
+        }
+        updatedSinceIso = parsed.toISOString();
+    }
+
+    try {
+        let query = supabase
+            .from('projects')
+            .select('id, name, json, mtime, share_token')
+            .eq('owner', studentId)
+            .eq('deleted', 'NO')
+            .order('mtime', { ascending: false });
+        if (updatedSinceIso) {
+            query = query.gt('mtime', updatedSinceIso);
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+
+        const rows = data || [];
+        const projectIds = rows.map((p) => p.id);
+
+        // Mesma agregação de reações de time-spent, aqui por projeto em vez
+        // de somada - cada item da lista carrega o reactionsCount dele.
+        let reactionsByProject = {};
+        if (projectIds.length > 0) {
+            const { data: reactionRows } = await supabase
+                .from('reactions')
+                .select('project_id, count')
+                .in('project_id', projectIds);
+            (reactionRows || []).forEach((r) => {
+                reactionsByProject[r.project_id] = (reactionsByProject[r.project_id] || 0) + r.count;
+            });
+        }
+
+        const projects = rows.map((row) => {
+            let manifest;
+            try {
+                manifest = computeProjectManifest(JSON.parse(row.json));
+            } catch (parseErr) {
+                console.error('[public] projects: projeto', row.id, 'de', studentId, 'com json inválido:', parseErr.message);
+                manifest = computeProjectManifest(null); // zerado - não derruba o endpoint inteiro por causa de 1 projeto
+            }
+            return {
+                projectId: row.id,
+                projectName: row.name,
+                lastEditedAt: row.mtime,
+                shareToken: row.share_token || null,
+                reactionsCount: reactionsByProject[row.id] || 0,
+                ...manifest,
+            };
+        });
+
+        res.json({ projects });
+    } catch (err) {
+        console.error('[public] GET students/:studentId/projects error:', err);
         res.status(500).json({ error: err.message });
     }
 });
