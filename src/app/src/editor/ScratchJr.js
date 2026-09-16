@@ -1016,4 +1016,25 @@ export default class ScratchJr {
             callbackReference();
         }
     }
+
+    /**
+     * Faz a tecla Esc fechar a janela flutuante aberta no momento (biblioteca
+     * de atores/paisagens, paint editor, câmera, gravação de som etc.), reusando
+     * a mesma pilha de callbacks do botão "voltar" do Android acima. Só age
+     * quando existe alguma janela empilhada - com a pilha vazia, Esc não faz
+     * nada (não deve navegar pra fora do editor como o goBack() faz nesse caso).
+     */
+    static setupEscapeKey () {
+        document.addEventListener('keydown', ScratchJr.onEscapeKeyDown);
+    }
+
+    static onEscapeKeyDown (e) {
+        var key = e.keyCode || e.which;
+        if (key !== 27 || onBackButtonCallback.length === 0) {
+            return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        ScratchJr.goBack();
+    }
 }

@@ -42,6 +42,7 @@ export default class UI {
         UI.createFormForText(frame);
         ScratchJr.setupKeypad();
         ScratchJr.setupEditableField();
+        ScratchJr.setupEscapeKey();
         UI.aspectRatioAdjustment();
         window._onLayoutResize = function () {
             UI.aspectRatioAdjustment();
