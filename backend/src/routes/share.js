@@ -40,6 +40,17 @@
  *   POST   /api/public/activities/:activityId/adopt          → turma adota um molde de
  *                                                               missão (template) já
  *                                                               cadastrado por um professor
+ *   POST   /api/public/activities/generate                   → gera um RASCUNHO de
+ *                                                               atividade (descrição +
+ *                                                               projeto + dicas) a partir
+ *                                                               só de um tema em texto
+ *                                                               livre - responde rápido
+ *                                                               (202) e entrega o resultado
+ *                                                               depois via callback (ver
+ *                                                               docblock da rota)
+ *   GET    /api/public/activities/generate/:draftId           → consulta um rascunho (fallback
+ *                                                               de observabilidade/retry se o
+ *                                                               callback acima falhar)
  */
 
 const express = require('express');
@@ -47,6 +58,9 @@ const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
 const { computeProjectManifest, compareManifests } = require('../services/assignmentScoring');
 const { resolveAssignmentFields } = require('../services/assignmentResolver');
+const { generateActivityPlan } = require('../services/activityGeneration');
+const { buildProjectFromPlan } = require('../services/activityProjectBuilder');
+const { generateHintsWithProvider } = require('../services/hintsGeneration');
 
 const router = express.Router();
 const publicRouter = express.Router();
@@ -821,6 +835,222 @@ publicRouter.post('/activities/:activityId/adopt', async (req, res) => {
         res.json({ success: true, activityId: inserted.id });
     } catch (err) {
         console.error('[public] POST activities/:activityId/adopt error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * Roda `promise` sem bloquear a resposta HTTP já enviada, e sem deixar a
+ * function serverless da Vercel congelar o container antes dela terminar -
+ * @vercel/functions#waitUntil existe exatamente pra isso (trabalho que
+ * continua depois do response, no MESMO invocation). Fora de um runtime
+ * Vercel real (dev local via `npm run dev`/`node src/index.js`) a chamada
+ * pode não fazer nada ou lançar - nesse caso `promise` já está rodando de
+ * qualquer forma (foi criada antes desta função ser chamada), então o
+ * comportamento local continua sendo o mesmo fire-and-forget best-effort já
+ * usado em services/helloyotta.js#notifyAssignmentRegistered.
+ */
+function runInBackground(promise) {
+    try {
+        // eslint-disable-next-line global-require
+        const { waitUntil } = require('@vercel/functions');
+        waitUntil(promise);
+    } catch (err) {
+        // @vercel/functions indisponível/fora de contexto de request Vercel -
+        // sem problema, ver docblock acima.
+    }
+    promise.catch((err) => {
+        console.error('[public] activities/generate: pipeline de geração falhou de forma inesperada:', err);
+    });
+}
+
+/**
+ * Ecoa o resultado (pronto ou com falha) de volta pra HelloYotta - best-effort,
+ * nunca lança, mesmo padrão de notifyAssignmentRegistered em
+ * services/helloyotta.js. Sem callbackUrl (nem no corpo do POST original, nem
+ * em HELLOYOTTA_ACTIVITY_CALLBACK_URL), o resultado só fica salvo na tabela -
+ * quem chamou pode consultá-lo depois via GET /api/public/activities/generate/:draftId.
+ */
+async function deliverActivityCallback(callbackUrl, payload) {
+    if (!callbackUrl) return;
+    try {
+        await fetch(callbackUrl, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${process.env.QUBITJR_API_KEY || ''}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+    } catch (err) {
+        console.warn('[public] activities/generate: callback pra HelloYotta falhou (não-fatal):', err.message);
+    }
+}
+
+/**
+ * Pipeline completo de um rascunho (theme -> plano via LLM -> projeto real ->
+ * requisitos -> dicas -> salva -> avisa a HelloYotta), rodado EM BACKGROUND
+ * (ver runInBackground acima) depois que POST /activities/generate já
+ * respondeu 202. Nunca deixa uma exceção escapar sem marcar o rascunho como
+ * 'failed' e sem tentar avisar a HelloYotta do erro - o chamador não tem
+ * mais nenhuma outra chance de saber que algo deu errado.
+ */
+async function processActivityDraft(supabase, draftId, theme, callbackUrl) {
+    try {
+        const { projectName, teacherDescription, assetGapNote, plan, provider, model } = await generateActivityPlan(theme);
+        const { projectJson } = buildProjectFromPlan(plan);
+        const requirements = computeProjectManifest(projectJson);
+        // Mesmo provider/modelo escolhido pra gerar a atividade também gera as
+        // dicas dela - decisão do usuário ("um único modelo faz tudo,
+        // configurável"). Ver generateHintsWithProvider em hintsGeneration.js.
+        const { hints } = await generateHintsWithProvider(projectJson, '', projectName, provider, model);
+
+        const { error: updateErr } = await supabase
+            .from('ai_activity_drafts')
+            .update({
+                status: 'ready',
+                project_name: projectName,
+                description: teacherDescription,
+                project_json: projectJson,
+                requirements,
+                hints,
+                asset_gap_note: assetGapNote,
+                updated_at: new Date().toISOString(),
+            })
+            .eq('id', draftId);
+        if (updateErr) {
+            console.error('[public] activities/generate: falha ao salvar rascunho pronto', draftId, ':', updateErr);
+        }
+
+        await deliverActivityCallback(callbackUrl, {
+            draftId,
+            status: 'ready',
+            theme,
+            projectName,
+            description: teacherDescription,
+            project: projectJson,
+            requirements,
+            hints,
+            assetGapNote,
+        });
+    } catch (err) {
+        console.error('[public] activities/generate: pipeline falhou pro rascunho', draftId, ':', err);
+
+        const { error: updateErr } = await supabase
+            .from('ai_activity_drafts')
+            .update({ status: 'failed', error: err.message, updated_at: new Date().toISOString() })
+            .eq('id', draftId);
+        if (updateErr) {
+            console.error('[public] activities/generate: falha ao salvar erro do rascunho', draftId, ':', updateErr);
+        }
+
+        await deliverActivityCallback(callbackUrl, { draftId, status: 'failed', theme, error: err.message });
+    }
+}
+
+/**
+ * POST /api/public/activities/generate
+ * Body: { theme: string, callbackUrl?: string }
+ *
+ * Endpoint servidor-a-servidor (mesma chave HELLOYOTTA_INBOUND_API_KEY dos
+ * outros endpoints deste arquivo) pra HelloYotta pedir uma atividade nova
+ * gerada por IA a partir só de um TEMA (ex.: "A lenda do Saci Pererê") -
+ * ver services/activityGeneration.js. De propósito NÃO recebe turma_id/
+ * faixa etária/nível de XP (decisão do produto: "só o tema") - o rascunho
+ * nasce sem dono, pra qualquer professor revisar/ajustar/aprovar depois
+ * (fluxo de importação é trabalho futuro).
+ *
+ * Responde 202 imediatamente com { draftId, status: 'generating' } e roda a
+ * geração de verdade (2 chamadas de LLM - atividade e depois dicas - podem
+ * levar bem mais que alguns segundos) em BACKGROUND (ver runInBackground) -
+ * decisão do usuário: síncrono demoraria demais e arriscaria timeout na
+ * function serverless da Vercel. Quando terminar (pronto ou com falha),
+ * avisa via POST pra callbackUrl (corpo do request, ou
+ * HELLOYOTTA_ACTIVITY_CALLBACK_URL como default) - ver deliverActivityCallback.
+ * Sem callback configurado, o resultado só fica na tabela ai_activity_drafts,
+ * consultável via GET .../generate/:draftId.
+ *
+ * Screenshots do projeto ficaram de fora desta versão (decisão do usuário) -
+ * não há hoje nenhum renderizador do motor real (Stage.js/Snap.svg/Canvas)
+ * fora do navegador.
+ */
+publicRouter.post('/activities/generate', async (req, res) => {
+    const expectedKey = process.env.HELLOYOTTA_INBOUND_API_KEY;
+    if (!expectedKey) return res.status(503).json({ error: 'Endpoint not configured' });
+
+    const auth = req.headers.authorization || '';
+    const providedKey = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+    if (!providedKey || !timingSafeEqual(providedKey, expectedKey)) {
+        return res.status(401).json({ error: 'Invalid or missing API key' });
+    }
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    const rawTheme = req.body && req.body.theme;
+    const theme = typeof rawTheme === 'string' ? rawTheme.trim() : '';
+    if (!theme || theme.length > 200) {
+        return res.status(400).json({ error: 'theme é obrigatório (texto de 1 a 200 caracteres)' });
+    }
+
+    const rawCallbackUrl = req.body && req.body.callbackUrl;
+    const callbackUrl = typeof rawCallbackUrl === 'string' && rawCallbackUrl.trim()
+        ? rawCallbackUrl.trim()
+        : (process.env.HELLOYOTTA_ACTIVITY_CALLBACK_URL || null);
+
+    try {
+        const { data: inserted, error: insertErr } = await supabase
+            .from('ai_activity_drafts')
+            .insert({ theme, status: 'generating', callback_url: callbackUrl })
+            .select('id')
+            .single();
+
+        if (insertErr || !inserted) {
+            console.error('[public] POST activities/generate: falha ao criar rascunho:', insertErr);
+            return res.status(500).json({ error: 'Falha ao criar rascunho: ' + (insertErr ? insertErr.message : 'unknown') });
+        }
+
+        res.status(202).json({ draftId: inserted.id, status: 'generating' });
+
+        runInBackground(processActivityDraft(supabase, inserted.id, theme, callbackUrl));
+    } catch (err) {
+        console.error('[public] POST activities/generate error:', err);
+        if (!res.headersSent) res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * GET /api/public/activities/generate/:draftId
+ * Fallback de observabilidade/retry pra quando o callback de
+ * processActivityDraft falhar (rede instável do lado da HelloYotta, etc.) -
+ * mesma chave estática dos outros endpoints deste arquivo.
+ */
+publicRouter.get('/activities/generate/:draftId', async (req, res) => {
+    const expectedKey = process.env.HELLOYOTTA_INBOUND_API_KEY;
+    if (!expectedKey) return res.status(503).json({ error: 'Endpoint not configured' });
+
+    const auth = req.headers.authorization || '';
+    const providedKey = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+    if (!providedKey || !timingSafeEqual(providedKey, expectedKey)) {
+        return res.status(401).json({ error: 'Invalid or missing API key' });
+    }
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    const draftId = parseInt(req.params.draftId, 10);
+    if (!Number.isFinite(draftId)) return res.status(400).json({ error: 'Invalid draftId' });
+
+    try {
+        const { data, error } = await supabase
+            .from('ai_activity_drafts')
+            .select('id, theme, status, project_name, description, project_json, requirements, hints, asset_gap_note, error, created_at, updated_at')
+            .eq('id', draftId)
+            .maybeSingle();
+
+        if (error) throw error;
+        if (!data) return res.status(404).json({ error: 'Rascunho não encontrado' });
+
+        res.json({ draft: data });
+    } catch (err) {
+        console.error('[public] GET activities/generate/:draftId error:', err);
         res.status(500).json({ error: err.message });
     }
 });

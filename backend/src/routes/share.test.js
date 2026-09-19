@@ -322,3 +322,164 @@ describe('publicRouter GET /students/:studentId/projects', () => {
         expect(res.body.error).toMatch(/updatedSince/);
     });
 });
+
+describe('publicRouter POST /activities/generate', () => {
+    const ROUTE = '/activities/generate';
+    const ORIGINAL_ENV = { ...process.env };
+
+    beforeEach(() => {
+        jest.resetModules();
+        process.env = { ...ORIGINAL_ENV };
+    });
+
+    afterAll(() => {
+        process.env = ORIGINAL_ENV;
+    });
+
+    test('503 quando HELLOYOTTA_INBOUND_API_KEY não está configurada', async () => {
+        delete process.env.HELLOYOTTA_INBOUND_API_KEY;
+        const { publicRouter } = loadRouterFresh();
+        const handler = findRoute(publicRouter, 'post', ROUTE);
+
+        const req = mockReq({ body: { theme: 'A lenda do Saci Pererê' } });
+        const res = mockRes();
+
+        await handler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(503);
+        expect(res.body).toEqual({ error: 'Endpoint not configured' });
+    });
+
+    test('401 quando a chave enviada está errada', async () => {
+        process.env.HELLOYOTTA_INBOUND_API_KEY = 'chave-correta';
+        const { publicRouter } = loadRouterFresh();
+        const handler = findRoute(publicRouter, 'post', ROUTE);
+
+        const req = mockReq({
+            headers: { authorization: 'Bearer chave-errada' },
+            body: { theme: 'A lenda do Saci Pererê' },
+        });
+        const res = mockRes();
+
+        await handler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(401);
+    });
+
+    test('503 quando Supabase não está configurado (mesmo com chave OK)', async () => {
+        process.env.HELLOYOTTA_INBOUND_API_KEY = 'chave-correta';
+        delete process.env.SUPABASE_URL;
+        delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+        const { publicRouter } = loadRouterFresh();
+        const handler = findRoute(publicRouter, 'post', ROUTE);
+
+        const req = mockReq({
+            headers: { authorization: 'Bearer chave-correta' },
+            body: { theme: 'A lenda do Saci Pererê' },
+        });
+        const res = mockRes();
+
+        await handler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(503);
+        expect(res.body).toEqual({ error: 'Database not configured' });
+    });
+
+    test('400 quando theme está ausente (com chave e Supabase configurados)', async () => {
+        process.env.HELLOYOTTA_INBOUND_API_KEY = 'chave-correta';
+        process.env.SUPABASE_URL = 'https://example.supabase.co';
+        process.env.SUPABASE_SERVICE_ROLE_KEY = 'fake-service-role-key';
+        const { publicRouter } = loadRouterFresh();
+        const handler = findRoute(publicRouter, 'post', ROUTE);
+
+        const req = mockReq({
+            headers: { authorization: 'Bearer chave-correta' },
+            body: {},
+        });
+        const res = mockRes();
+
+        await handler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.body.error).toMatch(/theme/);
+    });
+
+    test('400 quando theme é maior que 200 caracteres', async () => {
+        process.env.HELLOYOTTA_INBOUND_API_KEY = 'chave-correta';
+        process.env.SUPABASE_URL = 'https://example.supabase.co';
+        process.env.SUPABASE_SERVICE_ROLE_KEY = 'fake-service-role-key';
+        const { publicRouter } = loadRouterFresh();
+        const handler = findRoute(publicRouter, 'post', ROUTE);
+
+        const req = mockReq({
+            headers: { authorization: 'Bearer chave-correta' },
+            body: { theme: 'x'.repeat(201) },
+        });
+        const res = mockRes();
+
+        await handler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(400);
+    });
+});
+
+describe('publicRouter GET /activities/generate/:draftId', () => {
+    const ROUTE = '/activities/generate/:draftId';
+    const ORIGINAL_ENV = { ...process.env };
+
+    beforeEach(() => {
+        jest.resetModules();
+        process.env = { ...ORIGINAL_ENV };
+    });
+
+    afterAll(() => {
+        process.env = ORIGINAL_ENV;
+    });
+
+    test('503 quando HELLOYOTTA_INBOUND_API_KEY não está configurada', async () => {
+        delete process.env.HELLOYOTTA_INBOUND_API_KEY;
+        const { publicRouter } = loadRouterFresh();
+        const handler = findRoute(publicRouter, 'get', ROUTE);
+
+        const req = mockReq({ params: { draftId: '1' } });
+        const res = mockRes();
+
+        await handler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(503);
+    });
+
+    test('401 quando a chave enviada está errada', async () => {
+        process.env.HELLOYOTTA_INBOUND_API_KEY = 'chave-correta';
+        const { publicRouter } = loadRouterFresh();
+        const handler = findRoute(publicRouter, 'get', ROUTE);
+
+        const req = mockReq({
+            params: { draftId: '1' },
+            headers: { authorization: 'Bearer chave-errada' },
+        });
+        const res = mockRes();
+
+        await handler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(401);
+    });
+
+    test('400 quando draftId no path não é um número válido', async () => {
+        process.env.HELLOYOTTA_INBOUND_API_KEY = 'chave-correta';
+        process.env.SUPABASE_URL = 'https://example.supabase.co';
+        process.env.SUPABASE_SERVICE_ROLE_KEY = 'fake-service-role-key';
+        const { publicRouter } = loadRouterFresh();
+        const handler = findRoute(publicRouter, 'get', ROUTE);
+
+        const req = mockReq({
+            params: { draftId: 'not-a-number' },
+            headers: { authorization: 'Bearer chave-correta' },
+        });
+        const res = mockRes();
+
+        await handler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(400);
+    });
+});

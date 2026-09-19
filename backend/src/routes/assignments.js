@@ -59,6 +59,8 @@ const { notifyAssignmentRegistered } = require('../services/helloyotta');
 const { computeProjectManifest, compareManifests } = require('../services/assignmentScoring');
 const { resolveAssignmentFields } = require('../services/assignmentResolver');
 const { generateHints } = require('../services/hintsGeneration');
+const { generateActivityPlan } = require('../services/activityGeneration');
+const { buildProjectFromPlan } = require('../services/activityProjectBuilder');
 
 const router = express.Router();
 
@@ -91,6 +93,103 @@ async function getTurmaAndNivel(req) {
     const nivel = getNivelFromClaims(claims);
     return { turmaId, nivel };
 }
+
+/**
+ * POST /api/assignments/generate-from-theme
+ * Body: { theme: string, level?: 1|2|3 }
+ *
+ * `level` (1º/2º/3º ano - ver LEVEL_PROFILES em activityProjectBuilder.js)
+ * ajusta a complexidade da atividade gerada (nº de cenas/personagens,
+ * gatilhos permitidos, uso de loop/mensagens, tamanho dos scripts) -
+ * escolhido manualmente pelo professor na tela (ver GenerateActivityModal.js,
+ * pré-selecionado a partir do `nivel`/série da turma quando disponível nas
+ * claims, mas sempre editável). Ausente/inválido cai no default (nível 2)
+ * dentro de generateActivityPlan - nunca rejeitado aqui.
+ *
+ * Cria um projeto NOVO a partir só de um tema em texto livre (ex.: "A lenda
+ * do Saci Pererê"), usando o mesmo agente de geração por IA do endpoint
+ * servidor-a-servidor da HelloYotta (POST /api/public/activities/generate,
+ * ver routes/share.js) - aqui, porém, é o PRÓPRIO professor logado quem
+ * dispara e espera a resposta (sem callback/polling): SÍNCRONO, com um
+ * spinner do lado do cliente (ver GenerateActivityModal.js) - decisão
+ * diferente da rota da HelloYotta porque lá ninguém fica "sentado esperando"
+ * numa aba de navegador.
+ *
+ * De propósito NÃO gera dicas aqui (só o projeto) - dicas já são geradas de
+ * novo, a partir do projeto salvo de verdade, quando o professor clicar
+ * "Cadastrar aula" no editor (AssignmentAuthorBar.js → POST
+ * /assignments/:id/generate-hints, fluxo já existente) - gerar aqui TAMBÉM
+ * seria uma segunda chamada de LLM inteira pra um resultado descartado, já
+ * que só as dicas geradas em cima do projeto REGISTRADO como missão contam.
+ *
+ * O projeto criado é um projeto normal (mesma tabela/shape de sempre,
+ * owner = professor logado) - não vira uma missão sozinho; o professor abre
+ * no editor (ver GenerateActivityModal.js) e usa o fluxo de "Cadastrar aula"
+ * já existente pra revisar/ajustar os blocos e publicar, exatamente como se
+ * tivesse montado o projeto à mão.
+ *
+ * Só professores podem chamar (req.role, populado pelas claims do JWT em
+ * index.js) - alunos autenticados não têm motivo pra gerar uma atividade.
+ */
+router.post('/generate-from-theme', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+    if (req.role !== 'professor') return res.status(403).json({ error: 'Só professores podem gerar atividades por IA' });
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    const rawTheme = req.body && req.body.theme;
+    const theme = typeof rawTheme === 'string' ? rawTheme.trim() : '';
+    if (!theme || theme.length > 200) {
+        return res.status(400).json({ error: 'theme é obrigatório (texto de 1 a 200 caracteres)' });
+    }
+    // Nível 1/2/3 (1º/2º/3º ano - ver LEVEL_PROFILES em
+    // activityProjectBuilder.js). Ausente/inválido cai no default dentro de
+    // generateActivityPlan - nunca rejeitado aqui, só repassado como veio.
+    const level = req.body && req.body.level;
+
+    try {
+        const { projectName, teacherDescription, assetGapNote, plan, level: resolvedLevel, levelLabel } =
+            await generateActivityPlan(theme, level);
+        const { projectJson } = buildProjectFromPlan(plan);
+
+        const now = new Date().toISOString();
+        const { data: inserted, error: insertErr } = await supabase
+            .from('projects')
+            .insert({
+                name: projectName,
+                json: JSON.stringify(projectJson),
+                owner: req.userId,
+                deleted: 'NO',
+                version: 'iOSv01',
+                ctime: now,
+                mtime: now,
+            })
+            .select('id')
+            .single();
+
+        if (insertErr || !inserted) {
+            console.error('[assignments] generate-from-theme: falha ao criar projeto:', insertErr);
+            return res.status(500).json({ error: 'Falha ao criar projeto: ' + (insertErr ? insertErr.message : 'unknown') });
+        }
+
+        res.json({
+            success: true,
+            projectId: inserted.id,
+            projectName,
+            description: teacherDescription,
+            assetGapNote,
+            level: resolvedLevel,
+            levelLabel,
+        });
+    } catch (err) {
+        if (err.code === 'NOT_CONFIGURED') {
+            return res.status(503).json({ error: 'Geração de atividade por IA não configurada' });
+        }
+        console.error('[assignments] POST /generate-from-theme error:', err);
+        res.status(500).json({ error: err.message || 'Falha ao gerar atividade' });
+    }
+});
 
 /**
  * POST /api/assignments/register

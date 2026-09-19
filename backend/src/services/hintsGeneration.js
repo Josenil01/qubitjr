@@ -95,6 +95,7 @@ const fs = require('fs');
 const path = require('path');
 const OpenAI = require('openai');
 const { computeDetailedManifest } = require('./detailedManifest');
+const { callLLM } = require('./llmProvider');
 
 const DEEPSEEK_BASE_URL = 'https://api.deepseek.com';
 // Achado em teste real (aviso oficial da DeepSeek, set/2026) - 'deepseek-chat'
@@ -872,4 +873,81 @@ async function generateHints(projectJson, hintContext, projectName) {
     return { hints };
 }
 
-module.exports = { generateHints };
+/**
+ * Mesmo pipeline de generateHints() (transcript -> LLM -> validação contra o
+ * manifesto real -> redes de segurança de fillBlockArgs/
+ * fillMissingCharacterAddedHints/fillMissingDefaultCharacterHints), mas
+ * chamando o provider CONFIGURÁVEL de llmProvider.js em vez do cliente
+ * DeepSeek fixo (getClient()/DEEPSEEK_MODEL) que generateHints() usa.
+ *
+ * Existe como função SEPARADA (não um parâmetro extra em generateHints) de
+ * propósito: generateHints() é o caminho já validado em produção pra
+ * routes/assignments.js (professor que monta o projeto de exemplo à mão) e
+ * fica intocado; esta função só é usada pela geração de atividade por tema
+ * (ver activityGeneration.js/routes/share.js), que decidiu deixar o mesmo
+ * provider escolhido pra gerar a atividade também gerar as dicas dela.
+ *
+ * @param {object} projectJson - mesmo shape de generateHints().
+ * @param {string} [hintContext]
+ * @param {string} [projectName]
+ * @param {'deepseek'|'anthropic'} [provider] - repassado pra llmProvider.js;
+ *   omitido usa o default de ACTIVITY_GENERATION_PROVIDER.
+ * @param {string} [model] - idem, pro modelo.
+ * @returns {Promise<{ hints: Array<{ id: string, text: string, when: object }> }>}
+ */
+async function generateHintsWithProvider(projectJson, hintContext, projectName, provider, model) {
+    const manifest = computeDetailedManifest(projectJson);
+    const transcript = buildTranscript(manifest);
+    const introHint = buildIntroHint(hintContext, projectName);
+
+    if (!transcript) {
+        return { hints: [{ id: 'h1', text: introHint.text, when: introHint.when }] };
+    }
+
+    const trimmedContext = typeof hintContext === 'string' ? hintContext.trim() : '';
+    const userMessage = trimmedContext
+        ? `CONTEXTO DO PROFESSOR:\n${trimmedContext}\n\nTRANSCRIÇÃO DO PROJETO:\n${transcript}`
+        : transcript;
+
+    let rawContent;
+    try {
+        rawContent = await callLLM({ systemPrompt: SYSTEM_PROMPT, userMessage, temperature: 0.7, provider, model });
+    } catch (err) {
+        if (err.code === 'NOT_CONFIGURED') throw err;
+        throw new Error('Falha ao chamar a API de geração de dicas: ' + err.message);
+    }
+
+    let parsed;
+    try {
+        parsed = JSON.parse(stripCodeFences(rawContent));
+    } catch (err) {
+        throw new Error('Resposta da IA de geração de dicas não é um JSON válido: ' + err.message);
+    }
+
+    const rawHints = Array.isArray(parsed && parsed.hints) ? parsed.hints : [];
+    const validationIndex = buildValidationIndex(manifest);
+
+    const validHints = [];
+    for (const hint of rawHints) {
+        if (isHintValid(hint, validationIndex)) {
+            validHints.push(hint);
+        } else {
+            console.warn('[hintsGeneration] Descartando dica inválida/possivelmente alucinada da LLM:', JSON.stringify(hint));
+        }
+    }
+
+    const withBlockArgs = fillBlockArgs(validHints, manifest);
+    const withCharacterAddedHints = fillMissingCharacterAddedHints(withBlockArgs, manifest);
+    const withDefaultCharacterHints = fillMissingDefaultCharacterHints(withCharacterAddedHints, manifest);
+    const withIntro = [introHint, ...withDefaultCharacterHints];
+
+    const hints = withIntro.map((hint, idx) => ({
+        id: `h${idx + 1}`,
+        text: hint.text,
+        when: hint.when,
+    }));
+
+    return { hints };
+}
+
+module.exports = { generateHints, generateHintsWithProvider };

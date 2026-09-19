@@ -316,5 +316,43 @@ CREATE TABLE IF NOT EXISTS hint_events (
 CREATE INDEX IF NOT EXISTS idx_hint_events_student_assignment ON hint_events(student_id, assignment_id);
 
 -- ============================================
+-- ai_activity_drafts
+-- ============================================
+-- Rascunhos de atividade gerados por IA a partir só de um TEMA em texto
+-- livre, pedidos pela HelloYotta via POST /api/public/activities/generate
+-- (routes/share.js) - ver services/activityGeneration.js. Deliberadamente
+-- SEM turma_id/teacher_id/owner: a decisão do produto foi "a HelloYotta manda
+-- só o tema", então o rascunho não pertence a nenhuma turma/professor ainda -
+-- fica solto aqui até um professor abrir/importar (fluxo de importação é
+-- trabalho futuro, fora do escopo desta tabela). Por isso não reaproveita
+-- `assignments` (que exige turma_id/teacher_id NOT NULL) nem `projects`
+-- (exige owner) - é uma tabela própria, mais parecida com uma fila de
+-- geração do que com uma missão de verdade.
+--
+-- status: 'generating' (linha recém-criada, resposta de POST /generate já
+-- devolvida, pipeline ainda rodando em background) | 'ready' (project_json/
+-- description/hints preenchidos) | 'failed' (error preenchido). callback_url
+-- é ecoado de volta (best-effort) quando o processamento termina, em qualquer
+-- dos dois casos finais - ver notifyActivityDraftCallback em routes/share.js.
+CREATE TABLE IF NOT EXISTS ai_activity_drafts (
+  id                    SERIAL PRIMARY KEY,
+  theme                 TEXT    NOT NULL,
+  status                TEXT    NOT NULL DEFAULT 'generating', -- 'generating' | 'ready' | 'failed'
+  project_name          TEXT,
+  description           TEXT,
+  project_json          JSONB,
+  requirements          JSONB,
+  hints                 JSONB,
+  asset_gap_note        TEXT,
+  error                 TEXT,
+  callback_url          TEXT,
+  callback_delivered_at TIMESTAMP,
+  created_at            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_ai_activity_drafts_status ON ai_activity_drafts(status);
+
+-- ============================================
 -- Cole o conteúdo acima no Supabase SQL Editor
 -- ============================================

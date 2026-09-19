@@ -11,7 +11,9 @@
   "author": "ScratchJr Web Team",
   "license": "MIT",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.127.0",
     "@supabase/supabase-js": "^2.39.8",
+    "@vercel/functions": "^3.9.8",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
