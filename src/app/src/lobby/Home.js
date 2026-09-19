@@ -10,6 +10,7 @@ import Localization from '../utils/Localization.js';
 import ScratchAudio from '../utils/ScratchAudio.js';
 import Vector from '../geom/Vector.js';
 import AssignmentNotice from './AssignmentNotice.js';
+import GenerateActivityModal from './GenerateActivityModal.js';
 import {gn, newHTML, isTablet} from '../utils/lib.js';
 
 let frame;
@@ -31,6 +32,9 @@ export default class Home {
         // Sino de missão pendente no topbar - no-op silencioso se não
         // houver missão ativa/não iniciada pro aluno (ver AssignmentNotice.js).
         AssignmentNotice.init();
+        // Botão flutuante "Gerar atividade com IA" - no-op silencioso pra
+        // quem não é professor (ver GenerateActivityModal.js).
+        GenerateActivityModal.init();
     }
 
     ////////////////////////////
