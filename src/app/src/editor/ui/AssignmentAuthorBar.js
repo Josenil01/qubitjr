@@ -379,7 +379,13 @@ export default class AssignmentAuthorBar {
         var textarea = newHTML('textarea', 'assignmentContextTextarea', card);
         textarea.maxLength = 1000;
         textarea.placeholder = 'Ex.: uma história sobre o folclore brasileiro, cada cena se passa numa casa diferente...';
-        textarea.value = cachedHintContext;
+        // Missão nova gerada por IA (GenerateActivityModal): ainda sem
+        // hint_context salvo, então preenche com a descrição que a IA acabou
+        // de mostrar pro professor - mesma chave gravada lá.
+        var generatedKey = 'scratchjr_activity_description_' + ScratchJr.currentProject;
+        var generatedDescription = '';
+        try { generatedDescription = sessionStorage.getItem(generatedKey) || ''; } catch (err) { /* noop */ }
+        textarea.value = cachedHintContext || generatedDescription.slice(0, textarea.maxLength);
 
         var footer = newHTML('div', 'assignmentHintsFooter', card);
         var skipBtn = newHTML('button', 'assignmentHintsSkipBtn', footer);
@@ -394,12 +400,17 @@ export default class AssignmentAuthorBar {
                 overlayEl.parentNode.removeChild(overlayEl);
             }
         };
+        var consumeGenerated = function () {
+            try { sessionStorage.removeItem(generatedKey); } catch (err) { /* noop */ }
+        };
         skipBtn.onclick = function () {
+            consumeGenerated();
             close();
             proceed('');
         };
         goBtn.onclick = function () {
             var text = textarea.value.trim();
+            consumeGenerated();
             close();
             proceed(text);
         };

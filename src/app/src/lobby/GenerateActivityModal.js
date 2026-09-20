@@ -104,7 +104,16 @@ function guessDefaultLevel () {
  * passar pela tela de aprovação. Com pmd5 já definido, entry/editor.js NÃO
  * cria um projeto novo (hasProjectAlready) - só reabre este.
  */
-function gotoEditor (projectId) {
+function gotoEditor (projectId, description) {
+    // Leva a descrição gerada pela IA até a caixa "Sobre o que é esta
+    // atividade?" do editor (AssignmentAuthorBar._showContextPrompt), que a
+    // usa como preenchimento inicial - a missão ainda nem existe aqui
+    // (assignments.hint_context só nasce em "Cadastrar aula"), então não há
+    // onde guardar isso no servidor ainda. Mesma chave lá, duplicada de
+    // propósito (sem import entre lobby e editor/ui).
+    try {
+        if (description) sessionStorage.setItem('scratchjr_activity_description_' + projectId, description);
+    } catch (err) { /* noop - só perde o preenchimento automático */ }
     var tok = '';
     try { tok = window.__AUTH_TOKEN__ || sessionStorage.getItem('scratchjr_auth_token') || ''; } catch (err) { /* noop */ }
     window.location.href = '/editor.html?pmd5=' + projectId + '&mode=edit&teacherMode=author' +
@@ -271,7 +280,7 @@ export default class GenerateActivityModal {
             closeOverlay(overlayEl);
         };
         openBtn.onclick = function () {
-            gotoEditor(data.projectId);
+            gotoEditor(data.projectId, data.description);
         };
     }
 }
