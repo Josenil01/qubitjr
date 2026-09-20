@@ -21,7 +21,8 @@
  *  3. Sucesso → _showResult(): mostra a descrição gerada (e o aviso de asset
  *     aproximado, se houver) e um botão "Abrir no editor", que navega pro
  *     projeto recém-criado - mesma URL (/editor.html?pmd5=...) que
- *     Home.gotoEditor já usa, duplicada aqui de propósito (ver nota acima
+ *     Home.gotoEditor já usa (mais teacherMode=author, pra mostrar o botão
+ *     "Cadastrar aula" - é dele que saem as dicas e a aprovação), duplicada aqui de propósito (ver nota acima
  *     sobre não importar Home.js) em vez de importada.
  *
  * Reaproveita as classes .assignmentHintsOverlay/.assignmentHintsCard/
@@ -93,11 +94,21 @@ function guessDefaultLevel () {
     return match ? parseInt(match[0], 10) : 2;
 }
 
-/** Mesma navegação de Home.js#gotoEditor - duplicada aqui de propósito (ver docblock do topo). */
+/**
+ * Mesma navegação de Home.js#gotoEditor - duplicada aqui de propósito (ver
+ * docblock do topo) - com UMA diferença: inclui teacherMode=author. Sem
+ * isso o projeto gerado abre como um projeto comum, o botão "Cadastrar aula"
+ * (AssignmentAuthorBar.init) nunca aparece (ele só existe com teacherMode=author
+ * ou quando o projeto já é o molde de uma missão, e este acabou de ser
+ * criado) e o professor não tem como registrar a missão, gerar as dicas nem
+ * passar pela tela de aprovação. Com pmd5 já definido, entry/editor.js NÃO
+ * cria um projeto novo (hasProjectAlready) - só reabre este.
+ */
 function gotoEditor (projectId) {
     var tok = '';
     try { tok = window.__AUTH_TOKEN__ || sessionStorage.getItem('scratchjr_auth_token') || ''; } catch (err) { /* noop */ }
-    window.location.href = '/editor.html?pmd5=' + projectId + '&mode=edit' + (tok ? '&token=' + encodeURIComponent(tok) : '');
+    window.location.href = '/editor.html?pmd5=' + projectId + '&mode=edit&teacherMode=author' +
+        (tok ? '&token=' + encodeURIComponent(tok) : '');
 }
 
 function closeOverlay (overlayEl) {
