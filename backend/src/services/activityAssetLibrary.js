@@ -24,6 +24,15 @@ const path = require('path');
 
 // backend/src/services/ -> raiz do repo -> src/app/localizations/pt.json.
 const PT_LOCALIZATION_PATH = path.join(__dirname, '../../../src/app/localizations/pt.json');
+// Só pra ler o "scale" de cada personagem (ver getCharacterScale) - a LISTA de
+// personagens continua vindo de pt.json, ver docblock acima.
+const MEDIA_JSON_PATH = path.join(__dirname, '../../../src/app/media.json');
+
+// Mesmo default de Library.js (`!data.scale ? 0.5 : data.scale`) pra
+// personagem sem "scale" no media.json ou se o arquivo não puder ser lido.
+const DEFAULT_CHARACTER_SCALE = 0.5;
+
+let _scaleByMd5 = null;
 
 let _library = null;
 
@@ -56,4 +65,25 @@ function loadLibrary() {
     return _library;
 }
 
-module.exports = { loadLibrary };
+/**
+ * Escala inicial de um personagem, lida do campo "scale" do media.json - a
+ * mesma que o editor usa ao adicioná-lo pela galeria (Library.js), pra
+ * personagens gerados por IA nascerem no mesmo tamanho dos escolhidos à mão.
+ */
+function getCharacterScale(md5) {
+    if (!_scaleByMd5) {
+        _scaleByMd5 = new Map();
+        try {
+            const media = JSON.parse(fs.readFileSync(MEDIA_JSON_PATH, 'utf8'));
+            for (const spr of Array.isArray(media.sprites) ? media.sprites : []) {
+                const scale = Number(spr.scale);
+                if (spr.md5 && scale > 0) _scaleByMd5.set(spr.md5, scale);
+            }
+        } catch (err) {
+            console.warn('[activityAssetLibrary] Falha ao carregar', MEDIA_JSON_PATH, '- escalas usarão o default', DEFAULT_CHARACTER_SCALE + ':', err.message);
+        }
+    }
+    return _scaleByMd5.get(md5) || DEFAULT_CHARACTER_SCALE;
+}
+
+module.exports = { loadLibrary, getCharacterScale };

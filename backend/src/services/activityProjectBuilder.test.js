@@ -311,3 +311,24 @@ describe('validatePlan com levelProfile (perfis de nível 1/2/3)', () => {
         expect(script[1].nested).toHaveLength(4); // conteúdo interno do repeat não é cortado
     });
 });
+
+describe('escala dos personagens (media.json)', () => {
+    test('personagem gerado nasce com o "scale" do media.json, não com o default', () => {
+        const { getCharacterScale } = require('./activityAssetLibrary');
+        // Escolhe um personagem cuja escala difere do default (0.5) e de 1, senão
+        // o teste não distinguiria "leu do arquivo" de "caiu no fallback".
+        const spr = require('../../../src/app/media.json').sprites.find((x) => x.scale && x.scale !== 0.5 && x.scale !== 1);
+        expect(spr).toBeDefined();
+        expect(getCharacterScale(spr.md5)).toBe(spr.scale);
+        expect(getCharacterScale('nao-existe.svg')).toBe(0.5);
+
+        const library = { backgroundMd5s: new Set(['Farm.svg']), characterMd5s: new Set([spr.md5]) };
+        const { plan } = validatePlan({
+            scenes: [{ backgroundMd5: 'Farm.svg', characters: [{ md5: spr.md5, name: 'X', scripts: [[['onflag', null]]] }] }],
+        }, library);
+        const serialized = JSON.stringify(buildProjectFromPlan(plan));
+        expect(serialized).toContain('"scale":' + spr.scale);
+        expect(serialized).toContain('"defaultScale":' + spr.scale);
+        expect(serialized).toContain('"homescale":' + spr.scale);
+    });
+});

@@ -42,6 +42,8 @@
 // personagem) confirmado como bloco real em BlockSpecs.js - não é um alias
 // nem invenção, é o mesmo tipo que assignmentScoring.js já pontua em
 // parallelism/userInteractivity.
+const { getCharacterScale } = require('./activityAssetLibrary');
+
 const TRIGGER_BLOCK_TYPES = new Set(['onflag', 'onclick', 'onmessage']);
 const NUMERIC_BLOCK_TYPES = new Set(['forward', 'back', 'up', 'down', 'left', 'right', 'hop', 'wait', 'repeat', 'grow', 'shrink']);
 const SETSPEED_VALUES = new Set([0, 1, 2]);
@@ -237,7 +239,7 @@ function encodeScript(validatedScript, startY = 0) {
 
 function buildSprite({ md5, name, scripts }, isFirstSprite) {
     const id = nextId('spr');
-    const scale = 1;
+    const scale = getCharacterScale(md5);
     return {
         id,
         data: {
