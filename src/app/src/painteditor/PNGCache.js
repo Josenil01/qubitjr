@@ -54,7 +54,7 @@ class PNGCache {
             };
             
             // Tentar carregar de ./pnglibrary/
-            const path = './pnglibrary/' + spriteName + '.png';
+            const path = './pnglibrary/' + spriteName + '.png?v=20260920';
             img.src = path;
         });
 

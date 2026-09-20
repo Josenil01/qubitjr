@@ -7,6 +7,8 @@
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
+// Incrementar quando svglibrary/pnglibrary forem corrigidos, pra furar o cache de 24h do navegador.
+const ASSET_VERSION = '20260920';
 
 class WebInterface {
   constructor() {
@@ -558,6 +560,11 @@ class WebInterface {
           // Se for um arquivo da raiz (como settings.json, localizations, etc)
           if (filename.includes('settings') || filename.startsWith('./') || filename.startsWith('/')) {
             let url = filename.startsWith('/') ? filename : filename;
+            // svglibrary/pnglibrary têm Cache-Control de 24h (vercel.json); a versão na URL
+            // força o navegador a baixar de novo quando um asset é corrigido.
+            if (/(^|\/)(svglibrary|pnglibrary)\//.test(url) && url.indexOf('?') < 0) {
+              url += '?v=' + ASSET_VERSION;
+            }
             const response = await fetch(url);
             if (response.ok) {
               const content = await response.text();
