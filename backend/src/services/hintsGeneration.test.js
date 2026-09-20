@@ -1040,4 +1040,66 @@ describe('generateHints', () => {
             expect(transcript).not.toContain('blocos:');
         });
     });
+
+    describe('chamada para ação da abertura, sem travessão e textos de reserva', () => {
+        it('usa o "intro" escrito pela LLM como primeira dica', async () => {
+            mockLlmResponse(JSON.stringify({ intro: '🚀 Vamos criar uma história sobre a primavera?', hints: [] }));
+
+            const result = await generateHints(twoSceneProject(), 'Descrição longa do professor', 'Primavera');
+
+            expect(result.hints[0]).toEqual({ id: 'h1', text: '🚀 Vamos criar uma história sobre a primavera?', when: { type: 'mission_intro' } });
+        });
+
+        it('manda o nome da atividade pra LLM depois da transcrição', async () => {
+            mockLlmResponse(JSON.stringify({ hints: [] }));
+
+            await generateHints(twoSceneProject(), '', 'Primavera');
+
+            expect(mockCreate.mock.calls[0][0].messages[1].content.endsWith('\n\nNOME DA ATIVIDADE: Primavera')).toBe(true);
+        });
+
+        it('ignora um "intro" longo demais e cai no texto de reserva', async () => {
+            mockLlmResponse(JSON.stringify({ intro: 'a'.repeat(300), hints: [] }));
+
+            const result = await generateHints(twoSceneProject(), '', 'Primavera');
+
+            expect(result.hints[0].text).toBe('🎯 Hoje vamos construir: Primavera!');
+        });
+
+        it('não despeja um contexto longo na abertura de reserva, usa o nome do projeto', async () => {
+            mockLlmResponse(JSON.stringify({ hints: [] }));
+
+            const result = await generateHints(twoSceneProject(), 'x'.repeat(400), 'Primavera');
+
+            expect(result.hints[0].text).toBe('🎯 Hoje vamos construir: Primavera!');
+        });
+
+        it('troca travessão (— e –) por vírgula em todas as dicas', async () => {
+            mockLlmResponse(JSON.stringify({
+                intro: '🚀 Vamos começar — vai ser divertido!',
+                hints: [{ text: 'Que tal colocar o cenário da Primavera – é lindo?', when: { type: 'scene_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 1 } }],
+            }));
+
+            const result = await generateHints(twoSceneProject(), '', 'Primavera');
+
+            for (const hint of result.hints) {
+                expect(hint.text).not.toMatch(/[\u2014\u2013]/);
+            }
+            expect(result.hints[0].text).toBe('🚀 Vamos começar, vai ser divertido!');
+            expect(result.hints[1].text).toBe('Que tal colocar o cenário da Primavera, é lindo?');
+        });
+
+        it('a dica de reserva da Ruby é um comando direto', async () => {
+            mockLlmResponse(JSON.stringify({ hints: [] }));
+            const project = buildProject([
+                { id: 'page1', md5: 'Woods.svg', sprites: [{ id: 'wolf', type: 'sprite', md5: 'HY-Lobsomem.svg', name: 'Lobisomem', scripts: [] }] },
+            ]);
+
+            const result = await generateHints(project, '', 'Bosque');
+            const ruby = result.hints.find((h) => h.when.type === 'default_character_present');
+
+            expect(ruby).toBeDefined();
+            expect(ruby.text).toBe('Apague a Ruby.');
+        });
+    });
 });

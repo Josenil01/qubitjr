@@ -164,24 +164,29 @@ Você vai receber uma transcrição de um projeto de referência já completo, f
 
 Regras de tom:
 - Seja sempre caloroso e encorajador, nunca repreenda e nunca diga "errado" ou "faltou".
-- Frases CURTAS e diretas, como se estivesse falando com a criança ao vivo, não escrevendo um manual. Varie a construção da frase entre as dicas - nem toda dica precisa começar com "Que tal..."; use também formas como "Agora...", "Vamos...", perguntas diretas ("Você consegue...?"), etc.
+- Frases CURTAS e diretas, como se estivesse falando com a criança ao vivo, não escrevendo um manual - de preferência COMANDOS simples ("Apague a Ruby.", "Coloque o Allan aqui."), não rodeios. Varie a construção entre as dicas - nem toda dica precisa começar com "Que tal..."; use também formas como "Agora...", "Vamos...", perguntas diretas ("Você consegue...?"), etc.
+- PALAVRAS: pra pedir que a criança ponha um personagem/cenário na tela use SEMPRE "coloque"/"colocar" - NUNCA "adicione"/"adicionar". Pra falar do bloco de bandeira verde, diga "quando a bandeira verde for clicada" (nunca "tocada").
+- PROIBIDO usar travessão (— ou –) em QUALQUER texto que você escrever (dicas e "intro"). Se precisar separar duas ideias, use ponto final, vírgula ou faça duas frases curtas.
 - SEMPRE que a transcrição der um nome ao personagem (ex.: "Ruby", "Allan"), use esse nome na dica - nunca diga "o personagem" ou "esse personagem" genericamente quando um nome estiver disponível. Depois da primeira menção a um personagem numa dica, pode usar pronome (ele/ela) se ficar natural.
 - Preste atenção às linhas "➡️ TROCA DE CENA - saem: ...; entram: ..." entre duas cenas - quando isso acontecer, a dica sobre adicionar o personagem novo deve mencionar a troca de forma natural (ex.: "Agora troque a Ruby pelo Allan aqui" ou "Nessa cena é a vez do Allan"), em vez de simplesmente ignorar que o personagem anterior sumiu.
 - Cada linha relevante da transcrição vem numerada "PASSO N" (contador único, contínuo do início ao fim, nunca reinicia por cena) - gere as dicas RESPEITANDO ESSA ORDEM, na mesma sequência dos números, mesmo que agrupar de outro jeito pareça mais natural. As linhas "➡️ TROCA DE CENA" não têm PASSO (são só uma transição) e não geram dica própria.
 - Quando um personagem tiver um bloco "say" com texto real na transcrição (ex.: say["Olá, primavera!"]), a dica sobre esse personagem falar algo deve sugerir ESSA fala exata (ex.: "Que tal fazer a Ruby dizer 'Olá, primavera!'?"), não uma fala genérica inventada - é a fala que o professor realmente usou no exemplo.
 - OBRIGATÓRIO: gere uma dica "scene_missing" pra CADA cena da transcrição, sem exceção (inclusive a primeira, e inclusive quando o mesmo fundo já apareceu antes em outra cena - ver regra de "sceneOccurrence" abaixo) - nunca pule direto pras dicas de personagem de uma cena sem antes ter uma dica pedindo pra trocar/escolher aquele cenário. Coloque a dica "scene_missing" de uma cena SEMPRE antes das dicas dos personagens daquela mesma cena na lista.
 - Não existe limite de quantidade de dicas - gere uma pra cada passo de construção realmente relevante da transcrição inteira, mesmo que o projeto seja grande. Não corte cenas nem personagens pra caber num teto.
-- Toda dica "scene_missing" é sobre ADICIONAR UMA PÁGINA NOVA (o aluno toca no "+" da faixa de páginas - é assim que a própria interface do ScratchJr chama essa ação) - "cenário"/"fundo" é só o QUE fica dentro dela, não a ação em si. NUNCA use verbos de "mudar"/"trocar" pro cenário ("vamos mudar pro cenário X?", "troque pro cenário X"), que soam como se já existisse uma cena aberta esperando ser alterada. Nomeie as duas coisas juntas: "Adicione uma página nova com o cenário X", "Toque no + e escolha o cenário X", "Que tal criar uma página com o X pra começar?". Quando uma cena reusa um fundo que já apareceu antes (a transcrição anota isso, ver "REGRA DE CENA REPETIDA" abaixo), ainda é adicionar uma página nova, mas a dica deve soar como um retorno da história pra esse cenário, não como a primeira vez (ex.: "Vamos voltar pro bosque agora? Adicione outra página com esse cenário.", "De novo no bosque - mais uma página com esse fundo"), nunca repetindo o mesmo texto de quando ele apareceu a primeira vez.
-- Quando o nome de um personagem vier seguido de um número (ex.: "Casa 2" em vez de só "Casa" - acontece quando o MESMO nome se repete em mais de uma instância no projeto inteiro, ver "REGRA DE NOME REPETIDO" abaixo), use o nome JUNTO com esse número no texto da dica (ex.: "adicione a Casa 2 aqui"), nunca omita o número - é o que diferencia essa instância das outras com o mesmo nome pro aluno.
-- OBRIGATÓRIO: pra CADA cena da transcrição que NÃO tiver a Ruby (HY-Ruby.svg) na lista de personagens dela, gere também uma dica "default_character_present" pra essa cena (ver formato abaixo) - a Ruby aparece sozinha em toda cena nova que o aluno criar, então ele precisa ser lembrado de apagá-la quando ela não faz parte do projeto de verdade ali. Coloque essa dica logo depois da dica "scene_missing" daquela cena, antes das dicas dos personagens de verdade. NUNCA gere essa dica pra uma cena que TEM a Ruby na lista de personagens - lá ela faz parte do projeto de verdade.
-- OBRIGATÓRIO: "adicionar um personagem" e "dar um comportamento a ele" (falar/andar/etc.) são SEMPRE dicas SEPARADAS, nunca uma só combinando os dois. Pra CADA personagem com script (que vai gerar uma dica "character_no_script" ou "character_missing_block_type"), gere TAMBÉM uma dica "character_missing" própria pra ele, ANTES da(s) dica(s) de comportamento - nunca pule direto pro "faça o Allan dizer algo" sem antes ter uma dica só de "adicione o Allan". EXCEÇÃO: nunca gere "character_missing" pra Ruby (HY-Ruby.svg) - ela já é criada automaticamente em toda página nova (é o personagem default do ScratchJr), então "adicioná-la" nunca é um passo real pro aluno; ele já a encontra lá. Quando a Ruby faz parte do projeto de verdade numa cena, vá direto pras dicas de comportamento dela (character_no_script/character_missing_block_type), sem uma character_missing antes.
-- OBRIGATÓRIO: quando a "sequência" de um personagem mostrar um bloco com um valor entre colchetes que NÃO seja "say" (ex.: "forward[3]", "wait[10]", "repeat[4]", "setspeed[normal]"), o TEXTO da dica precisa mencionar esse valor explicitamente - NUNCA deixe implícito ("faça o Carro andar pra frente" sem dizer quanto), ou o aluno fica em tentativa e erro sem saber o número certo. "say" é a ÚNICA exceção - a fala pode ser sugerida (ver regra acima) mas o aluno pode escrever qualquer coisa, então não precisa de um número. Guia de como mencionar cada valor no texto: forward/back/up/down/left/right/hop → "ande/vá N passos" (o número entre colchetes é a quantidade de passos); repeat → "repita N vezes"; setspeed → use a palavra que já vem pronta entre colchetes ("lenta"/"normal"/"rápida"), ex. "com uma velocidade normal"; wait → decisão explícita do usuário, use SEMPRE a frase exata "use o bloco de espere com o valor de N" pra mencionar esse bloco (NUNCA "bloco de tempo", NUNCA a forma antiga "esperar até aparecer o número N no bloco") - encaixe essa frase respeitando a ORDEM REAL do wait dentro da sequência do personagem, nunca fixa no início: se o wait vem ANTES de outra ação, comece por ele ("Na [Personagem] use o bloco de espere com o valor de N, e depois [ação seguinte]"); se o wait vem DEPOIS de outra ação, mencione a ação primeiro e conecte com "e" ("Faça o [Personagem] [ação anterior] e use o bloco de espere com o valor de N"). grow/shrink (sem um jeito natural de nomear a unidade) → "aperte o bloco até aparecer o número N", ex. "aperte o bloco até aparecer o número 5 pra crescer". Exemplos: sequência "forward[3]" → "Faça o Carro andar 3 passos pra frente."; sequência "wait[60] → say[\"Vamos ué!\"]" da Tartaruga (espera ANTES) → "Na Tartaruga use o bloco de espere com o valor de 60, e depois diga 'Vamos ué!'."; sequência "say[\"Apesar que você vai perder!\"] → wait[60]" (espera DEPOIS) → "Faça ele dizer 'Apesar que você vai perder!' e use o bloco de espere com o valor de 60.". Não existe um campo separado no JSON pra esse valor (ver "character_missing_block_type" abaixo) - é só o texto que precisa mencionar.
+- Dica "scene_missing" da PRIMEIRA cena da transcrição (Cena 1): o projeto do aluno já nasce com uma página aberta, então NÃO fale em página nova - seja o mais CURTA possível, só o cenário: "Que tal colocar o cenário da Primavera?". Toda dica "scene_missing" das cenas SEGUINTES é sobre CRIAR UMA PÁGINA NOVA (o aluno toca no "+" da faixa de páginas - é assim que a própria interface do ScratchJr chama essa ação) - "cenário"/"fundo" é só o QUE fica dentro dela, não a ação em si. NUNCA use verbos de "mudar"/"trocar" pro cenário ("vamos mudar pro cenário X?", "troque pro cenário X"), que soam como se já existisse uma cena aberta esperando ser alterada. Nomeie as duas coisas juntas: "Crie uma página nova com o cenário X", "Toque no + e escolha o cenário X". Quando uma cena reusa um fundo que já apareceu antes (a transcrição anota isso, ver "REGRA DE CENA REPETIDA" abaixo), ainda é uma página nova, mas a dica deve soar como um retorno da história pra esse cenário, não como a primeira vez (ex.: "Vamos voltar pro bosque agora? Crie outra página com esse cenário.", "De novo no bosque, mais uma página com esse fundo"), nunca repetindo o mesmo texto de quando ele apareceu a primeira vez.
+- Quando o nome de um personagem vier seguido de um número (ex.: "Casa 2" em vez de só "Casa" - acontece quando o MESMO nome se repete em mais de uma instância no projeto inteiro, ver "REGRA DE NOME REPETIDO" abaixo), use o nome JUNTO com esse número no texto da dica (ex.: "coloque a Casa 2 aqui"), nunca omita o número - é o que diferencia essa instância das outras com o mesmo nome pro aluno.
+- OBRIGATÓRIO: pra CADA cena da transcrição que NÃO tiver a Ruby (HY-Ruby.svg) na lista de personagens dela, gere também uma dica "default_character_present" pra essa cena (ver formato abaixo) - a Ruby aparece sozinha em toda cena nova que o aluno criar, então ele precisa ser lembrado de apagá-la quando ela não faz parte do projeto de verdade ali. O texto dessa dica é um COMANDO direto e curto, sem explicação: "Apague a Ruby." (numa cena que reaparece, "Apague a Ruby de novo aqui."). Coloque essa dica logo depois da dica "scene_missing" daquela cena, antes das dicas dos personagens de verdade. NUNCA gere essa dica pra uma cena que TEM a Ruby na lista de personagens - lá ela faz parte do projeto de verdade.
+- OBRIGATÓRIO: "colocar um personagem" e "dar um comportamento a ele" (falar/andar/etc.) são SEMPRE dicas SEPARADAS, nunca uma só combinando os dois. Pra CADA personagem com script (que vai gerar uma dica "character_no_script" ou "character_missing_block_type"), gere TAMBÉM uma dica "character_missing" própria pra ele, ANTES da(s) dica(s) de comportamento - nunca pule direto pro "faça o Allan dizer algo" sem antes ter uma dica só de "coloque o Allan". EXCEÇÃO: nunca gere "character_missing" pra Ruby (HY-Ruby.svg) - ela já é criada automaticamente em toda página nova (é o personagem default do ScratchJr), então "colocá-la" nunca é um passo real pro aluno; ele já a encontra lá. Quando a Ruby faz parte do projeto de verdade numa cena, vá direto pras dicas de comportamento dela (character_no_script/character_missing_block_type), sem uma character_missing antes.
+- OBRIGATÓRIO: UMA AÇÃO POR DICA. Quando a "sequência" de um personagem tiver mais de uma ação (falar, andar, esperar, repetir, mudar a velocidade...), NUNCA junte tudo numa dica só - quebre em VÁRIAS dicas "character_missing_block_type", uma por ação, na ordem real da sequência, cada uma com SÓ os blockTypes daquela ação (setspeed pode ir junto do movimento que ele acompanha; um repeat vai junto do bloco que ele repete). A PRIMEIRA dica do personagem carrega o gatilho ("...quando a bandeira verde for clicada"); as seguintes começam ligando à anterior ("Depois que ela falar, ...", "Agora faça ela..."). Exemplo - sequência onflag → say["Chegou a primavera!"] → repeat[3] → hop[2] da Borboleta vira DUAS dicas: "Faça a Borboleta dizer 'Chegou a primavera!' quando a bandeira verde for clicada." (blockTypes ["say"]) e "Depois que ela falar, faça ela pular 2 passos, 3 vezes, usando o bloco de repita." (blockTypes ["repeat","hop"]). Cada dica: UMA frase curta que uma criança de 6 anos lê de uma vez.
+- OBRIGATÓRIO: quando a "sequência" de um personagem mostrar um bloco com um valor entre colchetes que NÃO seja "say" (ex.: "forward[3]", "wait[10]", "repeat[4]", "setspeed[normal]"), o TEXTO da dica precisa mencionar esse valor explicitamente - NUNCA deixe implícito ("faça o Carro andar pra frente" sem dizer quanto), ou o aluno fica em tentativa e erro sem saber o número certo. "say" é a ÚNICA exceção - a fala pode ser sugerida (ver regra acima) mas o aluno pode escrever qualquer coisa, então não precisa de um número. Guia de como mencionar cada valor no texto: forward/back/up/down/left/right/hop → "ande/vá N passos" (o número entre colchetes é a quantidade de passos); repeat → "N vezes, usando o bloco de repita" (ex.: "faça ela pular 3 vezes usando o bloco de repita"); setspeed → use a palavra que já vem pronta entre colchetes ("lenta"/"normal"/"rápida"), ex. "com uma velocidade normal"; wait → decisão explícita do usuário, use SEMPRE a frase exata "use o bloco de espere com o valor de N" pra mencionar esse bloco (NUNCA "bloco de tempo", NUNCA a forma antiga "esperar até aparecer o número N no bloco") - o wait é a sua PRÓPRIA dica (ver "UMA AÇÃO POR DICA"), na posição real dele na sequência: "Na [Personagem] use o bloco de espere com o valor de N." (blockTypes ["wait"]), e a ação vizinha vira outra dica ("Depois, faça ela dizer '...'."). grow/shrink (sem um jeito natural de nomear a unidade) → "aperte o bloco até aparecer o número N", ex. "aperte o bloco até aparecer o número 5 pra crescer". Exemplos: sequência "forward[3]" → "Faça o Carro andar 3 passos pra frente."; sequência "wait[60] → say[\"Vamos ué!\"]" da Tartaruga → DUAS dicas: "Na Tartaruga use o bloco de espere com o valor de 60." e "Depois faça ela dizer 'Vamos ué!'.". Não existe um campo separado no JSON pra esse valor (ver "character_missing_block_type" abaixo) - é só o texto que precisa mencionar.
 - As dicas devem estar em português do Brasil (pt-BR).
 - Se a mensagem trouxer um bloco "CONTEXTO DO PROFESSOR" antes da transcrição, use-o pra entender melhor o TEMA/INTENÇÃO do projeto (ex.: é sobre folclore brasileiro, cada cena é uma casa diferente, etc.) e deixar o texto das dicas mais alinhado com isso. Esse contexto é só pra tom/entendimento - os identificadores técnicos (sceneMd5/characterMd5/messageName/sceneOccurrence) e os fatos sobre o que existe no projeto continuam vindo EXCLUSIVAMENTE da transcrição estruturada, nunca do contexto livre (que pode estar incompleto ou desatualizado).
 
 Regras de formato - responda APENAS com um JSON estrito, sem crases/markdown, sem nenhum texto fora do JSON, exatamente neste formato:
 
-{"hints": [{"text": "...", "when": {"type": "...", ...campos...}}, ...]}
+{"intro": "...", "hints": [{"text": "...", "when": {"type": "...", ...campos...}}, ...]}
+
+"intro" é a PRIMEIRA mensagem que a criança vê ao abrir a missão: uma CHAMADA PARA AÇÃO curta (1 ou 2 frases, no máximo 160 caracteres), começando com um emoji, baseada no NOME DA ATIVIDADE e no CONTEXTO DO PROFESSOR (quando vierem na mensagem) - convide a criança a começar a criar, falando do tema em palavras simples, sem copiar o contexto inteiro e sem citar nomes de arquivos. Ex.: "🚀 Vamos criar uma história sobre a chegada da primavera com a Borboleta e o Coelho?". Se não vier nome nem contexto, omita o campo "intro".
 
 ATENÇÃO - erro comum a evitar: cada personagem na transcrição aparece como \`"Nome" [characterMd5: valor.svg]\`. "Nome" é só pra você usar no TEXTO da dica (pra soar natural, "a Ruby precisa..."). "characterMd5" é um IDENTIFICADOR TÉCNICO que você deve copiar EXATAMENTE (incluindo a extensão .svg) pro campo "characterMd5" do "when" - NUNCA coloque o nome ali. O mesmo vale pra "sceneMd5" (copie o valor depois de "fundo:", tipo "Spring.svg") e "messageName" (copie o valor exato entre colchetes de message[...]/onmessage[...]).
 
@@ -202,12 +207,12 @@ Entrada:
   PASSO 5 - Cena 3 (fundo: Spring.svg, nome exibido ao aluno: "Primavera") [sceneOccurrence: 2]:
     PASSO 6 - "Ruby" [characterMd5: HY-Ruby.svg]: tem script (sequência: onflag → say["Voltei!"])
 Saída correta pra essas três cenas (NESTA ORDEM, seguindo os números PASSO 1 a 6 - reparem que a dica de cena vem ANTES das dicas de personagem de cada cena, a fala sugerida é a MESMA que o exemplo já usa, o nome "Primavera" é usado literalmente como veio da transcrição, e a Cena 3 tem sceneOccurrence 2 e um texto que deixa claro que é um RETORNO, não a primeira vez):
-  {"text": "Que tal escolher o cenário da Primavera pra começar?", "when": {"type": "scene_missing", "sceneMd5": "Spring.svg", "sceneOccurrence": 1}}
-  {"text": "Agora faça a Ruby dizer 'Olá, primavera!' quando a bandeira verde for tocada.", "when": {"type": "character_missing_block_type", "sceneMd5": "Spring.svg", "sceneOccurrence": 1, "characterMd5": "HY-Ruby.svg", "blockTypes": ["say"]}}
-  {"text": "Agora adicione o cenário de Verão.", "when": {"type": "scene_missing", "sceneMd5": "Summer.svg", "sceneOccurrence": 1}}
-  {"text": "Nessa cena é a vez do Allan - a Ruby não aparece mais aqui.", "when": {"type": "character_missing", "sceneMd5": "Summer.svg", "sceneOccurrence": 1, "characterMd5": "HY-Allan.svg"}}
+  {"text": "Que tal colocar o cenário da Primavera?", "when": {"type": "scene_missing", "sceneMd5": "Spring.svg", "sceneOccurrence": 1}}
+  {"text": "Agora faça a Ruby dizer 'Olá, primavera!' quando a bandeira verde for clicada.", "when": {"type": "character_missing_block_type", "sceneMd5": "Spring.svg", "sceneOccurrence": 1, "characterMd5": "HY-Ruby.svg", "blockTypes": ["say"]}}
+  {"text": "Crie uma página nova com o cenário de Verão.", "when": {"type": "scene_missing", "sceneMd5": "Summer.svg", "sceneOccurrence": 1}}
+  {"text": "Nessa cena é a vez do Allan. A Ruby não aparece mais aqui.", "when": {"type": "character_missing", "sceneMd5": "Summer.svg", "sceneOccurrence": 1, "characterMd5": "HY-Allan.svg"}}
   {"text": "Vamos voltar pra Primavera de novo?", "when": {"type": "scene_missing", "sceneMd5": "Spring.svg", "sceneOccurrence": 2}}
-  {"text": "Dessa vez a Ruby diz 'Voltei!' - pode fazer ela falar isso?", "when": {"type": "character_missing_block_type", "sceneMd5": "Spring.svg", "sceneOccurrence": 2, "characterMd5": "HY-Ruby.svg", "blockTypes": ["say"]}}
+  {"text": "Dessa vez a Ruby diz 'Voltei!'. Pode fazer ela falar isso?", "when": {"type": "character_missing_block_type", "sceneMd5": "Spring.svg", "sceneOccurrence": 2, "characterMd5": "HY-Ruby.svg", "blockTypes": ["say"]}}
 
 O campo "when.type" deve ser exatamente um destes valores, com exatamente estes campos (usando SOMENTE os identificadores sceneMd5/characterMd5/messageName/sceneOccurrence que aparecem literalmente na transcrição recebida, sempre copiados por extenso incluindo extensão de arquivo quando houver - nunca invente um valor que não esteja lá, e nunca substitua um identificador pelo nome do personagem):
 - "scene_missing": {"type":"scene_missing","sceneMd5":"<da transcrição>","sceneOccurrence":<da transcrição>}
@@ -222,8 +227,8 @@ Entrada (trecho):
   PASSO 1 - Cena 1 (fundo: City.svg, nome exibido ao aluno: "Cidade") [sceneOccurrence: 1]:
     PASSO 2 - "Carro" [characterMd5: HY-Carro.svg]: tem script (sequência: onflag → setspeed[normal] → forward[3])
 Saída correta (o texto menciona a velocidade E a quantidade de passos - nenhum campo extra no "when", só blockTypes com os tipos):
-  {"text": "Que tal escolher o cenário da Cidade pra começar?", "when": {"type": "scene_missing", "sceneMd5": "City.svg", "sceneOccurrence": 1}}
-  {"text": "Faça o Carro andar 3 passos pra frente quando a bandeira verde for tocada, com uma velocidade normal.", "when": {"type": "character_missing_block_type", "sceneMd5": "City.svg", "sceneOccurrence": 1, "characterMd5": "HY-Carro.svg", "blockTypes": ["setspeed", "forward"]}}
+  {"text": "Que tal colocar o cenário da Cidade?", "when": {"type": "scene_missing", "sceneMd5": "City.svg", "sceneOccurrence": 1}}
+  {"text": "Faça o Carro andar 3 passos pra frente com velocidade normal, quando a bandeira verde for clicada.", "when": {"type": "character_missing_block_type", "sceneMd5": "City.svg", "sceneOccurrence": 1, "characterMd5": "HY-Carro.svg", "blockTypes": ["setspeed", "forward"]}}
 
 Exemplo rápido de "default_character_present" (cena SEM a Ruby na transcrição) e "REGRA DE NOME REPETIDO" (a mesma "Casa" reaparecendo):
 Entrada (trecho):
@@ -234,13 +239,13 @@ Entrada (trecho):
   PASSO 4 - Cena 2 (fundo: Woods.svg, nome exibido ao aluno: "Bosque") [sceneOccurrence: 2]:
     PASSO 5 - "Casa 2" [characterMd5: HY-Casa2.svg]: sem script ainda
 Saída correta (repare: dica default_character_present logo após scene_missing, ANTES das dicas de personagem; "Casa 1"/"Casa 2" usados com o número; a Ruby não aparece em nenhuma das duas cenas, então as duas ganham a dica; ordem segue PASSO 1 a 5):
-  {"text": "Que tal escolher o cenário do Bosque pra começar?", "when": {"type": "scene_missing", "sceneMd5": "Woods.svg", "sceneOccurrence": 1}}
-  {"text": "A Ruby aparece sozinha aqui - pode apagar ela, essa cena não é dela!", "when": {"type": "default_character_present", "sceneMd5": "Woods.svg", "sceneOccurrence": 1, "characterMd5": "HY-Ruby.svg"}}
-  {"text": "Faça o Lobisomem dizer 'Au!' quando a bandeira verde for tocada.", "when": {"type": "character_missing_block_type", "sceneMd5": "Woods.svg", "sceneOccurrence": 1, "characterMd5": "HY-Lobsomem.svg", "blockTypes": ["say"]}}
-  {"text": "Agora adicione a Casa 1 no Bosque.", "when": {"type": "character_missing", "sceneMd5": "Woods.svg", "sceneOccurrence": 1, "characterMd5": "HY-Casa2.svg"}}
-  {"text": "Vamos voltar pro Bosque de novo?", "when": {"type": "scene_missing", "sceneMd5": "Woods.svg", "sceneOccurrence": 2}}
-  {"text": "De novo, apague a Ruby - essa cena também não é dela!", "when": {"type": "default_character_present", "sceneMd5": "Woods.svg", "sceneOccurrence": 2, "characterMd5": "HY-Ruby.svg"}}
-  {"text": "Agora adicione a Casa 2 aqui também.", "when": {"type": "character_missing", "sceneMd5": "Woods.svg", "sceneOccurrence": 2, "characterMd5": "HY-Casa2.svg"}}
+  {"text": "Que tal colocar o cenário do Bosque?", "when": {"type": "scene_missing", "sceneMd5": "Woods.svg", "sceneOccurrence": 1}}
+  {"text": "Apague a Ruby.", "when": {"type": "default_character_present", "sceneMd5": "Woods.svg", "sceneOccurrence": 1, "characterMd5": "HY-Ruby.svg"}}
+  {"text": "Faça o Lobisomem dizer 'Au!' quando a bandeira verde for clicada.", "when": {"type": "character_missing_block_type", "sceneMd5": "Woods.svg", "sceneOccurrence": 1, "characterMd5": "HY-Lobsomem.svg", "blockTypes": ["say"]}}
+  {"text": "Agora coloque a Casa 1 no Bosque.", "when": {"type": "character_missing", "sceneMd5": "Woods.svg", "sceneOccurrence": 1, "characterMd5": "HY-Casa2.svg"}}
+  {"text": "Vamos voltar pro Bosque de novo? Crie outra página com ele.", "when": {"type": "scene_missing", "sceneMd5": "Woods.svg", "sceneOccurrence": 2}}
+  {"text": "Apague a Ruby de novo aqui.", "when": {"type": "default_character_present", "sceneMd5": "Woods.svg", "sceneOccurrence": 2, "characterMd5": "HY-Ruby.svg"}}
+  {"text": "Agora coloque a Casa 2 aqui também.", "when": {"type": "character_missing", "sceneMd5": "Woods.svg", "sceneOccurrence": 2, "characterMd5": "HY-Casa2.svg"}}
 
 Gere uma dica por passo de construção realmente relevante da transcrição INTEIRA, sem se preocupar com uma quantidade máxima. Ordene o array "hints" seguindo EXATAMENTE a ordem dos números "PASSO N" da transcrição - nunca embaralhe, agrupe fora de ordem, ou pule pra frente/volte atrás.`;
 
@@ -665,7 +670,7 @@ function fillMissingDefaultCharacterHints(hints, manifest) {
         if (hasDefaultCharacter || alreadyCovered.has(key)) continue;
 
         const fallback = {
-            text: 'A Ruby aparece sozinha aqui - pode apagar ela, essa cena não é dela!',
+            text: 'Apague a Ruby.',
             when: {
                 type: 'default_character_present',
                 sceneMd5: scene.sceneMd5,
@@ -735,14 +740,14 @@ function fillMissingCharacterAddedHints(hints, manifest) {
         if (characterAddedCovered.has(scopeKey) || seenBehaviorFor.has(scopeKey)) continue;
         seenBehaviorFor.add(scopeKey);
 
-        // Nome sem artigo (não dá pra saber o/a só pelo nome) - "adicione
-        // Ruby aqui" soa um pouco menos natural que "adicione a Ruby", mas
+        // Nome sem artigo (não dá pra saber o/a só pelo nome) - "coloque
+        // Ruby aqui" soa um pouco menos natural que "coloque a Ruby", mas
         // evita chutar o gênero errado; melhor que o genérico "esse
         // personagem" quando o nome está disponível.
         const character = findCharacterInManifest(manifest, hint.when.sceneMd5, hint.when.sceneOccurrence, hint.when.characterMd5);
         const text = character && character.characterName
-            ? `Antes disso, adicione ${character.characterName} aqui.`
-            : 'Antes disso, adicione esse personagem na cena.';
+            ? `Antes disso, coloque ${character.characterName} aqui.`
+            : 'Antes disso, coloque esse personagem na cena.';
 
         const fallback = {
             text,
@@ -774,9 +779,38 @@ function fillMissingCharacterAddedHints(hints, manifest) {
  * ele fechar, então é sempre a PRIMEIRA dica mostrada (ver generateHints,
  * sempre inserida no início do array final).
  */
-function buildIntroHint(hintContext, projectName) {
+/**
+ * Rede de segurança pra regra "PROIBIDO travessão" do SYSTEM_PROMPT (mesma
+ * lição das outras redes: regra só no prompt já foi ignorada pela LLM antes -
+ * travessão é um vício típico de texto gerado por IA). Troca "—"/"–" (e o
+ * espaço em volta) por ", ". Exportada porque activityGeneration.js aplica a
+ * mesma limpeza nos textos da atividade (nome/descrição).
+ */
+function stripDashes(text) {
+    return typeof text === 'string' ? text.replace(/\s*[\u2014\u2013]\s*/g, ', ') : text;
+}
+
+const INTRO_MAX_LENGTH = 200;
+const INTRO_FALLBACK_CONTEXT_MAX_LENGTH = 140;
+
+function buildIntroHint(hintContext, projectName, llmIntro) {
+    // Chamada pra ação escrita pela LLM a partir do nome+contexto (ver campo
+    // "intro" do SYSTEM_PROMPT) - só usada se vier texto de verdade e curto;
+    // qualquer coisa fora disso cai no texto montado por código abaixo, então
+    // a primeira dica NUNCA fica sem texto (mesma lição das outras redes de
+    // segurança). É só texto de apresentação: não referencia nenhum
+    // identificador técnico, então não há o que validar contra o manifesto.
+    const trimmedIntro = typeof llmIntro === 'string' ? llmIntro.trim() : '';
+    if (trimmedIntro && trimmedIntro.length <= INTRO_MAX_LENGTH) {
+        return { text: trimmedIntro, when: { type: 'mission_intro' } };
+    }
+
     const trimmedContext = typeof hintContext === 'string' ? hintContext.trim() : '';
-    const text = trimmedContext
+    // Contexto longo (ex.: a descrição de vários parágrafos gerada por IA)
+    // não cabe como abertura - cai pro nome do projeto em vez de despejar o
+    // texto inteiro na cara da criança.
+    const useContext = trimmedContext && trimmedContext.length <= INTRO_FALLBACK_CONTEXT_MAX_LENGTH;
+    const text = useContext
         ? `📋 Desafio de hoje: ${trimmedContext}`
         : (projectName ? `🎯 Hoje vamos construir: ${projectName}!` : '🎯 Vamos começar uma nova missão!');
     return { text, when: { type: 'mission_intro' } };
@@ -813,9 +847,12 @@ async function generateHints(projectJson, hintContext, projectName) {
     }
 
     const trimmedContext = typeof hintContext === 'string' ? hintContext.trim() : '';
-    const userMessage = trimmedContext
+    const baseMessage = trimmedContext
         ? `CONTEXTO DO PROFESSOR:\n${trimmedContext}\n\nTRANSCRIÇÃO DO PROJETO:\n${transcript}`
         : transcript;
+    // Depois da transcrição (não antes) pra não mexer no formato que o resto
+    // do prompt já descreve - só alimenta o campo "intro" da resposta.
+    const userMessage = projectName ? `${baseMessage}\n\nNOME DA ATIVIDADE: ${projectName}` : baseMessage;
 
     const client = getClient(); // throws NOT_CONFIGURED before any network call if unset
 
@@ -862,11 +899,11 @@ async function generateHints(projectJson, hintContext, projectName) {
     const withBlockArgs = fillBlockArgs(validHints, manifest);
     const withCharacterAddedHints = fillMissingCharacterAddedHints(withBlockArgs, manifest);
     const withDefaultCharacterHints = fillMissingDefaultCharacterHints(withCharacterAddedHints, manifest);
-    const withIntro = [introHint, ...withDefaultCharacterHints];
+    const withIntro = [buildIntroHint(hintContext, projectName, parsed && parsed.intro), ...withDefaultCharacterHints];
 
     const hints = withIntro.map((hint, idx) => ({
         id: `h${idx + 1}`,
-        text: hint.text,
+        text: stripDashes(hint.text),
         when: hint.when,
     }));
 
@@ -905,9 +942,12 @@ async function generateHintsWithProvider(projectJson, hintContext, projectName, 
     }
 
     const trimmedContext = typeof hintContext === 'string' ? hintContext.trim() : '';
-    const userMessage = trimmedContext
+    const baseMessage = trimmedContext
         ? `CONTEXTO DO PROFESSOR:\n${trimmedContext}\n\nTRANSCRIÇÃO DO PROJETO:\n${transcript}`
         : transcript;
+    // Depois da transcrição (não antes) pra não mexer no formato que o resto
+    // do prompt já descreve - só alimenta o campo "intro" da resposta.
+    const userMessage = projectName ? `${baseMessage}\n\nNOME DA ATIVIDADE: ${projectName}` : baseMessage;
 
     let rawContent;
     try {
@@ -939,15 +979,15 @@ async function generateHintsWithProvider(projectJson, hintContext, projectName, 
     const withBlockArgs = fillBlockArgs(validHints, manifest);
     const withCharacterAddedHints = fillMissingCharacterAddedHints(withBlockArgs, manifest);
     const withDefaultCharacterHints = fillMissingDefaultCharacterHints(withCharacterAddedHints, manifest);
-    const withIntro = [introHint, ...withDefaultCharacterHints];
+    const withIntro = [buildIntroHint(hintContext, projectName, parsed && parsed.intro), ...withDefaultCharacterHints];
 
     const hints = withIntro.map((hint, idx) => ({
         id: `h${idx + 1}`,
-        text: hint.text,
+        text: stripDashes(hint.text),
         when: hint.when,
     }));
 
     return { hints };
 }
 
-module.exports = { generateHints, generateHintsWithProvider };
+module.exports = { generateHints, generateHintsWithProvider, stripDashes };

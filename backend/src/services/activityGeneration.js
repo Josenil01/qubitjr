@@ -38,6 +38,7 @@
 const { loadLibrary } = require('./activityAssetLibrary');
 const { validatePlan, resolveLevelProfile } = require('./activityProjectBuilder');
 const { callLLM, getProviderConfig } = require('./llmProvider');
+const { stripDashes } = require('./hintsGeneration');
 
 const BLOCK_DSL_DOC = `Cada script de personagem é uma lista de blocos, cada bloco representado como uma tupla [tipo, argumento]. Tipos válidos e seus argumentos:
 - ["onflag", null] - inicia o script quando a bandeira verde é tocada. Só pode ser o PRIMEIRO bloco de um script.
@@ -106,6 +107,7 @@ Outras regras de conteúdo:
 - Se o tema pedir um personagem/cenário ICÔNICO que NÃO existe nas listas acima (ex.: um Saci Pererê de verdade, que não está na lista de personagens), escolha o personagem mais parecido/aproximado disponível e preencha "assetGapNote" explicando isso pro professor (qual seria o ideal, qual você usou no lugar). Se tudo que o tema precisa já existe nas listas, deixe "assetGapNote" como null.
 - "teacherDescription": 2 a 4 frases, em português, explicando pro PROFESSOR o que a atividade ensina e como está estruturada (não é o texto que a criança lê).
 - "projectName": nome curto da atividade (até 40 caracteres).
+- PROIBIDO usar travessão (— ou –) em QUALQUER texto que você escrever (nome, descrição, falas, nota). Use ponto final, vírgula ou duas frases curtas no lugar.
 
 Responda APENAS com um JSON estrito, sem crases/markdown, exatamente neste formato:
 {"projectName": "...", "teacherDescription": "...", "assetGapNote": "..." ou null, "scenes": [{"backgroundMd5": "...", "characters": [{"md5": "...", "name": "...", "scripts": [[["onflag", null], ["say", "..."]]]}]}]}`;
@@ -126,7 +128,10 @@ async function requestPlanFromLLM(theme, library, levelProfile, provider, model)
 
     let parsed;
     try {
-        parsed = JSON.parse(stripCodeFences(rawContent));
+        // Rede de segurança pra regra "PROIBIDO travessão" do prompt: travessão
+        // nunca aparece fora de uma string num JSON válido, então trocar no
+        // texto cru cobre nome, descrição, nota e falas de uma vez.
+        parsed = JSON.parse(stripDashes(stripCodeFences(rawContent)));
     } catch (err) {
         throw new Error('Resposta da IA de geração de atividade não é um JSON válido: ' + err.message);
     }
