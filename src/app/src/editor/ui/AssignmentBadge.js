@@ -204,6 +204,13 @@ export default class AssignmentBadge {
     static get galleryRestriction () {
         if (!assignment || !assignment.requirements) return null;
         if (wasComplete === true) return null;
+        // Só restringe DENTRO do projeto da própria missão. Projeto autoral/
+        // livre (ou missão ainda não iniciada) nunca é travado pelos assets
+        // do professor - senão a missão ativa da turma vazava pra qualquer
+        // projeto do aluno, e wasComplete (só atualizado no projeto da
+        // missão) nunca liberava.
+        if (!assignment.existingProjectId ||
+            String(ScratchJr.currentProject) !== String(assignment.existingProjectId)) return null;
         const req = assignment.requirements;
         const characterMd5s = (req.characters && Array.isArray(req.characters.present)) ? req.characters.present :
             (req.characters && Array.isArray(req.characters.used)) ? req.characters.used : [];
