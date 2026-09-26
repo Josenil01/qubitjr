@@ -353,6 +353,113 @@ CREATE TABLE IF NOT EXISTS ai_activity_drafts (
 
 CREATE INDEX IF NOT EXISTS idx_ai_activity_drafts_status ON ai_activity_drafts(status);
 
+-- Migração: apagar o projeto-exemplo do PROFESSOR arquiva as dicas da missão
+-- e desativa a missão - sem tocar em nada do que os alunos fizeram.
+--
+-- Antes disto, apagar o projeto (soft delete: deleted = 'YES', ver
+-- lobby/Home.js) deixava assignments.hints intacto, e GET /api/assignments/
+-- active continuava entregando dicas de um projeto que não existe mais
+-- (caso real: missão 41).
+--
+-- Por que NÃO apagar a linha da missão: projects.assignment_id é ON DELETE
+-- SET NULL (os projetos dos alunos perderiam o vínculo com a missão e a nota
+-- de assignment-score quebraria) e hint_events é ON DELETE CASCADE (a
+-- telemetria sumiria). Aqui só mudam hints/hints_archived/active.
+--
+-- Projeto-exemplo = mesma regra de findOwnedTemplateProject (routes/
+-- assignments.js): projects.assignment_id aponta pra um TEMPLATE
+-- (template_id IS NULL) e o dono do projeto é o professor da missão. Aluno
+-- apagando o próprio projeto da missão nunca bate (owner <> teacher_id).
+--
+-- Trigger no banco (e não no backend) porque a exclusão passa pelo tradutor
+-- genérico de SQL de /api/db/stmt e /transaction, e também pode vir do
+-- painel do Supabase - o trigger cobre todos os caminhos.
+--
+-- hints_archived guarda a última versão aprovada pelo professor (textos
+-- editados, rejeições, dicas manuais) - se o projeto for restaurado
+-- (deleted volta pra 'NO'), as dicas voltam sozinhas. A missão NÃO é
+-- reativada automaticamente - isso fica a critério do professor.
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS hints_archived JSONB;
+
+CREATE OR REPLACE FUNCTION sync_template_hints_on_project_delete()
+RETURNS TRIGGER AS $$
+DECLARE
+  proj projects%ROWTYPE;
+BEGIN
+  IF TG_OP = 'DELETE' THEN
+    proj := OLD;
+  ELSE
+    proj := NEW;
+  END IF;
+
+  -- Restauração: deleted 'YES' -> 'NO' devolve as dicas arquivadas, só se
+  -- o professor não tiver gerado dicas novas nesse meio-tempo.
+  IF TG_OP = 'UPDATE' AND OLD.deleted = 'YES' AND NEW.deleted = 'NO' THEN
+    UPDATE assignments
+    SET hints = hints_archived,
+        hints_archived = NULL
+    WHERE id = proj.assignment_id
+      AND template_id IS NULL
+      AND teacher_id = proj.owner
+      AND hints IS NULL
+      AND hints_archived IS NOT NULL;
+    RETURN NEW;
+  END IF;
+
+  -- Exclusão (soft 'NO' -> 'YES' ou DELETE de verdade): arquiva e desativa.
+  -- COALESCE: missão sem dicas não sobrescreve um arquivo anterior com NULL.
+  UPDATE assignments
+  SET hints_archived = COALESCE(hints, hints_archived),
+      hints = NULL,
+      active = false
+  WHERE id = proj.assignment_id
+    AND template_id IS NULL
+    AND teacher_id = proj.owner;
+
+  IF FOUND THEN
+    -- Referências (turmas) herdam as dicas do template ao vivo, então já
+    -- ficam sem dicas - só desativa pra missão sumir pros alunos também.
+    UPDATE assignments SET active = false WHERE template_id = proj.assignment_id;
+  END IF;
+
+  IF TG_OP = 'DELETE' THEN
+    RETURN OLD;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_projects_template_hints_update ON projects;
+CREATE TRIGGER trg_projects_template_hints_update
+AFTER UPDATE OF deleted ON projects
+FOR EACH ROW
+WHEN (NEW.assignment_id IS NOT NULL AND OLD.deleted IS DISTINCT FROM NEW.deleted)
+EXECUTE FUNCTION sync_template_hints_on_project_delete();
+
+DROP TRIGGER IF EXISTS trg_projects_template_hints_delete ON projects;
+CREATE TRIGGER trg_projects_template_hints_delete
+AFTER DELETE ON projects
+FOR EACH ROW
+WHEN (OLD.assignment_id IS NOT NULL AND OLD.deleted = 'NO')
+EXECUTE FUNCTION sync_template_hints_on_project_delete();
+
+-- Backfill (idempotente): missões cujo projeto-exemplo já tinha sido apagado
+-- antes do trigger existir. Hoje só pega a missão 41 (e a referência 45).
+WITH orphan AS (
+  UPDATE assignments a
+  SET hints_archived = a.hints,
+      hints = NULL,
+      active = false
+  WHERE a.template_id IS NULL
+    AND a.hints IS NOT NULL
+    AND NOT EXISTS (
+      SELECT 1 FROM projects p
+      WHERE p.assignment_id = a.id AND p.owner = a.teacher_id AND p.deleted = 'NO'
+    )
+  RETURNING a.id
+)
+UPDATE assignments SET active = false WHERE template_id IN (SELECT id FROM orphan);
+
 -- ============================================
 -- Cole o conteúdo acima no Supabase SQL Editor
 -- ============================================
