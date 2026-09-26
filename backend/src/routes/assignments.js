@@ -45,6 +45,9 @@
  *                                              de dificuldade/engajamento por missão,
  *                                              consumido em GET /api/public/students/
  *                                              :id/assignment-score (routes/share.js).
+ * GET  /api/assignments/:id/hints/dismissed — ids das dicas que ESTE aluno já
+ *                                              dispensou (hint_events) - o cliente
+ *                                              recarrega o "já fechei" depois de um F5.
  * GET  /api/assignments/by-project/:projectId — dado um projeto que o professor abriu,
  *                                              diz se é o molde de uma missão sua -
  *                                              deixa o botão "Cadastrar aula" reaparecer
@@ -604,6 +607,43 @@ router.post('/:id/hints/:hintId/event', async (req, res) => {
         res.json({ success: true });
     } catch (err) {
         console.error('[assignments] POST /:id/hints/:hintId/event error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * GET /api/assignments/:id/hints/dismissed
+ * Ids (hint_id) das dicas que o próprio usuário autenticado já dispensou
+ * nesta missão. Existe porque o cliente só guardava isso em memória
+ * (dismissedHintIds em AssignmentBadge.js) - um F5 zerava tudo e a dica de
+ * introdução reaparecia toda vez. Tolerante à tabela hint_events ainda não
+ * existir (42P01): devolve lista vazia, o cliente segue como antes.
+ */
+router.get('/:id/hints/dismissed', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+
+    const assignmentId = parseInt(req.params.id, 10);
+    if (!Number.isFinite(assignmentId)) return res.status(400).json({ error: 'Invalid assignment id' });
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    try {
+        const { data, error } = await supabase
+            .from('hint_events')
+            .select('hint_id')
+            .eq('student_id', req.userId)
+            .eq('assignment_id', assignmentId)
+            .eq('event_type', 'dismissed');
+
+        if (error) {
+            if (error.code === '42P01') return res.json({ dismissed: [] });
+            throw error;
+        }
+
+        res.json({ dismissed: Array.from(new Set((data || []).map((row) => row.hint_id))) });
+    } catch (err) {
+        console.error('[assignments] GET /:id/hints/dismissed error:', err);
         res.status(500).json({ error: err.message });
     }
 });

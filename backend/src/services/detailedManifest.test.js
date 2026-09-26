@@ -145,6 +145,8 @@ describe('computeDetailedManifest — ordering', () => {
             sayTexts: [],
             blockSequence: [],
             blockArgs: {},
+            blockCounts: {},
+            scripts: [],
         });
     });
 

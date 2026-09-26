@@ -635,6 +635,110 @@ function fillBlockArgs(hints, manifest) {
 }
 
 /**
+ * Acha, no personagem do professor, a k-ésima ocorrência (1-based, contando
+ * em todos os scripts na ordem) do bloco `type`. Devolve o gatilho do script
+ * onde ela está e quantas ocorrências desse tipo existem ATÉ ali só entre
+ * os scripts do MESMO gatilho (triggerCount) - é esse número, e não k, que
+ * o cliente compara, já que ele conta só dentro do gatilho da dica. null se
+ * o personagem não tem k ocorrências (ex.: manifesto antigo, sem `scripts`).
+ */
+function locateOccurrence(character, type, k) {
+    if (!character || !Array.isArray(character.scripts)) return null;
+    let globalCount = 0;
+    const perTrigger = new Map();
+    for (const script of character.scripts) {
+        for (const block of script.blocks || []) {
+            if (block.type !== type) continue;
+            globalCount++;
+            const soFar = (perTrigger.get(script.trigger) || 0) + 1;
+            perTrigger.set(script.trigger, soFar);
+            if (globalCount === k) {
+                return { trigger: script.trigger, triggerCount: soFar };
+            }
+        }
+    }
+    return null;
+}
+
+/**
+ * Preenche `when.minCounts` e `when.trigger` de toda dica
+ * "character_missing_block_type" a partir do personagem do PRÓPRIO professor
+ * (mesma lógica de fillBlockArgs: dado estruturado que o código já sabe, não
+ * confiado à LLM - o valor dela pra esses campos é sobrescrito/ignorado).
+ *
+ *  - minCounts ({[blockType]: N}, só N > 1): a dica descreve a N-ésima vez
+ *    que esse bloco aparece no personagem (ex.: o 2º `say` da sequência
+ *    "say → wait → say"). Sem isso o cliente dava a dica por feita assim que
+ *    existia QUALQUER `say` (achado em teste real: a 2ª fala do Cofrinho já
+ *    nascia "resolvida" por causa da 1ª). N é contado em ordem de dicas do
+ *    mesmo personagem (a 1ª dica com "say" = 1, a 2ª = 2...) e relativo ao
+ *    gatilho da dica - ver locateOccurrence.
+ *  - trigger (onflag/onclick/ontouch/onmessage): o gatilho do script do
+ *    professor onde o bloco está. Só definido quando TODOS os blockTypes da
+ *    dica caem em scripts de um mesmo gatilho (uma dica = uma ação = um
+ *    script) - senão fica de fora e o cliente aceita o bloco em qualquer
+ *    script, como antes (achado em teste real: "quando clicar no Cofrinho,
+ *    faça crescer" era dada por feita com o `grow` sob a bandeira verde).
+ * Dicas antigas sem esses campos continuam funcionando (cliente trata
+ * ausente como "qualquer script, pelo menos 1").
+ */
+function fillBlockContext(hints, manifest) {
+    const charactersByKey = new Map();
+    for (const scene of (manifest && manifest.scenes) || []) {
+        for (const character of scene.characters || []) {
+            charactersByKey.set(`${sceneKey(scene.sceneMd5, scene.sceneOccurrence)}::${character.characterMd5}`, character);
+        }
+    }
+
+    const consumed = new Map(); // key::blockType -> quantas dicas anteriores já pediram esse tipo
+    for (const hint of hints) {
+        if (!hint.when || hint.when.type !== 'character_missing_block_type') continue;
+        const key = `${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}`;
+        const character = charactersByKey.get(key);
+        const types = Array.isArray(hint.when.blockTypes) ? hint.when.blockTypes : [];
+
+        const locations = [];
+        const ks = [];
+        for (const type of types) {
+            const k = (consumed.get(`${key}::${type}`) || 0) + 1;
+            consumed.set(`${key}::${type}`, k);
+            const real = character && character.blockCounts ? character.blockCounts[type] : 0;
+            ks.push(Math.min(k, real || 1)); // nunca exige mais do que o professor tem
+            locations.push(real >= k ? locateOccurrence(character, type, k) : null);
+        }
+
+        delete hint.when.minCounts;
+        delete hint.when.trigger;
+        delete hint.when.triggerExclusive;
+        const sameTrigger = locations.length > 0 &&
+            locations.every((loc) => loc && loc.trigger && loc.trigger === locations[0].trigger);
+        if (sameTrigger) {
+            hint.when.trigger = locations[0].trigger;
+            // triggerExclusive: o professor só usa esses tipos sob ESTE
+            // gatilho. Só então o cliente pode afirmar "está no lugar errado"
+            // ao achar o bloco sob outro gatilho - se o mesmo tipo também
+            // aparece legitimamente em outro script do professor (ex.: `say`
+            // na bandeira E no clique), um `say` fora do gatilho pode ser o
+            // de outra dica, não um erro.
+            const exclusive = types.every((type) => character.scripts.every((script) =>
+                script.trigger === hint.when.trigger || !script.blocks.some((b) => b.type === type)));
+            if (exclusive) hint.when.triggerExclusive = true;
+        }
+
+        // Com gatilho, o cliente conta só dentro dele (triggerCount); sem
+        // gatilho, conta em todos os scripts (k global).
+        const minCounts = {};
+        types.forEach((type, i) => {
+            const n = sameTrigger ? locations[i].triggerCount : ks[i];
+            if (n > 1) minCounts[type] = n;
+        });
+        if (Object.keys(minCounts).length) hint.when.minCounts = minCounts;
+    }
+
+    return hints;
+}
+
+/**
  * Rede de segurança pra "default_character_present" - não confia só na
  * regra "OBRIGATÓRIO" do SYSTEM_PROMPT (mesma lição já aprendida com
  * scene_missing: uma instrução só no prompt já foi ignorada pela LLM antes,
@@ -896,7 +1000,7 @@ async function generateHints(projectJson, hintContext, projectName) {
         }
     }
 
-    const withBlockArgs = fillBlockArgs(validHints, manifest);
+    const withBlockArgs = fillBlockContext(fillBlockArgs(validHints, manifest), manifest);
     const withCharacterAddedHints = fillMissingCharacterAddedHints(withBlockArgs, manifest);
     const withDefaultCharacterHints = fillMissingDefaultCharacterHints(withCharacterAddedHints, manifest);
     const withIntro = [buildIntroHint(hintContext, projectName, parsed && parsed.intro), ...withDefaultCharacterHints];
@@ -976,7 +1080,7 @@ async function generateHintsWithProvider(projectJson, hintContext, projectName, 
         }
     }
 
-    const withBlockArgs = fillBlockArgs(validHints, manifest);
+    const withBlockArgs = fillBlockContext(fillBlockArgs(validHints, manifest), manifest);
     const withCharacterAddedHints = fillMissingCharacterAddedHints(withBlockArgs, manifest);
     const withDefaultCharacterHints = fillMissingDefaultCharacterHints(withCharacterAddedHints, manifest);
     const withIntro = [buildIntroHint(hintContext, projectName, parsed && parsed.intro), ...withDefaultCharacterHints];
@@ -990,4 +1094,4 @@ async function generateHintsWithProvider(projectJson, hintContext, projectName, 
     return { hints };
 }
 
-module.exports = { generateHints, generateHintsWithProvider, stripDashes };
+module.exports = { generateHints, generateHintsWithProvider, stripDashes, fillBlockContext };

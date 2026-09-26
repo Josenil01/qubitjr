@@ -45,6 +45,8 @@ const SPEED_LABELS = ['lenta', 'normal', 'rápida'];
 // pode divergir do que o professor usou; todo bloco numérico listado aqui
 // precisa do valor EXATO conferido (blockArgs). message/onmessage ficam de
 // fora - a mensagem exata já é conferida por "message_not_received".
+const TRIGGER_TYPES = new Set(['onflag', 'onclick', 'ontouch', 'onmessage']);
+
 const NUMERIC_ARG_TYPES = new Set([
     'forward', 'back', 'up', 'down', 'left', 'right', 'hop',
     'wait', 'repeat', 'grow', 'shrink', 'setspeed',
@@ -79,6 +81,7 @@ function walkScript (script, agg) {
         if (CARET_TYPES.has(blockType)) continue; // editor artifact, ignore entirely
 
         agg.blockTypes.add(blockType);
+        agg.blockCounts.set(blockType, (agg.blockCounts.get(blockType) || 0) + 1);
 
         const arg = block[1];
         const hasRealArg = arg !== null && arg !== undefined && arg !== 'null' && arg !== '';
@@ -106,6 +109,10 @@ function walkScript (script, agg) {
             agg.blockArgs.set(blockType, argSet);
         }
 
+        // Ver buildScriptDetail - bloco (ordem real, inclusive aninhados) do
+        // script percorrido agora.
+        agg.currentBlocks.push({type: blockType, num: hasRealNumArg ? numArg : null});
+
         // Ver docblock do original (backend) - token já pronto pra exibição,
         // na ORDEM real do script (nunca deduplicado, ao contrário de blockTypes).
         if (blockType === 'message' && hasRealArg) {
@@ -127,6 +134,21 @@ function walkScript (script, agg) {
             walkScript(nested, agg);
         }
     }
+}
+
+/**
+ * Ver docblock do original (backend): {trigger, blocks} de um script - trigger
+ * é script[0][0] se for onflag/onclick/ontouch/onmessage (null se solto);
+ * blocks são os demais, na ordem real, como {type, num}.
+ */
+function buildScriptDetail (script, blocks) {
+    const first = script[0];
+    const firstType = Array.isArray(first) ? first[0] : null;
+    const isTrigger = TRIGGER_TYPES.has(firstType);
+    return {
+        trigger: isTrigger ? firstType : null,
+        blocks: isTrigger ? blocks.slice(1) : blocks,
+    };
 }
 
 /**
@@ -168,12 +190,17 @@ export function computeDetailedManifest (projectJson) {
                 sayTexts: [],
                 blockSequence: [],
                 blockArgs: new Map(),
+                blockCounts: new Map(),
+                currentBlocks: [],
             };
+            const scriptDetails = [];
 
             for (const script of scripts) {
                 if (!Array.isArray(script) || script.length === 0) continue; // empty script: no code
                 hasScript = true;
+                agg.currentBlocks = [];
                 walkScript(script, agg);
+                scriptDetails.push(buildScriptDetail(script, agg.currentBlocks));
             }
 
             characters.push({
@@ -187,6 +214,10 @@ export function computeDetailedManifest (projectJson) {
                 messagesReceived: Array.from(agg.messagesReceived),
                 sayTexts: agg.sayTexts,
                 blockSequence: agg.blockSequence,
+                // Ver docblock do original (backend) - contagem por tipo e um
+                // item {trigger, blocks} por script.
+                blockCounts: Object.fromEntries(agg.blockCounts),
+                scripts: scriptDetails,
                 // Ver docblock do original (backend) - { [blockType]: number[] },
                 // todo valor numérico já configurado por tipo de bloco.
                 blockArgs: Object.fromEntries(

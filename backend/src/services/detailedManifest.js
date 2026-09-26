@@ -59,6 +59,8 @@ const SPEED_LABELS = ['lenta', 'normal', 'rápida'];
  * mecanismo próprio (messagesSent/messagesReceived + o hint
  * "message_not_received", ver hintsGeneration.js), não precisam de blockArgs.
  */
+const TRIGGER_TYPES = new Set(['onflag', 'onclick', 'ontouch', 'onmessage']);
+
 const NUMERIC_ARG_TYPES = new Set([
     'forward', 'back', 'up', 'down', 'left', 'right', 'hop',
     'wait', 'repeat', 'grow', 'shrink', 'setspeed',
@@ -106,6 +108,7 @@ function walkScriptForDetail(script, agg) {
         if (CARET_TYPES.has(blockType)) continue; // editor artifact, ignore entirely
 
         agg.blockTypes.add(blockType);
+        agg.blockCounts.set(blockType, (agg.blockCounts.get(blockType) || 0) + 1);
 
         // 'message'/'onmessage' estão em Project.js#encodeStrip's hasargs,
         // então SEMPRE carregam um arg codificado - mas quando o aluno ainda
@@ -151,6 +154,10 @@ function walkScriptForDetail(script, agg) {
             agg.blockArgs.set(blockType, argSet);
         }
 
+        // Bloco (na ordem real, inclusive aninhados) do script que está sendo
+        // percorrido agora - alimenta agg.scripts em computeDetailedManifest.
+        agg.currentBlocks.push({type: blockType, num: hasRealNumArg ? numArg : null});
+
         // Ver docblock acima - token já pronto pra exibição, na ORDEM real
         // do script (nunca deduplicado). setspeed usa o rótulo em PT-BR
         // (SPEED_LABELS); os demais blocos numéricos mostram o valor cru
@@ -174,6 +181,24 @@ function walkScriptForDetail(script, agg) {
             walkScriptForDetail(nested, agg);
         }
     }
+}
+
+/**
+ * Resume um script: `trigger` (script[0][0] se for um dos blocos de início -
+ * onflag/onclick/ontouch/onmessage; null se o script começa solto) e `blocks`
+ * (os demais, na ordem real, com o valor numérico quando existe - {type,
+ * num}). Permite às dicas conferir EM QUAL gatilho o bloco está (when.trigger)
+ * e quantos blocos de um tipo existem (when.minCounts), coisas que a lista
+ * achatada blockTypes/blockSequence não sabe dizer.
+ */
+function buildScriptDetail(script, blocks) {
+    const first = script[0];
+    const firstType = Array.isArray(first) ? first[0] : null;
+    const isTrigger = TRIGGER_TYPES.has(firstType);
+    return {
+        trigger: isTrigger ? firstType : null,
+        blocks: isTrigger ? blocks.slice(1) : blocks,
+    };
 }
 
 /**
@@ -217,13 +242,18 @@ function computeDetailedManifest(projectJson) {
                 sayTexts: [],
                 blockSequence: [],
                 blockArgs: new Map(),
+                blockCounts: new Map(),
+                currentBlocks: [],
             };
+            const scriptDetails = [];
             let hasScript = false;
 
             for (const script of scripts) {
                 if (!Array.isArray(script) || script.length === 0) continue; // empty script: no code
                 hasScript = true;
+                agg.currentBlocks = [];
                 walkScriptForDetail(script, agg);
+                scriptDetails.push(buildScriptDetail(script, agg.currentBlocks));
             }
 
             characters.push({
@@ -242,6 +272,12 @@ function computeDetailedManifest(projectJson) {
                 messagesReceived: Array.from(agg.messagesReceived),
                 sayTexts: agg.sayTexts,
                 blockSequence: agg.blockSequence,
+                // { [blockType]: quantas vezes aparece no personagem } - ver
+                // when.minCounts em hintsGeneration.js#fillBlockContext.
+                blockCounts: Object.fromEntries(agg.blockCounts),
+                // Um item por script, com o gatilho e os blocos DELE - o que
+                // blockSequence/blockTypes (achatados) perdem. Ver buildScriptDetail.
+                scripts: scriptDetails,
                 // { [blockType]: number[] } - todo valor numérico já
                 // configurado em cada tipo de NUMERIC_ARG_TYPES pra este
                 // personagem (ordenado). Ex.: {"forward": [3], "wait": [10]}.

@@ -125,7 +125,7 @@ let actualTimer = null;
 let requirementsTimer = null;
 let dismissedThisSession = false;
 let dismissedHintIds = new Set(); // ids de dica já mostrada+fechada nesta sessão de aba - nunca mais reexibida automaticamente
-let wrongValueAlerted = new Set(); // assinaturas (ver _wrongValueSignature) de "valor errado" já avisadas nesta sessão de aba
+let wrongValueAlerted = new Set(); // assinaturas (ver _mistakeInfo) de "valor/gatilho errado" já avisadas nesta sessão de aba
 // Date.now() da última interação REAL do aluno em qualquer lugar da página
 // (clique/toque/arrasto/tecla - ver _trackActivity/CADÊNCIA acima). 0 (nunca
 // tocou em nada ainda) conta como "já ocioso há muito tempo" de propósito -
@@ -241,6 +241,23 @@ export default class AssignmentBadge {
             return;
         }
         assignment = data.assignment;
+
+        // Recarrega as dicas que este aluno já fechou (antes só existiam em
+        // memória - um F5 fazia a de introdução voltar toda vez). Best-effort:
+        // falha/sem rede = começa vazio, como sempre foi.
+        try {
+            const dismissedRes = await apiFetch('/assignments/' + assignment.id + '/hints/dismissed');
+            if (dismissedRes.ok) {
+                const body = await dismissedRes.json().catch(function () {
+                    return {};
+                });
+                (Array.isArray(body.dismissed) ? body.dismissed : []).forEach(function (id) {
+                    dismissedHintIds.add(id);
+                });
+            }
+        } catch (err) {
+            console.warn('[AssignmentBadge] hints/dismissed falhou (não-fatal):', err && err.message);
+        }
 
         const isCurrentProject = !!assignment.existingProjectId &&
             String(ScratchJr.currentProject) === String(assignment.existingProjectId);
@@ -547,12 +564,12 @@ export default class AssignmentBadge {
         // avisa uma única vez (wrongValueAlerted) - mudar pra OUTRO valor
         // errado avisa de novo, ficar parado no mesmo não repete.
         let wrongValueHint = null;
-        let wrongValueSig = null;
+        let wrongValueInfo = null;
         hints.some(function (hint) {
-            const sig = AssignmentBadge._wrongValueSignature(hint, detailed);
-            if (sig && !wrongValueAlerted.has(sig)) {
+            const info = AssignmentBadge._mistakeInfo(hint, detailed);
+            if (info && !wrongValueAlerted.has(info.sig)) {
                 wrongValueHint = hint;
-                wrongValueSig = sig;
+                wrongValueInfo = info;
                 return true;
             }
             return false;
@@ -570,13 +587,16 @@ export default class AssignmentBadge {
         }
         if (wrongValueHint) {
             const alertHint = wrongValueHint;
+            const alertInfo = wrongValueInfo;
             recordHintEvent(alertHint.id, 'shown');
             AssignmentBadge._showCoachModal({
                 icon: '🤔',
-                text: 'Quase! O valor do bloco ainda não está certo. ' + alertHint.text,
+                text: (wrongValueInfo.kind === 'trigger' ?
+                    'Quase! O bloco está no lugar errado - confira qual bloco de início vem antes dele. ' :
+                    'Quase! O valor do bloco ainda não está certo. ') + alertHint.text,
                 extraClass: 'assignmentCoachCard',
                 onClose: function () {
-                    wrongValueAlerted.add(wrongValueSig);
+                    wrongValueAlerted.add(alertInfo.sig);
                     // Esta dica já foi dita (agora) - não repete a versão
                     // proativa com o mesmo texto logo em seguida.
                     dismissedHintIds.add(alertHint.id);
@@ -602,42 +622,110 @@ export default class AssignmentBadge {
     }
 
     /**
-     * Assinatura do estado "bloco do tipo certo, VALOR errado" de uma dica
-     * character_missing_block_type com blockArgs - ou null se a dica não é
-     * desse tipo, o personagem/blocos ainda não existem (aí vale a dica
-     * proativa normal) ou todos os valores exigidos já batem. A assinatura
-     * inclui os valores atuais do aluno, então trocar de um valor errado pra
-     * outro gera uma assinatura nova (novo alerta) - ver wrongValueAlerted.
+     * Confere os blocos de UM personagem contra o `when` de uma dica
+     * character_missing_block_type. Usa os scripts do manifesto (ver
+     * detailedManifest.js#buildScriptDetail), não só a lista achatada de
+     * tipos, pra respeitar dois campos que o gerador grava (ver
+     * hintsGeneration.js#fillBlockContext):
+     *  - when.trigger: o bloco só conta dentro de scripts com ESSE gatilho
+     *    (onflag/onclick/...) - "quando clicar no Cofrinho, cresça" não fica
+     *    resolvida com o `grow` sob a bandeira verde;
+     *  - when.minCounts: a dica descreve a N-ésima ocorrência de um tipo
+     *    (2º `say`) - N blocos daquele tipo precisam existir (dentro do
+     *    gatilho, se houver).
+     * Dica sem esses campos (salva antes deles existirem) se comporta como
+     * sempre: qualquer script, pelo menos 1 de cada tipo.
+     * Retorna {typesOk, argsOk, values, wrongTrigger}: wrongTrigger = os
+     * blocos existem (contando todos os scripts) mas não no gatilho pedido.
      */
-    static _wrongValueSignature (hint, detailed) {
+    static _blockMatch (character, when) {
+        const wantedTypes = Array.isArray(when.blockTypes) ? when.blockTypes : [];
+        const wantedArgs = when.blockArgs && typeof when.blockArgs === 'object' ? when.blockArgs : {};
+        const minCounts = when.minCounts && typeof when.minCounts === 'object' ? when.minCounts : {};
+        const allScripts = Array.isArray(character.scripts) ? character.scripts : [];
+        const evaluate = function (pool) {
+            const counts = {};
+            const values = {};
+            pool.forEach(function (script) {
+                // O bloco de início também conta como "tipo presente" (uma
+                // dica pode listar onflag/onmessage em blockTypes).
+                if (script.trigger) {
+                    counts[script.trigger] = (counts[script.trigger] || 0) + 1;
+                }
+                script.blocks.forEach(function (b) {
+                    counts[b.type] = (counts[b.type] || 0) + 1;
+                    if (b.num !== null && b.num !== undefined) {
+                        (values[b.type] = values[b.type] || []).push(b.num);
+                    }
+                });
+            });
+            return {
+                values: values,
+                typesOk: wantedTypes.every(function (bt) {
+                    return (counts[bt] || 0) >= (minCounts[bt] || 1);
+                }),
+                argsOk: Object.keys(wantedArgs).every(function (bt) {
+                    return (values[bt] || []).includes(wantedArgs[bt]);
+                }),
+            };
+        };
+        const scoped = when.trigger ? allScripts.filter(function (script) {
+            return script.trigger === when.trigger;
+        }) : allScripts;
+        const result = evaluate(scoped);
+        // wrongTrigger só quando o professor usa esse bloco APENAS naquele
+        // gatilho (when.triggerExclusive) - senão um bloco fora dele pode ser
+        // o de outra dica, não um erro (ver fillBlockContext).
+        result.wrongTrigger = !!when.trigger && when.triggerExclusive === true &&
+            !result.typesOk && evaluate(allScripts).typesOk;
+        return result;
+    }
+
+    /**
+     * Erro do aluno numa dica de bloco, distinto de "ainda não fez": o bloco
+     * do tipo certo EXISTE mas com VALOR errado (kind 'value') ou no
+     * GATILHO errado (kind 'trigger'). Retorna {kind, sig} - sig identifica
+     * o estado atual do erro (dica + valores/gatilhos que o aluno tem
+     * agora), então trocar de um erro pra OUTRO gera assinatura nova (novo
+     * alerta) e ficar parado no mesmo não repete - ver wrongValueAlerted.
+     * null se a dica não é desse tipo, o personagem/blocos ainda não existem
+     * (vale a dica proativa) ou nada está errado.
+     */
+    static _mistakeInfo (hint, detailed) {
         const when = hint && hint.when;
         if (!when || when.type !== 'character_missing_block_type') {
             return null;
         }
-        const wantedArgs = when.blockArgs && typeof when.blockArgs === 'object' ? when.blockArgs : {};
-        const wantedTypes = Array.isArray(when.blockTypes) ? when.blockTypes : [];
         const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
         const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
         if (!found.character) {
             return null;
         }
-        const allTypesPresent = wantedTypes.every(function (bt) {
-            return found.character.blockTypes.includes(bt);
-        });
-        if (!allTypesPresent) {
-            return null;
+        const match = AssignmentBadge._blockMatch(found.character, when);
+        if (match.typesOk && !match.argsOk) {
+            const wantedArgs = when.blockArgs || {};
+            const wrong = Object.keys(wantedArgs).filter(function (bt) {
+                return !(match.values[bt] || []).includes(wantedArgs[bt]);
+            });
+            return {
+                kind: 'value',
+                sig: hint.id + '|value|' + wrong.map(function (bt) {
+                    return bt + '=' + (match.values[bt] || []).join(',');
+                }).join(';'),
+            };
         }
-        const wrong = Object.keys(wantedArgs).filter(function (blockType) {
-            const realValues = found.character.blockArgs && found.character.blockArgs[blockType];
-            return !(Array.isArray(realValues) && realValues.includes(wantedArgs[blockType]));
-        });
-        if (!wrong.length) {
-            return null;
+        if (match.wrongTrigger) {
+            const wantedTypes = Array.isArray(when.blockTypes) ? when.blockTypes : [];
+            const where = (found.character.scripts || []).filter(function (script) {
+                return script.blocks.some(function (b) {
+                    return wantedTypes.includes(b.type);
+                });
+            }).map(function (script) {
+                return script.trigger || 'solto';
+            });
+            return {kind: 'trigger', sig: hint.id + '|trigger|' + where.join(',')};
         }
-        return hint.id + '|' + wrong.map(function (blockType) {
-            const realValues = (found.character.blockArgs && found.character.blockArgs[blockType]) || [];
-            return blockType + '=' + realValues.join(',');
-        }).join(';');
+        return null;
     }
 
     /**
@@ -777,31 +865,14 @@ export default class AssignmentBadge {
             if (!found.character) {
                 return false; // personagem nem existe ainda - character_missing cobre esse caso
             }
-            const wanted = Array.isArray(when.blockTypes) ? when.blockTypes : [];
-            const typesOk = wanted.every(function (bt) {
-                return found.character.blockTypes.includes(bt);
-            });
-            if (!typesOk) return true; // ainda precisa
-
-            // Achado em teste real (3) - um tipo sozinho em blockTypes só diz
-            // "o personagem tem um forward/wait/setspeed/etc.", nunca COM QUE
-            // VALOR - uma dica que pede "3 passos"/"velocidade normal"
-            // ficava resolvida assim que QUALQUER bloco daquele tipo
-            // aparecesse, com qualquer valor (ex.: o aluno usa 5 passos, ou
-            // ainda está ajustando a velocidade, e o sistema já libera a
-            // próxima dica). when.blockArgs ({[blockType]: number}, só
-            // presente quando o VALOR daquele tipo é inequívoco no projeto
-            // do professor - ver fillBlockArgs no backend) precisa bater
-            // exatamente com um valor que o aluno já configurou nesse tipo -
-            // decisão explícita do usuário: "say" é o ÚNICO bloco cujo
-            // argumento pode divergir do professor, todos os outros exigem
-            // o valor exato (por isso "say" nunca aparece em blockArgs).
-            const wantedArgs = when.blockArgs && typeof when.blockArgs === 'object' ? when.blockArgs : {};
-            const argsOk = Object.keys(wantedArgs).every(function (blockType) {
-                const realValues = found.character.blockArgs && found.character.blockArgs[blockType];
-                return Array.isArray(realValues) && realValues.includes(wantedArgs[blockType]);
-            });
-            return !argsOk; // ainda precisa se algum valor exigido ainda não bate
+            // Tipos (com contagem/gatilho - ver _blockMatch) e valores
+            // exigidos: ainda precisa enquanto algum não bater. Valor:
+            // achado em teste real (3), decisão explícita do usuário - "say"
+            // é o ÚNICO bloco cujo argumento pode divergir do professor
+            // (por isso nunca aparece em blockArgs), todos os outros exigem
+            // o valor exato.
+            const match = AssignmentBadge._blockMatch(found.character, when);
+            return !match.typesOk || !match.argsOk;
         }
 
         case 'message_not_received': {
