@@ -125,6 +125,7 @@ let actualTimer = null;
 let requirementsTimer = null;
 let dismissedThisSession = false;
 let dismissedHintIds = new Set(); // ids de dica já mostrada+fechada nesta sessão de aba - nunca mais reexibida automaticamente
+let wrongValueAlerted = new Set(); // assinaturas (ver _wrongValueSignature) de "valor errado" já avisadas nesta sessão de aba
 // Date.now() da última interação REAL do aluno em qualquer lugar da página
 // (clique/toque/arrasto/tecla - ver _trackActivity/CADÊNCIA acima). 0 (nunca
 // tocou em nada ainda) conta como "já ocioso há muito tempo" de propósito -
@@ -537,9 +538,27 @@ export default class AssignmentBadge {
         const readyHint = hints.find(function (hint) {
             return hint && !dismissedHintIds.has(hint.id) && AssignmentBadge._hintConditionHolds(hint, detailed);
         });
-        AssignmentBadge._updateHintButton(!!readyHint);
+        // Alerta de VALOR ERRADO - canal separado da dica proativa (readyHint):
+        // a dica proativa aparece uma vez e, fechada, nunca volta
+        // (dismissedHintIds); mas o aluno pode montar o bloco DEPOIS de
+        // fechá-la, com o valor errado - e ninguém avisava (achado em teste
+        // real, aluno Josué/missão "Cofrinho": grow 5 em vez de 2, silêncio).
+        // Independe de dismissedHintIds; cada combinação de valores errados
+        // avisa uma única vez (wrongValueAlerted) - mudar pra OUTRO valor
+        // errado avisa de novo, ficar parado no mesmo não repete.
+        let wrongValueHint = null;
+        let wrongValueSig = null;
+        hints.some(function (hint) {
+            const sig = AssignmentBadge._wrongValueSignature(hint, detailed);
+            if (sig && !wrongValueAlerted.has(sig)) {
+                wrongValueHint = hint;
+                wrongValueSig = sig;
+                return true;
+            }
+            return false;
+        });
 
-        if (!readyHint || coachModalEl || hintsPanelEl) {
+        if ((!readyHint && !wrongValueHint) || coachModalEl || hintsPanelEl) {
             // hintsPanelEl aberto: o aluno já está olhando as dicas por conta
             // própria (ver _openHintsPanel) - não faz sentido interromper com
             // o modal automático por cima nesse momento.
@@ -548,6 +567,23 @@ export default class AssignmentBadge {
         const idleElapsed = (Date.now() - lastActivityAt) >= IDLE_BEFORE_HINT_MS;
         if (!idleElapsed) {
             return; // pronta, mas o aluno ainda está mexendo em algo - espera ele parar
+        }
+        if (wrongValueHint) {
+            const alertHint = wrongValueHint;
+            recordHintEvent(alertHint.id, 'shown');
+            AssignmentBadge._showCoachModal({
+                icon: '🤔',
+                text: 'Quase! O valor do bloco ainda não está certo. ' + alertHint.text,
+                extraClass: 'assignmentCoachCard',
+                onClose: function () {
+                    wrongValueAlerted.add(wrongValueSig);
+                    // Esta dica já foi dita (agora) - não repete a versão
+                    // proativa com o mesmo texto logo em seguida.
+                    dismissedHintIds.add(alertHint.id);
+                    recordHintEvent(alertHint.id, 'dismissed');
+                },
+            });
+            return;
         }
         recordHintEvent(readyHint.id, 'shown');
         AssignmentBadge._showCoachModal({
@@ -563,6 +599,45 @@ export default class AssignmentBadge {
                 // função), reiniciando a espera de ociosidade sozinho.
             },
         });
+    }
+
+    /**
+     * Assinatura do estado "bloco do tipo certo, VALOR errado" de uma dica
+     * character_missing_block_type com blockArgs - ou null se a dica não é
+     * desse tipo, o personagem/blocos ainda não existem (aí vale a dica
+     * proativa normal) ou todos os valores exigidos já batem. A assinatura
+     * inclui os valores atuais do aluno, então trocar de um valor errado pra
+     * outro gera uma assinatura nova (novo alerta) - ver wrongValueAlerted.
+     */
+    static _wrongValueSignature (hint, detailed) {
+        const when = hint && hint.when;
+        if (!when || when.type !== 'character_missing_block_type') {
+            return null;
+        }
+        const wantedArgs = when.blockArgs && typeof when.blockArgs === 'object' ? when.blockArgs : {};
+        const wantedTypes = Array.isArray(when.blockTypes) ? when.blockTypes : [];
+        const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
+        const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
+        if (!found.character) {
+            return null;
+        }
+        const allTypesPresent = wantedTypes.every(function (bt) {
+            return found.character.blockTypes.includes(bt);
+        });
+        if (!allTypesPresent) {
+            return null;
+        }
+        const wrong = Object.keys(wantedArgs).filter(function (blockType) {
+            const realValues = found.character.blockArgs && found.character.blockArgs[blockType];
+            return !(Array.isArray(realValues) && realValues.includes(wantedArgs[blockType]));
+        });
+        if (!wrong.length) {
+            return null;
+        }
+        return hint.id + '|' + wrong.map(function (blockType) {
+            const realValues = (found.character.blockArgs && found.character.blockArgs[blockType]) || [];
+            return blockType + '=' + realValues.join(',');
+        }).join(';');
     }
 
     /**
