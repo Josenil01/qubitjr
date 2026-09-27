@@ -7,7 +7,7 @@ import Paint from '../../painteditor/Paint.js';
 import Events from '../../utils/Events.js';
 import Localization from '../../utils/Localization.js';
 import ScratchAudio from '../../utils/ScratchAudio.js';
-import {getGalleryRestriction} from './GalleryRestriction.js';
+import {getGalleryRestriction, isCharacterAtLimit} from './GalleryRestriction.js';
 import {gn, newHTML, scaleMultiplier,
     getDocumentWidth, getDocumentHeight, setProps, newCanvas, frame} from '../../utils/lib.js';
 
@@ -257,11 +257,9 @@ export default class Library {
         // N vezes cada um - quando o aluno já colocou N, ele some da galeria
         // até a missão concluir (a restrição inteira cai). Pode resultar em
         // lista vazia (todos no limite) - de propósito, não cai no "all".
-        if (type == 'costumes' && restriction.characterMaxCounts) {
-            var max = restriction.characterMaxCounts;
-            var have = restriction.characterCounts || {};
+        if (type == 'costumes') {
             matched = matched.filter(function (item) {
-                return !(max[item.md5] > 0 && (have[item.md5] || 0) >= max[item.md5]);
+                return !isCharacterAtLimit(restriction, item.md5);
             });
         }
         return matched;

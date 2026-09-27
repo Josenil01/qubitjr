@@ -90,7 +90,8 @@ import Project from './Project.js';
 import {newHTML} from '../../utils/lib.js';
 import {computeProjectManifest, compareManifests} from './assignmentScoring.js';
 import {computeDetailedManifest} from './detailedManifest.js';
-import {registerGalleryRestrictionProvider} from './GalleryRestriction.js';
+import MediaLib from '../../iPad/MediaLib.js';
+import {registerGalleryRestrictionProvider, allCharactersAtLimit} from './GalleryRestriction.js';
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
@@ -234,27 +235,47 @@ export default class AssignmentBadge {
         const maxScenes = (req.scenes && Number.isFinite(req.scenes.pageCount) && req.scenes.pageCount > 0) ?
             req.scenes.pageCount : null;
         const counts = {};
+        const countsByScene = []; // aluno, por cena, na ordem das páginas
+        const pageIds = [];
         let sceneCount = 0;
         const projectJson = (maxCounts || maxScenes) ? AssignmentBadge._readProjectJson() : null;
         if (projectJson && Array.isArray(projectJson.pages)) {
             sceneCount = projectJson.pages.length;
             projectJson.pages.forEach(function (pageId) {
                 const page = projectJson[pageId];
-                (page && Array.isArray(page.sprites) ? page.sprites : []).forEach(function (spriteId) {
+                if (!page || typeof page !== 'object') {
+                    return; // mesma regra do manifesto: página fantasma não conta/indexa
+                }
+                pageIds.push(pageId);
+                const inScene = {};
+                (Array.isArray(page.sprites) ? page.sprites : []).forEach(function (spriteId) {
                     const sprite = page[spriteId];
                     if (sprite && sprite.type === 'sprite' && sprite.md5) {
                         counts[sprite.md5] = (counts[sprite.md5] || 0) + 1;
+                        inScene[sprite.md5] = (inScene[sprite.md5] || 0) + 1;
                     }
                 });
+                countsByScene.push(inScene);
             });
         }
+        // Limite POR CENA quando o exemplo do professor tem contagem por cena
+        // (presentCountsByScene): na cena i do aluno, vale o que o professor
+        // tem na cena i - dois "jarra" no exemplo, um em cada cena, não deixam
+        // o aluno pôr os dois na mesma. Sem isso (missão só com presentCounts,
+        // ou cena atual além das do exemplo), cai no limite do projeto todo.
+        const byScene = (req.characters && Array.isArray(req.characters.presentCountsByScene)) ?
+            req.characters.presentCountsByScene : null;
+        const stage = ScratchJr.stage;
+        const currentIdx = (projectJson && stage && stage.currentPage) ? pageIds.indexOf(stage.currentPage.id) : -1;
+        const useScene = !!(byScene && currentIdx >= 0 && currentIdx < byScene.length);
         return {
+            characterLimitScope: useScene ? 'scene' : 'total',
             characterMd5s: characterMd5s.length > 0 ? new Set(characterMd5s) : null,
             sceneMd5s: sceneMd5s.length > 0 ? new Set(sceneMd5s) : null,
             // Só devolve limites quando conseguiu ler o projeto do aluno
             // (senão não dá pra saber se já atingiu - melhor não travar).
-            characterMaxCounts: projectJson ? maxCounts : null,
-            characterCounts: counts,
+            characterMaxCounts: projectJson ? (useScene ? byScene[currentIdx] : maxCounts) : null,
+            characterCounts: useScene ? countsByScene[currentIdx] : counts,
             maxScenes: projectJson ? maxScenes : null,
             sceneCount: sceneCount,
         };
@@ -316,12 +337,20 @@ export default class AssignmentBadge {
      * volta null). O clique em si é barrado em Thumbs.clickOnEmptyPage.
      */
     static _syncSceneLimitUi () {
-        const tile = document.getElementById('emptypage');
-        if (!tile) {
-            return;
-        }
         const r = AssignmentBadge.galleryRestriction;
-        tile.classList.toggle('assignmentLimitReached', !!(r && r.maxScenes && r.sceneCount >= r.maxScenes));
+        const tile = document.getElementById('emptypage');
+        if (tile) {
+            tile.classList.toggle('assignmentLimitReached', !!(r && r.maxScenes && r.sceneCount >= r.maxScenes));
+        }
+        // Botão de novo personagem: desabilitado quando não sobra nenhum
+        // personagem da missão pra adicionar nesta cena (ver UI.addSprite).
+        const addActor = document.querySelector('.addsprite');
+        if (addActor) {
+            const exhausted = allCharactersAtLimit(r, (MediaLib.sprites || []).map(function (s) {
+                return s.md5;
+            }));
+            addActor.classList.toggle('assignmentLimitReached', exhausted);
+        }
     }
 
     static _showStartBanner () {

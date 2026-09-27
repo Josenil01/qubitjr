@@ -23,3 +23,15 @@ describe('manifesto: contagem de personagens e cenas (limite de quantidade)', ()
         expect(computeProjectManifest(null).scenes.pageCount).toBeUndefined();
     });
 });
+
+describe('manifesto: contagem por cena', () => {
+    it('presentCountsByScene segue a ordem das páginas', () => {
+        const m = computeProjectManifest({
+            pages: ['p1', 'p2'],
+            p1: { md5: 'A.svg', sprites: ['a'], a: { type: 'sprite', md5: 'HY-Jarra.svg' } },
+            p2: { md5: 'B.svg', sprites: ['a', 'b'], a: { type: 'sprite', md5: 'HY-Jarra.svg' }, b: { type: 'sprite', md5: 'HY-Jarra.svg' } },
+        });
+        expect(m.characters.presentCountsByScene).toEqual([{ 'HY-Jarra.svg': 1 }, { 'HY-Jarra.svg': 2 }]);
+        expect(m.characters.presentCounts).toEqual({ 'HY-Jarra.svg': 3 });
+    });
+});

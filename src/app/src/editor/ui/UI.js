@@ -18,6 +18,7 @@ import IO from '../../iPad/IO.js';
 import MediaLib from '../../iPad/MediaLib.js';
 import Paint from '../../painteditor/Paint.js';
 import Events from '../../utils/Events.js';
+import {getGalleryRestriction, allCharactersAtLimit, showAssignmentToast} from './GalleryRestriction.js';
 import Localization from '../../utils/Localization.js';
 import ScratchAudio from '../../utils/ScratchAudio.js';
 import {frame, gn, CSSTransition, localx, newHTML, scaleMultiplier, getIdFor, isTablet, newDiv,
@@ -965,6 +966,16 @@ export default class UI {
         e.stopPropagation();
         var pt = Events.getTargetPoint(e);
         if (pt.x > (globalx(e.target) + 167)) {
+            return;
+        }
+        // Missão com limite de quantidade: já usou todos os personagens que o
+        // exemplo do professor tem nesta cena - avisa em vez de abrir uma
+        // galeria vazia. Ver GalleryRestriction.js#allCharactersAtLimit.
+        if (allCharactersAtLimit(getGalleryRestriction(), (MediaLib.sprites || []).map(function (s) {
+            return s.md5;
+        }))) {
+            ScratchAudio.sndFX('boing.wav');
+            showAssignmentToast('Você já colocou todos os personagens desta cena. Conclua a missão para liberar mais!');
             return;
         }
         ScratchAudio.sndFX('tap.wav');

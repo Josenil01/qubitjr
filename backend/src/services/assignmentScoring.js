@@ -185,6 +185,10 @@ function computeProjectManifest(projectJson) {
     // AssignmentBadge.galleryRestriction): 1 jarra no exemplo = o aluno só
     // pode ter 1, 2 = pode ter 2. Conta TODA página e TODO sprite, scriptado ou não.
     const presentCharacterCounts = {};
+    // Mesma contagem, mas POR CENA, na ordem das páginas (índice = posição da
+    // cena no projeto): presentCountsByScene[i][md5]. Permite limitar "quantas
+    // vezes o personagem X nesta cena" e não só no projeto inteiro.
+    const presentCountsByScene = [];
     let pageCount = 0;
 
     // Cross-project tallies feeding the ctScores rules below.
@@ -204,6 +208,8 @@ function computeProjectManifest(projectJson) {
         const page = projectJson[pageId];
         if (!page || typeof page !== 'object') continue;
         pageCount += 1;
+        const sceneCounts = {};
+        presentCountsByScene.push(sceneCounts);
 
         const spriteIds = Array.isArray(page.sprites) ? page.sprites : [];
         let pageQualifies = false;
@@ -219,6 +225,7 @@ function computeProjectManifest(projectJson) {
             if (isCharacter && sprite.md5) {
                 presentCharacterMd5Set.add(sprite.md5);
                 presentCharacterCounts[sprite.md5] = (presentCharacterCounts[sprite.md5] || 0) + 1;
+                sceneCounts[sprite.md5] = (sceneCounts[sprite.md5] || 0) + 1;
             }
 
             let spriteHasRealScript = false;
@@ -274,6 +281,7 @@ function computeProjectManifest(projectJson) {
     manifest.characters.present = Array.from(presentCharacterMd5Set);
     manifest.scenes.present = Array.from(presentSceneMd5Set);
     manifest.characters.presentCounts = presentCharacterCounts;
+    manifest.characters.presentCountsByScene = presentCountsByScene;
     manifest.scenes.pageCount = pageCount;
 
     // parallelism (0-3): most-parallel trigger style wins, by count of scripts using it.

@@ -10,7 +10,7 @@ import Undo from './Undo.js';
 import UI from './UI.js';
 import Events from '../../utils/Events.js';
 import ScratchAudio from '../../utils/ScratchAudio.js';
-import {getGalleryRestriction} from './GalleryRestriction.js';
+import {getGalleryRestriction, showAssignmentToast} from './GalleryRestriction.js';
 import {frame, gn, localx, newHTML, scaleMultiplier, getIdFor,
     isTablet, newImage, localy, setProps} from '../../utils/lib.js';
 
@@ -374,6 +374,7 @@ export default class Thumbs {
         if (restriction && restriction.maxScenes && restriction.sceneCount >= restriction.maxScenes) {
             e.preventDefault();
             ScratchAudio.sndFX('boing.wav');
+            showAssignmentToast('Você já tem todas as cenas desta missão. Conclua a missão para adicionar mais!');
             return;
         }
         ScratchAudio.sndFX('tap.wav');
