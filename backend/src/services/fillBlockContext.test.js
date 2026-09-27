@@ -87,3 +87,23 @@ describe('fillBlockContext - triggerExclusive', () => {
         expect(hints[1].when.triggerExclusive).toBeUndefined();
     });
 });
+
+describe('say com o texto padrão não conta como feito', () => {
+    const { computeProjectManifest } = require('./assignmentScoring');
+    const say = (text) => ({
+        pages: ['p1'],
+        p1: { md5: 'Bedroom.svg', sprites: ['c1'], c1: { type: 'sprite', md5: 'HY-Cofre.svg', scripts: [[['onflag'], ['say', text]]] } },
+    });
+
+    it('scoring ignora say com o texto default (qualquer idioma/caixa)', () => {
+        expect(computeProjectManifest(say('olá')).blocks.byType.say).toBeUndefined();
+        expect(computeProjectManifest(say(' Hi ')).blocks.byType.say).toBeUndefined();
+        expect(computeProjectManifest(say('Oi! Eu sou o cofrinho.')).blocks.byType.say).toBe(1);
+    });
+
+    it('detailedManifest também não lista o say não editado', () => {
+        const c = computeDetailedManifest(say('olá')).scenes[0].characters[0];
+        expect(c.blockTypes).not.toContain('say');
+        expect(computeDetailedManifest(say('Bom dia!')).scenes[0].characters[0].blockTypes).toContain('say');
+    });
+});

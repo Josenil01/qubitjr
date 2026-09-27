@@ -448,6 +448,14 @@ export default class AssignmentBadge {
     }
 
     static _recomputeLocal () {
+        // Aluno com um campo de bloco em edição (teclado de texto do say ou
+        // teclado numérico) - não avalia nada AINDA. Pedido explícito: os
+        // parabéns (e os alertas) só depois que ele termina e o campo perde o
+        // foco. Sem isso, digitando "12" num bloco cujo alvo é 1, o "1"
+        // intermediário já completava a missão por um instante.
+        if (ScratchJr.activeFocus) {
+            return;
+        }
         const projectJson = AssignmentBadge._readProjectJson();
         if (!projectJson) {
             return;

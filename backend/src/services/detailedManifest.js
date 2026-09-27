@@ -98,6 +98,22 @@ const NUMERIC_ARG_TYPES = new Set([
  * _hintConditionHolds). "say" fica de fora de propósito - ver
  * NUMERIC_ARG_TYPES acima.
  */
+/**
+ * Texto PADRÃO do bloco `say` em cada idioma (BlockSpecs.js: chave
+ * SAY_BLOCK_DEFAULT_ARGUMENT nas localizações) - o que o bloco mostra
+ * quando o aluno acabou de arrastá-lo e AINDA NÃO escreveu nada. Um `say`
+ * com esse texto não conta como "feito" (nem pra completar a missão, nem
+ * pra resolver a dica): achado em teste real - o aluno arrastava o bloco
+ * "olá" sem editar e recebia os parabéns. Comparação sem caixa/espaços.
+ * Manter em sincronia entre backend e cliente (assignmentScoring.js e
+ * detailedManifest.js, dos dois lados).
+ */
+const DEFAULT_SAY_TEXTS = new Set(['hola', 'hallo', 'hi', 'bonjour', 'ciao', 'はい', 'hoi', 'olá', 'hej', 'สวัสดี', '嗨']);
+
+function isDefaultSayText(arg) {
+    return typeof arg === 'string' && DEFAULT_SAY_TEXTS.has(arg.trim().toLowerCase());
+}
+
 function walkScriptForDetail(script, agg) {
     if (!Array.isArray(script)) return;
 
@@ -106,6 +122,8 @@ function walkScriptForDetail(script, agg) {
 
         const blockType = block[0];
         if (CARET_TYPES.has(blockType)) continue; // editor artifact, ignore entirely
+        // say com o texto padrão (aluno ainda não editou) = bloco ainda não feito.
+        if (blockType === 'say' && isDefaultSayText(block[1])) continue;
 
         agg.blockTypes.add(blockType);
         agg.blockCounts.set(blockType, (agg.blockCounts.get(blockType) || 0) + 1);

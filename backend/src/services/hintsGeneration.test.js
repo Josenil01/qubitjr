@@ -908,7 +908,7 @@ describe('generateHints', () => {
                 {
                     id: 'page1',
                     md5: 'Bedroom.svg',
-                    sprites: [{ id: 'allan', type: 'sprite', md5: 'HY-Allan.svg', name: 'Allan', scripts: [[['onflag', null, 0, 0], ['say', 'olá', 0, 0]]] }],
+                    sprites: [{ id: 'allan', type: 'sprite', md5: 'HY-Allan.svg', name: 'Allan', scripts: [[['onflag', null, 0, 0], ['say', 'Bom dia!', 0, 0]]] }],
                 },
             ]);
         }
