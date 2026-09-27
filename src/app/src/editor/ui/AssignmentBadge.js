@@ -109,6 +109,7 @@ const IDLE_BEFORE_HINT_MS = 3000; // aluno precisa ficar esse tempo sem clicar/a
 const ALERT_IDLE_MS = 1000; // o alerta "Quase!" (valor/gatilho errado) vem logo depois da AÇÃO do aluno
 // (soltar o bloco) - é quando a dica mais vale, então não espera os 3s de IDLE_BEFORE_HINT_MS
 // (esses são só pra dica proativa, que INTERROMPE o aluno). Ver _evaluateHints.
+const FILL_IDLE_MS = 2000; // bloco zerado (missão) largado sem o aluno escolher o valor: lembra depois desse tempo parado
 const MISTAKE_BLINK_MS = 8000; // por quanto tempo o bloco errado pisca depois do aluno fechar o alerta
 const REQUIREMENTS_REFRESH_MS = 30000; // ida ao servidor - só pra pegar reautoria do professor
 // Achado em teste real: fechar a dica/painel clicando fora do cartão, ou
@@ -742,7 +743,7 @@ export default class AssignmentBadge {
         }
         const idleFor = Date.now() - lastActivityAt;
         if (wrongValueHint) {
-            if (idleFor < ALERT_IDLE_MS) {
+            if (idleFor < (wrongValueInfo.idleMs || ALERT_IDLE_MS)) {
                 return; // acabou de soltar/arrastar algo - espera só um instante, não os 3s da dica proativa
             }
             const alertHint = wrongValueHint;
@@ -754,6 +755,7 @@ export default class AssignmentBadge {
                 trigger: 'Quase! O bloco está no lugar errado - confira qual bloco de início vem antes dele. ',
                 order: 'Opa, esse bloco vem depois! Primeiro faça: ',
                 confirm: 'Quase! Toque no número do bloco para confirmar o valor. ',
+                fill: 'Falta escolher o valor do bloco - toque nele para definir. ',
                 value: 'Quase! O valor do bloco ainda não está certo. ',
             };
             recordHintEvent(spokenHint.id, 'shown');
@@ -844,7 +846,7 @@ export default class AssignmentBadge {
                     return false;
                 }
                 const trigger = AssignmentBadge._triggerOfBlock(b, blocks);
-                if (info.kind === 'confirm') {
+                if (info.kind === 'confirm' || info.kind === 'fill') {
                     if (when.trigger && trigger !== when.trigger) {
                         return false;
                     }
@@ -1038,7 +1040,18 @@ export default class AssignmentBadge {
                 return (match.values[bt] || []).length > 0;
             });
             if (!chosenWrong.length) {
-                return null;
+                // Nenhum valor escolhido ainda naqueles blocos (zerados/velocidade
+                // "nenhuma" de missão): não é erro, mas se o aluno largar assim,
+                // lembra de escolher o valor - depois de FILL_IDLE_MS parado, pra
+                // não interromper quem está prestes a digitar. Uma vez por
+                // conjunto de blocos ainda sem valor (wrongValueAlerted).
+                return {
+                    kind: 'fill',
+                    idleMs: FILL_IDLE_MS,
+                    sig: hint.id + '|fill|' + wrong.map(function (bt) {
+                        return bt + ':' + (match.pendings[bt] || []).length;
+                    }).join(';'),
+                };
             }
             return {
                 kind: 'value',
