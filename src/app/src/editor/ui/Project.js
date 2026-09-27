@@ -22,6 +22,13 @@ let loadIcon = undefined;
 let error = false;
 let projectbarsize = 66;
 let mediaCountBase = 1;
+// Só o AssignmentBadge liga (ver setMaskUnconfirmed): enquanto true,
+// encodeStrip troca o argumento de um bloco AINDA NÃO CONFIRMADO pelo aluno
+// (valor padrão recém-arrastado da paleta) por 'unconfirmed:<valor>' - os
+// manifestos leem isso como "sem valor real" e a missão não dá o bloco por
+// feito só porque o padrão coincide com o do professor. Nunca ligado no
+// salvar: o projeto salvo guarda o valor real de sempre.
+let maskUnconfirmed = false;
 
 export default class Project {
     static get metadata () {
@@ -558,6 +565,10 @@ export default class Project {
         }
     }
 
+    static setMaskUnconfirmed (on) {
+        maskUnconfirmed = !!on;
+    }
+
     static getProject (pageid) {
         var obj = {};
         obj.pages = ScratchJr.stage.getPagesID();
@@ -595,6 +606,9 @@ export default class Project {
             var arg = (b.arg != null) || (hasargs.indexOf(bt) > -1) ? b.getArgValue() : null;
             if (!arg && (arg != 0)) {
                 arg = 'null';
+            }
+            if (maskUnconfirmed && b.arg && b.arg.unconfirmed && arg !== 'null') {
+                arg = 'unconfirmed:' + arg;
             }
             var dx = b.div.left / b.scale;
             var dy = b.div.top / b.scale;

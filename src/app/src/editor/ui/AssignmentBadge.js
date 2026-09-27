@@ -522,9 +522,14 @@ export default class AssignmentBadge {
             return null; // palco ainda não montado - próximo tick tenta de novo
         }
         try {
+            // Com a máscara: bloco com valor padrão ainda não confirmado pelo
+            // aluno não conta como valor feito (ver Project.maskUnconfirmed).
+            Project.setMaskUnconfirmed(true);
             return Project.getProject(ScratchJr.stage.pages[0].id);
         } catch (err) {
             return null; // best-effort - nunca deixa um erro de leitura quebrar o selo
+        } finally {
+            Project.setMaskUnconfirmed(false);
         }
     }
 
@@ -714,6 +719,7 @@ export default class AssignmentBadge {
             const kindText = {
                 trigger: 'Quase! O bloco está no lugar errado - confira qual bloco de início vem antes dele. ',
                 order: 'Opa, esse bloco vem depois! Primeiro faça: ',
+                confirm: 'Quase! Toque no número do bloco para confirmar o valor. ',
                 value: 'Quase! O valor do bloco ainda não está certo. ',
             };
             recordHintEvent(spokenHint.id, 'shown');
@@ -804,6 +810,12 @@ export default class AssignmentBadge {
                     return false;
                 }
                 const trigger = AssignmentBadge._triggerOfBlock(b, blocks);
+                if (info.kind === 'confirm') {
+                    if (when.trigger && trigger !== when.trigger) {
+                        return false;
+                    }
+                    return !!(b.arg && b.arg.unconfirmed);
+                }
                 if (info.kind === 'order') {
                     // Os blocos que ele já montou da dica posterior (no gatilho dela).
                     return !when.trigger || trigger === when.trigger;
@@ -866,6 +878,7 @@ export default class AssignmentBadge {
         const evaluate = function (pool) {
             const counts = {};
             const values = {};
+            const pendings = {};
             pool.forEach(function (script) {
                 // O bloco de início também conta como "tipo presente" (uma
                 // dica pode listar onflag/onmessage em blockTypes).
@@ -877,10 +890,14 @@ export default class AssignmentBadge {
                     if (b.num !== null && b.num !== undefined) {
                         (values[b.type] = values[b.type] || []).push(b.num);
                     }
+                    if (b.pending !== null && b.pending !== undefined) {
+                        (pendings[b.type] = pendings[b.type] || []).push(b.pending);
+                    }
                 });
             });
             return {
                 values: values,
+                pendings: pendings,
                 typesOk: wantedTypes.every(function (bt) {
                     return (counts[bt] || 0) >= (minCounts[bt] || 1);
                 }),
@@ -971,6 +988,14 @@ export default class AssignmentBadge {
             const wrong = Object.keys(wantedArgs).filter(function (bt) {
                 return !(match.values[bt] || []).includes(wantedArgs[bt]);
             });
+            // O valor que o aluno tem AGORA já é o pedido, mas é o padrão do
+            // bloco recém-arrastado, ainda não confirmado: não é erro de
+            // valor, é "toque no número pra confirmar".
+            if (wrong.every(function (bt) {
+                return (match.pendings[bt] || []).includes(wantedArgs[bt]);
+            })) {
+                return {kind: 'confirm', sig: hint.id + '|confirm|' + wrong.join(',')};
+            }
             return {
                 kind: 'value',
                 sig: hint.id + '|value|' + wrong.map(function (bt) {

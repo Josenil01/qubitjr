@@ -129,7 +129,12 @@ function walkScript (script, agg) {
 
         // Ver buildScriptDetail - bloco (ordem real, inclusive aninhados) do
         // script percorrido agora.
-        agg.currentBlocks.push({type: blockType, num: hasRealNumArg ? numArg : null});
+        // pending: valor PADRÃO ainda não confirmado pelo aluno (ver
+        // Project.maskUnconfirmed) - só existe no cliente, o servidor nunca
+        // recebe o projeto mascarado. num fica null nesse caso.
+        const pendingMatch = (typeof arg === 'string') ? /^unconfirmed:(-?\d+(?:\.\d+)?)$/.exec(arg) : null;
+        agg.currentBlocks.push({type: blockType, num: hasRealNumArg ? numArg : null,
+            pending: pendingMatch ? Number(pendingMatch[1]) : null});
 
         // Ver docblock do original (backend) - token já pronto pra exibição,
         // na ORDEM real do script (nunca deduplicado, ao contrário de blockTypes).

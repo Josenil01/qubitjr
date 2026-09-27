@@ -333,6 +333,15 @@ export default class Block {
         });
         bbx.moveBlock(dx, dy);
         bbx.update(spr);
+        // Bloco recém-arrastado da paleta (único chamador: Palette.js) com
+        // argumento numérico/velocidade: o valor é o PADRÃO, o aluno ainda não
+        // o escolheu. AssignmentBadge não deve contá-lo como "valor certo" só
+        // porque o padrão coincide com o do professor (ver
+        // Project.encodeStrip/maskUnconfirmed). Zera em numEditDone/
+        // menuCloseSpeeds. Só em memória - projeto recarregado = confirmado.
+        if (this.inpalette && bbx.arg && (bbx.arg.argType == 'n' || bbx.arg.argType == 'd')) {
+            bbx.arg.unconfirmed = true;
+        }
         return bbx;
     }
 

@@ -354,6 +354,7 @@ export default class BlockArg {
 
     menuCloseSpeeds (e, mu, b, c) {
         e.preventDefault();
+        b.owner.arg.unconfirmed = false; // escolheu a velocidade (ver Block.duplicateBlock)
         var value = b.owner.arg.argValue;
         b.owner.arg.argValue = BlockSpecs.speeds.indexOf(c);
         var ctx = b.owner.blockicon.getContext('2d');

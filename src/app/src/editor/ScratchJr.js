@@ -923,6 +923,7 @@ export default class ScratchJr {
         }
         val = ScratchJr.validateNumber(val);
         var ba = activeFocus;
+        ba.unconfirmed = false; // o aluno confirmou o número (ver Block.duplicateBlock)
         activeFocus.setValue(parseFloat(val));
         ba.argValue = val;
         if (ba.daddy && ba.daddy.div.parentNode.owner) {
