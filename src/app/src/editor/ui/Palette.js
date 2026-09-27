@@ -14,6 +14,7 @@ import Rectangle from '../../geom/Rectangle.js';
 import DrawPath from '../../utils/DrawPath.js';
 import ScratchAudio from '../../utils/ScratchAudio.js';
 import Record from './Record.js';
+import {useZeroBlockDefaults} from './GalleryRestriction.js';
 import {frame, gn, localx, newHTML, scaleMultiplier, isTablet, newDiv,
     setProps, globalx, localy, globaly, drawScaled, newCanvas,
     setCanvasSize, hitRect, writeText, getStringSize} from '../../utils/lib.js';
@@ -577,7 +578,18 @@ export default class Palette {
     /////////////////////////////////////
 
     static newScaledBlock (parent, op, scale, dx, dy) {
-        var bbx = new Block(BlockSpecs.defs[op], true, scale);
+        var spec = BlockSpecs.defs[op];
+        // Dentro de uma missão (ainda não concluída) todo bloco com número/
+        // velocidade nasce ZERADO (velocidade: 3 = "não escolhida", ícone
+        // speed3) - o aluno precisa digitar/escolher o valor, em vez de o
+        // padrão do bloco coincidir com o do professor por acaso. Fora da
+        // missão (projeto livre, cadastro do professor) nada muda. Cópia da
+        // spec: BlockSpecs.defs é compartilhado.
+        if (useZeroBlockDefaults() && (spec[3] == 'n' || spec[3] == 'd')) {
+            spec = spec.concat();
+            spec.splice(4, 1, spec[3] == 'n' ? 0 : 3);
+        }
+        var bbx = new Block(spec, true, scale);
         setProps(bbx.div.style, {
             position: 'absolute',
             left: dx + 'px',

@@ -204,7 +204,10 @@ export default class Prims {
 
     static SetSpeed (strip) {
         var s = strip.spr;
-        var num = Number(strip.thisblock.getArgValue()); // 0 - 1 - 2
+        var num = Number(strip.thisblock.getArgValue()); // 0 - 1 - 2 (3 = não escolhida -> normal)
+        if (num === 3) {
+            num = 1;
+        }
         s.speed = Math.pow(2, num); // eslint-disable-line no-restricted-properties
         strip.waitTimer = tinterval;
         strip.thisblock = strip.thisblock.next;

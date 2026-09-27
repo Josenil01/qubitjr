@@ -91,7 +91,8 @@ import {newHTML} from '../../utils/lib.js';
 import {computeProjectManifest, compareManifests} from './assignmentScoring.js';
 import {computeDetailedManifest} from './detailedManifest.js';
 import MediaLib from '../../iPad/MediaLib.js';
-import {registerGalleryRestrictionProvider, allCharactersAtLimit} from './GalleryRestriction.js';
+import Palette from './Palette.js';
+import {registerGalleryRestrictionProvider, registerZeroBlockDefaultsProvider, allCharactersAtLimit} from './GalleryRestriction.js';
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
@@ -130,6 +131,7 @@ let actualTimer = null;
 let requirementsTimer = null;
 let dismissedThisSession = false;
 let dismissedHintIds = new Set(); // ids de dica já mostrada+fechada nesta sessão de aba - nunca mais reexibida automaticamente
+let zeroDefaultsApplied = false; // último estado aplicado à paleta (ver _syncPaletteDefaults)
 let blockBlinkEls = []; // <div>s de bloco piscando agora (ver _highlightMistake)
 let blockBlinkTimer = null;
 let wrongValueAlerted = new Set(); // assinaturas (ver _mistakeInfo) de "valor/gatilho errado" já avisadas nesta sessão de aba
@@ -284,6 +286,37 @@ export default class AssignmentBadge {
             maxScenes: projectJson ? maxScenes : null,
             sceneCount: sceneCount,
         };
+    }
+
+    /**
+     * A paleta deve começar os blocos zerados agora? Mesmas condições da
+     * restrição de galeria (missão ativa, projeto dela, ainda não concluída)
+     * - ver galleryRestriction e Palette.newScaledBlock.
+     */
+    static get zeroDefaultsActive () {
+        if (!assignment || !assignment.requirements) return false;
+        if (wasComplete === true) return false;
+        return !!assignment.existingProjectId &&
+            String(ScratchJr.currentProject) === String(assignment.existingProjectId);
+    }
+
+    /**
+     * Reconstrói a paleta quando o modo "blocos zerados" liga/desliga (missão
+     * começou ou concluiu) - a paleta é montada por categoria, então sem isso
+     * a categoria já aberta ficaria com os padrões antigos (ou com os zeros,
+     * depois da conclusão) até o aluno trocar de aba. Só na MUDANÇA de estado.
+     */
+    static _syncPaletteDefaults () {
+        const active = AssignmentBadge.zeroDefaultsActive;
+        if (active === zeroDefaultsApplied) {
+            return;
+        }
+        zeroDefaultsApplied = active;
+        try {
+            Palette.selectCategory(Palette.numcat);
+        } catch (err) {
+            console.warn('[AssignmentBadge] refresh da paleta falhou (não-fatal):', err && err.message);
+        }
     }
 
     static async init () {
@@ -631,6 +664,7 @@ export default class AssignmentBadge {
             });
         }
         wasComplete = isComplete;
+        AssignmentBadge._syncPaletteDefaults();
     }
 
     /**
@@ -996,9 +1030,19 @@ export default class AssignmentBadge {
             })) {
                 return {kind: 'confirm', sig: hint.id + '|confirm|' + wrong.join(',')};
             }
+            // Bloco recém-arrastado e AINDA não editado (só valor pendente, sem
+            // nenhum valor real do aluno naquele tipo): o aluno está no meio do
+            // caminho, não errou - não interrompe. Só alerta valor que ele
+            // JÁ escolheu e está errado.
+            const chosenWrong = wrong.filter(function (bt) {
+                return (match.values[bt] || []).length > 0;
+            });
+            if (!chosenWrong.length) {
+                return null;
+            }
             return {
                 kind: 'value',
-                sig: hint.id + '|value|' + wrong.map(function (bt) {
+                sig: hint.id + '|value|' + chosenWrong.map(function (bt) {
                     return bt + '=' + (match.values[bt] || []).join(',');
                 }).join(';'),
             };
@@ -1495,6 +1539,9 @@ export default class AssignmentBadge {
 // Registra-se como fonte de verdade de GalleryRestriction.js - ver docblock
 // daquele arquivo pra entender por quê isso não é um import direto no
 // sentido contrário (Library.js -> este arquivo).
+registerZeroBlockDefaultsProvider(function () {
+    return AssignmentBadge.zeroDefaultsActive;
+});
 registerGalleryRestrictionProvider(function () {
     return AssignmentBadge.galleryRestriction;
 });

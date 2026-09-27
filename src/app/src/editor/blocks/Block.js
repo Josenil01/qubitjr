@@ -323,7 +323,11 @@ export default class Block {
 
     duplicateBlock (dx, dy, spr) {
         var op = this.blocktype;
-        var specs = BlockSpecs.defs[op];
+        // Cópia: escrever specs[4] direto em BlockSpecs.defs mudava o padrão
+        // GLOBAL do bloco pro último valor arrastado (inofensivo enquanto o
+        // valor da paleta era sempre o padrão; com a paleta zerada de missão,
+        // o zero vazaria pra depois da missão).
+        var specs = BlockSpecs.defs[op].concat();
         specs[4] = this.getArgValue();
         var bbx = new Block(specs, false, scaleMultiplier);
         setProps(bbx.div.style, {

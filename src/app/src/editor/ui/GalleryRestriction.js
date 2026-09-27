@@ -37,6 +37,23 @@ export function registerGalleryRestrictionProvider (fn) {
     provider = fn;
 }
 
+let zeroDefaultsProvider = null;
+
+/**
+ * AssignmentBadge.js registra aqui (uma vez) a pergunta "os blocos NOVOS da
+ * paleta devem nascer zerados?" - true só dentro do projeto de uma missão
+ * ainda não concluída. Provider separado e leve (não reaproveita
+ * getGalleryRestriction, que lê o projeto inteiro a cada chamada) porque
+ * Palette.js pergunta isso uma vez POR BLOCO ao montar a paleta.
+ */
+export function registerZeroBlockDefaultsProvider (fn) {
+    zeroDefaultsProvider = fn;
+}
+
+export function useZeroBlockDefaults () {
+    return zeroDefaultsProvider ? !!zeroDefaultsProvider() : false;
+}
+
 export function getGalleryRestriction () {
     return provider ? provider() : null;
 }
