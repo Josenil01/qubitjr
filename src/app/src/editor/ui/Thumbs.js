@@ -98,9 +98,29 @@ export default class Thumbs {
         if (!ScratchJr.isEditable() || (gn('pagecc').childElementCount < 3)) {
             Thumbs.clickOnPage(e, tb.owner);
         } else {
-            Events.startDrag(e, tb, Thumbs.prepareToDragPage, Thumbs.dropPage, Thumbs.draggingPage,
-                Thumbs.clickPage, Thumbs.startPageShaking);
+            // Missão com limite por cena: o clique (selecionar) e o segurar
+            // (apagar) continuam; só o ARRASTAR (reordenar) é barrado - ver
+            // blockPageDrag.
+            var restriction = getGalleryRestriction();
+            var locked = !!(restriction && restriction.sceneOrderLocked);
+            Events.startDrag(e, tb, locked ? Thumbs.blockPageDrag : Thumbs.prepareToDragPage, Thumbs.dropPage,
+                Thumbs.draggingPage, Thumbs.clickPage, Thumbs.startPageShaking);
         }
+    }
+
+    /**
+     * Substitui prepareToDragPage enquanto a missão trava a ordem das cenas
+     * (AssignmentBadge.galleryRestriction.sceneOrderLocked): em vez de
+     * começar o arrasto, avisa e cancela o gesto por inteiro. Sem estado de
+     * arrasto criado, o soltar seguinte não faz nada (dropPage nunca roda).
+     */
+    static blockPageDrag (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        ScratchAudio.sndFX('boing.wav');
+        showAssignmentToast('Durante a missão as cenas ficam na ordem do exemplo. Conclua a missão para reordenar!');
+        Events.cancelAll();
+        Events.clearDragAndDrop();
     }
 
     static prepareToDragPage (e) {

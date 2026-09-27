@@ -269,6 +269,11 @@ export default class AssignmentBadge {
         const currentIdx = (projectJson && stage && stage.currentPage) ? pageIds.indexOf(stage.currentPage.id) : -1;
         const useScene = !!(byScene && currentIdx >= 0 && currentIdx < byScene.length);
         return {
+            // Os limites por cena dependem da POSIÇÃO da cena (cena i do aluno
+            // = cena i do exemplo) - reordenar as cenas os embaralharia. Com
+            // contagem por cena disponível, Thumbs.pageMouseDown não deixa
+            // arrastar cena até a missão concluir.
+            sceneOrderLocked: !!byScene,
             characterLimitScope: useScene ? 'scene' : 'total',
             characterMd5s: characterMd5s.length > 0 ? new Set(characterMd5s) : null,
             sceneMd5s: sceneMd5s.length > 0 ? new Set(sceneMd5s) : null,
