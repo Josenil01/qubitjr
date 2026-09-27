@@ -395,6 +395,7 @@ Never introduce new globals. Always use module imports.
 | Variable | Purpose | Default |
 |----------|---------|---------|
 | `VITE_MOCK_TOKEN` | Auth token for local dev (dev-user-a / dev-user-b) | `dev-user-a` |
+| `VITE_HELLOYOTTA_APP_URL` | Redirect target for the "Voltar para o HelloYotta" button (LiveWatch.js / teacher.js) | None (button no-ops with a console warning if unset) |
 
 **Backend (`.env`):**
 

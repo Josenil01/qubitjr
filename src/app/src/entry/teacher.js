@@ -99,6 +99,9 @@ export async function teacherMain() {
     await _loadRoster();
     await _connectPresence();
     _renderLobby();
+
+    const returnBtn = gn('teacher-return-helloyotta-btn');
+    if (returnBtn) returnBtn.onclick = _broadcastReturnToHelloyotta;
 }
 
 function _fatal(msg) {
@@ -144,6 +147,22 @@ async function _connectPresence() {
             if (!engineMounted) _renderLobby(); // só recompõe a lista se ainda estivermos nela
         })
         .subscribe();
+}
+
+/**
+ * Botão "Voltar para o HelloYotta" do topbar — manda um broadcast pro canal
+ * de presença da TURMA INTEIRA (não o sessionChannel de uma observação
+ * individual, que só existe enquanto o professor está com um aluno
+ * específico aberto). Chega em todo aluno online agora, independente de
+ * estar sendo observado ou não nesse instante — cada aluno salva e sai por
+ * conta própria (ver LiveWatch.js#promptReturnToHelloyotta). Confirmação
+ * antes de disparar porque afeta a turma toda de uma vez, sem volta.
+ */
+function _broadcastReturnToHelloyotta() {
+    if (!presenceChannel) return;
+    const online = onlineIds.size;
+    if (!window.confirm(`Isso vai avisar ${online} aluno(s) online agora pra salvarem e voltarem pro HelloYotta. Confirmar?`)) return;
+    presenceChannel.send({ type: 'broadcast', event: 'return_to_helloyotta', payload: {} });
 }
 
 // ── Lobby (grid de alunos, online primeiro) ─────────────────────────────

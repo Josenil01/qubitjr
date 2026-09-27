@@ -217,6 +217,53 @@ function requestControlBack() {
     sessionChannel.send({ type: 'broadcast', event: 'control_request', payload: { from: 'student' } });
 }
 
+/**
+ * Botão "Voltar para o HelloYotta" — professor manda um broadcast
+ * ('return_to_helloyotta') pro canal de presença da TURMA INTEIRA (não o
+ * sessionChannel de uma observação individual — ver teacher.js#
+ * _broadcastReturnToHelloyotta), então chega em todo aluno online da turma
+ * ao mesmo tempo, independente de estar numa sessão de observação ativa
+ * agora. Reaproveita o mesmo banner de aviso do handoff de controle.
+ *
+ * Salva com o motor local (que já reflete o estado espelhado do professor,
+ * se ele estiver no controle nesse instante — ver applyStageState) antes de
+ * sair, mesmo padrão de saveThenSignalReady.
+ */
+function promptReturnToHelloyotta() {
+    showBanner('Sua professora quer te levar de volta pro HelloYotta', [
+        { label: 'Voltar para o HelloYotta', onClick: _confirmReturnToHelloyotta },
+    ]);
+}
+
+function _confirmReturnToHelloyotta() {
+    showBanner('Salvando seu projeto...');
+    ScratchJr.saveProject(null, _leaveToHelloyotta, true);
+}
+
+/**
+ * window.close() só funciona em abas abertas via script pelo próprio site
+ * — a maioria das entradas reais (link/redirect da HelloYotta) não se
+ * qualifica, e não existe forma síncrona de saber se funcionou. Chama
+ * mesmo assim (não custa nada quando falha) e agenda o redirect logo
+ * depois: se close() funcionou, a aba já sumiu e este setTimeout nunca
+ * chega a rodar; se não funcionou, a aba continua viva e navega pra lá.
+ */
+function _leaveToHelloyotta() {
+    const url = import.meta.env?.VITE_HELLOYOTTA_APP_URL;
+    if (!url) {
+        console.warn('[LiveWatch] VITE_HELLOYOTTA_APP_URL não configurada — não é possível voltar pra HelloYotta.');
+        return;
+    }
+    try {
+        window.close();
+    } catch (err) {
+        // ignora — cai no redirect abaixo de qualquer forma
+    }
+    setTimeout(() => {
+        window.location.href = url;
+    }, 50);
+}
+
 function _startWatchdog() {
     _stopWatchdog();
     _lastPreviewReceivedAt = Date.now(); // começa a contar de agora, não de um preview que talvez nunca tenha chegado ainda
@@ -469,6 +516,12 @@ async function initLiveWatch() {
             if (sessionId && studentId && ownId && studentId === ownId) {
                 joinSession(sessionId);
             }
+        })
+        .on('broadcast', { event: 'return_to_helloyotta' }, () => {
+            // Sem filtro de studentId de propósito — é um broadcast pra
+            // TURMA INTEIRA (ver teacher.js#_broadcastReturnToHelloyotta),
+            // não uma sessão de observação individual.
+            promptReturnToHelloyotta();
         })
         .subscribe((status) => {
             // Anuncia presença pro professor ver a lista "quem está online"

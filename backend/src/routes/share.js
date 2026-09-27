@@ -362,7 +362,7 @@ publicRouter.get('/students/:studentId/time-spent', async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('projects')
-            .select('id, name, json, mtime, time_spent_seconds, share_token')
+            .select('id, name, json, ctime, mtime, time_spent_seconds, share_token')
             .eq('owner', studentId)
             .eq('deleted', 'NO')
             .order('mtime', { ascending: false });
@@ -424,6 +424,7 @@ publicRouter.get('/students/:studentId/time-spent', async (req, res) => {
             latestProject = {
                 projectId: rows[0].id,
                 projectName: rows[0].name,
+                createdAt: rows[0].ctime,
                 lastEditedAt: rows[0].mtime,
                 shareToken: rows[0].share_token || null,
                 reactionsCount: reactionsByProject[rows[0].id] || 0,
@@ -491,7 +492,7 @@ publicRouter.get('/students/:studentId/projects', async (req, res) => {
     try {
         let query = supabase
             .from('projects')
-            .select('id, name, json, mtime, share_token')
+            .select('id, name, json, ctime, mtime, share_token')
             .eq('owner', studentId)
             .eq('deleted', 'NO')
             .order('mtime', { ascending: false });
@@ -529,6 +530,7 @@ publicRouter.get('/students/:studentId/projects', async (req, res) => {
             return {
                 projectId: row.id,
                 projectName: row.name,
+                createdAt: row.ctime,
                 lastEditedAt: row.mtime,
                 shareToken: row.share_token || null,
                 reactionsCount: reactionsByProject[row.id] || 0,
