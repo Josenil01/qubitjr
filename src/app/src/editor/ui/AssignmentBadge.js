@@ -681,6 +681,20 @@ export default class AssignmentBadge {
             return false;
         });
 
+        // Alerta de FORA DE ORDEM (só se não há erro de valor/gatilho a
+        // apontar): o aluno montou o bloco de uma dica POSTERIOR enquanto uma
+        // anterior do mesmo personagem ainda está pendente (achado em teste
+        // real: clique + say montados antes da bandeira + say que a dica
+        // pedia primeiro - nada avisava, a dica da bandeira já tinha sido
+        // fechada). Ver _orderInfo.
+        if (!wrongValueHint) {
+            const orderInfo = AssignmentBadge._orderInfo(hints, detailed);
+            if (orderInfo && !wrongValueAlerted.has(orderInfo.sig)) {
+                wrongValueHint = orderInfo.doneHint;
+                wrongValueInfo = orderInfo;
+            }
+        }
+
         if ((!readyHint && !wrongValueHint) || coachModalEl || hintsPanelEl) {
             // hintsPanelEl aberto: o aluno já está olhando as dicas por conta
             // própria (ver _openHintsPanel) - não faz sentido interromper com
@@ -694,20 +708,26 @@ export default class AssignmentBadge {
             }
             const alertHint = wrongValueHint;
             const alertInfo = wrongValueInfo;
-            recordHintEvent(alertHint.id, 'shown');
-            recordHintEvent(alertHint.id, alertInfo.kind === 'trigger' ? 'wrong_trigger' : 'wrong_value');
+            // Em "fora de ordem" o texto dito (e o evento gravado) é o da dica
+            // PENDENTE que o aluno pulou, não o da que ele já montou.
+            const spokenHint = alertInfo.kind === 'order' ? alertInfo.pendingHint : alertHint;
+            const kindText = {
+                trigger: 'Quase! O bloco está no lugar errado - confira qual bloco de início vem antes dele. ',
+                order: 'Opa, esse bloco vem depois! Primeiro faça: ',
+                value: 'Quase! O valor do bloco ainda não está certo. ',
+            };
+            recordHintEvent(spokenHint.id, 'shown');
+            recordHintEvent(spokenHint.id, 'wrong_' + alertInfo.kind);
             AssignmentBadge._showCoachModal({
                 icon: '🤔',
-                text: (wrongValueInfo.kind === 'trigger' ?
-                    'Quase! O bloco está no lugar errado - confira qual bloco de início vem antes dele. ' :
-                    'Quase! O valor do bloco ainda não está certo. ') + alertHint.text,
+                text: (kindText[alertInfo.kind] || kindText.value) + spokenHint.text,
                 extraClass: 'assignmentCoachCard',
                 onClose: function () {
                     wrongValueAlerted.add(alertInfo.sig);
                     // Esta dica já foi dita (agora) - não repete a versão
                     // proativa com o mesmo texto logo em seguida.
-                    dismissedHintIds.add(alertHint.id);
-                    recordHintEvent(alertHint.id, 'dismissed');
+                    dismissedHintIds.add(spokenHint.id);
+                    recordHintEvent(spokenHint.id, 'dismissed');
                     // O modal cobria o palco - agora que fechou, mostra QUAL
                     // bloco está errado.
                     AssignmentBadge._highlightMistake(alertHint, alertInfo);
@@ -784,6 +804,10 @@ export default class AssignmentBadge {
                     return false;
                 }
                 const trigger = AssignmentBadge._triggerOfBlock(b, blocks);
+                if (info.kind === 'order') {
+                    // Os blocos que ele já montou da dica posterior (no gatilho dela).
+                    return !when.trigger || trigger === when.trigger;
+                }
                 if (info.kind === 'trigger') {
                     return trigger !== when.trigger;
                 }
@@ -875,6 +899,50 @@ export default class AssignmentBadge {
         result.wrongTrigger = !!when.trigger && when.triggerExclusive === true &&
             !result.typesOk && evaluate(allScripts).typesOk;
         return result;
+    }
+
+    /**
+     * Detecta trabalho FORA DE ORDEM: uma dica de bloco posterior (doneHint)
+     * que o aluno já cumpriu de verdade enquanto uma anterior do MESMO
+     * personagem/cena (pendingHint) ainda não foi cumprida - independe de a
+     * pendente já ter sido fechada (dismissedHintIds). Só olha dicas
+     * character_missing_block_type e exige que o personagem exista e que
+     * tipos+valores da posterior batam (senão "personagem ainda nem existe"
+     * contaria como "cumprida"). Uma vez por par (pendente, cumprida) - ver
+     * wrongValueAlerted. Retorna {kind:'order', sig, doneHint, pendingHint}
+     * ou null.
+     */
+    static _orderInfo (hints, detailed) {
+        const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
+        const blockHints = hints.filter(function (hint) {
+            return hint && hint.when && hint.when.type === 'character_missing_block_type';
+        });
+        const sameActor = function (a, b) {
+            return a.when.characterMd5 === b.when.characterMd5 && a.when.sceneMd5 === b.when.sceneMd5 &&
+                (a.when.sceneOccurrence || 1) === (b.when.sceneOccurrence || 1);
+        };
+        const isDone = function (hint) {
+            const found = AssignmentBadge._findSceneAndCharacter(scenes, hint.when.sceneMd5, hint.when.characterMd5, hint.when.sceneOccurrence);
+            if (!found.character) {
+                return false;
+            }
+            const match = AssignmentBadge._blockMatch(found.character, hint.when);
+            return match.typesOk && match.argsOk;
+        };
+        for (let j = 1; j < blockHints.length; j++) {
+            const later = blockHints[j];
+            if (!isDone(later)) {
+                continue;
+            }
+            const pending = blockHints.slice(0, j).find(function (earlier) {
+                return sameActor(earlier, later) && !isDone(earlier) &&
+                    AssignmentBadge._hintConditionHolds(earlier, detailed);
+            });
+            if (pending) {
+                return {kind: 'order', sig: pending.id + '|order|' + later.id, doneHint: later, pendingHint: pending};
+            }
+        }
+        return null;
     }
 
     /**

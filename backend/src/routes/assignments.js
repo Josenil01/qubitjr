@@ -550,10 +550,11 @@ router.get('/my-progress', async (req, res) => {
     }
 });
 
+// wrong_order: bloco de uma dica POSTERIOR montado antes de uma anterior ainda pendente.
 // wrong_value/wrong_trigger: o alerta "quase!" (bloco existe mas com valor/gatilho
 // errado) - gravado ALÉM de shown/dismissed, pra dar pra medir quantas vezes o
 // aluno errou sem mexer nas contagens de shown/dismissed que share.js já soma.
-const HINT_EVENT_TYPES = new Set(['shown', 'dismissed', 'wrong_value', 'wrong_trigger']);
+const HINT_EVENT_TYPES = new Set(['shown', 'dismissed', 'wrong_value', 'wrong_trigger', 'wrong_order']);
 
 /**
  * POST /api/assignments/:id/hints/:hintId/event
