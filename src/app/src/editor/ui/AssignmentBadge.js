@@ -148,6 +148,16 @@ let lastActivityAt = 0;
 // primeiro _applyProgress(), e o modal só aparece numa transição
 // false -> true observada DEPOIS disso.
 let wasComplete = null;
+// "Uma vez concluída, a missão fica concluída" (decisão explícita do
+// usuário) - sticky pra sempre nesta sessão a partir do instante em que
+// isComplete vira true (ver _applyProgress), e SEMEADO como true já no
+// init() se o servidor disser que esta missão já foi concluída antes (ver
+// GET /active#completedAt, gravado por POST /:id/complete). Ao contrário de
+// wasComplete (o valor AO VIVO de cada recálculo, que volta a false se o
+// aluno apagar um bloco depois), everCompleted NUNCA volta a false - é o
+// flag que galleryRestriction/zeroDefaultsActive/_recomputeLocal consultam
+// pra travar a conquista e parar de reavaliar a missão pra sempre.
+let everCompleted = false;
 
 function authHeader () {
     var token = window.__AUTH_TOKEN__;
@@ -191,7 +201,8 @@ export default class AssignmentBadge {
      * restrição NÃO deve valer - nenhum caso trava a galeria por acidente:
      *  - sem missão ativa (projeto livre/lobby, `assignment` nunca setado);
      *  - `assignment.requirements` ausente (dado antigo/nunca calculado);
-     *  - missão já concluída (`wasComplete === true` - ver _applyProgress).
+     *  - missão já concluída, mesmo que só nesta sessão (`everCompleted` -
+     *    sticky pra sempre, ver docblock da variável e _applyProgress).
      * Quando não-null, characterMd5s/sceneMd5s podem INDIVIDUALMENTE ser
      * `null` (não só o objeto inteiro) - decisão explícita do usuário:
      * requirements vazios/ausentes pra UMA das duas galerias (ex.: projeto
@@ -214,11 +225,11 @@ export default class AssignmentBadge {
      */
     static get galleryRestriction () {
         if (!assignment || !assignment.requirements) return null;
-        if (wasComplete === true) return null;
+        if (everCompleted) return null;
         // Só restringe DENTRO do projeto da própria missão. Projeto autoral/
         // livre (ou missão ainda não iniciada) nunca é travado pelos assets
         // do professor - senão a missão ativa da turma vazava pra qualquer
-        // projeto do aluno, e wasComplete (só atualizado no projeto da
+        // projeto do aluno, e everCompleted (só atualizado no projeto da
         // missão) nunca liberava.
         if (!assignment.existingProjectId ||
             String(ScratchJr.currentProject) !== String(assignment.existingProjectId)) return null;
@@ -296,7 +307,7 @@ export default class AssignmentBadge {
      */
     static get zeroDefaultsActive () {
         if (!assignment || !assignment.requirements) return false;
-        if (wasComplete === true) return false;
+        if (everCompleted) return false;
         return !!assignment.existingProjectId &&
             String(ScratchJr.currentProject) === String(assignment.existingProjectId);
     }
@@ -338,6 +349,19 @@ export default class AssignmentBadge {
             return;
         }
         assignment = data.assignment;
+
+        // Missão já concluída em sessão/dia anterior (ver services/
+        // completionSnapshot.js no backend) - trava como conquista permanente
+        // já ANTES de qualquer recálculo, e pré-popula o popover com a foto
+        // congelada pra não ficar "Carregando..." até o aluno clicar de novo
+        // em algo que dispare um recálculo (que, sticky, nunca mais roda).
+        if (assignment.completedAt) {
+            everCompleted = true;
+            wasComplete = true;
+            if (assignment.completionSnapshot) {
+                lastProgress = {projectName: assignment.projectName, ...assignment.completionSnapshot};
+            }
+        }
 
         // Recarrega as dicas que este aluno já fechou (antes só existiam em
         // memória - um F5 fazia a de introdução voltar toda vez). Best-effort:
@@ -448,6 +472,22 @@ export default class AssignmentBadge {
         badgeEl.tabIndex = 0;
         badgeEl.textContent = '🎯 …';
         badgeEl.onclick = AssignmentBadge._toggleExpanded;
+
+        // Missão já concluída (agora, ou numa sessão anterior - ver init()):
+        // mostra o selo fixo, libera galeria/paleta/limites de uma vez e
+        // PARA por aqui - nunca cria o botão de dica, nunca agenda recálculo,
+        // nunca registra o listener de aba voltando a ficar visível. É
+        // exatamente o "parar de capturar dados" depois de concluída (pedido
+        // explícito do usuário) - a única coisa que ainda acontece depois
+        // disso é o aluno poder abrir o popover (lastProgress, semeado em
+        // init() a partir da foto congelada).
+        if (everCompleted) {
+            badgeEl.classList.add('completed');
+            badgeEl.textContent = '✅ Concluído';
+            AssignmentBadge._syncSceneLimitUi();
+            AssignmentBadge._syncPaletteDefaults();
+            return;
+        }
 
         // Botão flutuante de dica - só existe se a missão tiver dicas (ver
         // docblock ponto 7). Escondido de novo em _applyProgress quando a
@@ -568,6 +608,14 @@ export default class AssignmentBadge {
     }
 
     static _recomputeLocal () {
+        // Sticky - ver docblock de everCompleted no topo do arquivo. Nunca
+        // reavalia nada depois de concluída, mesmo que o aluno mude o
+        // projeto - é o que também garante que nenhum poll chegue a
+        // reagendar-se de novo depois de _lockCompletion() ter parado os
+        // timers (ver _applyProgress).
+        if (everCompleted) {
+            return;
+        }
         // Aluno com um campo de bloco em edição (teclado de texto do say ou
         // teclado numérico) - não avalia nada AINDA. Pedido explícito: os
         // parabéns (e os alertas) só depois que ele termina e o campo perde o
@@ -629,10 +677,12 @@ export default class AssignmentBadge {
         const isComplete = !!data.completed;
 
         if (badgeEl) {
-            // Verde + "Concluído" enquanto completed=true; volta pro selo
-            // normal (🎯 X/3, cor padrão) na hora que deixar de ser - ex.:
-            // aluno apagou um bloco/cena/personagem depois de já ter
-            // completado. classList.toggle já cobre as duas direções.
+            // Verde + "Concluído" na primeira vez que completed=true - e,
+            // graças ao trava-e-para-de-reavaliar logo abaixo (everCompleted),
+            // essa é a ÚLTIMA vez que este bloco roda: nunca mais volta pro
+            // selo normal depois, mesmo que o aluno apague um bloco/cena/
+            // personagem que fazia parte do que fora exigido (decisão
+            // explícita do usuário - "já foi concluído, fica concluído").
             badgeEl.classList.toggle('completed', isComplete);
             badgeEl.textContent = isComplete ? '✅ Concluído' : ('🎯 ' + met + '/' + groups.length);
         }
@@ -646,6 +696,16 @@ export default class AssignmentBadge {
             AssignmentBadge._renderPopover(data);
         }
 
+        if (!everCompleted && isComplete) {
+            // Primeira vez que fica completa nesta sessão (ou o servidor
+            // ainda não sabia - ver init()) - trava pra sempre AGORA, antes
+            // do modal/timers abaixo, e já reflete o destravamento na UI
+            // (limite de cena/personagem) neste mesmo tick, sem esperar o
+            // próximo recálculo (que não vai mais acontecer).
+            everCompleted = true;
+            AssignmentBadge._syncSceneLimitUi();
+            AssignmentBadge._lockCompletion();
+        }
         if (wasComplete === false && isComplete) {
             // Parabéns tem prioridade sobre uma dica de coach eventualmente
             // aberta neste exato tick (ver _showCoachModal - só um modal por
@@ -666,6 +726,44 @@ export default class AssignmentBadge {
         }
         wasComplete = isComplete;
         AssignmentBadge._syncPaletteDefaults();
+    }
+
+    /**
+     * Para os dois timers de repetição (poll normal e refresh de requisitos
+     * do professor) e avisa o servidor que a missão foi concluída (ver POST
+     * /assignments/:id/complete) - fire-and-forget, nunca bloqueia nem
+     * desfaz o estado sticky local se falhar (a conquista já vale nesta
+     * sessão de qualquer forma; só não persiste entre sessões até a próxima
+     * vez que completar de novo, o que aqui é impossível já que sticky nunca
+     * volta a false - então, na prática, uma falha de rede aqui só significa
+     * "essa aba específica não vai anunciar ao servidor", mas outra aba/
+     * sessão futura tentaria de novo se algum dia everCompleted começasse
+     * false outra vez, o que não acontece. Aceitável: best-effort mesmo).
+     */
+    static _lockCompletion () {
+        if (requirementsTimer) {
+            window.clearInterval(requirementsTimer);
+            requirementsTimer = null;
+        }
+        if (actualTimer) {
+            window.clearTimeout(actualTimer);
+            actualTimer = null;
+        }
+        if (!assignment || !assignment.id) {
+            return;
+        }
+        apiFetch('/assignments/' + assignment.id + '/complete', {method: 'POST'})
+            .then(function (res) {
+                return res.ok ? res.json() : null;
+            })
+            .then(function (body) {
+                if (body && body.completedAt) {
+                    assignment.completedAt = body.completedAt;
+                }
+            })
+            .catch(function (err) {
+                console.warn('[AssignmentBadge] POST .../complete falhou (não-fatal):', err && err.message);
+            });
     }
 
     /**

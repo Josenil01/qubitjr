@@ -57,6 +57,7 @@ const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
 const { computeProjectManifest, compareManifests } = require('../services/assignmentScoring');
+const { readCompletionSnapshot } = require('../services/completionSnapshot');
 const { resolveAssignmentFields } = require('../services/assignmentResolver');
 const { generateActivityPlan } = require('../services/activityGeneration');
 const { buildProjectFromPlan } = require('../services/activityProjectBuilder');
@@ -594,6 +595,11 @@ publicRouter.get('/students/:studentId/assignment-score', async (req, res) => {
 
         const assignment = project.assignments;
 
+        // Ver services/completionSnapshot.js - "uma vez concluída, fica
+        // concluída": devolve a FOTO congelada do momento da conclusão, nunca
+        // recalcula do projeto atual (que pode ter mudado desde então).
+        const frozen = await readCompletionSnapshot(supabase, project.id);
+
         // A linha da assignment pode ser um template (project_name/requirements
         // próprios) ou uma referência (template_id apontando pra outro molde) -
         // resolveAssignmentFields esconde essa diferença e devolve os campos
@@ -601,16 +607,20 @@ publicRouter.get('/students/:studentId/assignment-score', async (req, res) => {
         // backend/src/services/assignmentResolver.js e backend/supabase-setup.sql.
         const resolved = await resolveAssignmentFields(supabase, assignment);
 
-        let projectJson;
-        try {
-            projectJson = JSON.parse(project.json);
-        } catch (parseErr) {
-            console.error('[public] assignment-score: projeto', project.id, 'com json inválido:', parseErr.message);
-            return res.status(500).json({ error: 'Projeto com json inválido' });
+        // Frozen: nem precisa parsear/reprocessar o json atual do projeto
+        // (que pode ter mudado, ou até estar corrompido - não é mais problema
+        // nosso depois de já concluída).
+        let comparison = frozen ? frozen.snapshot : null;
+        if (!comparison) {
+            let projectJson;
+            try {
+                projectJson = JSON.parse(project.json);
+            } catch (parseErr) {
+                console.error('[public] assignment-score: projeto', project.id, 'com json inválido:', parseErr.message);
+                return res.status(500).json({ error: 'Projeto com json inválido' });
+            }
+            comparison = compareManifests(resolved.requirements, computeProjectManifest(projectJson));
         }
-
-        const actualManifest = computeProjectManifest(projectJson);
-        const comparison = compareManifests(resolved.requirements, actualManifest);
 
         // Contagem de dicas de coaching mostradas/dispensadas nesta missão
         // (hint_events, alimentada por POST /api/assignments/:id/hints/:hintId/
@@ -641,6 +651,7 @@ publicRouter.get('/students/:studentId/assignment-score', async (req, res) => {
             shareToken: project.share_token || null,
             hintsShown,
             hintsDismissed,
+            completedAt: frozen ? frozen.completedAt : null,
             ...comparison,
         });
     } catch (err) {

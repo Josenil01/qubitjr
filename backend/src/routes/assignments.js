@@ -62,6 +62,7 @@ const { notifyAssignmentRegistered } = require('../services/helloyotta');
 const { computeProjectManifest, compareManifests } = require('../services/assignmentScoring');
 const { resolveAssignmentFields } = require('../services/assignmentResolver');
 const { generateHints } = require('../services/hintsGeneration');
+const { readCompletionSnapshot, persistCompletion } = require('../services/completionSnapshot');
 const { generateActivityPlan } = require('../services/activityGeneration');
 const { buildProjectFromPlan } = require('../services/activityProjectBuilder');
 
@@ -461,6 +462,11 @@ router.get('/active', async (req, res) => {
 
         if (projectErr) throw projectErr;
 
+        // Foto congelada de conclusão (ver services/completionSnapshot.js) -
+        // consulta separada e tolerante, pra nunca derrubar /active inteiro
+        // se a migração da coluna ainda não rodou.
+        const completion = existingProject ? await readCompletionSnapshot(supabase, existingProject.id) : null;
+
         // Resolve project_name/requirements/hints EFETIVOS: se esta linha for
         // uma referência (template_id setado), busca os valores do template —
         // é assim que edições no template (e reaprovações de dicas) propagam
@@ -480,6 +486,12 @@ router.get('/active', async (req, res) => {
                 nivel: assignment.nivel,
                 turmaId: assignment.turma_id,
                 existingProjectId: existingProject ? existingProject.id : null,
+                // Ver services/completionSnapshot.js - presente (não-null) só
+                // depois que o aluno cumpriu os requisitos pela primeira vez.
+                // O cliente (AssignmentBadge.js) usa isto pra travar a
+                // conclusão como conquista permanente, mesmo entre sessões.
+                completedAt: completion ? completion.completedAt : null,
+                completionSnapshot: completion ? completion.snapshot : null,
             },
         });
     } catch (err) {
@@ -521,6 +533,20 @@ router.get('/my-progress', async (req, res) => {
 
         const assignment = project.assignments;
 
+        // Ver services/completionSnapshot.js - missão já concluída (mesmo que
+        // o projeto tenha mudado desde então) devolve a FOTO congelada, nunca
+        // recalcula do estado atual.
+        const frozen = await readCompletionSnapshot(supabase, project.id);
+        if (frozen) {
+            const resolvedName = (await resolveAssignmentFields(supabase, assignment)) || {};
+            return res.json({
+                hasAssignment: true,
+                projectName: resolvedName.projectName || assignment.project_name,
+                completedAt: frozen.completedAt,
+                ...frozen.snapshot,
+            });
+        }
+
         let projectJson;
         try {
             projectJson = JSON.parse(project.json);
@@ -542,10 +568,92 @@ router.get('/my-progress', async (req, res) => {
         res.json({
             hasAssignment: true,
             projectName: resolved.projectName,
+            completedAt: null,
             ...comparison,
         });
     } catch (err) {
         console.error('[assignments] GET /my-progress error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * POST /api/assignments/:id/complete
+ * Chamada pelo cliente (AssignmentBadge.js) assim que detecta LOCALMENTE que
+ * o aluno acabou de cumprir os requisitos da missão pela 1ª vez nesta sessão
+ * - registra a foto congelada (ver services/completionSnapshot.js) pra ela
+ * valer entre sessões e pro professor ver o retrato daquele momento, mesmo
+ * que o projeto mude depois. Idempotente: chamar de novo (aba recarregada,
+ * corrida entre duas abas) nunca sobrescreve uma foto já gravada, só devolve
+ * a que já existe. RECALCULA o comparativo aqui no servidor a partir do
+ * projeto salvo - nunca confia no "completed" que o cliente afirma, é só o
+ * gatilho pra checar agora.
+ */
+router.post('/:id/complete', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+
+    const assignmentId = parseInt(req.params.id, 10);
+    if (!Number.isFinite(assignmentId)) return res.status(400).json({ error: 'Invalid assignment id' });
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    try {
+        const { data: project, error: projectErr } = await supabase
+            .from('projects')
+            .select('id, json')
+            .eq('owner', req.userId)
+            .eq('assignment_id', assignmentId)
+            .eq('deleted', 'NO')
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+        if (projectErr) throw projectErr;
+        if (!project) return res.status(404).json({ error: 'Project not found for this assignment' });
+
+        const already = await readCompletionSnapshot(supabase, project.id);
+        if (already) {
+            return res.json({ completed: true, completedAt: already.completedAt, snapshot: already.snapshot });
+        }
+
+        const { data: assignment, error: assignmentErr } = await supabase
+            .from('assignments')
+            .select('id, template_id, project_name, requirements')
+            .eq('id', assignmentId)
+            .maybeSingle();
+        if (assignmentErr) throw assignmentErr;
+        if (!assignment) return res.status(404).json({ error: 'Assignment not found' });
+
+        const resolved = (await resolveAssignmentFields(supabase, assignment)) || {
+            requirements: assignment.requirements,
+        };
+
+        let projectJson;
+        try {
+            projectJson = JSON.parse(project.json);
+        } catch (parseErr) {
+            return res.status(500).json({ error: 'Projeto com json inválido: ' + parseErr.message });
+        }
+
+        const comparison = compareManifests(resolved.requirements, computeProjectManifest(projectJson));
+        if (!comparison.completed) {
+            // Divergiu do que o cliente achou (ex.: projeto mudou entre o
+            // cliente detectar e esta chamada chegar) - não persiste nada,
+            // best-effort. O cliente tenta de novo na próxima vez que
+            // detectar conclusão ao vivo.
+            return res.json({ completed: false });
+        }
+
+        const result = await persistCompletion(supabase, project.id, comparison);
+        if (!result.persisted) {
+            // Migração não rodada, ou erro de rede - o estado sticky do
+            // cliente já vale localmente nesta sessão de qualquer forma.
+            return res.json({ completed: true, persisted: false });
+        }
+        res.json({ completed: true, completedAt: result.completedAt, snapshot: result.snapshot });
+    } catch (err) {
+        console.error('[assignments] POST /:id/complete error:', err);
         res.status(500).json({ error: err.message });
     }
 });

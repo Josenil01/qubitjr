@@ -315,6 +315,20 @@ CREATE TABLE IF NOT EXISTS hint_events (
 
 CREATE INDEX IF NOT EXISTS idx_hint_events_student_assignment ON hint_events(student_id, assignment_id);
 
+-- "Uma vez concluída, a missão fica concluída" (decisão explícita do
+-- usuário) - a partir do momento em que o aluno cumpre os requisitos pela
+-- primeira vez, essas duas colunas guardam ESSE momento congelado:
+-- assignment_completed_at (quando) e assignment_completion_snapshot (o
+-- resultado de compareManifests() naquela hora - scenes/characters/blocks/
+-- ctScores, o mesmo shape que os endpoints de progresso já devolviam ao
+-- vivo). Editar o projeto depois (inclusive apagar o que cumpria o
+-- requisito) NUNCA desfaz isso - ver services/completionSnapshot.js, usado
+-- por GET /active, /my-progress e /public/students/:id/assignment-score.
+-- Só faz sentido em projeto com assignment_id setado; NULL nos demais.
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS assignment_completed_at TIMESTAMP;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS assignment_completion_snapshot JSONB;
+
+
 -- ============================================
 -- ai_activity_drafts
 -- ============================================
