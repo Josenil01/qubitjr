@@ -246,13 +246,25 @@ export default class Library {
         var wanted = (type == 'costumes') ? restriction.characterMd5s : restriction.sceneMd5s;
         if (!wanted) return all; // sem requirements úteis pra esta galeria específica - mostra tudo (fallback seguro)
         var source = (type == 'costumes') ? MediaLib.sprites : MediaLib.backgrounds;
-        var filtered = source.filter(function (item) {
+        var matched = source.filter(function (item) {
             return wanted.has(item.md5);
         });
         // Nenhum dos md5 do professor bateu com o catálogo atual (ex.: asset
         // removido/renomeado desde que a missão foi criada) - mesma regra de
         // nunca travar o aluno sem NENHUMA opção pra escolher.
-        return filtered.length > 0 ? filtered : all;
+        if (matched.length == 0) return all;
+        // Limite de quantidade (só personagens): o exemplo do professor usa
+        // N vezes cada um - quando o aluno já colocou N, ele some da galeria
+        // até a missão concluir (a restrição inteira cai). Pode resultar em
+        // lista vazia (todos no limite) - de propósito, não cai no "all".
+        if (type == 'costumes' && restriction.characterMaxCounts) {
+            var max = restriction.characterMaxCounts;
+            var have = restriction.characterCounts || {};
+            matched = matched.filter(function (item) {
+                return !(max[item.md5] > 0 && (have[item.md5] || 0) >= max[item.md5]);
+            });
+        }
+        return matched;
     }
 
     static displayLibAssets (data) {

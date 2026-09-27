@@ -27,6 +27,14 @@
  * ver AssignmentBadge.js#_highlightMistake. O bloco é um <div> com <canvas>
  * (não SVG), então o brilho vai por filter/drop-shadow - nunca por transform,
  * que o editor já usa (translate3d) pra posicionar o bloco. */
+/* Botão de nova cena quando a missão limita o nº de cenas ao do exemplo do
+ * professor (ver AssignmentBadge.js#_syncSceneLimitUi). */
+#emptypage.assignmentLimitReached {
+    opacity: 0.35;
+    filter: grayscale(1);
+    cursor: not-allowed;
+}
+
 @keyframes assignmentBlockBlink {
     0%, 100% { filter: none; }
     50% { filter: drop-shadow(0 0 3px #ff9800) drop-shadow(0 0 9px #ff9800) brightness(1.2); }

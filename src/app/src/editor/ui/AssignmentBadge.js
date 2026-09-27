@@ -223,9 +223,40 @@ export default class AssignmentBadge {
             (req.characters && Array.isArray(req.characters.used)) ? req.characters.used : [];
         const sceneMd5s = (req.scenes && Array.isArray(req.scenes.present)) ? req.scenes.present :
             (req.scenes && Array.isArray(req.scenes.used)) ? req.scenes.used : [];
+        // Limite de QUANTIDADE (pedido do professor): o exemplo dele usa N
+        // vezes cada personagem e M cenas - o aluno não passa disso enquanto a
+        // missão não conclui. characterMaxCounts/maxScenes ausentes (missão
+        // cadastrada antes deste recurso, sem presentCounts/pageCount) = sem
+        // limite, como sempre foi. Os contadores do aluno são lidos AGORA (não
+        // cacheados) do palco, mesma leitura de _readProjectJson.
+        const maxCounts = (req.characters && req.characters.presentCounts &&
+            typeof req.characters.presentCounts === 'object') ? req.characters.presentCounts : null;
+        const maxScenes = (req.scenes && Number.isFinite(req.scenes.pageCount) && req.scenes.pageCount > 0) ?
+            req.scenes.pageCount : null;
+        const counts = {};
+        let sceneCount = 0;
+        const projectJson = (maxCounts || maxScenes) ? AssignmentBadge._readProjectJson() : null;
+        if (projectJson && Array.isArray(projectJson.pages)) {
+            sceneCount = projectJson.pages.length;
+            projectJson.pages.forEach(function (pageId) {
+                const page = projectJson[pageId];
+                (page && Array.isArray(page.sprites) ? page.sprites : []).forEach(function (spriteId) {
+                    const sprite = page[spriteId];
+                    if (sprite && sprite.type === 'sprite' && sprite.md5) {
+                        counts[sprite.md5] = (counts[sprite.md5] || 0) + 1;
+                    }
+                });
+            });
+        }
         return {
             characterMd5s: characterMd5s.length > 0 ? new Set(characterMd5s) : null,
             sceneMd5s: sceneMd5s.length > 0 ? new Set(sceneMd5s) : null,
+            // Só devolve limites quando conseguiu ler o projeto do aluno
+            // (senão não dá pra saber se já atingiu - melhor não travar).
+            characterMaxCounts: projectJson ? maxCounts : null,
+            characterCounts: counts,
+            maxScenes: projectJson ? maxScenes : null,
+            sceneCount: sceneCount,
         };
     }
 
@@ -275,6 +306,22 @@ export default class AssignmentBadge {
         }
         // else: missão já iniciada só que NOUTRO projeto, e o aluno está
         // olhando pra este agora - fica em silêncio (ver comentário no topo do arquivo).
+    }
+
+    /**
+     * Liga/desliga o visual "desabilitado" do botão de nova cena (tile
+     * #emptypage, ver Thumbs.js) conforme o limite de cenas da missão -
+     * roda a cada avaliação, então acompanha o aluno adicionando/apagando
+     * cenas e some sozinho quando a missão conclui (galleryRestriction
+     * volta null). O clique em si é barrado em Thumbs.clickOnEmptyPage.
+     */
+    static _syncSceneLimitUi () {
+        const tile = document.getElementById('emptypage');
+        if (!tile) {
+            return;
+        }
+        const r = AssignmentBadge.galleryRestriction;
+        tile.classList.toggle('assignmentLimitReached', !!(r && r.maxScenes && r.sceneCount >= r.maxScenes));
     }
 
     static _showStartBanner () {
@@ -460,6 +507,7 @@ export default class AssignmentBadge {
         if (!projectJson) {
             return;
         }
+        AssignmentBadge._syncSceneLimitUi();
         const actual = computeProjectManifest(projectJson);
         const comparison = compareManifests(assignment.requirements, actual);
         AssignmentBadge._applyProgress({

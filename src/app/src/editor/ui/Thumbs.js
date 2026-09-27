@@ -10,6 +10,7 @@ import Undo from './Undo.js';
 import UI from './UI.js';
 import Events from '../../utils/Events.js';
 import ScratchAudio from '../../utils/ScratchAudio.js';
+import {getGalleryRestriction} from './GalleryRestriction.js';
 import {frame, gn, localx, newHTML, scaleMultiplier, getIdFor,
     isTablet, newImage, localy, setProps} from '../../utils/lib.js';
 
@@ -364,6 +365,15 @@ export default class Thumbs {
 
     static clickOnEmptyPage (e) {
         if (isTablet && e.touches && (e.touches.length > 1)) {
+            return;
+        }
+        // Missão com limite de cenas (o exemplo do professor tem M): sem nova
+        // cena enquanto o aluno já tem M e a missão não concluiu. Ver
+        // AssignmentBadge.galleryRestriction / _syncSceneLimitUi.
+        var restriction = getGalleryRestriction();
+        if (restriction && restriction.maxScenes && restriction.sceneCount >= restriction.maxScenes) {
+            e.preventDefault();
+            ScratchAudio.sndFX('boing.wav');
             return;
         }
         ScratchAudio.sndFX('tap.wav');

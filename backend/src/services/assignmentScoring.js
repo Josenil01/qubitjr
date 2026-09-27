@@ -179,6 +179,13 @@ function computeProjectManifest(projectJson) {
     // galeria passa a preferir (ver AssignmentBadge.galleryRestriction).
     const presentCharacterMd5Set = new Set();
     const presentSceneMd5Set = new Set();
+    // presentCharacterCounts/pageCount: QUANTAS vezes cada personagem (md5) e
+    // quantas cenas o professor usou - alimentam o limite de quantidade da
+    // missão (characters.presentCounts / scenes.pageCount, ver
+    // AssignmentBadge.galleryRestriction): 1 jarra no exemplo = o aluno só
+    // pode ter 1, 2 = pode ter 2. Conta TODA página e TODO sprite, scriptado ou não.
+    const presentCharacterCounts = {};
+    let pageCount = 0;
 
     // Cross-project tallies feeding the ctScores rules below.
     let onmessageTriggerCount = 0;
@@ -196,6 +203,7 @@ function computeProjectManifest(projectJson) {
     for (const pageId of projectJson.pages) {
         const page = projectJson[pageId];
         if (!page || typeof page !== 'object') continue;
+        pageCount += 1;
 
         const spriteIds = Array.isArray(page.sprites) ? page.sprites : [];
         let pageQualifies = false;
@@ -208,7 +216,10 @@ function computeProjectManifest(projectJson) {
             const isCharacter = sprite.type === 'sprite';
 
             // Present regardless of script - ver docblock de presentCharacterMd5Set acima.
-            if (isCharacter && sprite.md5) presentCharacterMd5Set.add(sprite.md5);
+            if (isCharacter && sprite.md5) {
+                presentCharacterMd5Set.add(sprite.md5);
+                presentCharacterCounts[sprite.md5] = (presentCharacterCounts[sprite.md5] || 0) + 1;
+            }
 
             let spriteHasRealScript = false;
 
@@ -262,6 +273,8 @@ function computeProjectManifest(projectJson) {
     manifest.characters.used = Array.from(characterMd5Set);
     manifest.characters.present = Array.from(presentCharacterMd5Set);
     manifest.scenes.present = Array.from(presentSceneMd5Set);
+    manifest.characters.presentCounts = presentCharacterCounts;
+    manifest.scenes.pageCount = pageCount;
 
     // parallelism (0-3): most-parallel trigger style wins, by count of scripts using it.
     if (onmessageTriggerCount >= 2) manifest.ctScores.parallelism = 3;
