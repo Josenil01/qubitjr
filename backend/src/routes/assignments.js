@@ -550,7 +550,10 @@ router.get('/my-progress', async (req, res) => {
     }
 });
 
-const HINT_EVENT_TYPES = new Set(['shown', 'dismissed']);
+// wrong_value/wrong_trigger: o alerta "quase!" (bloco existe mas com valor/gatilho
+// errado) - gravado ALÉM de shown/dismissed, pra dar pra medir quantas vezes o
+// aluno errou sem mexer nas contagens de shown/dismissed que share.js já soma.
+const HINT_EVENT_TYPES = new Set(['shown', 'dismissed', 'wrong_value', 'wrong_trigger']);
 
 /**
  * POST /api/assignments/:id/hints/:hintId/event

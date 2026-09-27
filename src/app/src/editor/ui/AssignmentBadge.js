@@ -104,6 +104,10 @@ const IDLE_BEFORE_HINT_MS = 3000; // aluno precisa ficar esse tempo sem clicar/a
 // de uma ação. Ver lastActivityAt/_trackActivity abaixo. Só vale pro caminho automático (poll) -
 // o painel de dicas (_openHintsPanel) ignora, de propósito: é exatamente pra isso que ele
 // existe (ver docblock do ponto 7 no topo do arquivo).
+const ALERT_IDLE_MS = 1000; // o alerta "Quase!" (valor/gatilho errado) vem logo depois da AÇÃO do aluno
+// (soltar o bloco) - é quando a dica mais vale, então não espera os 3s de IDLE_BEFORE_HINT_MS
+// (esses são só pra dica proativa, que INTERROMPE o aluno). Ver _evaluateHints.
+const MISTAKE_BLINK_MS = 8000; // por quanto tempo o bloco errado pisca depois do aluno fechar o alerta
 const REQUIREMENTS_REFRESH_MS = 30000; // ida ao servidor - só pra pegar reautoria do professor
 // Achado em teste real: fechar a dica/painel clicando fora do cartão, ou
 // clicando no botão de fechar rápido demais (reflexo/clique duplo), dispensava
@@ -125,6 +129,8 @@ let actualTimer = null;
 let requirementsTimer = null;
 let dismissedThisSession = false;
 let dismissedHintIds = new Set(); // ids de dica já mostrada+fechada nesta sessão de aba - nunca mais reexibida automaticamente
+let blockBlinkEls = []; // <div>s de bloco piscando agora (ver _highlightMistake)
+let blockBlinkTimer = null;
 let wrongValueAlerted = new Set(); // assinaturas (ver _mistakeInfo) de "valor/gatilho errado" já avisadas nesta sessão de aba
 // Date.now() da última interação REAL do aluno em qualquer lugar da página
 // (clique/toque/arrasto/tecla - ver _trackActivity/CADÊNCIA acima). 0 (nunca
@@ -384,9 +390,19 @@ export default class AssignmentBadge {
         };
         const opts = {capture: true, passive: true};
         document.addEventListener('mousedown', mark, opts);
-        document.addEventListener('mousemove', mark, opts);
+        document.addEventListener('mouseup', mark, opts);
+        // mousemove SÓ com botão pressionado (arrasto): passar o mouse por
+        // cima do palco sem clicar NÃO é atividade - senão, na prática, a
+        // espera de ociosidade nunca fechava enquanto o aluno "olhava" com o
+        // mouse mexendo (achado em teste real: dica demorando muito).
+        document.addEventListener('mousemove', function (e) {
+            if (e.buttons) {
+                mark();
+            }
+        }, opts);
         document.addEventListener('touchstart', mark, opts);
         document.addEventListener('touchmove', mark, opts);
+        document.addEventListener('touchend', mark, opts);
         document.addEventListener('keydown', mark, true);
     }
 
@@ -581,14 +597,15 @@ export default class AssignmentBadge {
             // o modal automático por cima nesse momento.
             return;
         }
-        const idleElapsed = (Date.now() - lastActivityAt) >= IDLE_BEFORE_HINT_MS;
-        if (!idleElapsed) {
-            return; // pronta, mas o aluno ainda está mexendo em algo - espera ele parar
-        }
+        const idleFor = Date.now() - lastActivityAt;
         if (wrongValueHint) {
+            if (idleFor < ALERT_IDLE_MS) {
+                return; // acabou de soltar/arrastar algo - espera só um instante, não os 3s da dica proativa
+            }
             const alertHint = wrongValueHint;
             const alertInfo = wrongValueInfo;
             recordHintEvent(alertHint.id, 'shown');
+            recordHintEvent(alertHint.id, alertInfo.kind === 'trigger' ? 'wrong_trigger' : 'wrong_value');
             AssignmentBadge._showCoachModal({
                 icon: '🤔',
                 text: (wrongValueInfo.kind === 'trigger' ?
@@ -601,9 +618,15 @@ export default class AssignmentBadge {
                     // proativa com o mesmo texto logo em seguida.
                     dismissedHintIds.add(alertHint.id);
                     recordHintEvent(alertHint.id, 'dismissed');
+                    // O modal cobria o palco - agora que fechou, mostra QUAL
+                    // bloco está errado.
+                    AssignmentBadge._highlightMistake(alertHint, alertInfo);
                 },
             });
             return;
+        }
+        if (idleFor < IDLE_BEFORE_HINT_MS) {
+            return; // pronta, mas o aluno ainda está mexendo em algo - espera ele parar
         }
         recordHintEvent(readyHint.id, 'shown');
         AssignmentBadge._showCoachModal({
@@ -619,6 +642,89 @@ export default class AssignmentBadge {
                 // função), reiniciando a espera de ociosidade sozinho.
             },
         });
+    }
+
+    /**
+     * Gatilho (onflag/onclick/...) do script onde `block` está - sobe pela
+     * cadeia prev até o primeiro bloco; se ele for o miolo de um `repeat`
+     * (ninguém aponta pra ele por prev), sobe pro repeat que o contém.
+     * null se o script não começa com um bloco de início.
+     */
+    static _triggerOfBlock (block, allBlocks) {
+        let first = block.findFirst();
+        for (let guard = 0; guard < 20; guard++) {
+            if (/^on(flag|click|touch|message)$/.test(first.blocktype)) {
+                return first.blocktype;
+            }
+            const first0 = first;
+            const owner = allBlocks.find(function (b) {
+                return b.inside === first0;
+            });
+            if (!owner) {
+                return null;
+            }
+            first = owner.findFirst();
+        }
+        return null;
+    }
+
+    /**
+     * Faz PISCAR no editor o(s) bloco(s) que o alerta "Quase!" aponta como
+     * errado: os do tipo da dica com valor diferente do exigido (kind
+     * 'value') ou sob outro gatilho (kind 'trigger'). Só quando o personagem
+     * da dica é o que está selecionado agora (a área de scripts mostrada é a
+     * dele) - senão não há o que piscar ali, e o texto do alerta já disse o
+     * que fazer. Best-effort: qualquer surpresa no DOM legado vira no-op,
+     * nunca um erro pro aluno. Sai sozinho depois de MISTAKE_BLINK_MS.
+     */
+    static _highlightMistake (hint, info) {
+        AssignmentBadge._clearMistakeBlink();
+        try {
+            const when = hint.when;
+            const spr = ScratchJr.getSprite();
+            const scriptsEl = ScratchJr.getActiveScript();
+            if (!spr || spr.md5 !== when.characterMd5 || !scriptsEl || !scriptsEl.owner) {
+                return;
+            }
+            const blocks = scriptsEl.owner.getBlocks();
+            const wantedTypes = Array.isArray(when.blockTypes) ? when.blockTypes : [];
+            const wantedArgs = when.blockArgs || {};
+            blockBlinkEls = blocks.filter(function (b) {
+                if (!wantedTypes.includes(b.blocktype)) {
+                    return false;
+                }
+                const trigger = AssignmentBadge._triggerOfBlock(b, blocks);
+                if (info.kind === 'trigger') {
+                    return trigger !== when.trigger;
+                }
+                if (when.trigger && trigger !== when.trigger) {
+                    return false;
+                }
+                const want = wantedArgs[b.blocktype];
+                return want !== undefined && Number(b.getArgValue()) !== want;
+            }).map(function (b) {
+                return b.div;
+            });
+            blockBlinkEls.forEach(function (el) {
+                el.classList.add('assignmentBlockBlink');
+            });
+            if (blockBlinkEls.length) {
+                blockBlinkTimer = window.setTimeout(AssignmentBadge._clearMistakeBlink, MISTAKE_BLINK_MS);
+            }
+        } catch (err) {
+            console.warn('[AssignmentBadge] _highlightMistake falhou (não-fatal):', err && err.message);
+        }
+    }
+
+    static _clearMistakeBlink () {
+        if (blockBlinkTimer) {
+            window.clearTimeout(blockBlinkTimer);
+            blockBlinkTimer = null;
+        }
+        blockBlinkEls.forEach(function (el) {
+            el.classList.remove('assignmentBlockBlink');
+        });
+        blockBlinkEls = [];
     }
 
     /**
