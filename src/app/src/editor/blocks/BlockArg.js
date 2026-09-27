@@ -48,7 +48,7 @@ export default class BlockArg {
             this.numperrow = 3;
             // 3 = velocidade "ainda não escolhida" (paleta zerada de missão) - fora
             // do menu, só como ponto de partida; ver Palette.newScaledBlock.
-            this.icon = BlockSpecs.speeds[this.argValue] || 'speed3';
+            this.icon = BlockSpecs.speeds[this.argValue] || 'speednone';
             this.div = this.addImageMenu(this.menuCloseSpeeds);
             break;
         case 'p':
