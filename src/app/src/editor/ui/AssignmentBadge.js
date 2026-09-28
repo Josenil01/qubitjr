@@ -796,9 +796,21 @@ export default class AssignmentBadge {
             return;
         }
         const detailed = computeDetailedManifest(projectJson);
-        const readyHint = hints.find(function (hint) {
-            return hint && !dismissedHintIds.has(hint.id) && AssignmentBadge._hintConditionHolds(hint, detailed);
+        // Só a dica MAIS ANTIGA (na ordem que o professor cadastrou) cujo
+        // requisito ainda não foi cumprido pode aparecer sozinha - mesmo que
+        // a condição de uma dica POSTERIOR já esteja batendo agora. Achado
+        // em teste real: fechar a dica 1 (sem o aluno ter feito a tarefa
+        // dela) deixava ela em dismissedHintIds, e o .find() de antes pulava
+        // direto pra dica 2 assim que a espera de ociosidade batesse - as
+        // dicas apareciam em sequência sem o aluno nunca ter cumprido a
+        // primeira. Agora, se a primeira pendente já foi dispensada, nenhuma
+        // dica aparece sozinha até ela ser resolvida de verdade (o botão
+        // flutuante de dica continua dando acesso a todas via _openHintsPanel,
+        // que ignora esta trava de propósito - ver docblock do ponto 7).
+        const firstPending = hints.find(function (hint) {
+            return hint && AssignmentBadge._hintConditionHolds(hint, detailed);
         });
+        const readyHint = (firstPending && !dismissedHintIds.has(firstPending.id)) ? firstPending : null;
         // Alerta de VALOR ERRADO - canal separado da dica proativa (readyHint):
         // a dica proativa aparece uma vez e, fechada, nunca volta
         // (dismissedHintIds); mas o aluno pode montar o bloco DEPOIS de
