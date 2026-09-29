@@ -23,6 +23,7 @@
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
 const { getClassroomRoster } = require('../services/helloyotta');
+const { readCompletionFlags } = require('../services/completionSnapshot');
 
 const router = express.Router();
 
@@ -133,6 +134,14 @@ router.get('/classroom/:turmaId/students', async (req, res) => {
             totalTimeByOwner[p.owner] = (totalTimeByOwner[p.owner] || 0) + (p.time_spent_seconds || 0);
         });
 
+        // Sombra verde no card (teacher.html#missionCompleted): só sobre o
+        // projeto MOSTRADO no card (o mais recente de cada aluno), não "o
+        // aluno já concluiu alguma missão algum dia" - ver
+        // services/completionSnapshot.js#readCompletionFlags. Uma única
+        // consulta extra, tolerante à migração ainda não ter rodado.
+        const latestProjectIds = Object.values(latestByOwner).map((p) => p.id);
+        const completedProjectIds = await readCompletionFlags(supabase, latestProjectIds);
+
         const students = roster.students.map((s) => {
             const project = latestByOwner[s.id];
             return {
@@ -146,6 +155,7 @@ router.get('/classroom/:turmaId/students', async (req, res) => {
                         thumbnail: resolveThumbnailUrl(supabase, s.id, project.thumbnail),
                     }
                     : null,
+                completedMission: !!(project && completedProjectIds.has(project.id)),
             };
         });
 

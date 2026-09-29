@@ -56,6 +56,15 @@ html, body { background: #f4f6fb; margin: 0; padding: 0; font-family: 'Helvetica
     border: 2px solid transparent;
 }
 .teacherCard.online { border-color: #48c9b0; }
+/* Sombra verde: o projeto mostrado neste card (o mais recente do aluno) já
+   concluiu a missão que estava vinculada a ele - ver
+   student.completedMission em GET /teacher/classroom/:turmaId/students
+   (backend/src/routes/teacher.js) e AssignmentBadge.js#everCompleted, cuja
+   foto congelada (projects.assignment_completed_at) alimenta essa flag. Só
+   sobre o PROJETO exibido, não "o aluno já concluiu alguma missão algum
+   dia" - se o card mostrar um projeto livre mais recente, a sombra some,
+   mesmo que uma missão anterior tenha sido concluída. */
+.teacherCard.missionCompleted { box-shadow: 0 0 0 3px #2ecc71, 0 4px 14px rgba(46,204,113,0.35); }
 .teacherCardStatus { font-size: 12px; font-weight: 700; align-self: flex-start; }
 .teacherCard.online .teacherCardStatus { color: #1a9c7c; }
 .teacherCard.offline .teacherCardStatus { color: #999; }

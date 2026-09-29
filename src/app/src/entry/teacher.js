@@ -193,7 +193,13 @@ function _renderLobby() {
 
     sorted.forEach((student) => {
         const online = onlineIds.has(student.id);
-        const card = newHTML('div', 'teacherCard' + (online ? ' online' : ' offline'), grid);
+        // Sombra verde (teacher.html#missionCompleted): o PROJETO mostrado
+        // neste card (o mais recente do aluno, ver GET /teacher/classroom/
+        // :turmaId/students) já concluiu a missão vinculada a ele - foto
+        // congelada em projects.assignment_completed_at, ver
+        // AssignmentBadge.js#everCompleted e services/completionSnapshot.js.
+        const card = newHTML('div', 'teacherCard' + (online ? ' online' : ' offline') +
+            (student.completedMission ? ' missionCompleted' : ''), grid);
 
         const status = newHTML('div', 'teacherCardStatus', card);
         status.textContent = online ? '🟢 online' : '⚪ offline';

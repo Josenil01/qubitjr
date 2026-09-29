@@ -1,6 +1,6 @@
 'use strict';
 
-const { readCompletionSnapshot, persistCompletion } = require('./completionSnapshot');
+const { readCompletionSnapshot, persistCompletion, readCompletionFlags } = require('./completionSnapshot');
 
 // Mock mínimo do cliente Supabase encadeável (.from().select()...) - só os
 // métodos que completionSnapshot.js realmente chama, cada um devolvendo
@@ -12,8 +12,11 @@ function fakeSupabase (result) {
         select: jest.fn(() => chain),
         eq: jest.fn(() => chain),
         is: jest.fn(() => chain),
+        not: jest.fn(() => chain),
+        in: jest.fn(() => chain),
         update: jest.fn(() => chain),
         maybeSingle: jest.fn(() => Promise.resolve(result)),
+        then: (resolve) => Promise.resolve(result).then(resolve),
     };
     return chain;
 }
@@ -70,5 +73,31 @@ describe('completionSnapshot.persistCompletion', () => {
         const supabase = fakeSupabase({ data: null, error: { code: '42703' } });
         const result = await persistCompletion(supabase, 1, {});
         expect(result).toEqual({ persisted: false, reason: 'not_migrated' });
+    });
+});
+
+describe('completionSnapshot.readCompletionFlags', () => {
+    it('lista vazia de ids não bate no banco - Set vazio direto', async () => {
+        const supabase = fakeSupabase({ data: [], error: null });
+        const result = await readCompletionFlags(supabase, []);
+        expect(result).toEqual(new Set());
+        expect(supabase.from).not.toHaveBeenCalled();
+    });
+
+    it('devolve só os ids que têm assignment_completed_at', async () => {
+        const supabase = fakeSupabase({ data: [{ id: 10 }, { id: 30 }], error: null });
+        const result = await readCompletionFlags(supabase, [10, 20, 30]);
+        expect(result).toEqual(new Set([10, 30]));
+        expect(supabase.in).toHaveBeenCalledWith('id', [10, 20, 30]);
+    });
+
+    it('migração não rodada (42703) - Set vazio, não lança', async () => {
+        const supabase = fakeSupabase({ data: null, error: { code: '42703' } });
+        await expect(readCompletionFlags(supabase, [1])).resolves.toEqual(new Set());
+    });
+
+    it('erro inesperado - Set vazio, não lança (best-effort)', async () => {
+        const supabase = fakeSupabase({ data: null, error: { code: '500', message: 'boom' } });
+        await expect(readCompletionFlags(supabase, [1])).resolves.toEqual(new Set());
     });
 });

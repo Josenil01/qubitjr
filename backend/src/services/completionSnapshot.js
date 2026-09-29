@@ -87,4 +87,33 @@ async function persistCompletion(supabase, projectId, comparison) {
     }
 }
 
-module.exports = { readCompletionSnapshot, persistCompletion };
+/**
+ * Versão em lote de readCompletionSnapshot, só o "sim/não" (sem a foto
+ * inteira) - usada pela tela de live do professor (GET /teacher/classroom/
+ * :turmaId/students, routes/teacher.js) pra marcar, num único round-trip,
+ * quais dos projetos já exibidos nos cards (um por aluno) já concluíram a
+ * missão vinculada. Retorna um Set com os ids de projeto concluídos; nunca
+ * lança - migração não rodada (42703), lista vazia ou erro de rede viram
+ * Set vazio (nenhum card marcado), igual à tolerância dos outros helpers
+ * deste módulo.
+ */
+async function readCompletionFlags (supabase, projectIds) {
+    if (!Array.isArray(projectIds) || !projectIds.length) return new Set();
+    try {
+        const { data, error } = await supabase
+            .from('projects')
+            .select('id, assignment_completed_at')
+            .in('id', projectIds)
+            .not('assignment_completed_at', 'is', null);
+        if (error) {
+            if (isMissingColumnError(error)) return new Set();
+            throw error;
+        }
+        return new Set((data || []).map((row) => row.id));
+    } catch (err) {
+        console.warn('[completionSnapshot] readCompletionFlags falhou (não-fatal):', err && err.message);
+        return new Set();
+    }
+}
+
+module.exports = { readCompletionSnapshot, persistCompletion, readCompletionFlags };
