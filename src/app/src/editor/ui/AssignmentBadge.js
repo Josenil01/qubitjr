@@ -130,6 +130,7 @@ let hintsPanelEl = null; // painel navegável (Anterior/Próxima) aberto pelo bo
 let coachModalEl = null; // um modal por vez - serve tanto pro "parabéns" quanto pra dica de coach automática
 let actualTimer = null;
 let requirementsTimer = null;
+let _instantRecomputeTimer = null; // ver _scheduleInstantRecompute - recálculo antecipado ao fim de uma interação
 let dismissedThisSession = false;
 let dismissedHintIds = new Set(); // ids de dica já mostrada+fechada nesta sessão de aba - nunca mais reexibida automaticamente
 let zeroDefaultsApplied = false; // último estado aplicado à paleta (ver _syncPaletteDefaults)
@@ -559,6 +560,49 @@ export default class AssignmentBadge {
         document.addEventListener('touchmove', mark, opts);
         document.addEventListener('touchend', mark, opts);
         document.addEventListener('keydown', mark, true);
+
+        // Segundo conjunto de listeners, propositalmente diferente do de cima:
+        // gatilho pra recalcular NA HORA (ver _scheduleInstantRecompute), não só
+        // marcar ociosidade. Achado em teste real ("demora muito pra perceber
+        // que uma ação foi tomada"): sem isso, soltar um bloco no lugar certo,
+        // confirmar um valor ou adicionar/remover um personagem só era percebido
+        // no próximo tick agendado (até 800ms-2s depois, ver ACTUAL_REFRESH_MS/
+        // HINTS_PENDING_REFRESH_MS) - o selo/contador ficava "atrasado" da ação
+        // real. Cobre os três casos sem precisar plugar chamada nenhuma dentro do
+        // motor do editor (ScriptsPane/Stage/UI/BlockArg/ScratchJr.js): soltar
+        // bloco, confirmar valor (número ou velocidade) e adicionar/remover
+        // personagem terminam TODOS num mouseup/touchend/keyup.
+        //
+        // Fase de BOLHA (sem capture, ao contrário do `mark` acima) DE PROPÓSITO:
+        // se disparasse na fase de captura (antes do alvo), rodaria ANTES do
+        // handler de verdade que aplica o drop/confirmação, lendo o projeto no
+        // estado VELHO. Na fase de bolha, já roda depois de qualquer handler no
+        // próprio elemento (onde o drop é processado). setTimeout(0) some por
+        // cima disso - garante rodar só depois que TODA a pilha síncrona do
+        // evento (bolha inclusa) já terminou, mesmo que a ordem de registro dos
+        // listeners mude no futuro.
+        document.addEventListener('mouseup', AssignmentBadge._scheduleInstantRecompute, {passive: true});
+        document.addEventListener('touchend', AssignmentBadge._scheduleInstantRecompute, {passive: true});
+        document.addEventListener('keyup', AssignmentBadge._scheduleInstantRecompute, {passive: true});
+    }
+
+    /**
+     * Agenda _recomputeLocal() pro próximo tick (setTimeout 0), coalescendo
+     * chamadas repetidas (ex.: multi-touch gerando vários touchend seguidos)
+     * numa só - _instantRecomputeTimer não nulo significa que já tem uma
+     * rodada pendente, não empilha outra. Nunca substitui o poll agendado em
+     * _scheduleRecompute (continua rodando como rede de segurança pra
+     * mudanças sem evento de UI associado) - só antecipa o próximo cálculo
+     * pra logo após uma interação de verdade, em vez de esperar o timer.
+     */
+    static _scheduleInstantRecompute () {
+        if (!badgeEl || _instantRecomputeTimer) {
+            return;
+        }
+        _instantRecomputeTimer = window.setTimeout(function () {
+            _instantRecomputeTimer = null;
+            AssignmentBadge._recomputeLocal();
+        }, 0);
     }
 
     /**
@@ -748,6 +792,10 @@ export default class AssignmentBadge {
         if (actualTimer) {
             window.clearTimeout(actualTimer);
             actualTimer = null;
+        }
+        if (_instantRecomputeTimer) {
+            window.clearTimeout(_instantRecomputeTimer);
+            _instantRecomputeTimer = null;
         }
         if (!assignment || !assignment.id) {
             return;
