@@ -2,9 +2,10 @@
  * src/app/src/lobby/GenerateActivityModal.js
  *
  * Botão flutuante "🤖 Gerar atividade com IA" na lobby (só pra professor -
- * mesmo peek inseguro de claims.role já usado em AssignmentAuthorBar.js,
- * reimplementado aqui em vez de importado de lá pra não criar uma dependência
- * cruzada entre editor/ui e lobby por causa de duas linhas). Fluxo:
+ * mesmo peek inseguro de claims.role já usado em AssignmentAuthorBar.js, via
+ * utils/jwtUnsafe.js - refatoração Fase 5: as duas cópias eram byte a byte
+ * idênticas; utils/ já é importado tanto daqui quanto de editor/, então
+ * nenhuma dependência cruzada nova se forma). Fluxo:
  *
  *  1. Clique no botão → _showThemePrompt(): overlay pedindo o tema (texto
  *     livre, ex.: "A lenda do Saci Pererê") e o NÍVEL (1º/2º/3º ano - ajusta
@@ -34,6 +35,7 @@
  */
 
 import { newHTML } from '../utils/lib.js';
+import { decodeJwtPayloadUnsafe } from '../utils/jwtUnsafe.js';
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
@@ -52,28 +54,6 @@ function apiFetch (path, options) {
         ...options,
         headers: {'Content-Type': 'application/json', ...authHeader(), ...(options.headers || {})},
     });
-}
-
-/**
- * Mesmo peek inseguro (não verifica assinatura) já usado em
- * AssignmentAuthorBar.js#decodeJwtPayloadUnsafe - só pra ler `role` das
- * claims e decidir se mostra o botão, nunca pra uma decisão de segurança (a
- * checagem de verdade é o req.role === 'professor' no backend).
- */
-function decodeJwtPayloadUnsafe (token) {
-    try {
-        if (!token || typeof token !== 'string') return null;
-        var parts = token.split('.');
-        if (parts.length < 2) return null;
-        var b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-        var padded = b64 + '='.repeat((4 - (b64.length % 4 || 4)) % 4);
-        var json = decodeURIComponent(window.atob(padded).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(json);
-    } catch (err) {
-        return null;
-    }
 }
 
 /**

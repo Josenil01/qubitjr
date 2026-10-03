@@ -1,28 +1,68 @@
 /**
- * src/app/src/editor/ui/assignmentScoring.js
+ * shared/assignmentScoring.mjs
  *
- * Cópia client-side, em ES module, de backend/src/services/assignmentScoring.js
- * (que é CommonJS - `require`/`module.exports` - e vive num pacote Node
- * separado, não importável pelo bundle do Vite). É usada por
- * AssignmentBadge.js pra calcular o checklist da missão EM TEMPO REAL, direto
- * do estado atual do projeto na memória do navegador (Project.getProject()),
- * sem esperar autosave + round-trip ao servidor (ver comentário no topo de
- * AssignmentBadge.js).
+ * Fonte ÚNICA (refatoração Fase 1 - ver docblock de detailedManifest.mjs
+ * nesta mesma pasta pro racional completo de por que a duplicação manual
+ * backend/frontend deixou de ser necessária). backend/src/services/
+ * assignmentScoring.js agora é só um shim de uma linha que reexporta este
+ * arquivo via `require()` síncrono de ESM (Node >= 22.12); o Vite importa
+ * este arquivo direto, nativamente.
  *
- * A lógica em si (computeProjectManifest/compareManifests) é idêntica -
- * qualquer mudança de regra de pontuação feita num lado TEM que ser replicada
- * no outro, ou o checklist ao vivo do aluno diverge do que
- * GET /api/public/students/:id/assignment-score (consultado pela HelloYotta)
- * calcula a partir do projeto salvo. Ver o arquivo original pro racional
- * completo de cada regra - aqui só o código, sem repetir os comentários.
+ * Extracts a "requirements manifest" from a ScratchJr project's saved JSON
+ * (scenes/characters/block-types used, plus lightweight computational-thinking
+ * scores), and compares a student's manifest against a teacher's required one.
+ *
+ * The manifest shape is intentionally simple JSON so it can be stored as-is
+ * (e.g. alongside a "missão"/assignment row) and re-diffed later without
+ * re-parsing the original project files.
+ *
+ * Why "qualifying sprite/scene" filters exist:
+ * ScratchJr projects routinely contain decorative sprites (background props,
+ * unused character variants dragged onto the stage and never wired up) that
+ * carry no code. Counting every sprite/page as "used" would over-credit a
+ * project for assets present but not exercised. This mirrors the standard
+ * static-analysis practice (as in Dr. Scratch / Moreno-León & Robles, "Dr.
+ * Scratch: Automatic Analysis of Scratch Projects") of only crediting an
+ * asset once it participates in actual behavior (has a non-empty script),
+ * not merely because it exists in the project file.
+ *
+ * CT (computational thinking) scores below are adapted from the Dr. Scratch
+ * rubric, but restricted to what ScratchJr's real block set supports: there
+ * are no conditionals, variables, lists, custom blocks, or clones in
+ * ScratchJr, so several Dr. Scratch dimensions/tiers (logic, data operators,
+ * abstraction via custom blocks, etc.) simply don't apply here and are
+ * either dropped or reinterpreted against the closest ScratchJr equivalent
+ * (see each score's inline comment below for the exact rule used).
+ *
+ * Este módulo é 100% puro (sem I/O, sem Supabase, sem DOM/window) - roda
+ * igual em Node (backend) e no navegador (frontend via Vite).
  */
 
+/** Blocks that start a script (always tuple index 0 of a top-level script). */
 const TRIGGER_TYPES = new Set(['onflag', 'onmessage', 'onclick', 'ontouch']);
+
+/**
+ * Editor UI artifacts, never real student-placed blocks. Must be excluded
+ * entirely from every count (not counted, not present in byType).
+ */
 const CARET_TYPES = new Set(['caretstart', 'caretend', 'caretrepeat', 'caretcmd']);
+
+/** Blocks whose presence signals "data representation" (see ctScores below). */
 const DATA_REPRESENTATION_TYPES = new Set(['grow', 'shrink', 'setspeed', 'say']);
+
+/** Blocks whose presence signals "synchronization" tier 2 (see ctScores below). */
 const SYNC_TIER2_TYPES = new Set(['message', 'stopmine']);
-// Ver docblock do original (backend) - "say" é o único bloco cujo argumento
-// pode divergir do professor; todo tipo aqui exige o valor exato (byTypeValue).
+
+/**
+ * Achado em teste real (decisão explícita do usuário) - contar só QUANTOS
+ * blocos de um tipo existem (byType) deixava uma missão "concluída" mesmo
+ * com o valor errado (ex.: exigia "forward" com 16 passos, aluno colocava
+ * "forward" com 1 passo - byType.forward já batia 1>=1, completed=true).
+ * "say" é o ÚNICO bloco cujo argumento pode divergir do que o professor
+ * usou (mesma regra já aplicada em detailedManifest.mjs#blockArgs - ver
+ * aquele arquivo pro racional completo); todo bloco NUMERIC_ARG_TYPES exige
+ * o valor exato, contado por valor (byTypeValue), não só por tipo.
+ */
 const NUMERIC_ARG_TYPES = new Set([
     'forward', 'back', 'up', 'down', 'left', 'right', 'hop',
     'wait', 'repeat', 'grow', 'shrink', 'setspeed',
@@ -30,8 +70,15 @@ const NUMERIC_ARG_TYPES = new Set([
 
 function emptyManifest () {
     return {
+        // `present` (added alongside `used`, never replacing it - see docblock
+        // above `presentCharacterMd5Set`/`presentSceneMd5Set` below) is every
+        // scene/character md5 actually PLACED in the project, script or no
+        // script - `used` stays scoped to "counts for CT scoring", `present`
+        // is scoped to "exists here, professor put it there on purpose".
         scenes: {count: 0, used: [], present: []},
         characters: {count: 0, used: [], present: []},
+        // byTypeValue: { [blockType]: { [valorExato]: quantas vezes } } - só
+        // pra tipos em NUMERIC_ARG_TYPES; ver docblock daquele Set.
         blocks: {count: 0, byType: {}, byTypeValue: {}},
         ctScores: {
             parallelism: 0,
@@ -51,8 +98,7 @@ function emptyManifest () {
  * com esse texto não conta como "feito" (nem pra completar a missão, nem
  * pra resolver a dica): achado em teste real - o aluno arrastava o bloco
  * "olá" sem editar e recebia os parabéns. Comparação sem caixa/espaços.
- * Manter em sincronia entre backend e cliente (assignmentScoring.js e
- * detailedManifest.js, dos dois lados).
+ * Mesmo Set que detailedManifest.mjs usa.
  */
 const DEFAULT_SAY_TEXTS = new Set(['hola', 'hallo', 'hi', 'bonjour', 'ciao', 'はい', 'hoi', 'olá', 'hej', 'สวัสดี', '嗨']);
 
@@ -60,6 +106,14 @@ function isDefaultSayText (arg) {
     return typeof arg === 'string' && DEFAULT_SAY_TEXTS.has(arg.trim().toLowerCase());
 }
 
+/**
+ * Recursively walks one script (array of block tuples), tallying real block
+ * instances into `agg` and flagging the CT-relevant features it contains.
+ * Recurses into a `repeat` block's nested strip (tuple index 4), which is
+ * the only block in this codebase's encoding that carries a nested array.
+ * `forever` has no nested strip (it's a terminal marker block), so there is
+ * nothing to recurse into for it - it is still tallied as a normal block.
+ */
 function walkScript (script, agg) {
     if (!Array.isArray(script)) return;
 
@@ -67,15 +121,16 @@ function walkScript (script, agg) {
         if (!Array.isArray(block) || block.length === 0) continue;
 
         const blockType = block[0];
-        if (CARET_TYPES.has(blockType)) continue;
+        if (CARET_TYPES.has(blockType)) continue; // editor artifact, ignore entirely
         // say com o texto padrão (aluno ainda não editou) = bloco ainda não feito.
         if (blockType === 'say' && isDefaultSayText(block[1])) continue;
 
         agg.blocks.count += 1;
         agg.blocks.byType[blockType] = (agg.blocks.byType[blockType] || 0) + 1;
 
-        // Ver docblock do original (backend) - hasRealArg como pré-condição
-        // (Number(null) === 0 em JS contaria um bloco sem argumento como valor 0).
+        // Mesmo cuidado de detailedManifest.mjs#walkScriptForDetail - hasRealArg
+        // como pré-condição (não só checar NaN), porque `Number(null) === 0`
+        // em JS contaria um bloco sem argumento de verdade como valor 0.
         if (NUMERIC_ARG_TYPES.has(blockType)) {
             const arg = block[1];
             const hasRealArg = arg !== null && arg !== undefined && arg !== 'null' && arg !== '';
@@ -99,6 +154,12 @@ function walkScript (script, agg) {
     }
 }
 
+/**
+ * Takes the PARSED project JSON object (already JSON.parse()'d by the
+ * caller) and returns the requirements manifest described in the module
+ * header. Never throws - malformed/missing input yields a zeroed-out
+ * manifest of the same shape.
+ */
 export function computeProjectManifest (projectJson) {
     const manifest = emptyManifest();
 
@@ -107,9 +168,22 @@ export function computeProjectManifest (projectJson) {
     }
 
     const characterMd5Set = new Set();
-    // Ver docblock do original (backend) - present tallying TODO personagem/
-    // cena que existe fisicamente no projeto, scriptado ou não; used/count
-    // continuam exigindo script (scoring intocado).
+    // Achado em teste real - "vovô adicionado à missão não aparecia pro
+    // aluno escolher": GalleryRestriction.js/AssignmentBadge.js consultavam
+    // characters.used (e scenes.used) pra restringir a galeria do aluno ao
+    // que o professor usou - mas esses dois campos SÓ contam um
+    // personagem/cena "qualifying" (ver docblock do topo do arquivo: precisa
+    // de pelo menos um script não-vazio, decisão deliberada pra CT scoring
+    // não supercreditar assets decorativos). Um personagem que o professor
+    // arrastou pra cena mas ainda não deu script (ex.: vai scriptar depois,
+    // ou é só cenário mesmo) nunca entrava em characters.used - e como a
+    // galeria do aluno é filtrada por ESSE mesmo campo, o personagem sumia
+    // da lista de opções por completo, não só da contagem de progresso.
+    // presentCharacterMd5Set/presentSceneMd5Set (abaixo) tallying TODO
+    // personagem/cena que existe fisicamente no projeto do professor,
+    // scriptado ou não - vira manifest.characters.present/scenes.present,
+    // um campo NOVO e SEPARADO de used/count (scoring intocado) que a
+    // galeria passa a preferir (ver AssignmentBadge.galleryRestriction).
     const presentCharacterMd5Set = new Set();
     const presentSceneMd5Set = new Set();
     // presentCharacterCounts/pageCount: QUANTAS vezes cada personagem (md5) e
@@ -124,17 +198,18 @@ export function computeProjectManifest (projectJson) {
     const presentCountsByScene = [];
     let pageCount = 0;
 
+    // Cross-project tallies feeding the ctScores rules below.
     let onmessageTriggerCount = 0;
     let onclickOrTouchTriggerCount = 0;
     let onflagTriggerCount = 0;
-    let hasInteractiveTrigger = false;
-    let hasOnflagTrigger = false;
-    let hasNonTriggerContent = false;
-    let hasLoop = false;
-    let hasSyncTier2 = false;
-    let hasWait = false;
-    let hasDataRepresentation = false;
-    let totalScriptCount = 0;
+    let hasInteractiveTrigger = false; // any top-level script starts onclick/ontouch
+    let hasOnflagTrigger = false; // any top-level script starts onflag
+    let hasNonTriggerContent = false; // any script has real content beyond just its trigger
+    let hasLoop = false; // any script contains repeat/forever, anywhere
+    let hasSyncTier2 = false; // any script contains message/stopmine, anywhere
+    let hasWait = false; // any script contains wait, anywhere
+    let hasDataRepresentation = false; // any script contains grow/shrink/setspeed/say, anywhere
+    let totalScriptCount = 0; // non-empty scripts across the whole project
 
     for (const pageId of projectJson.pages) {
         const page = projectJson[pageId];
@@ -153,6 +228,7 @@ export function computeProjectManifest (projectJson) {
             const scripts = Array.isArray(sprite.scripts) ? sprite.scripts : [];
             const isCharacter = sprite.type === 'sprite';
 
+            // Present regardless of script - ver docblock de presentCharacterMd5Set acima.
             if (isCharacter && sprite.md5) {
                 presentCharacterMd5Set.add(sprite.md5);
                 presentCharacterCounts[sprite.md5] = (presentCharacterCounts[sprite.md5] || 0) + 1;
@@ -162,7 +238,7 @@ export function computeProjectManifest (projectJson) {
             let spriteHasRealScript = false;
 
             for (const script of scripts) {
-                if (!Array.isArray(script) || script.length === 0) continue;
+                if (!Array.isArray(script) || script.length === 0) continue; // empty script: no code
 
                 spriteHasRealScript = true;
                 totalScriptCount += 1;
@@ -199,6 +275,7 @@ export function computeProjectManifest (projectJson) {
             }
         }
 
+        // Present regardless of pageQualifies - ver docblock de presentSceneMd5Set acima.
         if (page.md5) presentSceneMd5Set.add(page.md5);
 
         if (pageQualifies) {
@@ -214,29 +291,44 @@ export function computeProjectManifest (projectJson) {
     manifest.characters.presentCountsByScene = presentCountsByScene;
     manifest.scenes.pageCount = pageCount;
 
+    // parallelism (0-3): most-parallel trigger style wins, by count of scripts using it.
     if (onmessageTriggerCount >= 2) manifest.ctScores.parallelism = 3;
     else if (onclickOrTouchTriggerCount >= 2) manifest.ctScores.parallelism = 2;
     else if (onflagTriggerCount >= 2) manifest.ctScores.parallelism = 1;
     else manifest.ctScores.parallelism = 0;
 
+    // flowControl (0-2): a loop beats mere sequencing beats nothing but a trigger.
     if (hasLoop) manifest.ctScores.flowControl = 2;
     else if (hasNonTriggerContent) manifest.ctScores.flowControl = 1;
     else manifest.ctScores.flowControl = 0;
 
+    // synchronization (0-2): message-passing/stop beats a plain wait beats nothing.
     if (hasSyncTier2) manifest.ctScores.synchronization = 2;
     else if (hasWait) manifest.ctScores.synchronization = 1;
     else manifest.ctScores.synchronization = 0;
 
+    // userInteractivity (0-2): touch/click trigger beats flag-only beats nothing.
     if (hasInteractiveTrigger) manifest.ctScores.userInteractivity = 2;
     else if (hasOnflagTrigger) manifest.ctScores.userInteractivity = 1;
     else manifest.ctScores.userInteractivity = 0;
 
+    // abstraction (0-1): more than one working character AND more than one script
+    // total is the closest ScratchJr proxy for "decomposed into reusable parts"
+    // (ScratchJr has no custom blocks to decompose into).
     manifest.ctScores.abstraction = manifest.characters.count > 1 && totalScriptCount > 1 ? 1 : 0;
+
+    // dataRepresentation (0-1): any block that mutates/displays sprite state.
     manifest.ctScores.dataRepresentation = hasDataRepresentation ? 1 : 0;
 
     return manifest;
 }
 
+/**
+ * Compares a required manifest (from the teacher's example project) against
+ * an actual manifest (from a student's project), both in the
+ * computeProjectManifest() shape, and returns a per-dimension met/unmet
+ * breakdown.
+ */
 export function compareManifests (required, actual) {
     const req = required && typeof required === 'object' ? required : emptyManifest();
     const act = actual && typeof actual === 'object' ? actual : emptyManifest();
@@ -267,9 +359,12 @@ export function compareManifests (required, actual) {
         const actualCount = actByType[type] || 0;
         let met = actualCount >= requiredCount;
 
-        // Ver docblock do original (backend) - requirements antigos sem
-        // byTypeValue pra este tipo pulam a checagem extra (reqByValue
-        // undefined), preservando o comportamento anterior até reautorar.
+        // Achado em teste real - contar só a QUANTIDADE de um tipo deixava
+        // "forward: 1 exigido, 1 encontrado" bater mesmo com o valor errado
+        // (ex.: exigia 16 passos, aluno usou 1). requirements antigos (de
+        // antes desta mudança) não têm byTypeValue pra este tipo - reqByValue
+        // fica undefined e a checagem extra é pulada, preservando o
+        // comportamento anterior até o professor reautorar a missão.
         const reqByValue = reqByTypeValue[type];
         if (reqByValue) {
             const actByValue = actByTypeValue[type] || {};
@@ -316,8 +411,10 @@ export function compareManifests (required, actual) {
             byType,
         },
         ctScores,
-        // Ver o docblock do arquivo original (backend/src/services/assignmentScoring.js) -
-        // mesmo campo, mesma regra, tem que ficar em sincronia.
+        // Atalho pra quem consome a resposta (HelloYotta via assignment-score,
+        // AssignmentBadge.js pro modal de conclusão) não precisar reimplementar
+        // "os 3 grupos bateram" - ctScores fica de fora de propósito (são notas
+        // de qualidade, não requisitos de conclusão da missão em si).
         completed: scenesMet && charactersMet && blocksMet,
     };
 }

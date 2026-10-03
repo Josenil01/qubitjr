@@ -29,7 +29,7 @@
  *     dicas - ver docblocks daquelas duas.
  *  4. Se a URL trouxer um `returnUrl` válido (pedido da HelloYotta, e-mail
  *     2026-08), navega de volta pra lá depois da confirmação - ver
- *     _isAllowedReturnUrl: só helloyotta.com/*.helloyotta.com, nunca um
+ *     isAllowedReturnUrl: só helloyotta.com/*.helloyotta.com, nunca um
  *     destino arbitrário (evita virar um open-redirect através do nosso
  *     domínio). Sem returnUrl ou com um valor que não passa na checagem,
  *     comportamento atual sem mudança nenhuma: fica no editor.
@@ -49,10 +49,12 @@
 import ScratchJr from '../ScratchJr.js';
 import Alert from './Alert.js';
 import { newHTML, getUrlVars, frame } from '../../utils/lib.js';
+import { decodeJwtPayloadUnsafe } from '../../utils/jwtUnsafe.js';
+import { MANUAL_WHEN_TYPE } from '../../../../../shared/hintSchema.mjs';
 
 const ALLOWED_RETURN_HOST = 'helloyotta.com';
 
-function isAllowedReturnUrl (raw) {
+export function isAllowedReturnUrl (raw) {
     if (!raw) {
         return false;
     }
@@ -70,39 +72,12 @@ function isAllowedReturnUrl (raw) {
 }
 
 /**
- * Peek inseguro (não verifica assinatura) no payload de um JWT - mesma
- * técnica de backend/src/services/identity.js#decodeJwtPayloadUnsafe,
- * reimplementada aqui no navegador (sem Buffer) só pra ler o `sub` do
- * professor e incluir como authorId na URL de retorno. Nunca usar isto pra
- * qualquer decisão de segurança/autorização - é só um identificador.
- */
-function decodeJwtPayloadUnsafe (token) {
-    try {
-        if (!token || typeof token !== 'string') {
-            return null;
-        }
-        var parts = token.split('.');
-        if (parts.length < 2) {
-            return null;
-        }
-        var b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-        var padded = b64 + '='.repeat((4 - (b64.length % 4 || 4)) % 4);
-        var json = decodeURIComponent(window.atob(padded).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(json);
-    } catch (err) {
-        return null;
-    }
-}
-
-/**
  * Id do professor autenticado, extraído das claims do próprio
  * window.__AUTH_TOKEN__ (mesmos nomes alternativos aceitos pelo backend em
  * identity.js#getUserIdFromClaims). Retorna null se não der pra determinar -
  * a chamada em _register() trata isso como "omite authorId", não como erro.
  */
-function getAuthorId () {
+export function getAuthorId () {
     var claims = decodeJwtPayloadUnsafe(window.__AUTH_TOKEN__);
     if (!claims) {
         return null;
@@ -162,10 +137,10 @@ const HINT_WHEN_LABELS = {
     message_not_received: '✉️ aparece quando a mensagem não for recebida por ninguém',
     default_character_present: '🧹 aparece quando o personagem default (Ruby) ainda estiver na cena',
     mission_intro: '🎬 sempre a primeira dica, assim que o aluno abrir a missão',
-    manual: '✍️ escrita por você - fica disponível até o aluno fechar, sem checagem automática',
+    [MANUAL_WHEN_TYPE]: '✍️ escrita por você - fica disponível até o aluno fechar, sem checagem automática',
 };
 
-function hintWhenLabel (when) {
+export function hintWhenLabel (when) {
     var type = when && when.type;
     return HINT_WHEN_LABELS[type] || '💡 dica geral';
 }
@@ -483,7 +458,7 @@ export default class AssignmentAuthorBar {
     /**
      * Fim do fluxo de "Cadastrar aula" - idêntico ao comportamento original
      * (antes deste passo de dicas existir): redireciona pro returnUrl já
-     * montado em _register (se ele passou em _isAllowedReturnUrl), ou volta
+     * montado em _register (se ele passou em isAllowedReturnUrl), ou volta
      * o botão flutuante pro rótulo ocioso.
      */
     static _finish (canReturn, returnUrl) {
@@ -559,7 +534,7 @@ export default class AssignmentAuthorBar {
         // decide a posição final é o próprio ▲▼ já existente (mesmo
         // mecanismo de reordenar das dicas geradas pela LLM). when.manual
         // nunca é checado contra o projeto do aluno (ver
-        // AssignmentBadge._hintConditionHolds#'manual') - fica disponível
+        // HintEngine.js#hintConditionHolds, case 'manual') - fica disponível
         // pro aluno até ele mesmo fechar, sem resolver sozinha.
         var addBtn = newHTML('button', 'assignmentHintsAddBtn', card);
         addBtn.type = 'button';
@@ -650,7 +625,7 @@ export default class AssignmentAuthorBar {
                 hint: {
                     id: 'manual-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
                     text: '',
-                    when: {type: 'manual'},
+                    when: {type: MANUAL_WHEN_TYPE},
                 },
                 status: null,
                 text: '',

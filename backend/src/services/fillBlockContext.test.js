@@ -30,9 +30,13 @@ describe('detailedManifest scripts/blockCounts', () => {
     it('separa os scripts por gatilho e conta os blocos', () => {
         const c = computeDetailedManifest(project()).scenes[0].characters[0];
         expect(c.blockCounts.say).toBe(2);
+        // pending (ver docblock de shared/detailedManifest.mjs) é um campo
+        // só-cliente (Project.maskUnconfirmed) - do lado do servidor nunca
+        // tem como ser diferente de null, mas a fonte única agora inclui o
+        // campo nos dois lados, então o fixture precisa listá-lo também.
         expect(c.scripts).toEqual([
-            { trigger: 'onflag', blocks: [{ type: 'say', num: null }, { type: 'wait', num: 20 }, { type: 'say', num: null }] },
-            { trigger: 'onclick', blocks: [{ type: 'grow', num: 2 }] },
+            { trigger: 'onflag', blocks: [{ type: 'say', num: null, pending: null }, { type: 'wait', num: 20, pending: null }, { type: 'say', num: null, pending: null }] },
+            { trigger: 'onclick', blocks: [{ type: 'grow', num: 2, pending: null }] },
         ]);
     });
 });

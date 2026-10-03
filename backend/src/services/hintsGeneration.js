@@ -93,11 +93,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const OpenAI = require('openai');
 const { computeDetailedManifest } = require('./detailedManifest');
 const { callLLM } = require('./llmProvider');
+const { LLM_WHEN_TYPES } = require('../../../shared/hintSchema.mjs');
 
-const DEEPSEEK_BASE_URL = 'https://api.deepseek.com';
 // Achado em teste real (aviso oficial da DeepSeek, set/2026) - 'deepseek-chat'
 // é um alias LEGADO (mapeia pra V4-Flash desde 24/04/2026) que a própria
 // DeepSeek já tinha sinalizado pra aposentar em 24/07/2026 - continuava
@@ -108,16 +107,13 @@ const DEEPSEEK_BASE_URL = 'https://api.deepseek.com';
 // real antes de trocar.
 const DEEPSEEK_MODEL = 'deepseek-flash';
 
-/** The only `when.type` values a hint is allowed to carry - anything else is dropped. */
-const VALID_WHEN_TYPES = new Set([
-    'scene_missing',
-    'character_missing',
-    'character_no_script',
-    'character_missing_block_type',
-    'message_not_received',
-    'default_character_present',
-    'mission_intro',
-]);
+/**
+ * The only `when.type` values a hint is allowed to carry - anything else is
+ * dropped. Fonte única em shared/hintSchema.mjs (refatoração Fase 4) - ver
+ * aquele arquivo pro racional completo e pra lista irmã (ALL_WHEN_TYPES) que
+ * o lado do aluno (HintEngine.js) usa.
+ */
+const VALID_WHEN_TYPES = new Set(LLM_WHEN_TYPES);
 
 // ScratchJr.defaultSprite (settings.json) - o personagem que toda página em
 // branco cria sozinha (ver docblock do topo). "default_character_present"
@@ -422,23 +418,6 @@ function stripCodeFences(text) {
     const trimmed = text.trim();
     const fenced = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
     return fenced ? fenced[1].trim() : trimmed;
-}
-
-/**
- * Lazily builds the DeepSeek client. Throws a clearly-typed error
- * (err.code = 'NOT_CONFIGURED') when DEEPSEEK_API_KEY isn't set, mirroring
- * how getSupabase() in routes/db.js and routes/assignments.js handles
- * missing config (there it returns null and the route answers 503; here the
- * caller/route does the same on this error code - see routes/assignments.js).
- */
-function getClient() {
-    const apiKey = process.env.DEEPSEEK_API_KEY;
-    if (!apiKey) {
-        const err = new Error('DEEPSEEK_API_KEY não configurada - geração de dicas indisponível.');
-        err.code = 'NOT_CONFIGURED';
-        throw err;
-    }
-    return new OpenAI({ apiKey, baseURL: DEEPSEEK_BASE_URL });
 }
 
 /**
@@ -921,6 +900,18 @@ function buildIntroHint(hintContext, projectName, llmIntro) {
 }
 
 /**
+ * Núcleo único do pipeline (transcript -> LLM -> validação contra o
+ * manifesto real -> redes de segurança de fillBlockArgs/
+ * fillMissingCharacterAddedHints/fillMissingDefaultCharacterHints) -
+ * refatoração Fase 2: generateHints() e generateHintsWithProvider() eram
+ * ~75 linhas quase idênticas, duplicadas só porque uma fixava o provider
+ * (DeepSeek/DEEPSEEK_MODEL via client OpenAI direto) e a outra delegava pro
+ * provider configurável de llmProvider.js - a única diferença real entre
+ * elas. Unificado aqui: QUEM chama este núcleo decide o provider/model (ou
+ * deixa explícito, ou deixa callLLM() cair no default de
+ * ACTIVITY_GENERATION_PROVIDER) - toda mudança de regra do pipeline agora
+ * só precisa ser feita uma vez.
+ *
  * @param {object} projectJson - the teacher's PARSED (already JSON.parse()'d)
  *   reference project, same shape computeDetailedManifest() expects.
  * @param {string} [hintContext] - optional free text the TEACHER wrote
@@ -933,12 +924,16 @@ function buildIntroHint(hintContext, projectName, llmIntro) {
  * @param {string} [projectName] - the reference project's name (assignments.
  *   project_name / projects.name) - fallback source for buildIntroHint()'s
  *   text when hintContext is empty.
+ * @param {'deepseek'|'anthropic'} [provider] - repassado pra llmProvider.js#callLLM;
+ *   omitido usa o default de ACTIVITY_GENERATION_PROVIDER.
+ * @param {string} [model] - idem, pro modelo.
  * @returns {Promise<{ hints: Array<{ id: string, text: string, when: object }> }>}
- * @throws with err.code === 'NOT_CONFIGURED' when DEEPSEEK_API_KEY is unset;
- *   throws a plain Error (unparseable/empty LLM response, API call failure)
- *   otherwise. Never returns hallucinated/invalid hints - see isHintValid().
+ * @throws with err.code === 'NOT_CONFIGURED' when the chosen provider's API
+ *   key is unset; throws a plain Error (unparseable/empty LLM response, API
+ *   call failure) otherwise. Never returns hallucinated/invalid hints - see
+ *   isHintValid().
  */
-async function generateHints(projectJson, hintContext, projectName) {
+async function generateHintsCore(projectJson, hintContext, projectName, provider, model) {
     const manifest = computeDetailedManifest(projectJson);
     const transcript = buildTranscript(manifest);
     const introHint = buildIntroHint(hintContext, projectName);
@@ -947,101 +942,6 @@ async function generateHints(projectJson, hintContext, projectName) {
         // Nothing describable yet (empty project, or nothing with a real
         // asset md5 set) - no point spending an LLM call on it, mas a dica
         // de apresentação ainda faz sentido sozinha.
-        return { hints: [{ id: 'h1', text: introHint.text, when: introHint.when }] };
-    }
-
-    const trimmedContext = typeof hintContext === 'string' ? hintContext.trim() : '';
-    const baseMessage = trimmedContext
-        ? `CONTEXTO DO PROFESSOR:\n${trimmedContext}\n\nTRANSCRIÇÃO DO PROJETO:\n${transcript}`
-        : transcript;
-    // Depois da transcrição (não antes) pra não mexer no formato que o resto
-    // do prompt já descreve - só alimenta o campo "intro" da resposta.
-    const userMessage = projectName ? `${baseMessage}\n\nNOME DA ATIVIDADE: ${projectName}` : baseMessage;
-
-    const client = getClient(); // throws NOT_CONFIGURED before any network call if unset
-
-    let completion;
-    try {
-        completion = await client.chat.completions.create({
-            model: DEEPSEEK_MODEL,
-            messages: [
-                { role: 'system', content: SYSTEM_PROMPT },
-                { role: 'user', content: userMessage },
-            ],
-            temperature: 0.7,
-        });
-    } catch (err) {
-        throw new Error('Falha ao chamar a API de geração de dicas: ' + err.message);
-    }
-
-    const rawContent =
-        completion &&
-        completion.choices &&
-        completion.choices[0] &&
-        completion.choices[0].message &&
-        completion.choices[0].message.content;
-
-    let parsed;
-    try {
-        parsed = JSON.parse(stripCodeFences(rawContent));
-    } catch (err) {
-        throw new Error('Resposta da IA de geração de dicas não é um JSON válido: ' + err.message);
-    }
-
-    const rawHints = Array.isArray(parsed && parsed.hints) ? parsed.hints : [];
-    const validationIndex = buildValidationIndex(manifest);
-
-    const validHints = [];
-    for (const hint of rawHints) {
-        if (isHintValid(hint, validationIndex)) {
-            validHints.push(hint);
-        } else {
-            console.warn('[hintsGeneration] Descartando dica inválida/possivelmente alucinada da LLM:', JSON.stringify(hint));
-        }
-    }
-
-    const withBlockArgs = fillBlockContext(fillBlockArgs(validHints, manifest), manifest);
-    const withCharacterAddedHints = fillMissingCharacterAddedHints(withBlockArgs, manifest);
-    const withDefaultCharacterHints = fillMissingDefaultCharacterHints(withCharacterAddedHints, manifest);
-    const withIntro = [buildIntroHint(hintContext, projectName, parsed && parsed.intro), ...withDefaultCharacterHints];
-
-    const hints = withIntro.map((hint, idx) => ({
-        id: `h${idx + 1}`,
-        text: stripDashes(hint.text),
-        when: hint.when,
-    }));
-
-    return { hints };
-}
-
-/**
- * Mesmo pipeline de generateHints() (transcript -> LLM -> validação contra o
- * manifesto real -> redes de segurança de fillBlockArgs/
- * fillMissingCharacterAddedHints/fillMissingDefaultCharacterHints), mas
- * chamando o provider CONFIGURÁVEL de llmProvider.js em vez do cliente
- * DeepSeek fixo (getClient()/DEEPSEEK_MODEL) que generateHints() usa.
- *
- * Existe como função SEPARADA (não um parâmetro extra em generateHints) de
- * propósito: generateHints() é o caminho já validado em produção pra
- * routes/assignments.js (professor que monta o projeto de exemplo à mão) e
- * fica intocado; esta função só é usada pela geração de atividade por tema
- * (ver activityGeneration.js/routes/share.js), que decidiu deixar o mesmo
- * provider escolhido pra gerar a atividade também gerar as dicas dela.
- *
- * @param {object} projectJson - mesmo shape de generateHints().
- * @param {string} [hintContext]
- * @param {string} [projectName]
- * @param {'deepseek'|'anthropic'} [provider] - repassado pra llmProvider.js;
- *   omitido usa o default de ACTIVITY_GENERATION_PROVIDER.
- * @param {string} [model] - idem, pro modelo.
- * @returns {Promise<{ hints: Array<{ id: string, text: string, when: object }> }>}
- */
-async function generateHintsWithProvider(projectJson, hintContext, projectName, provider, model) {
-    const manifest = computeDetailedManifest(projectJson);
-    const transcript = buildTranscript(manifest);
-    const introHint = buildIntroHint(hintContext, projectName);
-
-    if (!transcript) {
         return { hints: [{ id: 'h1', text: introHint.text, when: introHint.when }] };
     }
 
@@ -1092,6 +992,31 @@ async function generateHintsWithProvider(projectJson, hintContext, projectName, 
     }));
 
     return { hints };
+}
+
+/**
+ * Caminho já validado em produção pra routes/assignments.js (professor que
+ * monta o projeto de exemplo à mão) - SEMPRE DeepSeek/DEEPSEEK_MODEL,
+ * explicitamente, nunca afetado por ACTIVITY_GENERATION_PROVIDER (que outra
+ * feature - geração de atividade por tema, ver generateHintsWithProvider -
+ * pode mudar pra 'anthropic' sem que este caminho sinta nada).
+ *
+ * @see generateHintsCore pros parâmetros/retorno/erros.
+ */
+function generateHints(projectJson, hintContext, projectName) {
+    return generateHintsCore(projectJson, hintContext, projectName, 'deepseek', DEEPSEEK_MODEL);
+}
+
+/**
+ * Mesmo pipeline de generateHints(), mas com o provider CONFIGURÁVEL de
+ * llmProvider.js - usada pela geração de atividade por tema (ver
+ * activityGeneration.js/routes/share.js), que decidiu deixar o mesmo
+ * provider escolhido pra gerar a atividade também gerar as dicas dela.
+ *
+ * @see generateHintsCore pros parâmetros/retorno/erros.
+ */
+function generateHintsWithProvider(projectJson, hintContext, projectName, provider, model) {
+    return generateHintsCore(projectJson, hintContext, projectName, provider, model);
 }
 
 module.exports = { generateHints, generateHintsWithProvider, stripDashes, fillBlockContext };

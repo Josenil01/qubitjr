@@ -14,12 +14,17 @@
  * deepseek|anthropic, ACTIVITY_GENERATION_MODEL opcional pra sobrescrever o
  * default de cada provedor) - ver backend/.env.example.
  *
- * Deliberadamente SEPARADO do getClient()/DEEPSEEK_MODEL fixos dentro de
- * hintsGeneration.js: aquele caminho continua intocado para quem já chama
- * generateHints() sem provider (routes/assignments.js, fluxo já validado em
- * produção pro professor que monta o projeto à mão). Este módulo só entra em
- * jogo pra quem passar um provider explicitamente (a nova geração por tema em
- * routes/share.js, e generateHintsWithProvider() em hintsGeneration.js).
+ * Único ponto de chamada à LLM pra geração de dicas (refatoração Fase 2 de
+ * hintsGeneration.js - generateHints()/generateHintsWithProvider() eram
+ * ~75 linhas quase idênticas, uma com um client DeepSeek fixo embutido,
+ * outra chamando este módulo; unificadas num núcleo só que sempre passa por
+ * callLLM()). generateHints() (caminho já validado em produção pra
+ * routes/assignments.js, professor que monta o projeto à mão) força
+ * provider='deepseek'/model=DEEPSEEK_MODEL explicitamente nessa chamada -
+ * nunca fica à mercê de ACTIVITY_GENERATION_PROVIDER mudar pra 'anthropic'.
+ * generateHintsWithProvider() (geração de atividade por tema, ver
+ * activityGeneration.js/routes/share.js) repassa o provider escolhido pra lá,
+ * ou deixa omisso pro default da env var.
  */
 
 const DEEPSEEK_BASE_URL = 'https://api.deepseek.com';

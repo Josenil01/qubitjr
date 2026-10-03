@@ -58,14 +58,15 @@
  *     filosofia não-chata de dismissedThisSession pro banner de início), e
  *     nenhuma dica aparece depois que a missão já completou de vez.
  *
- *     Cadência (achado em teste real - dica demorando/aparecendo em bloco):
- *     o poll roda mais rápido (HINTS_PENDING_REFRESH_MS, 800ms) enquanto
- *     houver dica pendente, volta pro ritmo normal (ACTUAL_REFRESH_MS, 2s)
- *     quando não; um recheck imediato dispara em visibilitychange (o poll
- *     PARA por completo com a aba oculta - sem isso, todo progresso feito
- *     nesse meio-tempo só aparecia no próximo tick); e uma dica só aparece
- *     sozinha depois que o aluno fica PARADO (sem clicar/arrastar/digitar,
- *     ver lastActivityAt/IDLE_BEFORE_HINT_MS) por um tempo - achado em teste
+ *     Cadência (achado em teste real - dica demorando/aparecendo em bloco;
+ *     mecanismo inteiro mora em PollScheduler.js desde a refatoração Fase 3):
+ *     o poll roda mais rápido (800ms) enquanto houver dica pendente, volta
+ *     pro ritmo normal (2s) quando não; um recheck imediato dispara em
+ *     visibilitychange (o poll PARA por completo com a aba oculta - sem
+ *     isso, todo progresso feito nesse meio-tempo só aparecia no próximo
+ *     tick); e uma dica só aparece sozinha depois que o aluno fica PARADO
+ *     (sem clicar/arrastar/digitar, ver PollScheduler.idleFor()/
+ *     IDLE_BEFORE_HINT_MS aqui) por um tempo - achado em teste
  *     real (2ª rodada, "cadência desordenada"): um cooldown de tempo FIXO
  *     desde a última dica fechada (a versão anterior deste mecanismo) não
  *     tinha relação nenhuma com o que o aluno estava fazendo - podia
@@ -88,30 +89,35 @@
 import ScratchJr from '../ScratchJr.js';
 import Project from './Project.js';
 import {newHTML} from '../../utils/lib.js';
-import {computeProjectManifest, compareManifests} from './assignmentScoring.js';
-import {computeDetailedManifest} from './detailedManifest.js';
+import {computeProjectManifest, compareManifests} from '../../../../../shared/assignmentScoring.mjs';
+import {computeDetailedManifest} from '../../../../../shared/detailedManifest.mjs';
 import MediaLib from '../../iPad/MediaLib.js';
 import Palette from './Palette.js';
 import {registerGalleryRestrictionProvider, registerZeroBlockDefaultsProvider, allCharactersAtLimit} from './GalleryRestriction.js';
+import {
+    hintConditionHolds,
+    mistakeInfo as computeMistakeInfo,
+    orderInfo as computeOrderInfo,
+    actorLabelFor,
+} from './HintEngine.js';
+import PollScheduler from './PollScheduler.js';
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
-const ACTUAL_REFRESH_MS = 2000; // recálculo local, em memória - barato, pode ser frequente
-const HINTS_PENDING_REFRESH_MS = 800; // cadência mais rápida enquanto há dica ainda não dispensada -
-// ver _scheduleRecompute(). Ainda é só um scan de JSON pequeno em memória, custo desprezível.
 const IDLE_BEFORE_HINT_MS = 3000; // aluno precisa ficar esse tempo sem clicar/arrastar/digitar em
 // lugar NENHUM da página antes da próxima dica poder aparecer sozinha - achado em teste real
 // ("cadência desordenada"): um tempo fixo desde o fechamento da dica anterior (mecanismo
 // antigo) não tinha relação com o que o aluno estava fazendo, podendo interromper ele no meio
-// de uma ação. Ver lastActivityAt/_trackActivity abaixo. Só vale pro caminho automático (poll) -
-// o painel de dicas (_openHintsPanel) ignora, de propósito: é exatamente pra isso que ele
-// existe (ver docblock do ponto 7 no topo do arquivo).
+// de uma ação. Ver PollScheduler.idleFor()/PollScheduler.js. Só vale pro caminho automático
+// (poll) - o painel de dicas (_openHintsPanel) ignora, de propósito: é exatamente pra isso que
+// ele existe (ver docblock do ponto 7 no topo do arquivo).
 const ALERT_IDLE_MS = 1000; // o alerta "Quase!" (valor/gatilho errado) vem logo depois da AÇÃO do aluno
 // (soltar o bloco) - é quando a dica mais vale, então não espera os 3s de IDLE_BEFORE_HINT_MS
 // (esses são só pra dica proativa, que INTERROMPE o aluno). Ver _evaluateHints.
-const FILL_IDLE_MS = 2000; // bloco zerado (missão) largado sem o aluno escolher o valor: lembra depois desse tempo parado
+// FILL_IDLE_MS (tempo de espera pro alerta de bloco zerado) mora agora em
+// HintEngine.js, junto da lógica que decide o kind 'fill' - este arquivo só
+// lê de volta via wrongValueInfo.idleMs, nunca precisa do valor em si.
 const MISTAKE_BLINK_MS = 8000; // por quanto tempo o bloco errado pisca depois do aluno fechar o alerta
-const REQUIREMENTS_REFRESH_MS = 30000; // ida ao servidor - só pra pegar reautoria do professor
 // Achado em teste real: fechar a dica/painel clicando fora do cartão, ou
 // clicando no botão de fechar rápido demais (reflexo/clique duplo), dispensava
 // a mensagem antes da criança dar tempo de ler. Agora só o botão dentro do
@@ -128,21 +134,12 @@ let popoverEl = null;
 let hintButtonEl = null; // botão flutuante "💡" - abre o painel com todas as dicas da missão
 let hintsPanelEl = null; // painel navegável (Anterior/Próxima) aberto pelo botão - ver _openHintsPanel
 let coachModalEl = null; // um modal por vez - serve tanto pro "parabéns" quanto pra dica de coach automática
-let actualTimer = null;
-let requirementsTimer = null;
-let _instantRecomputeTimer = null; // ver _scheduleInstantRecompute - recálculo antecipado ao fim de uma interação
 let dismissedThisSession = false;
 let dismissedHintIds = new Set(); // ids de dica já mostrada+fechada nesta sessão de aba - nunca mais reexibida automaticamente
 let zeroDefaultsApplied = false; // último estado aplicado à paleta (ver _syncPaletteDefaults)
 let blockBlinkEls = []; // <div>s de bloco piscando agora (ver _highlightMistake)
 let blockBlinkTimer = null;
-let wrongValueAlerted = new Set(); // assinaturas (ver _mistakeInfo) de "valor/gatilho errado" já avisadas nesta sessão de aba
-// Date.now() da última interação REAL do aluno em qualquer lugar da página
-// (clique/toque/arrasto/tecla - ver _trackActivity/CADÊNCIA acima). 0 (nunca
-// tocou em nada ainda) conta como "já ocioso há muito tempo" de propósito -
-// é o que deixa a primeira dica (mission_intro) aparecer imediatamente ao
-// abrir a missão, sem esperar 3s de inatividade que ainda nem começaram.
-let lastActivityAt = 0;
+let wrongValueAlerted = new Set(); // assinaturas (ver mistakeInfo em HintEngine.js) de "valor/gatilho errado" já avisadas nesta sessão de aba
 // null = ainda não sabemos (primeiro cálculo desta sessão de aba) - fica
 // assim de propósito pra não disparar o modal de parabéns só por reabrir
 // uma missão que já estava completa antes. Só vira true/false depois do
@@ -467,7 +464,6 @@ export default class AssignmentBadge {
         if (badgeEl) {
             return;
         }
-        AssignmentBadge._trackActivity();
         badgeEl = newHTML('div', 'assignmentBadge', document.body);
         badgeEl.setAttribute('role', 'button');
         badgeEl.tabIndex = 0;
@@ -476,12 +472,11 @@ export default class AssignmentBadge {
 
         // Missão já concluída (agora, ou numa sessão anterior - ver init()):
         // mostra o selo fixo, libera galeria/paleta/limites de uma vez e
-        // PARA por aqui - nunca cria o botão de dica, nunca agenda recálculo,
-        // nunca registra o listener de aba voltando a ficar visível. É
-        // exatamente o "parar de capturar dados" depois de concluída (pedido
-        // explícito do usuário) - a única coisa que ainda acontece depois
-        // disso é o aluno poder abrir o popover (lastProgress, semeado em
-        // init() a partir da foto congelada).
+        // PARA por aqui - nunca cria o botão de dica, nunca inicia o
+        // PollScheduler. É exatamente o "parar de capturar dados" depois de
+        // concluída (pedido explícito do usuário) - a única coisa que ainda
+        // acontece depois disso é o aluno poder abrir o popover (lastProgress,
+        // semeado em init() a partir da foto congelada).
         if (everCompleted) {
             badgeEl.classList.add('completed');
             badgeEl.textContent = '✅ Concluído';
@@ -498,134 +493,22 @@ export default class AssignmentBadge {
         }
 
         AssignmentBadge._recomputeLocal();
-        // Agendamento em cadeia (setTimeout que se reagenda), não setInterval
-        // fixo - deixa _scheduleRecompute() decidir o próximo atraso a cada
-        // rodada (mais rápido enquanto há dica pendente, ver constantes no
-        // topo do arquivo). Ver também o listener de visibilitychange abaixo.
-        AssignmentBadge._scheduleRecompute();
-        // Recheck IMEDIATO ao voltar o foco da aba - sem isso, qualquer
-        // progresso feito enquanto a aba estava oculta (poll pausado de
-        // propósito, ver _scheduleRecompute) só seria percebido no próximo
-        // tick agendado (até HINTS_PENDING_REFRESH_MS/ACTUAL_REFRESH_MS de
-        // atraso) - era a causa mais provável do "demora um monte" relatado
-        // em teste. Registrado uma única vez (ver guarda no topo de _showBadge).
-        document.addEventListener('visibilitychange', AssignmentBadge._onVisibilityChange);
-
-        requirementsTimer = window.setInterval(function () {
-            if (document.visibilityState === 'visible') {
-                AssignmentBadge._refreshRequirements();
-            }
-        }, REQUIREMENTS_REFRESH_MS);
-    }
-
-    static _onVisibilityChange () {
-        if (document.visibilityState === 'visible' && badgeEl) {
-            AssignmentBadge._recomputeLocal();
-        }
-    }
-
-    /**
-     * Registra (uma única vez - chamado só de dentro do guard `if (badgeEl)
-     * return` de _showBadge) um listener global de "o aluno tocou em algo"
-     * pra alimentar lastActivityAt/IDLE_BEFORE_HINT_MS (ver _evaluateHints).
-     * Fase de CAPTURA (terceiro argumento `true`) - dispara ANTES de
-     * qualquer handler no elemento clicado poder chamar stopPropagation(),
-     * então nunca perde um clique real só porque o alvo específico
-     * (ex.: o botão de fechar da própria dica) parou a propagação.
-     * mousemove/touchmove entram de propósito, não só mousedown/touchstart -
-     * sem eles, um arrasto longo (segurar e mover um bloco por vários
-     * segundos) só contaria como atividade no instante em que começou, e o
-     * relógio de ociosidade já teria passado dos 3s ENQUANTO o aluno ainda
-     * está arrastando - a dica apareceria bem no pior momento possível.
-     * {passive:true} - nunca chama preventDefault, então não atrapalha
-     * scroll/drag nativo do navegador.
-     */
-    static _trackActivity () {
-        const mark = function () {
-            lastActivityAt = Date.now();
-        };
-        const opts = {capture: true, passive: true};
-        document.addEventListener('mousedown', mark, opts);
-        document.addEventListener('mouseup', mark, opts);
-        // mousemove SÓ com botão pressionado (arrasto): passar o mouse por
-        // cima do palco sem clicar NÃO é atividade - senão, na prática, a
-        // espera de ociosidade nunca fechava enquanto o aluno "olhava" com o
-        // mouse mexendo (achado em teste real: dica demorando muito).
-        document.addEventListener('mousemove', function (e) {
-            if (e.buttons) {
-                mark();
-            }
-        }, opts);
-        document.addEventListener('touchstart', mark, opts);
-        document.addEventListener('touchmove', mark, opts);
-        document.addEventListener('touchend', mark, opts);
-        document.addEventListener('keydown', mark, true);
-
-        // Segundo conjunto de listeners, propositalmente diferente do de cima:
-        // gatilho pra recalcular NA HORA (ver _scheduleInstantRecompute), não só
-        // marcar ociosidade. Achado em teste real ("demora muito pra perceber
-        // que uma ação foi tomada"): sem isso, soltar um bloco no lugar certo,
-        // confirmar um valor ou adicionar/remover um personagem só era percebido
-        // no próximo tick agendado (até 800ms-2s depois, ver ACTUAL_REFRESH_MS/
-        // HINTS_PENDING_REFRESH_MS) - o selo/contador ficava "atrasado" da ação
-        // real. Cobre os três casos sem precisar plugar chamada nenhuma dentro do
-        // motor do editor (ScriptsPane/Stage/UI/BlockArg/ScratchJr.js): soltar
-        // bloco, confirmar valor (número ou velocidade) e adicionar/remover
-        // personagem terminam TODOS num mouseup/touchend/keyup.
-        //
-        // Fase de BOLHA (sem capture, ao contrário do `mark` acima) DE PROPÓSITO:
-        // se disparasse na fase de captura (antes do alvo), rodaria ANTES do
-        // handler de verdade que aplica o drop/confirmação, lendo o projeto no
-        // estado VELHO. Na fase de bolha, já roda depois de qualquer handler no
-        // próprio elemento (onde o drop é processado). setTimeout(0) some por
-        // cima disso - garante rodar só depois que TODA a pilha síncrona do
-        // evento (bolha inclusa) já terminou, mesmo que a ordem de registro dos
-        // listeners mude no futuro.
-        document.addEventListener('mouseup', AssignmentBadge._scheduleInstantRecompute, {passive: true});
-        document.addEventListener('touchend', AssignmentBadge._scheduleInstantRecompute, {passive: true});
-        document.addEventListener('keyup', AssignmentBadge._scheduleInstantRecompute, {passive: true});
-    }
-
-    /**
-     * Agenda _recomputeLocal() pro próximo tick (setTimeout 0), coalescendo
-     * chamadas repetidas (ex.: multi-touch gerando vários touchend seguidos)
-     * numa só - _instantRecomputeTimer não nulo significa que já tem uma
-     * rodada pendente, não empilha outra. Nunca substitui o poll agendado em
-     * _scheduleRecompute (continua rodando como rede de segurança pra
-     * mudanças sem evento de UI associado) - só antecipa o próximo cálculo
-     * pra logo após uma interação de verdade, em vez de esperar o timer.
-     */
-    static _scheduleInstantRecompute () {
-        if (!badgeEl || _instantRecomputeTimer) {
-            return;
-        }
-        _instantRecomputeTimer = window.setTimeout(function () {
-            _instantRecomputeTimer = null;
-            AssignmentBadge._recomputeLocal();
-        }, 0);
-    }
-
-    /**
-     * Reagenda o próximo _recomputeLocal(). Atraso curto
-     * (HINTS_PENDING_REFRESH_MS) enquanto existir pelo menos uma dica ainda
-     * não dispensada nesta sessão - é justamente quando a cadência importa
-     * mais pro aluno. Volta pro atraso normal (ACTUAL_REFRESH_MS) assim que
-     * todas as dicas já tiverem sido mostradas+fechadas (ou a missão não tem
-     * dicas). setTimeout em cadeia (em vez de setInterval fixo) porque o
-     * atraso muda de tick pra tick, dependendo desse estado.
-     */
-    static _scheduleRecompute () {
-        const hasPendingHints = !!(assignment && Array.isArray(assignment.hints) &&
-            assignment.hints.some(function (h) {
-                return h && !dismissedHintIds.has(h.id);
-            }));
-        const delay = hasPendingHints ? HINTS_PENDING_REFRESH_MS : ACTUAL_REFRESH_MS;
-        actualTimer = window.setTimeout(function () {
-            if (document.visibilityState === 'visible') {
-                AssignmentBadge._recomputeLocal();
-            }
-            AssignmentBadge._scheduleRecompute();
-        }, delay);
+        // Cadência de recálculo (poll normal/acelerado, recheck instantâneo
+        // pós-interação, recheck em visibilitychange, refresh periódico de
+        // requisitos) - ver PollScheduler.js pro racional completo. Ligado
+        // uma única vez (mesma guarda `if (badgeEl) return` no topo desta
+        // função); PollScheduler.stop() em _lockCompletion() desliga pra
+        // sempre quando a missão conclui.
+        PollScheduler.start({
+            onTick: AssignmentBadge._recomputeLocal,
+            onRequirementsRefresh: AssignmentBadge._refreshRequirements,
+            hasPendingHints: function () {
+                return !!(assignment && Array.isArray(assignment.hints) &&
+                    assignment.hints.some(function (h) {
+                        return h && !dismissedHintIds.has(h.id);
+                    }));
+            },
+        });
     }
 
     /**
@@ -773,30 +656,20 @@ export default class AssignmentBadge {
     }
 
     /**
-     * Para os dois timers de repetição (poll normal e refresh de requisitos
-     * do professor) e avisa o servidor que a missão foi concluída (ver POST
-     * /assignments/:id/complete) - fire-and-forget, nunca bloqueia nem
-     * desfaz o estado sticky local se falhar (a conquista já vale nesta
-     * sessão de qualquer forma; só não persiste entre sessões até a próxima
-     * vez que completar de novo, o que aqui é impossível já que sticky nunca
-     * volta a false - então, na prática, uma falha de rede aqui só significa
-     * "essa aba específica não vai anunciar ao servidor", mas outra aba/
-     * sessão futura tentaria de novo se algum dia everCompleted começasse
-     * false outra vez, o que não acontece. Aceitável: best-effort mesmo).
+     * Desliga a cadência inteira (PollScheduler.stop() - poll normal, refresh
+     * de requisitos do professor, recálculo instantâneo, tudo) e avisa o
+     * servidor que a missão foi concluída (ver POST /assignments/:id/complete) -
+     * fire-and-forget, nunca bloqueia nem desfaz o estado sticky local se
+     * falhar (a conquista já vale nesta sessão de qualquer forma; só não
+     * persiste entre sessões até a próxima vez que completar de novo, o que
+     * aqui é impossível já que sticky nunca volta a false - então, na
+     * prática, uma falha de rede aqui só significa "essa aba específica não
+     * vai anunciar ao servidor", mas outra aba/sessão futura tentaria de
+     * novo se algum dia everCompleted começasse false outra vez, o que não
+     * acontece. Aceitável: best-effort mesmo).
      */
     static _lockCompletion () {
-        if (requirementsTimer) {
-            window.clearInterval(requirementsTimer);
-            requirementsTimer = null;
-        }
-        if (actualTimer) {
-            window.clearTimeout(actualTimer);
-            actualTimer = null;
-        }
-        if (_instantRecomputeTimer) {
-            window.clearTimeout(_instantRecomputeTimer);
-            _instantRecomputeTimer = null;
-        }
+        PollScheduler.stop();
         if (!assignment || !assignment.id) {
             return;
         }
@@ -825,9 +698,9 @@ export default class AssignmentBadge {
      *     assim que o botão dá acesso imediato a algo que o poll automático
      *     ainda vai esperar o aluno ficar parado (IDLE_BEFORE_HINT_MS) pra
      *     mostrar sozinho.
-     *  2. Se o aluno está ocioso há IDLE_BEFORE_HINT_MS (ver lastActivityAt/
-     *     _trackActivity), E nenhum modal está aberto agora (congrats ou
-     *     outra dica), a dica é mostrada de fato via _showCoachModal.
+     *  2. Se o aluno está ocioso há IDLE_BEFORE_HINT_MS (ver PollScheduler.
+     *     idleFor()), E nenhum modal está aberto agora (congrats ou outra
+     *     dica), a dica é mostrada de fato via _showCoachModal.
      * Não faz nada (dica nenhuma, ponto nenhum) se a missão já está
      * completa - o modal de parabéns cobre esse caso e dica de coach nunca
      * aparece depois de concluído. Reaproveita o mesmo detailedManifest.js
@@ -856,9 +729,17 @@ export default class AssignmentBadge {
         // flutuante de dica continua dando acesso a todas via _openHintsPanel,
         // que ignora esta trava de propósito - ver docblock do ponto 7).
         const firstPending = hints.find(function (hint) {
-            return hint && AssignmentBadge._hintConditionHolds(hint, detailed);
+            return hint && hintConditionHolds(hint, detailed);
         });
         const readyHint = (firstPending && !dismissedHintIds.has(firstPending.id)) ? firstPending : null;
+        // Ponto do botão flutuante: reflete "há dica pronta" mesmo quando ela
+        // ainda não pode ser MOSTRADA agora (ociosidade/modal já aberto, ver
+        // guardas abaixo) - ver docblock do ponto 1 no topo do arquivo. Bug
+        // real encontrado nesta refatoração: esta chamada nunca existia com
+        // `true`, só com `false` (no ramo isComplete acima) - o pontinho
+        // nunca ligava, mesmo quando havia dica pronta esperando o aluno
+        // ficar ocioso.
+        AssignmentBadge._updateHintButton(!!readyHint);
         // Alerta de VALOR ERRADO - canal separado da dica proativa (readyHint):
         // a dica proativa aparece uma vez e, fechada, nunca volta
         // (dismissedHintIds); mas o aluno pode montar o bloco DEPOIS de
@@ -870,7 +751,7 @@ export default class AssignmentBadge {
         let wrongValueHint = null;
         let wrongValueInfo = null;
         hints.some(function (hint) {
-            const info = AssignmentBadge._mistakeInfo(hint, detailed);
+            const info = computeMistakeInfo(hint, detailed);
             if (info && !wrongValueAlerted.has(info.sig)) {
                 wrongValueHint = hint;
                 wrongValueInfo = info;
@@ -884,9 +765,9 @@ export default class AssignmentBadge {
         // anterior do mesmo personagem ainda está pendente (achado em teste
         // real: clique + say montados antes da bandeira + say que a dica
         // pedia primeiro - nada avisava, a dica da bandeira já tinha sido
-        // fechada). Ver _orderInfo.
+        // fechada). Ver orderInfo em HintEngine.js.
         if (!wrongValueHint) {
-            const orderInfo = AssignmentBadge._orderInfo(hints, detailed);
+            const orderInfo = computeOrderInfo(hints, detailed);
             if (orderInfo && !wrongValueAlerted.has(orderInfo.sig)) {
                 wrongValueHint = orderInfo.doneHint;
                 wrongValueInfo = orderInfo;
@@ -899,7 +780,7 @@ export default class AssignmentBadge {
             // o modal automático por cima nesse momento.
             return;
         }
-        const idleFor = Date.now() - lastActivityAt;
+        const idleFor = PollScheduler.idleFor();
         if (wrongValueHint) {
             if (idleFor < (wrongValueInfo.idleMs || ALERT_IDLE_MS)) {
                 return; // acabou de soltar/arrastar algo - espera só um instante, não os 3s da dica proativa
@@ -946,10 +827,10 @@ export default class AssignmentBadge {
             onClose: function () {
                 dismissedHintIds.add(readyHint.id);
                 recordHintEvent(readyHint.id, 'dismissed');
-                // Não precisa marcar lastActivityAt aqui - o próprio clique no
+                // Não precisa marcar atividade aqui - o próprio clique no
                 // botão de fechar já passa pelo listener global de
-                // _trackActivity (fase de captura, ver docblock daquela
-                // função), reiniciando a espera de ociosidade sozinho.
+                // PollScheduler (fase de captura, ver docblock daquele
+                // arquivo), reiniciando a espera de ociosidade sozinho.
             },
         });
     }
@@ -1047,384 +928,12 @@ export default class AssignmentBadge {
         blockBlinkEls = [];
     }
 
-    /**
-     * Confere os blocos de UM personagem contra o `when` de uma dica
-     * character_missing_block_type. Usa os scripts do manifesto (ver
-     * detailedManifest.js#buildScriptDetail), não só a lista achatada de
-     * tipos, pra respeitar dois campos que o gerador grava (ver
-     * hintsGeneration.js#fillBlockContext):
-     *  - when.trigger: o bloco só conta dentro de scripts com ESSE gatilho
-     *    (onflag/onclick/...) - "quando clicar no Cofrinho, cresça" não fica
-     *    resolvida com o `grow` sob a bandeira verde;
-     *  - when.minCounts: a dica descreve a N-ésima ocorrência de um tipo
-     *    (2º `say`) - N blocos daquele tipo precisam existir (dentro do
-     *    gatilho, se houver).
-     * Dica sem esses campos (salva antes deles existirem) se comporta como
-     * sempre: qualquer script, pelo menos 1 de cada tipo.
-     * Retorna {typesOk, argsOk, values, wrongTrigger}: wrongTrigger = os
-     * blocos existem (contando todos os scripts) mas não no gatilho pedido.
-     */
-    static _blockMatch (character, when) {
-        const wantedTypes = Array.isArray(when.blockTypes) ? when.blockTypes : [];
-        const wantedArgs = when.blockArgs && typeof when.blockArgs === 'object' ? when.blockArgs : {};
-        const minCounts = when.minCounts && typeof when.minCounts === 'object' ? when.minCounts : {};
-        const allScripts = Array.isArray(character.scripts) ? character.scripts : [];
-        const evaluate = function (pool) {
-            const counts = {};
-            const values = {};
-            const pendings = {};
-            pool.forEach(function (script) {
-                // O bloco de início também conta como "tipo presente" (uma
-                // dica pode listar onflag/onmessage em blockTypes).
-                if (script.trigger) {
-                    counts[script.trigger] = (counts[script.trigger] || 0) + 1;
-                }
-                script.blocks.forEach(function (b) {
-                    counts[b.type] = (counts[b.type] || 0) + 1;
-                    if (b.num !== null && b.num !== undefined) {
-                        (values[b.type] = values[b.type] || []).push(b.num);
-                    }
-                    if (b.pending !== null && b.pending !== undefined) {
-                        (pendings[b.type] = pendings[b.type] || []).push(b.pending);
-                    }
-                });
-            });
-            return {
-                values: values,
-                pendings: pendings,
-                typesOk: wantedTypes.every(function (bt) {
-                    return (counts[bt] || 0) >= (minCounts[bt] || 1);
-                }),
-                argsOk: Object.keys(wantedArgs).every(function (bt) {
-                    return (values[bt] || []).includes(wantedArgs[bt]);
-                }),
-            };
-        };
-        const scoped = when.trigger ? allScripts.filter(function (script) {
-            return script.trigger === when.trigger;
-        }) : allScripts;
-        const result = evaluate(scoped);
-        // wrongTrigger só quando o professor usa esse bloco APENAS naquele
-        // gatilho (when.triggerExclusive) - senão um bloco fora dele pode ser
-        // o de outra dica, não um erro (ver fillBlockContext).
-        result.wrongTrigger = !!when.trigger && when.triggerExclusive === true &&
-            !result.typesOk && evaluate(allScripts).typesOk;
-        return result;
-    }
-
-    /**
-     * Detecta trabalho FORA DE ORDEM: uma dica de bloco posterior (doneHint)
-     * que o aluno já cumpriu de verdade enquanto uma anterior do MESMO
-     * personagem/cena (pendingHint) ainda não foi cumprida - independe de a
-     * pendente já ter sido fechada (dismissedHintIds). Só olha dicas
-     * character_missing_block_type e exige que o personagem exista e que
-     * tipos+valores da posterior batam (senão "personagem ainda nem existe"
-     * contaria como "cumprida"). Uma vez por par (pendente, cumprida) - ver
-     * wrongValueAlerted. Retorna {kind:'order', sig, doneHint, pendingHint}
-     * ou null.
-     */
-    static _orderInfo (hints, detailed) {
-        const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
-        const blockHints = hints.filter(function (hint) {
-            return hint && hint.when && hint.when.type === 'character_missing_block_type';
-        });
-        const sameActor = function (a, b) {
-            return a.when.characterMd5 === b.when.characterMd5 && a.when.sceneMd5 === b.when.sceneMd5 &&
-                (a.when.sceneOccurrence || 1) === (b.when.sceneOccurrence || 1);
-        };
-        const isDone = function (hint) {
-            const found = AssignmentBadge._findSceneAndCharacter(scenes, hint.when.sceneMd5, hint.when.characterMd5, hint.when.sceneOccurrence);
-            if (!found.character) {
-                return false;
-            }
-            const match = AssignmentBadge._blockMatch(found.character, hint.when);
-            return match.typesOk && match.argsOk;
-        };
-        for (let j = 1; j < blockHints.length; j++) {
-            const later = blockHints[j];
-            if (!isDone(later)) {
-                continue;
-            }
-            const pending = blockHints.slice(0, j).find(function (earlier) {
-                return sameActor(earlier, later) && !isDone(earlier) &&
-                    AssignmentBadge._hintConditionHolds(earlier, detailed);
-            });
-            if (pending) {
-                return {kind: 'order', sig: pending.id + '|order|' + later.id, doneHint: later, pendingHint: pending};
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Erro do aluno numa dica de bloco, distinto de "ainda não fez": o bloco
-     * do tipo certo EXISTE mas com VALOR errado (kind 'value') ou no
-     * GATILHO errado (kind 'trigger'). Retorna {kind, sig} - sig identifica
-     * o estado atual do erro (dica + valores/gatilhos que o aluno tem
-     * agora), então trocar de um erro pra OUTRO gera assinatura nova (novo
-     * alerta) e ficar parado no mesmo não repete - ver wrongValueAlerted.
-     * null se a dica não é desse tipo, o personagem/blocos ainda não existem
-     * (vale a dica proativa) ou nada está errado.
-     */
-    static _mistakeInfo (hint, detailed) {
-        const when = hint && hint.when;
-        if (!when || when.type !== 'character_missing_block_type') {
-            return null;
-        }
-        const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
-        const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
-        if (!found.character) {
-            return null;
-        }
-        const match = AssignmentBadge._blockMatch(found.character, when);
-        if (match.typesOk && !match.argsOk) {
-            const wantedArgs = when.blockArgs || {};
-            const wrong = Object.keys(wantedArgs).filter(function (bt) {
-                return !(match.values[bt] || []).includes(wantedArgs[bt]);
-            });
-            // O valor que o aluno tem AGORA já é o pedido, mas é o padrão do
-            // bloco recém-arrastado, ainda não confirmado: não é erro de
-            // valor, é "toque no número pra confirmar".
-            if (wrong.every(function (bt) {
-                return (match.pendings[bt] || []).includes(wantedArgs[bt]);
-            })) {
-                return {kind: 'confirm', sig: hint.id + '|confirm|' + wrong.join(',')};
-            }
-            // Bloco recém-arrastado e AINDA não editado (só valor pendente, sem
-            // nenhum valor real do aluno naquele tipo): o aluno está no meio do
-            // caminho, não errou - não interrompe. Só alerta valor que ele
-            // JÁ escolheu e está errado.
-            const chosenWrong = wrong.filter(function (bt) {
-                return (match.values[bt] || []).length > 0;
-            });
-            if (!chosenWrong.length) {
-                // Nenhum valor escolhido ainda naqueles blocos (zerados/velocidade
-                // "nenhuma" de missão): não é erro, mas se o aluno largar assim,
-                // lembra de escolher o valor - depois de FILL_IDLE_MS parado, pra
-                // não interromper quem está prestes a digitar. Uma vez por
-                // conjunto de blocos ainda sem valor (wrongValueAlerted).
-                return {
-                    kind: 'fill',
-                    idleMs: FILL_IDLE_MS,
-                    sig: hint.id + '|fill|' + wrong.map(function (bt) {
-                        return bt + ':' + (match.pendings[bt] || []).length;
-                    }).join(';'),
-                };
-            }
-            return {
-                kind: 'value',
-                sig: hint.id + '|value|' + chosenWrong.map(function (bt) {
-                    return bt + '=' + (match.values[bt] || []).join(',');
-                }).join(';'),
-            };
-        }
-        if (match.wrongTrigger) {
-            const wantedTypes = Array.isArray(when.blockTypes) ? when.blockTypes : [];
-            const where = (found.character.scripts || []).filter(function (script) {
-                return script.blocks.some(function (b) {
-                    return wantedTypes.includes(b.type);
-                });
-            }).map(function (script) {
-                return script.trigger || 'solto';
-            });
-            return {kind: 'trigger', sig: hint.id + '|trigger|' + where.join(',')};
-        }
-        return null;
-    }
-
-    /**
-     * Encontra, dentro do detailedManifest, a cena com o sceneMd5 dado e
-     * (se characterMd5 também for passado) o personagem com esse
-     * characterMd5 dentro dela. Retorna null se a cena (ou o personagem
-     * dentro dela) simplesmente não existir ainda no projeto do aluno -
-     * chamado só sabe decidir o que fazer com esse "não existe" (ver cada
-     * ramo de _hintConditionHolds).
-     *
-     * sceneOccurrence (1-based, default 1) escolhe QUAL cena entre as que
-     * usam o mesmo fundo - um projeto pode reusar o mesmo sceneMd5 em mais
-     * de uma página (ex.: a história volta pro "Bosque" mais adiante), e sem
-     * distinguir a ocorrência, uma dica sobre a 2ª vez sempre acabava
-     * batendo (errado) na 1ª cena que usa aquele fundo, já que essa lista é
-     * filtrada e indexada na ORDEM em que as cenas aparecem no projeto do
-     * aluno (não precisa bater com a posição/página exata do professor -
-     * só com "qual em ordem, entre as que têm esse fundo"). Ausente/1 se
-     * comporta como antes (sempre a primeira ocorrência) - hints salvos
-     * antes deste campo existir (sem sceneOccurrence no `when`) continuam
-     * funcionando sem mudança.
-     */
-    static _findSceneAndCharacter (scenes, sceneMd5, characterMd5, sceneOccurrence) {
-        const matches = scenes.filter(function (s) {
-            return s.sceneMd5 === sceneMd5;
-        });
-        const scene = matches[(sceneOccurrence || 1) - 1] || null;
-        if (!scene) {
-            return {scene: null, character: null};
-        }
-        const character = scene.characters.find(function (c) {
-            return c.characterMd5 === characterMd5;
-        }) || null;
-        return {scene, character};
-    }
-
-    /**
-     * Rótulo "🧑 Nome" mostrado acima do texto da dica no painel navegável -
-     * pedido explícito do usuário depois de um teste real: o texto da dica
-     * às vezes só usa pronome ("faça ELE dizer...", regra de tom do
-     * SYSTEM_PROMPT do backend permite isso depois da primeira menção ao
-     * personagem numa SEQUÊNCIA de dicas, mas ao navegar solto pelo painel -
-     * Anterior/Próxima, ou abrindo direto numa dica no meio - essa primeira
-     * menção pode nunca ter sido lida) e a criança ficava sem saber de quem
-     * a dica estava falando. Deriva o nome do characterMd5+sceneMd5+
-     * sceneOccurrence do próprio `when` da dica, contra o projeto ATUAL do
-     * aluno (mesmo detailed manifest já calculado por _openHintsPanel) -
-     * nunca do projeto de referência do professor, que o aluno nunca vê.
-     * Retorna null (painel esconde a linha) pra dicas sem personagem
-     * (scene_missing/message_not_received/mission_intro/manual) ou quando o
-     * personagem ainda nem existe no projeto do aluno (nada pra nomear
-     * ainda) ou não tem nome salvo.
-     */
-    static _actorLabelFor (hint, detailed) {
-        const when = hint && hint.when;
-        if (!when || !when.characterMd5 || !when.sceneMd5) {
-            return null;
-        }
-        const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
-        const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
-        if (!found.character || !found.character.characterName) {
-            return null;
-        }
-        return '🧑 ' + found.character.characterName;
-    }
-
-    /**
-     * Regras de cada when.type - ver o docblock do Part 2 desta feature
-     * (mesma nomenclatura/contrato que AssignmentAuthorBar.js usa pra
-     * rotular as dicas na tela do professor). Nunca lança - when.type
-     * desconhecido/malformado simplesmente não bate (retorna false).
-     */
-    static _hintConditionHolds (hint, detailed) {
-        const when = hint && hint.when;
-        if (!when || !when.type) {
-            return false;
-        }
-        const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
-
-        switch (when.type) {
-        case 'scene_missing': {
-            // "Faltando" agora é relativo à OCORRÊNCIA pedida, não só "existe
-            // uma cena qualquer com esse fundo" - senão, assim que a 1ª cena
-            // de um fundo reusado existisse, uma dica sobre trazer aquele
-            // fundo DE VOLTA numa cena posterior (sceneOccurrence >= 2) já
-            // apareceria como resolvida sem o aluno ter feito nada (bug real
-            // encontrado: duas dicas com o mesmo sceneMd5 e sem essa
-            // distinção nunca conseguiam representar "adicione mais uma
-            // cena" como uma tarefa própria).
-            const occurrencesSoFar = scenes.filter(function (s) {
-                return s.sceneMd5 === when.sceneMd5;
-            }).length;
-            return occurrencesSoFar < (when.sceneOccurrence || 1);
-        }
-
-        case 'character_missing': {
-            const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
-            // Cena em si nem existindo ainda não conta como "personagem
-            // faltando" - esse caso é coberto por um hint scene_missing
-            // separado (ver comentário no topo do arquivo/spec).
-            return !!found.scene && !found.character;
-        }
-
-        case 'character_no_script': {
-            const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
-            return !!found.character && !found.character.hasScript;
-        }
-
-        case 'character_missing_block_type': {
-            // Achado em teste real (1) - "!hasScript => false" (por baixo,
-            // "resolvida") tratava "o personagem ainda nem tem NENHUM
-            // script" como se já tivesse feito o que a dica pede, mostrando
-            // "✅ já resolvida" pra um personagem com o script totalmente
-            // vazio. A ideia original parece ter sido "deixa o
-            // character_no_script cobrir esse caso primeiro" - mas como o
-            // personagem no projeto do professor TEM script (é por isso que
-            // esta dica de blockTypes existe pra ele), o pipeline nunca gera
-            // uma character_no_script companheira pra esse mesmo personagem,
-            // e a condição nunca tinha chance de bater "ainda precisa" nesse
-            // meio-tempo. Sem o atalho: blockTypes de um personagem sem
-            // nenhum script ainda é sempre [] (ver detailedManifest.js), então
-            // já dá "ainda precisa" corretamente, sem precisar de um caso
-            // especial.
-            //
-            // Achado em teste real (2) - `wanted.some(...)` (OU) considerava
-            // a dica resolvida assim que QUALQUER UM dos blockTypes pedidos
-            // aparecesse, mesmo quando a dica descreve uma COMBINAÇÃO (ex.:
-            // blockTypes ["wait","say"] pra "espere um pouco e depois diga
-            // X") - bastava o aluno colocar só o "wait" (ou só o "say") pra a
-            // dica já sumir e a próxima aparecer, sem o comportamento
-            // completo ter sido montado. Trocado pra `wanted.every(...)` (E):
-            // só conta como feito quando TODOS os tipos pedidos já estão no
-            // personagem. isHintValid() no backend garante que todo tipo
-            // listado é um tipo que o personagem do professor de fato usa
-            // ali - então exigir todos nunca deixa a dica impossível.
-            const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
-            if (!found.character) {
-                return false; // personagem nem existe ainda - character_missing cobre esse caso
-            }
-            // Tipos (com contagem/gatilho - ver _blockMatch) e valores
-            // exigidos: ainda precisa enquanto algum não bater. Valor:
-            // achado em teste real (3), decisão explícita do usuário - "say"
-            // é o ÚNICO bloco cujo argumento pode divergir do professor
-            // (por isso nunca aparece em blockArgs), todos os outros exigem
-            // o valor exato.
-            const match = AssignmentBadge._blockMatch(found.character, when);
-            return !match.typesOk || !match.argsOk;
-        }
-
-        case 'message_not_received': {
-            let sent = false;
-            let received = false;
-            scenes.forEach(function (s) {
-                s.characters.forEach(function (c) {
-                    if (c.messagesSent.includes(when.messageName)) sent = true;
-                    if (c.messagesReceived.includes(when.messageName)) received = true;
-                });
-            });
-            return sent && !received;
-        }
-
-        case 'default_character_present': {
-            // Toda página em branco no ScratchJr cria automaticamente um
-            // personagem com o asset default (ver Page.js#createCat/
-            // UI.js#mascotData) - inclusive toda vez que o aluno clica em
-            // "+ nova cena", não só na primeira. A dica bate ENQUANTO esse
-            // personagem ainda estiver na cena (quer dizer que o aluno ainda
-            // não removeu o que sobrou) - some sozinha assim que ele apagar.
-            const found = AssignmentBadge._findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
-            return !!found.character;
-        }
-
-        case 'mission_intro':
-            // Dica de apresentação (ver hintsGeneration.js#buildIntroHint) -
-            // não referencia cena/personagem nenhum, sempre "bate" - é sempre
-            // a primeira dica da missão (índice 0 no array assignment.hints)
-            // e some pra sempre nesta sessão assim que o aluno fechar, mesma
-            // regra de dismissedHintIds de qualquer outra dica.
-            return true;
-
-        case 'manual':
-            // Dica escrita à mão pelo professor na tela de revisão (ver
-            // AssignmentAuthorBar.js#_showHintReview addBtn) - não referencia
-            // nenhuma cena/personagem/bloco do projeto, então não tem como
-            // checar automaticamente se "já foi feita". Sempre bate (igual
-            // mission_intro) - fica disponível no painel até o aluno mesmo
-            // fechar, nunca marcada "✅ já resolvida" sozinha. Sem este caso
-            // explícito, cairia no `default: return false` abaixo e apareceria
-            // como resolvida na hora, antes mesmo do aluno ler.
-            return true;
-
-        default:
-            return false;
-        }
-    }
+    // _blockMatch, _orderInfo, _mistakeInfo, _findSceneAndCharacter,
+    // _actorLabelFor e _hintConditionHolds foram extraídas pra HintEngine.js
+    // (refatoração Fase 0) - eram as únicas funções 100% puras deste arquivo
+    // (sem DOM/ScratchJr), usadas tanto por _evaluateHints (poll automático)
+    // quanto por _openHintsPanel/_renderHintsPanel (painel manual). Ver
+    // HintEngine.js e HintEngine.test.js. Import no topo deste arquivo.
 
     /**
      * Botão flutuante de dica - via manual pro aluno/professor testando não
@@ -1494,7 +1003,7 @@ export default class AssignmentBadge {
         //
         // "mission_intro" NUNCA conta como tarefa pra esse cálculo - achado em
         // teste real (2ª rodada): ela é a apresentação da missão inteira, sem
-        // cena/personagem nenhum pra checar, então _hintConditionHolds sempre
+        // cena/personagem nenhum pra checar, então hintConditionHolds (HintEngine.js) sempre
         // devolve true pra ela (ver aquele switch case) - sem essa exclusão,
         // o painel sempre abria de volta na intro (ela é sempre hints[0]),
         // nunca avançava pra tarefa de verdade mesmo com progresso real já
@@ -1502,7 +1011,7 @@ export default class AssignmentBadge {
         // normalmente pro modal automático (_evaluateHints) e pro botão
         // Anterior/Próxima dentro do painel já aberto.
         let startIndex = hints.findIndex(function (h) {
-            return h && h.when && h.when.type !== 'mission_intro' && AssignmentBadge._hintConditionHolds(h, detailed);
+            return h && h.when && h.when.type !== 'mission_intro' && hintConditionHolds(h, detailed);
         });
         if (startIndex < 0) {
             startIndex = 0;
@@ -1547,11 +1056,11 @@ export default class AssignmentBadge {
         function render () {
             const hint = hints[index];
             textEl.textContent = (hint && hint.text) || '';
-            const actorLabel = hint ? AssignmentBadge._actorLabelFor(hint, detailed) : null;
+            const actorLabel = hint ? actorLabelFor(hint, detailed) : null;
             actorEl.textContent = actorLabel || '';
             actorEl.classList.toggle('hidden', !actorLabel);
             counter.textContent = (index + 1) + ' de ' + hints.length;
-            const stillNeeded = hint && AssignmentBadge._hintConditionHolds(hint, detailed);
+            const stillNeeded = hint && hintConditionHolds(hint, detailed);
             status.textContent = stillNeeded ? '💡 ainda vale' : '✅ já resolvida';
             status.classList.toggle('done', !stillNeeded);
             prevBtn.disabled = index <= 0;

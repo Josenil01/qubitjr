@@ -48,6 +48,7 @@
 
 import { connectChannel } from '../services/RealtimeClient.js';
 import { newHTML } from '../utils/lib.js';
+import { decodeJwtPayloadUnsafe } from '../utils/jwtUnsafe.js';
 import ScratchJr from './ScratchJr.js';
 import {
     applyStageState, applyUiState, applyPageList, buildMirrorPayload,
@@ -83,31 +84,6 @@ let _autoRequestSentAt = null; // timestamp de quando a camada 1 do vigia pediu 
 function authHeader() {
     const token = window.__AUTH_TOKEN__;
     return token ? { Authorization: `Bearer ${token}` } : null;
-}
-
-/**
- * Peek inseguro (não verifica assinatura) no payload do próprio
- * window.__AUTH_TOKEN__ — mesma técnica de
- * backend/src/services/identity.js#decodeJwtPayloadUnsafe, reimplementada
- * aqui no navegador (sem Buffer), já usada por AssignmentAuthorBar.js#
- * decodeJwtPayloadUnsafe pro mesmo problema do lado do professor. Nunca usar
- * isto pra qualquer decisão de segurança/autorização — é só um
- * identificador pra exibição (ver getOwnStudentId).
- */
-function decodeJwtPayloadUnsafe(token) {
-    try {
-        if (!token || typeof token !== 'string') return null;
-        const parts = token.split('.');
-        if (parts.length < 2) return null;
-        const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-        const padded = b64 + '='.repeat((4 - (b64.length % 4 || 4)) % 4);
-        const json = decodeURIComponent(window.atob(padded).split('').map((c) => (
-            '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-        )).join(''));
-        return JSON.parse(json);
-    } catch (err) {
-        return null;
-    }
 }
 
 /**
