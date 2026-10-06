@@ -92,28 +92,55 @@ function verifyTeacherToken(token) {
  * Roteia pra verificação certa com base no formato das claims (peek
  * inseguro só pra decidir o caminho). Assíncrono porque a verificação do
  * aluno é uma chamada de rede pra HelloYotta.
+ *
+ * [2026-10] `peek.role === 'professor'` sozinho NÃO é suficiente pra decidir
+ * o caminho local (achado em produção: professor logando pela URL da
+ * HelloYotta recebia 401 sempre, mesmo com token recém-emitido). O token
+ * LOCAL legado (QUBITJR_JWT_SECRET, HS256) é {sub, role, turma_id, iat, exp}
+ * — SEM `iss`. Só que a HelloYotta hoje manda o professor logar com o
+ * idToken do Firebase (ver WebInterface.js#extractAuthParams), que TAMBÉM
+ * carrega `role: "professor"` (custom claim deles) mas é assinado RS256
+ * pelo Firebase, com `iss: "https://securetoken.google.com/..."` — caía
+ * aqui mesmo assim (role bate), e `jwt.verify(token, QUBITJR_JWT_SECRET,
+ * {algorithms:['HS256']})` rejeita IMEDIATAMENTE com "invalid algorithm",
+ * nunca verifica de verdade. `iss` ausente é o sinal confiável de "token
+ * local legado"; qualquer token com `iss` (Firebase OU helloyotta-auth) só
+ * a HelloYotta sabe verificar — mesmo caminho remoto do aluno, ver
+ * verifyStudentToken em services/helloyotta.js (aceita idToken Firebase cru
+ * OU o authToken próprio deles, não só o formato "aluno").
  */
 async function verifyAndDecode(token) {
     const peek = decodeJwtPayloadUnsafe(token);
     if (!peek) return null;
 
-    if (peek.role === 'professor') {
+    if (peek.role === 'professor' && !peek.iss) {
         return verifyTeacherToken(token);
     }
 
-    // Token de aluno: só a HelloYotta consegue verificar a assinatura.
+    // Token verificado remotamente (aluno, ou professor via idToken Firebase
+    // — ver docblock acima): só a HelloYotta consegue verificar a assinatura.
     const mode = process.env.HELLOYOTTA_MODE || 'mock';
     if (mode === 'mock') {
-        console.warn('[identity] HELLOYOTTA_MODE=mock — aceitando token de aluno SEM verificação remota (inseguro, só ok fora de produção)');
+        console.warn('[identity] HELLOYOTTA_MODE=mock — aceitando token SEM verificação remota (inseguro, só ok fora de produção)');
         return peek;
     }
 
     const cached = getCachedStudentClaims(token);
     if (cached !== undefined) return cached;
 
-    const claims = await verifyStudentToken(token);
+    let claims = await verifyStudentToken(token);
     if (!claims) {
-        console.warn('[identity] Token de aluno rejeitado pela verificação remota da HelloYotta');
+        console.warn('[identity] Token rejeitado pela verificação remota da HelloYotta');
+    } else if (peek.role) {
+        // verifyStudentToken só devolve {sub, id_usuario, turma_id} (contrato
+        // aluno) — sem isso, um professor verificado por este mesmo caminho
+        // perderia req.role==='professor' (routes/assignments.js e o limite
+        // diário de projetos em db.js dependem dele). `peek.role` já é
+        // confiável aqui: a chamada remota acima validou a assinatura do
+        // MESMO token de onde peek veio, então seus outros campos (inclusive
+        // role) não são forjáveis — qualquer adulteração teria invalidado a
+        // assinatura e `claims` já seria null.
+        claims = { ...claims, role: peek.role };
     }
     // Cacheia os dois desfechos (aceito e rejeitado) — uma rejeição também
     // não deve ser reverificada a cada request do mesmo token inválido.

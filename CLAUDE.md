@@ -101,6 +101,40 @@ Grafo gerado por `/graphify` sobre `src/app/src/` (1766 nós, 4459 arestas, 84 c
   `Palette.js` e no `painteditor/` — ver seção "Import Cycles" do GRAPH_REPORT.md antes
   de mover símbolos entre esses arquivos.
 
+## Armadilhas conhecidas (backend/produção)
+
+- **`require()` síncrono de `.mjs` quebra em produção, mesmo funcionando em dev local.**
+  [2026-10] Toda rota `/api/*` caiu (`FUNCTION_INVOCATION_FAILED`, inclusive `/api/health`)
+  porque `backend/src/services/{assignmentScoring,detailedManifest}.js` e
+  `hintsGeneration.js` faziam `require('...shared/x.mjs')` direto — Node 22.12+ suporta
+  isso nativamente e funciona liso em dev local (confirmado: Node 24.x aqui), **mas o
+  runtime serverless da Vercel não** (stack trace real aponta pra `/opt/rust/nodejs.js`,
+  não é Node "puro"), mesmo com "Node.js Version: 24.x" configurado no projeto — lança
+  `ERR_REQUIRE_ESM` e mata o processo no cold start, antes do Express montar qualquer
+  rota. Só dá pra confirmar rodando contra produção de verdade (`vercel logs`); dev local
+  não reproduz. Corrigido em [api/index.js](api/index.js) pré-carregando os `.mjs` via
+  `import()` dinâmico (sempre suportado) e injetando no `require.cache`/`Module._cache`
+  do Node antes de exigir `backend/src/index.js` — ver docblock lá pro raciocínio
+  completo. Não torne `computeProjectManifest`/`compareManifests`/`computeDetailedManifest`
+  assíncronos pra "resolver direito": `routes/share.js` tem um deles dentro de um `.map()`
+  síncrono — virar async ali quebra silenciosamente (devolve Promise em vez do manifest
+  no JSON).
+- **Roteamento de verificação de JWT por `role` sozinho é furado.**
+  [2026-10] `backend/src/services/identity.js#verifyAndDecode` decidia o caminho de
+  verificação só por `peek.role === 'professor'` → tentava validar localmente com HMAC
+  (`QUBITJR_JWT_SECRET`). Mas a URL de login da HelloYotta manda um `idToken` do Firebase
+  que TAMBÉM carrega `role: "professor"` (custom claim deles) e é assinado RS256 pelo
+  Firebase — `jwt.verify(..., {algorithms:['HS256']})` rejeita na hora com
+  `invalid algorithm`, pra qualquer professor, sempre (não é expiração/timing, é
+  determinístico). Sintoma no cliente: modal "Sua sessão expirou" imediatamente após
+  logar. O discriminador correto é a presença de `iss`: token local legado nunca tem
+  `iss`; qualquer token com `iss` (Firebase ou `helloyotta-auth`) só a HelloYotta sabe
+  verificar — vai pelo mesmo caminho remoto do aluno (`verifyStudentToken`, que já aceita
+  idToken Firebase cru). Depois de verificado remotamente, repasse `peek.role` pro
+  resultado — sem isso um professor verificado por esse caminho perde `req.role` e some
+  o `=== 'professor'` que `routes/assignments.js` e o limite diário de projetos em
+  `db.js` checam.
+
 ## Convenções de trabalho
 
 - Escreva código no mesmo estilo do entorno (classes ES, `var` local como no legado, mesma densidade de comentários).
