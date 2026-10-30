@@ -48,16 +48,37 @@ export const ALL_WHEN_TYPES = Object.freeze([...LLM_WHEN_TYPES, MANUAL_WHEN_TYPE
  * entender o contrato sem precisar ler os dois arquivos lado a lado):
  *
  * scene_missing:                {type, sceneMd5, sceneOccurrence}
- * character_missing:             {type, sceneMd5, sceneOccurrence, characterMd5}
- * character_no_script:           {type, sceneMd5, sceneOccurrence, characterMd5}
+ * character_missing:             {type, sceneMd5, sceneOccurrence, characterMd5,
+ *                                  characterOccurrence?: number}
+ * character_no_script:           {type, sceneMd5, sceneOccurrence, characterMd5,
+ *                                  characterOccurrence?: number}
  * character_missing_block_type:  {type, sceneMd5, sceneOccurrence, characterMd5,
+ *                                  characterOccurrence?: number,
  *                                  blockTypes: string[], blockArgs?: {[blockType]: number},
  *                                  minCounts?: {[blockType]: number}, trigger?: string,
- *                                  triggerExclusive?: true}
- *                                 - blockArgs/minCounts/trigger/triggerExclusive são
- *                                   preenchidos por CÓDIGO depois da LLM gerar a dica
+ *                                  triggerArg?: string, triggerExclusive?: true}
+ *                                 - blockArgs/minCounts/trigger/triggerArg/triggerExclusive
+ *                                   são preenchidos por CÓDIGO depois da LLM gerar a dica
  *                                   (fillBlockArgs/fillBlockContext em hintsGeneration.js),
  *                                   nunca confiados ao texto que a LLM devolve.
+ *                                 - triggerArg (Fase 2, falha F8): só com trigger
+ *                                   'onmessage' - o NOME da mensagem do script do professor
+ *                                   (manifesto: scripts[].triggerArg). O bloco só conta sob
+ *                                   "quando receber ESSA mensagem"; minCounts e
+ *                                   triggerExclusive também são por (gatilho, mensagem).
+ *                                   Ausente (dica legada, ou onmessage do professor sem
+ *                                   mensagem escolhida - o 'null' literal do editor) =
+ *                                   qualquer onmessage serve.
+ *
+ * characterOccurrence (Fase 2, falha F9) - 1-based, qual CÓPIA do personagem
+ *   (mesmo characterMd5) na cena, na ordem de page.sprites - mesma ideia de
+ *   sceneOccurrence, um nível abaixo (manifesto: characters[].characterOccurrence).
+ *   O gerador (fillCharacterOccurrence em hintsGeneration.js) só grava quando a
+ *   cena do PROFESSOR tem cópias repetidas daquele personagem; senão o campo não
+ *   existe. Ausente = regra "qualquer cópia" no cliente (HintEngine.js#candidatesFor):
+ *   a dica conta como feita se QUALQUER cópia a satisfaz, pendente se nenhuma.
+ *   character_missing com characterOccurrence N = pendente enquanto o aluno não
+ *   tem N cópias. Nunca usado em default_character_present.
  * message_not_received:          {type, messageName}
  * default_character_present:     {type, sceneMd5, sceneOccurrence, characterMd5: 'HY-Ruby.svg'}
  * mission_intro:                 {type} - sem cena/personagem, sempre o 1º hint do array,

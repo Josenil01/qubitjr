@@ -137,6 +137,8 @@ describe('computeDetailedManifest — ordering', () => {
         const manifest = computeDetailedManifest(project);
         expect(manifest.scenes[0].characters[0]).toEqual({
             characterMd5: 'HY-Ruby.svg',
+            // Fase 2 (falha F9): 1ª cópia deste md5 na cena.
+            characterOccurrence: 1,
             characterName: 'Ruby',
             hasScript: false,
             blockTypes: [],

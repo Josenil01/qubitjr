@@ -46,19 +46,50 @@ import {ALL_WHEN_TYPES, MANUAL_WHEN_TYPE} from '../../../../../shared/hintSchema
  * comporta como antes (sempre a primeira ocorrência) - hints salvos
  * antes deste campo existir (sem sceneOccurrence no `when`) continuam
  * funcionando sem mudança.
+ *
+ * characterOccurrence (Fase 2, falha F9) é a mesma ideia um nível abaixo:
+ * a cena pode ter DUAS cópias do mesmo personagem (mesmo md5). Com ele
+ * (1-based), `character` é a N-ésima cópia na ordem da cena (null se o
+ * aluno ainda não tem N cópias); sem ele, `character` continua sendo a 1ª
+ * (comportamento antigo). `characters` traz SEMPRE todas as cópias - é o
+ * que candidatesFor() usa pra regra "qualquer cópia" das dicas legadas.
  */
-export function findSceneAndCharacter (scenes, sceneMd5, characterMd5, sceneOccurrence) {
+export function findSceneAndCharacter (scenes, sceneMd5, characterMd5, sceneOccurrence, characterOccurrence) {
     const matches = scenes.filter(function (s) {
         return s.sceneMd5 === sceneMd5;
     });
     const scene = matches[(sceneOccurrence || 1) - 1] || null;
     if (!scene) {
-        return {scene: null, character: null};
+        return {scene: null, character: null, characters: []};
     }
-    const character = scene.characters.find(function (c) {
+    const characters = scene.characters.filter(function (c) {
         return c.characterMd5 === characterMd5;
-    }) || null;
-    return {scene, character};
+    });
+    const character = characters[(characterOccurrence || 1) - 1] || null;
+    return {scene, character, characters};
+}
+
+/**
+ * Cópias do personagem de uma dica que podem satisfazê-la, cada uma com a
+ * sua ocorrência (1-based, posição entre as cópias do mesmo md5 na cena):
+ *  - when.characterOccurrence presente (o gerador só grava quando o
+ *    professor TEM cópias repetidas - ver hintsGeneration.js
+ *    #fillCharacterOccurrence): só aquela cópia;
+ *  - ausente (dica legada, ou personagem sem cópias no projeto do
+ *    professor): TODAS as cópias - a dica conta como feita se QUALQUER uma
+ *    satisfaz, e só fica pendente se nenhuma satisfaz. Antes só a 1ª cópia
+ *    era olhada: um aluno que montava o script na 2ª Ruby nunca via a dica
+ *    resolvida (regressão P9a).
+ * [] se a cena ou o personagem ainda não existem.
+ */
+export function candidatesFor (scenes, when) {
+    const found = findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence, when.characterOccurrence);
+    if (when.characterOccurrence) {
+        return found.character ? [{character: found.character, occurrence: when.characterOccurrence}] : [];
+    }
+    return found.characters.map(function (character, i) {
+        return {character: character, occurrence: i + 1};
+    });
 }
 
 /**
@@ -73,12 +104,23 @@ export function findSceneAndCharacter (scenes, sceneMd5, characterMd5, sceneOccu
  *  - when.minCounts: a dica descreve a N-ésima ocorrência de um tipo
  *    (2º `say`) - N blocos daquele tipo precisam existir (dentro do
  *    gatilho, se houver).
+ *  - when.triggerArg: com when.trigger 'onmessage', o nome da mensagem
+ *    (ver comentário no corpo).
  * Dica sem esses campos (salva antes deles existirem) se comporta como
- * sempre: qualquer script, pelo menos 1 de cada tipo.
+ * sempre: qualquer script, pelo menos 1 de cada tipo. Blocos soltos (script
+ * sem gatilho) nunca chegam aqui - o manifesto já os descarta (falha F10).
  * Retorna {typesOk, argsOk, values, wrongTrigger}: wrongTrigger = os
  * blocos existem (contando todos os scripts) mas não no gatilho pedido.
  */
 export function blockMatch (character, when) {
+    // when.triggerArg (Fase 2, falha F8): o NOME da mensagem de um gatilho
+    // onmessage - o bloco só conta sob "quando receber ESSA mensagem", não
+    // sob qualquer onmessage. Só o gerador grava (e só com
+    // when.trigger === 'onmessage'); dica sem ele = comportamento antigo
+    // (qualquer onmessage serve). triggerExclusive/wrongTrigger passam a
+    // valer por (gatilho, mensagem) também: o mesmo bloco sob a mensagem
+    // errada é "lugar errado".
+    const wantedTriggerArg = when.trigger === 'onmessage' && typeof when.triggerArg === 'string' ? when.triggerArg : null;
     const wantedTypes = Array.isArray(when.blockTypes) ? when.blockTypes : [];
     const wantedArgs = when.blockArgs && typeof when.blockArgs === 'object' ? when.blockArgs : {};
     const minCounts = when.minCounts && typeof when.minCounts === 'object' ? when.minCounts : {};
@@ -115,7 +157,8 @@ export function blockMatch (character, when) {
         };
     };
     const scoped = when.trigger ? allScripts.filter(function (script) {
-        return script.trigger === when.trigger;
+        return script.trigger === when.trigger &&
+            (wantedTriggerArg === null || script.triggerArg === wantedTriggerArg);
     }) : allScripts;
     const result = evaluate(scoped);
     // wrongTrigger só quando o professor usa esse bloco APENAS naquele
@@ -124,6 +167,12 @@ export function blockMatch (character, when) {
     result.wrongTrigger = !!when.trigger && when.triggerExclusive === true &&
         !result.typesOk && evaluate(allScripts).typesOk;
     return result;
+}
+
+/** Tipos+valores da dica de bloco batem nesta cópia do personagem. */
+function isBlockHintDoneFor (character, when) {
+    const match = blockMatch(character, when);
+    return match.typesOk && match.argsOk;
 }
 
 /**
@@ -160,7 +209,9 @@ export function hintConditionHolds (hint, detailed) {
     }
 
     case 'character_missing': {
-        const found = findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
+        // Com characterOccurrence N (falha F9): faltando enquanto o aluno
+        // não tem N cópias desse personagem na cena ("coloque a 2ª Ruby").
+        const found = findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence, when.characterOccurrence);
         // Cena em si nem existindo ainda não conta como "personagem
         // faltando" - esse caso é coberto por um hint scene_missing
         // separado (ver comentário no topo do arquivo/spec).
@@ -168,8 +219,13 @@ export function hintConditionHolds (hint, detailed) {
     }
 
     case 'character_no_script': {
-        const found = findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
-        return !!found.character && !found.character.hasScript;
+        // Pendente se a cópia pedida (ou, sem characterOccurrence, ALGUMA
+        // cópia) existe e nenhuma das candidatas tem script - ver
+        // candidatesFor.
+        const candidates = candidatesFor(scenes, when);
+        return candidates.length > 0 && candidates.every(function (c) {
+            return !c.character.hasScript;
+        });
     }
 
     case 'character_missing_block_type': {
@@ -199,8 +255,8 @@ export function hintConditionHolds (hint, detailed) {
         // personagem. isHintValid() no backend garante que todo tipo
         // listado é um tipo que o personagem do professor de fato usa
         // ali - então exigir todos nunca deixa a dica impossível.
-        const found = findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
-        if (!found.character) {
+        const candidates = candidatesFor(scenes, when);
+        if (!candidates.length) {
             return false; // personagem nem existe ainda - character_missing cobre esse caso
         }
         // Tipos (com contagem/gatilho - ver blockMatch) e valores
@@ -208,9 +264,11 @@ export function hintConditionHolds (hint, detailed) {
         // achado em teste real (3), decisão explícita do usuário - "say"
         // é o ÚNICO bloco cujo argumento pode divergir do professor
         // (por isso nunca aparece em blockArgs), todos os outros exigem
-        // o valor exato.
-        const match = blockMatch(found.character, when);
-        return !match.typesOk || !match.argsOk;
+        // o valor exato. Cópias repetidas: pendente só se NENHUMA
+        // candidata satisfaz (ver candidatesFor).
+        return !candidates.some(function (c) {
+            return isBlockHintDoneFor(c.character, when);
+        });
     }
 
     case 'message_not_received': {
@@ -276,6 +334,15 @@ const FILL_IDLE_MS = 2000;
  * AssignmentBadge.js.
  * null se a dica não é desse tipo, o personagem/blocos ainda não existem
  * (vale a dica proativa) ou nada está errado.
+ *
+ * Cópias repetidas do personagem (falha F9): se ALGUMA candidata (ver
+ * candidatesFor) já cumpre a dica, não há erro a apontar; senão, o erro é
+ * o da 1ª candidata que tem um. O retorno ganha `characterOccurrence` (a
+ * cópia onde o erro está - só quando a dica tem characterOccurrence ou o
+ * aluno tem 2+ cópias; sem isso o retorno é idêntico ao de antes) - é o
+ * que AssignmentBadge.js#_highlightMistake
+ * usa pra piscar os blocos da cópia CERTA. A sig ganha '@N' só pra N > 1,
+ * mantendo iguais as sigs de projetos sem cópias.
  */
 export function mistakeInfo (hint, detailed) {
     const when = hint && hint.when;
@@ -283,11 +350,31 @@ export function mistakeInfo (hint, detailed) {
         return null;
     }
     const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
-    const found = findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
-    if (!found.character) {
+    const candidates = candidatesFor(scenes, when);
+    if (candidates.some(function (c) {
+        return isBlockHintDoneFor(c.character, when);
+    })) {
         return null;
     }
-    const match = blockMatch(found.character, when);
+    for (let i = 0; i < candidates.length; i++) {
+        const info = mistakeInfoFor(hint, candidates[i].character);
+        if (info) {
+            if (candidates[i].occurrence > 1) {
+                info.sig += '@' + candidates[i].occurrence;
+            }
+            if (when.characterOccurrence || candidates.length > 1) {
+                info.characterOccurrence = candidates[i].occurrence;
+            }
+            return info;
+        }
+    }
+    return null;
+}
+
+/** mistakeInfo de UMA cópia do personagem (o miolo antigo de mistakeInfo). */
+function mistakeInfoFor (hint, character) {
+    const when = hint.when;
+    const match = blockMatch(character, when);
     if (match.typesOk && !match.argsOk) {
         const wantedArgs = when.blockArgs || {};
         const wrong = Object.keys(wantedArgs).filter(function (bt) {
@@ -331,12 +418,14 @@ export function mistakeInfo (hint, detailed) {
     }
     if (match.wrongTrigger) {
         const wantedTypes = Array.isArray(when.blockTypes) ? when.blockTypes : [];
-        const where = (found.character.scripts || []).filter(function (script) {
+        const where = (character.scripts || []).filter(function (script) {
             return script.blocks.some(function (b) {
                 return wantedTypes.includes(b.type);
             });
         }).map(function (script) {
-            return script.trigger || 'solto';
+            // triggerArg na sig: mover o bloco de "receber azul" pra
+            // "receber verde" (ainda errado) é um erro NOVO, avisa de novo.
+            return script.trigger + (script.triggerArg ? ':' + script.triggerArg : '');
         });
         return {kind: 'trigger', sig: hint.id + '|trigger|' + where.join(',')};
     }
@@ -351,7 +440,16 @@ export function mistakeInfo (hint, detailed) {
  * Só olha dicas character_missing_block_type e exige que o personagem
  * exista e que tipos+valores da posterior batam (senão "personagem ainda
  * nem existe" contaria como "cumprida"). Retorna
- * {kind:'order', sig, doneHint, pendingHint} ou null.
+ * {kind:'order', sig, doneHint, pendingHint, characterOccurrence} ou null.
+ *
+ * Cópias repetidas (falha F9): "mesmo personagem" inclui a MESMA cópia
+ * (when.characterOccurrence) - dicas da 1ª e da 2ª Ruby são atores
+ * diferentes, uma não está "fora de ordem" em relação à outra. Dicas sem
+ * characterOccurrence formam o seu próprio grupo (legado / personagem sem
+ * cópias) e são cumpridas em QUALQUER cópia (ver candidatesFor).
+ * characterOccurrence no retorno é a cópia onde a dica posterior foi
+ * montada - é ali que _highlightMistake pisca (mesma regra de mistakeInfo:
+ * só presente com when.characterOccurrence ou 2+ cópias no aluno).
  */
 export function orderInfo (hints, detailed) {
     const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
@@ -360,19 +458,23 @@ export function orderInfo (hints, detailed) {
     });
     const sameActor = function (a, b) {
         return a.when.characterMd5 === b.when.characterMd5 && a.when.sceneMd5 === b.when.sceneMd5 &&
-            (a.when.sceneOccurrence || 1) === (b.when.sceneOccurrence || 1);
+            (a.when.sceneOccurrence || 1) === (b.when.sceneOccurrence || 1) &&
+            (a.when.characterOccurrence || 0) === (b.when.characterOccurrence || 0);
+    };
+    // Cópia (1-based) onde a dica está cumprida, ou 0 se em nenhuma.
+    const doneIn = function (hint) {
+        const done = candidatesFor(scenes, hint.when).find(function (c) {
+            return isBlockHintDoneFor(c.character, hint.when);
+        });
+        return done ? done.occurrence : 0;
     };
     const isDone = function (hint) {
-        const found = findSceneAndCharacter(scenes, hint.when.sceneMd5, hint.when.characterMd5, hint.when.sceneOccurrence);
-        if (!found.character) {
-            return false;
-        }
-        const match = blockMatch(found.character, hint.when);
-        return match.typesOk && match.argsOk;
+        return doneIn(hint) > 0;
     };
     for (let j = 1; j < blockHints.length; j++) {
         const later = blockHints[j];
-        if (!isDone(later)) {
+        const laterOccurrence = doneIn(later);
+        if (!laterOccurrence) {
             continue;
         }
         const pending = blockHints.slice(0, j).find(function (earlier) {
@@ -380,7 +482,11 @@ export function orderInfo (hints, detailed) {
                 hintConditionHolds(earlier, detailed);
         });
         if (pending) {
-            return {kind: 'order', sig: pending.id + '|order|' + later.id, doneHint: later, pendingHint: pending};
+            const order = {kind: 'order', sig: pending.id + '|order|' + later.id, doneHint: later, pendingHint: pending};
+            if (later.when.characterOccurrence || candidatesFor(scenes, later.when).length > 1) {
+                order.characterOccurrence = laterOccurrence;
+            }
+            return order;
         }
     }
     return null;
@@ -573,6 +679,13 @@ export function decideHintAction (opts) {
  * (scene_missing/message_not_received/mission_intro/manual) ou quando o
  * personagem ainda nem existe no projeto do aluno (nada pra nomear
  * ainda) ou não tem nome salvo.
+ *
+ * Cópias repetidas (falha F9): com when.characterOccurrence e mais de uma
+ * cópia do personagem na cena do aluno, o rótulo usa o nome DAQUELA cópia e
+ * ganha a ordem dela ("🧑 Ruby (2º)") - o editor dá o MESMO nome às cópias
+ * (Page.js#addSprite usa o nome do asset), então só o nome não diria qual
+ * delas a dica quer. Sem characterOccurrence (legado), igual a antes: nome
+ * da 1ª cópia, sem número.
  */
 export function actorLabelFor (hint, detailed) {
     const when = hint && hint.when;
@@ -580,9 +693,10 @@ export function actorLabelFor (hint, detailed) {
         return null;
     }
     const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
-    const found = findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence);
+    const found = findSceneAndCharacter(scenes, when.sceneMd5, when.characterMd5, when.sceneOccurrence, when.characterOccurrence);
     if (!found.character || !found.character.characterName) {
         return null;
     }
-    return '🧑 ' + found.character.characterName;
+    const ordinal = when.characterOccurrence && found.characters.length > 1 ? ' (' + when.characterOccurrence + 'º)' : '';
+    return '🧑 ' + found.character.characterName + ordinal;
 }

@@ -77,6 +77,19 @@
  * "Casa 2", ...) - ver numberFor() dentro de buildTranscript(). Só nomes que
  * realmente se repetem (2+) são numerados; um nome único nunca ganha número.
  *
+ * Fase 2 do sistema de dicas (falhas F8/F9/F10):
+ *  - F8: o manifesto detalhado agora guarda `triggerArg` (nome da mensagem)
+ *    por script; fillBlockContext() conta ocorrências/minCounts/
+ *    triggerExclusive por (gatilho, MENSAGEM) e grava when.triggerArg quando
+ *    when.trigger === 'onmessage' - sem isso um minCounts podia somar blocos
+ *    de dois onmessage diferentes e gerar uma dica impossível.
+ *  - F9: personagem com CÓPIAS na mesma cena (mesmo md5 duas vezes) -
+ *    fillCharacterOccurrence() grava when.characterOccurrence (1-based) só
+ *    quando o professor tem cópias; todo o resto (validação, blockArgs,
+ *    blockContext, character_missing de reserva) passa a olhar a cópia certa.
+ *  - F10: blocos soltos (script sem gatilho) não existem pro manifesto (ver
+ *    shared/detailedManifest.mjs), então também nunca viram dica aqui.
+ *
  * Personagem default (achado em teste real - nenhuma dica nunca mandava
  * remover a Ruby que sobra): toda página em branco no ScratchJr cria
  * automaticamente um personagem com o asset de ScratchJr.defaultSprite
@@ -190,6 +203,8 @@ REGRA DE NOME DE CENA: quando a linha da cena trouxer \`nome exibido ao aluno: "
 
 REGRA DE CENA REPETIDA: cada cena na transcrição também traz um número de ocorrência entre colchetes, tipo \`[sceneOccurrence: 2]\` - é 1 na primeira vez que aquele fundo aparece no projeto, 2 se for a segunda cena a reusar o MESMO fundo, etc. Copie esse número EXATAMENTE pro campo "sceneOccurrence" de todo "when" com escopo de cena (scene_missing, character_missing, character_no_script, character_missing_block_type, default_character_present) - mesmo quando for 1. Isso é o que permite duas dicas sobre o mesmo fundo (a cena aparecendo de novo mais adiante na história) serem tratadas como passos DIFERENTES e não uma só.
 
+REGRA DE PERSONAGEM REPETIDO NA CENA: quando a MESMA cena tem mais de uma cópia do mesmo personagem (mesmo characterMd5), cada cópia vem com um número de cópia entre colchetes, tipo \`[characterMd5: HY-Ruby.svg] [characterOccurrence: 2]\` - copie esse número EXATAMENTE pro campo "characterOccurrence" do "when" de toda dica sobre aquela cópia (character_missing, character_no_script, character_missing_block_type). Quando a anotação não aparecer, NÃO inclua o campo.
+
 REGRA DE NOME REPETIDO: quando o MESMO nome de personagem aparece em mais de uma instância no projeto inteiro (ex.: a mesma "Casa" numa cena e de novo em outra), cada instância aparece na transcrição com um número junto do nome, tipo \`"Casa 2" [characterMd5: ...]\` - use o nome JUNTO com esse número no texto da dica (ver regra de tom acima). Um nome que aparece só uma vez no projeto NUNCA vem com número - não invente um.
 
 Exemplo de transcrição de entrada e a saída correta correspondente:
@@ -260,11 +275,14 @@ Gere uma dica por passo de construção realmente relevante da transcrição INT
  * a usar esse número junto do nome no texto da dica, pra diferenciar essa
  * instância de outras com o mesmo nome no projeto (ver docblock do topo).
  */
-function characterDescriptor(character, number) {
+function characterDescriptor(character, number, occurrence) {
     const namePart = character.characterName
         ? `"${character.characterName}${number ? ' ' + number : ''}" `
         : '';
-    return `${namePart}[characterMd5: ${character.characterMd5}]`;
+    // occurrence só vem quando a cena tem cópias repetidas desse md5 (ver
+    // buildTranscript e REGRA DE PERSONAGEM REPETIDO NA CENA no prompt).
+    const occurrencePart = occurrence ? ` [characterOccurrence: ${occurrence}]` : '';
+    return `${namePart}[characterMd5: ${character.characterMd5}]${occurrencePart}`;
 }
 
 /**
@@ -391,9 +409,16 @@ function buildTranscript(manifest) {
         const occurrence = scene.sceneOccurrence || 1;
         lines.push(`PASSO ${stepNumber} - Cena ${sceneNumber} (fundo: ${scene.sceneMd5}${nameFragment}) [sceneOccurrence: ${occurrence}]:`);
 
+        // Cópias do mesmo md5 nesta cena (falha F9): só elas ganham a
+        // anotação [characterOccurrence: N] - um personagem único na cena
+        // nunca a recebe (a LLM só deve emitir o campo quando ele aparece).
+        const copiesByMd5 = new Map();
+        for (const c of describableCharacters) copiesByMd5.set(c.characterMd5, (copiesByMd5.get(c.characterMd5) || 0) + 1);
+
         for (const character of describableCharacters) {
             stepNumber += 1;
-            const descriptor = characterDescriptor(character, numberFor(character));
+            const occurrence = copiesByMd5.get(character.characterMd5) > 1 ? character.characterOccurrence : null;
+            const descriptor = characterDescriptor(character, numberFor(character), occurrence);
             if (!character.hasScript) {
                 lines.push(`  PASSO ${stepNumber} - ${descriptor}: sem script ainda`);
                 continue;
@@ -451,8 +476,14 @@ function sceneKey(sceneMd5, occurrence) {
 function buildValidationIndex(manifest) {
     const sceneKeySet = new Set();
     const charactersByScene = new Map(); // sceneKey(sceneMd5,occurrence) -> Set<characterMd5>
-    const blockTypesByCharacter = new Map(); // sceneKey::characterMd5 -> Set<blockType>
-    const blockArgsByCharacter = new Map(); // sceneKey::characterMd5 -> Map<blockType, Set<number>>
+    const blockTypesByCharacter = new Map(); // sceneKey::characterMd5 -> Set<blockType> (união das cópias)
+    const blockArgsByCharacter = new Map(); // sceneKey::characterMd5 -> Map<blockType, Set<number>> (união das cópias)
+    // Falha F9 - o mesmo, por CÓPIA (characterKey com a ocorrência): uma
+    // dica com when.characterOccurrence é validada/preenchida contra a cópia
+    // dela, não contra a união de todas.
+    const copiesByCharacter = new Map(); // sceneKey::characterMd5 -> quantas cópias na cena
+    const blockTypesByCopy = new Map(); // characterKey(...) -> Set<blockType>
+    const blockArgsByCopy = new Map(); // characterKey(...) -> Map<blockType, Set<number>>
     const allMessagesSent = new Set();
 
     for (const scene of manifest.scenes) {
@@ -470,19 +501,43 @@ function buildValidationIndex(manifest) {
                 blockTypesByCharacter.set(blockTypeKey, blockTypeSet);
 
                 const argsByType = blockArgsByCharacter.get(blockTypeKey) || new Map();
+                const copyArgs = new Map();
                 for (const [blockType, values] of Object.entries(character.blockArgs || {})) {
                     const valueSet = argsByType.get(blockType) || new Set();
                     for (const v of values) valueSet.add(v);
                     argsByType.set(blockType, valueSet);
+                    copyArgs.set(blockType, new Set(values));
                 }
                 blockArgsByCharacter.set(blockTypeKey, argsByType);
+
+                const copy = (copiesByCharacter.get(blockTypeKey) || 0) + 1;
+                copiesByCharacter.set(blockTypeKey, copy);
+                const copyKey = characterKey(scene.sceneMd5, scene.sceneOccurrence, character.characterMd5, copy);
+                blockTypesByCopy.set(copyKey, new Set(character.blockTypes || []));
+                blockArgsByCopy.set(copyKey, copyArgs);
             }
             for (const name of character.messagesSent) allMessagesSent.add(name);
         }
         charactersByScene.set(key, charSet);
     }
 
-    return { sceneKeySet, charactersByScene, blockTypesByCharacter, blockArgsByCharacter, allMessagesSent };
+    return {
+        sceneKeySet, charactersByScene, blockTypesByCharacter, blockArgsByCharacter, allMessagesSent,
+        copiesByCharacter, blockTypesByCopy, blockArgsByCopy,
+    };
+}
+
+/**
+ * Chave de UMA cópia de personagem (falha F9): cena+ocorrência+md5+cópia.
+ * copy ausente = 1 (personagem sem cópias / dica sem characterOccurrence).
+ */
+function characterKey(sceneMd5, sceneOccurrence, characterMd5, copy) {
+    return `${sceneKey(sceneMd5, sceneOccurrence)}::${characterMd5}#${copy || 1}`;
+}
+
+/** characterOccurrence válido (inteiro 1..copies) ou null. */
+function validOccurrence(value, copies) {
+    return Number.isInteger(value) && value >= 1 && value <= copies ? value : null;
 }
 
 /**
@@ -534,6 +589,8 @@ function isHintValid(hint, index) {
             // nunca teria como "completar o conjunto").
             const blockTypeKey = `${key}::${when.characterMd5}`;
             const realBlockTypes = index.blockTypesByCharacter.get(blockTypeKey);
+            if (!realBlockTypes) return false;
+            if (!when.blockTypes.every((t) => typeof t === 'string' && t.length > 0)) return false;
             // when.blockArgs (o valor exato de cada bloco numérico) NÃO é
             // validado aqui de propósito - é derivado por código logo depois
             // via fillBlockArgs(), que sobrescreve qualquer coisa que a LLM
@@ -541,8 +598,19 @@ function isHintValid(hint, index) {
             // docblock de fillBlockArgs pra entender por quê). Confiar na
             // LLM pra copiar o número certo seria só mais uma chance de
             // alucinação sobre algo que o código já sabe com certeza.
-            return !!realBlockTypes &&
-                when.blockTypes.every((t) => typeof t === 'string' && t.length > 0 && realBlockTypes.has(t));
+            //
+            // Falha F9 - com cópias, todos os tipos precisam estar numa MESMA
+            // cópia (o cliente exige todos numa só - ver
+            // HintEngine.js#candidatesFor). Qual cópia é decidido depois, por
+            // código (fillCharacterOccurrence corrige um characterOccurrence
+            // errado da LLM), então aqui basta existir UMA cópia com todos.
+            // Sem cópias = a checagem de sempre (o único personagem tem todos).
+            const copies = index.copiesByCharacter.get(blockTypeKey) || 1;
+            for (let copy = 1; copy <= copies; copy += 1) {
+                const types = index.blockTypesByCopy.get(characterKey(when.sceneMd5, when.sceneOccurrence, when.characterMd5, copy));
+                if (types && when.blockTypes.every((t) => types.has(t))) return true;
+            }
+            return false;
         }
         case 'message_not_received':
             return typeof when.messageName === 'string' && index.allMessagesSent.has(when.messageName);
@@ -596,7 +664,11 @@ function fillBlockArgs(hints, manifest) {
     for (const hint of hints) {
         if (!hint.when || hint.when.type !== 'character_missing_block_type') continue;
         const blockTypeKey = `${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}`;
-        const argsByType = index.blockArgsByCharacter.get(blockTypeKey);
+        // Com characterOccurrence (falha F9), os valores DAQUELA cópia - a
+        // outra cópia pode usar o mesmo bloco com outro valor.
+        const argsByType = hint.when.characterOccurrence
+            ? index.blockArgsByCopy.get(characterKey(hint.when.sceneMd5, hint.when.sceneOccurrence, hint.when.characterMd5, hint.when.characterOccurrence))
+            : index.blockArgsByCharacter.get(blockTypeKey);
         if (!argsByType) continue;
 
         const blockArgs = {};
@@ -614,25 +686,39 @@ function fillBlockArgs(hints, manifest) {
 }
 
 /**
+ * Identidade do gatilho de um script do manifesto pra contagem: (gatilho,
+ * mensagem). Falha F8 - "quando receber azul" e "quando receber verde" são
+ * gatilhos DIFERENTES; contá-los juntos fazia minCounts somar blocos dos
+ * dois e a dica pedir, sob UMA mensagem, mais blocos do que o professor
+ * pôs ali (dica impossível). triggerArg ausente (manifesto antigo / outro
+ * gatilho / onmessage sem mensagem) = null.
+ */
+function triggerKeyOf(script) {
+    return `${script.trigger}|${script.triggerArg == null ? '' : script.triggerArg}`;
+}
+
+/**
  * Acha, no personagem do professor, a k-ésima ocorrência (1-based, contando
  * em todos os scripts na ordem) do bloco `type`. Devolve o gatilho do script
- * onde ela está e quantas ocorrências desse tipo existem ATÉ ali só entre
- * os scripts do MESMO gatilho (triggerCount) - é esse número, e não k, que
- * o cliente compara, já que ele conta só dentro do gatilho da dica. null se
- * o personagem não tem k ocorrências (ex.: manifesto antigo, sem `scripts`).
+ * onde ela está (trigger + triggerArg) e quantas ocorrências desse tipo
+ * existem ATÉ ali só entre os scripts do MESMO gatilho - mesma mensagem, no
+ * caso do onmessage (triggerCount) - é esse número, e não k, que o cliente
+ * compara, já que ele conta só dentro do gatilho da dica. null se o
+ * personagem não tem k ocorrências (ex.: manifesto antigo, sem `scripts`).
  */
 function locateOccurrence(character, type, k) {
     if (!character || !Array.isArray(character.scripts)) return null;
     let globalCount = 0;
     const perTrigger = new Map();
     for (const script of character.scripts) {
+        const tKey = triggerKeyOf(script);
         for (const block of script.blocks || []) {
             if (block.type !== type) continue;
             globalCount++;
-            const soFar = (perTrigger.get(script.trigger) || 0) + 1;
-            perTrigger.set(script.trigger, soFar);
+            const soFar = (perTrigger.get(tKey) || 0) + 1;
+            perTrigger.set(tKey, soFar);
             if (globalCount === k) {
-                return { trigger: script.trigger, triggerCount: soFar };
+                return { trigger: script.trigger, triggerArg: script.triggerArg == null ? null : script.triggerArg, triggerKey: tKey, triggerCount: soFar };
             }
         }
     }
@@ -658,21 +744,35 @@ function locateOccurrence(character, type, k) {
  *    script) - senão fica de fora e o cliente aceita o bloco em qualquer
  *    script, como antes (achado em teste real: "quando clicar no Cofrinho,
  *    faça crescer" era dada por feita com o `grow` sob a bandeira verde).
+ *  - triggerArg (falha F8): com trigger 'onmessage', o NOME da mensagem do
+ *    script do professor. Contagem (triggerCount/minCounts) e
+ *    triggerExclusive passam a ser por (gatilho, mensagem) - ver
+ *    triggerKeyOf. "Mesmo gatilho" entre os blockTypes da dica também exige
+ *    a mesma mensagem. Um onmessage do professor SEM mensagem escolhida
+ *    (triggerArg null) não grava triggerArg: o cliente aceita qualquer
+ *    onmessage ali (comportamento antigo) e o minCounts, contado só entre
+ *    os onmessage sem mensagem, fica no máximo frouxo, nunca impossível.
+ * Personagem com cópias na cena (falha F9): olha a cópia de
+ * when.characterOccurrence (gravado antes por fillCharacterOccurrence) e
+ * numera minCounts por cópia; sem o campo, a 1ª/única cópia.
  * Dicas antigas sem esses campos continuam funcionando (cliente trata
  * ausente como "qualquer script, pelo menos 1").
  */
 function fillBlockContext(hints, manifest) {
     const charactersByKey = new Map();
     for (const scene of (manifest && manifest.scenes) || []) {
+        const copies = new Map();
         for (const character of scene.characters || []) {
-            charactersByKey.set(`${sceneKey(scene.sceneMd5, scene.sceneOccurrence)}::${character.characterMd5}`, character);
+            const copy = (copies.get(character.characterMd5) || 0) + 1;
+            copies.set(character.characterMd5, copy);
+            charactersByKey.set(characterKey(scene.sceneMd5, scene.sceneOccurrence, character.characterMd5, copy), character);
         }
     }
 
     const consumed = new Map(); // key::blockType -> quantas dicas anteriores já pediram esse tipo
     for (const hint of hints) {
         if (!hint.when || hint.when.type !== 'character_missing_block_type') continue;
-        const key = `${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}`;
+        const key = characterKey(hint.when.sceneMd5, hint.when.sceneOccurrence, hint.when.characterMd5, hint.when.characterOccurrence);
         const character = charactersByKey.get(key);
         const types = Array.isArray(hint.when.blockTypes) ? hint.when.blockTypes : [];
 
@@ -688,11 +788,15 @@ function fillBlockContext(hints, manifest) {
 
         delete hint.when.minCounts;
         delete hint.when.trigger;
+        delete hint.when.triggerArg;
         delete hint.when.triggerExclusive;
         const sameTrigger = locations.length > 0 &&
-            locations.every((loc) => loc && loc.trigger && loc.trigger === locations[0].trigger);
+            locations.every((loc) => loc && loc.trigger && loc.triggerKey === locations[0].triggerKey);
         if (sameTrigger) {
             hint.when.trigger = locations[0].trigger;
+            if (hint.when.trigger === 'onmessage' && locations[0].triggerArg !== null) {
+                hint.when.triggerArg = locations[0].triggerArg;
+            }
             // triggerExclusive: o professor só usa esses tipos sob ESTE
             // gatilho. Só então o cliente pode afirmar "está no lugar errado"
             // ao achar o bloco sob outro gatilho - se o mesmo tipo também
@@ -700,7 +804,7 @@ function fillBlockContext(hints, manifest) {
             // na bandeira E no clique), um `say` fora do gatilho pode ser o
             // de outra dica, não um erro.
             const exclusive = types.every((type) => character.scripts.every((script) =>
-                script.trigger === hint.when.trigger || !script.blocks.some((b) => b.type === type)));
+                triggerKeyOf(script) === locations[0].triggerKey || !script.blocks.some((b) => b.type === type)));
             if (exclusive) hint.when.triggerExclusive = true;
         }
 
@@ -792,10 +896,80 @@ function fillMissingDefaultCharacterHints(hints, manifest) {
  * dica), inserido logo ANTES da primeira dica de comportamento daquele
  * personagem - mesma posição que a LLM é instruída a usar.
  */
-function findCharacterInManifest(manifest, sceneMd5, sceneOccurrence, characterMd5) {
+function findCharacterInManifest(manifest, sceneMd5, sceneOccurrence, characterMd5, characterOccurrence) {
     const scene = manifest.scenes.find((s) => s.sceneMd5 === sceneMd5 && (s.sceneOccurrence || 1) === (sceneOccurrence || 1));
     if (!scene) return null;
-    return scene.characters.find((c) => c.characterMd5 === characterMd5) || null;
+    return scene.characters.filter((c) => c.characterMd5 === characterMd5)[(characterOccurrence || 1) - 1] || null;
+}
+
+/**
+ * Falha F9 - grava/normaliza `when.characterOccurrence` (1-based) nas dicas
+ * com escopo de personagem (character_missing, character_no_script,
+ * character_missing_block_type), SÓ quando a cena do professor tem cópias
+ * repetidas daquele personagem (mesmo md5). Sem cópias o campo é apagado
+ * (mesmo que a LLM tenha mandado) - o cliente então usa a regra legada
+ * "qualquer cópia" (HintEngine.js#candidatesFor), que pra um personagem
+ * único dá no mesmo.
+ *
+ * Com cópias: mantém o valor da LLM (copiado da anotação
+ * [characterOccurrence: N] do transcript) se for válido E coerente; senão
+ * escolhe por código:
+ *  - character_missing_block_type: a 1ª cópia que tem TODOS os blockTypes
+ *    (isHintValid já garantiu que existe uma);
+ *  - character_no_script: a 1ª cópia sem script (ou a pedida/1ª, se todas
+ *    têm script);
+ *  - character_missing: a k-ésima dica character_missing desse personagem
+ *    nessa cena vira a cópia k (limitado ao nº de cópias) - "coloque a
+ *    Ruby" duas vezes = a 1ª e a 2ª cópia.
+ * Roda ANTES de fillBlockArgs/fillBlockContext (que leem o campo).
+ */
+function fillCharacterOccurrence(hints, manifest) {
+    const SCOPED_TYPES = new Set(['character_missing', 'character_no_script', 'character_missing_block_type']);
+    const copiesOf = (when) => {
+        const scene = manifest.scenes.find((s) => s.sceneMd5 === when.sceneMd5 && (s.sceneOccurrence || 1) === (when.sceneOccurrence || 1));
+        return scene ? scene.characters.filter((c) => c.characterMd5 === when.characterMd5) : [];
+    };
+    const missingSeen = new Map(); // sceneKey::md5 -> quantas character_missing já vistas
+
+    for (const hint of hints) {
+        const when = hint.when;
+        if (!when || typeof when !== 'object') continue;
+        if (!SCOPED_TYPES.has(when.type)) {
+            delete when.characterOccurrence;
+            continue;
+        }
+        const copies = copiesOf(when);
+        if (copies.length <= 1) {
+            delete when.characterOccurrence;
+            continue;
+        }
+        const asked = validOccurrence(when.characterOccurrence, copies.length);
+        let chosen = null;
+        if (when.type === 'character_missing_block_type') {
+            const types = Array.isArray(when.blockTypes) ? when.blockTypes : [];
+            const hasAll = (c) => types.every((t) => (c.blockTypes || []).includes(t));
+            if (asked && hasAll(copies[asked - 1])) {
+                chosen = asked;
+            } else {
+                const idx = copies.findIndex(hasAll);
+                chosen = idx >= 0 ? idx + 1 : (asked || 1);
+            }
+        } else if (when.type === 'character_no_script') {
+            if (asked && !copies[asked - 1].hasScript) {
+                chosen = asked;
+            } else {
+                const idx = copies.findIndex((c) => !c.hasScript);
+                chosen = idx >= 0 ? idx + 1 : (asked || 1);
+            }
+        } else {
+            const k = `${sceneKey(when.sceneMd5, when.sceneOccurrence)}::${when.characterMd5}`;
+            const nth = (missingSeen.get(k) || 0) + 1;
+            missingSeen.set(k, nth);
+            chosen = asked || Math.min(nth, copies.length);
+        }
+        when.characterOccurrence = chosen;
+    }
+    return hints;
 }
 
 function fillMissingCharacterAddedHints(hints, manifest) {
@@ -804,7 +978,7 @@ function fillMissingCharacterAddedHints(hints, manifest) {
 
     for (const hint of hints) {
         if (hint.when && hint.when.type === 'character_missing') {
-            characterAddedCovered.add(`${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}`);
+            characterAddedCovered.add(`${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}#${hint.when.characterOccurrence || 0}`);
         }
     }
 
@@ -819,7 +993,8 @@ function fillMissingCharacterAddedHints(hints, manifest) {
         // um passo real, então esta rede de segurança não se aplica a ela.
         if (hint.when.characterMd5 === DEFAULT_CHARACTER_MD5) continue;
 
-        const scopeKey = `${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}`;
+        // Cópia (falha F9) faz parte do escopo: colocar a 1ª Ruby não cobre a 2ª.
+        const scopeKey = `${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}#${hint.when.characterOccurrence || 0}`;
         if (characterAddedCovered.has(scopeKey) || seenBehaviorFor.has(scopeKey)) continue;
         seenBehaviorFor.add(scopeKey);
 
@@ -827,7 +1002,7 @@ function fillMissingCharacterAddedHints(hints, manifest) {
         // Ruby aqui" soa um pouco menos natural que "coloque a Ruby", mas
         // evita chutar o gênero errado; melhor que o genérico "esse
         // personagem" quando o nome está disponível.
-        const character = findCharacterInManifest(manifest, hint.when.sceneMd5, hint.when.sceneOccurrence, hint.when.characterMd5);
+        const character = findCharacterInManifest(manifest, hint.when.sceneMd5, hint.when.sceneOccurrence, hint.when.characterMd5, hint.when.characterOccurrence);
         const text = character && character.characterName
             ? `Antes disso, coloque ${character.characterName} aqui.`
             : 'Antes disso, coloque esse personagem na cena.';
@@ -841,6 +1016,7 @@ function fillMissingCharacterAddedHints(hints, manifest) {
                 characterMd5: hint.when.characterMd5,
             },
         };
+        if (hint.when.characterOccurrence) fallback.when.characterOccurrence = hint.when.characterOccurrence;
         const insertAt = result.indexOf(hint); // reencontra - índices já podem ter mudado por inserções anteriores neste loop
         result.splice(insertAt, 0, fallback);
     }
@@ -980,7 +1156,8 @@ async function generateHintsCore(projectJson, hintContext, projectName, provider
         }
     }
 
-    const withBlockArgs = fillBlockContext(fillBlockArgs(validHints, manifest), manifest);
+    const withOccurrence = fillCharacterOccurrence(validHints, manifest);
+    const withBlockArgs = fillBlockContext(fillBlockArgs(withOccurrence, manifest), manifest);
     const withCharacterAddedHints = fillMissingCharacterAddedHints(withBlockArgs, manifest);
     const withDefaultCharacterHints = fillMissingDefaultCharacterHints(withCharacterAddedHints, manifest);
     const withIntro = [buildIntroHint(hintContext, projectName, parsed && parsed.intro), ...withDefaultCharacterHints];
@@ -1019,4 +1196,4 @@ function generateHintsWithProvider(projectJson, hintContext, projectName, provid
     return generateHintsCore(projectJson, hintContext, projectName, provider, model);
 }
 
-module.exports = { generateHints, generateHintsWithProvider, stripDashes, fillBlockContext };
+module.exports = { generateHints, generateHintsWithProvider, stripDashes, fillBlockContext, fillCharacterOccurrence };

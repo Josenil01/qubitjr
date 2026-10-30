@@ -24,14 +24,19 @@ describe('projectFixtures', () => {
         expect(project([{md5: 'Woods.svg', sprites: []}])).toEqual(project([{md5: 'Woods.svg', sprites: []}]));
     });
 
-    it('computeDetailedManifest lê cenas, gatilhos, repeat aninhado, pendente e solto', () => {
+    it('computeDetailedManifest lê cenas, gatilhos, repeat aninhado, pendente e ignora o solto', () => {
         const d = computeDetailedManifest(p);
         expect(d.scenes.map((s) => s.sceneOccurrence)).toEqual([1, 2]);
         const ana = d.scenes[0].characters[0];
         expect(ana.characterName).toBe('Ana');
-        expect(ana.scripts.map((s) => s.trigger)).toEqual(['onflag', 'onmessage', null]);
+        // Fase 2 (falha F10, decisão D1): o script solto [hop 1] nunca
+        // executa, então some de TODOS os agregados - nem script com
+        // trigger null, nem hop em blockArgs/blockTypes.
+        expect(ana.scripts.map((s) => s.trigger)).toEqual(['onflag', 'onmessage']);
+        expect(ana.scripts.map((s) => s.triggerArg)).toEqual([null, 'go']);
         expect(ana.scripts[0].blocks.map((x) => x.type)).toEqual(['forward', 'repeat', 'wait', 'say']);
-        expect(ana.blockArgs).toEqual({forward: [3], repeat: [4], wait: [10], hop: [1]});
+        expect(ana.blockArgs).toEqual({forward: [3], repeat: [4], wait: [10]});
+        expect(ana.blockTypes).not.toContain('hop');
         expect(ana.messagesReceived).toEqual(['go']);
         expect(ana.scripts[1].blocks[0]).toMatchObject({type: 'grow', num: null, pending: 2});
         expect(d.scenes[0].characters[1].hasScript).toBe(false);
