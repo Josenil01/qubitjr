@@ -680,8 +680,10 @@ export default class AssignmentBadge {
 
     /**
      * Avalia assignment.hints (nesta ordem - ver docblock do topo do
-     * arquivo) e acha a primeira ainda não dispensada cujo `when` está
-     * batendo agora no projeto do aluno. Duas coisas acontecem com esse
+     * arquivo) e acha a dica proativa pronta (HintEngine.js#
+     * nextProactiveHint: a primeira pendente, se não dispensada - intro/
+     * manual já dispensadas são puladas, ver o porquê lá: sem isso, fechar
+     * a intro calava todas as dicas proativas da missão). Duas coisas acontecem com esse
      * resultado, independentemente uma da outra:
      *  1. O ponto/indicador do botão flutuante é atualizado (ver
      *     _updateHintButton) - reflete "há dica pronta" mesmo que ela não

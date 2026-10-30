@@ -406,6 +406,11 @@ export const IDLE_BEFORE_HINT_MS = 3000;
 // FILL_IDLE_MS) sobrepõe este valor.
 export const ALERT_IDLE_MS = 1000;
 
+// Tipos cuja condição é SEMPRE verdadeira (hintConditionHolds devolve true
+// sem olhar o projeto) - só "resolvem" quando o aluno fecha. Ver
+// nextProactiveHint.
+const ALWAYS_PENDING_WHEN_TYPES = ['mission_intro', MANUAL_WHEN_TYPE];
+
 /**
  * Dica PROATIVA (a que aparece sozinha depois da ociosidade) pronta agora,
  * ou null. `dismissed` é o Set de ids já mostrados+fechados nesta sessão de
@@ -420,11 +425,25 @@ export const ALERT_IDLE_MS = 1000;
  * aluno nunca ter cumprido a primeira. Agora, se a primeira pendente já foi
  * dispensada, nenhuma dica aparece sozinha até ela ser resolvida de verdade
  * (o botão flutuante de dica continua dando acesso a todas via
- * _openHintsPanel, que ignora esta trava de propósito).
+ * _openHintsPanel, que ignora esta trava de propósito). Essa regra vale só
+ * pras dicas de TAREFA e é deliberada - não "conserte" pulando a tarefa
+ * dispensada.
+ *
+ * Exceção (Fase 1, falha P1): dicas SEMPRE-VERDADEIRAS (when.type
+ * 'mission_intro' e 'manual' - ver hintConditionHolds) nunca deixam de
+ * "estar pendentes", porque não há nada no projeto que as resolva. Então,
+ * uma vez dispensadas, a trava acima as tratava como "primeira pendente
+ * dispensada" PRA SEMPRE - e como a intro é sempre hints[0], nenhuma dica
+ * proativa aparecia mais depois de fechar a intro. Telemetria de produção:
+ * de 93 pares aluno/missão, 88 fecharam a intro e só 2 receberam qualquer
+ * dica proativa depois. Agora intro/manual JÁ DISPENSADAS são puladas (pra
+ * elas, "dispensada" é o único jeito de ficarem resolvidas); NÃO
+ * dispensadas continuam aparecendo normalmente na sua vez.
  */
 export function nextProactiveHint (hints, detailed, dismissed) {
     const firstPending = (hints || []).find(function (hint) {
-        return hint && hintConditionHolds(hint, detailed);
+        return hint && hintConditionHolds(hint, detailed) &&
+            !(ALWAYS_PENDING_WHEN_TYPES.includes(hint.when.type) && dismissed.has(hint.id));
     });
     return (firstPending && !dismissed.has(firstPending.id)) ? firstPending : null;
 }

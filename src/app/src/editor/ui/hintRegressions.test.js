@@ -43,16 +43,17 @@ const manual = (id) => ({id: id, when: {type: 'manual'}});
 // _evaluateHints agora mora em HintEngine.nextProactiveHint (Fase 1, R4).
 // mission_intro/manual SEMPRE seguram a condição (true), então depois de
 // dispensadas continuavam sendo a "primeira pendente" e travavam as outras.
+// Corrigido na Fase 1 (R4 b): intro/manual dispensadas são puladas.
 describe('P1: dica proativa travada por intro/manual dispensada', () => {
     const detailed = detailedFor([[onflag()]]); // tarefa (forward) ainda não feita
 
-    it.fails('com a intro dispensada e uma tarefa pendente, a proativa é a tarefa', () => {
+    it('com a intro dispensada e uma tarefa pendente, a proativa é a tarefa', () => {
         const task = blockHint('h2');
         const next = nextProactiveHint([intro, task], detailed, new Set(['h1']));
         expect(next && next.id).toBe('h2');
     });
 
-    it.fails('com uma dica manual dispensada no meio, a proativa é a tarefa seguinte', () => {
+    it('com uma dica manual dispensada no meio, a proativa é a tarefa seguinte', () => {
         const task = blockHint('h3');
         const next = nextProactiveHint([manual('h1'), manual('h2'), task], detailed, new Set(['h1', 'h2']));
         expect(next && next.id).toBe('h3');

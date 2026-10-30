@@ -166,12 +166,126 @@ describe('decideHintAction - caracterização do _evaluateHints antigo', () => {
         expect([...alerted]).toEqual(['y']);
     });
 
-    // Bug P1 (telemetria: 88 de 93 pares fecharam a intro, só 2 receberam
-    // qualquer dica proativa depois). muda no commit 2.
-    it('CARACTERIZA O BUG P1: intro dispensada + tarefa pendente => nenhuma proativa', () => {
-        const hints = [intro, blockHint('h2')];
+    // Era a caracterização do bug P1 (intro dispensada => null; telemetria:
+    // 88 de 93 pares fecharam a intro, só 2 receberam qualquer dica
+    // proativa depois). Mudou de propósito na Fase 1 (R4 b).
+    it('P1 corrigido: intro dispensada + tarefa pendente => a tarefa é a proativa', () => {
+        const task = blockHint('h2');
+        const hints = [intro, task];
         const dismissed = new Set(['h1']);
-        expect(nextProactiveHint(hints, detailedFor([[onflag()]]), dismissed)).toBe(null);
-        expect(decide({hints, dismissed})).toEqual({buttonDot: false, action: null});
+        expect(nextProactiveHint(hints, detailedFor([[onflag()]]), dismissed)).toBe(task);
+        expect(decide({hints, dismissed})).toEqual({buttonDot: true, action: {kind: 'hint', hint: task}});
+    });
+});
+
+describe('nextProactiveHint - regra da Fase 1', () => {
+    const pendingDetailed = detailedFor([[onflag()]]);
+    const manual = (id) => ({id: id, text: 'manual ' + id, when: {type: 'manual'}});
+
+    it('tarefa dispensada continua travando (decisão deliberada, não muda)', () => {
+        const hints = [intro, blockHint('h2'), blockHint('h3', {blockTypes: ['up']})];
+        expect(nextProactiveHint(hints, pendingDetailed, new Set(['h1', 'h2']))).toBe(null);
+    });
+
+    it('intro/manual NÃO dispensadas aparecem normalmente na sua vez', () => {
+        const m = manual('h3');
+        const hints = [intro, blockHint('h2', {blockTypes: ['up']}), m, blockHint('h4')];
+        // h2 cumprida (up existe), intro dispensada: a manual h3 é a vez dela.
+        const detailed = detailedFor([[onflag(), b('up', 2)]]);
+        expect(nextProactiveHint(hints, detailed, new Set(['h1']))).toBe(m);
+        // Antes de dispensar a intro, ela continua sendo a primeira.
+        expect(nextProactiveHint(hints, detailed, new Set())).toBe(intro);
+        // Manual dispensada: segue pra tarefa h4.
+        expect(nextProactiveHint(hints, detailed, new Set(['h1', 'h3'])).id).toBe('h4');
+    });
+
+    it('tudo resolvido (só intro/manuais dispensadas sobrando): null', () => {
+        const hints = [intro, manual('h2'), blockHint('h3')];
+        const done = detailedFor([[onflag(), b('forward', 3)]]);
+        expect(nextProactiveHint(hints, done, new Set(['h1', 'h2']))).toBe(null);
+    });
+
+    /**
+     * Invariante I2 (R7): com SÓ intro/manuais dispensadas (nenhuma tarefa
+     * dispensada), a proativa nunca é null enquanto houver tarefa pendente -
+     * e, sem modal/painel/alerta e com ociosidade de sobra, decideHintAction
+     * devolve action kind 'hint'. Enumera todas as sequências de até 5 dicas
+     * (intro opcional no índice 0, manuais e tarefas em qualquer ordem), todo
+     * subconjunto de intro/manuais dispensadas e todo subconjunto de tarefas
+     * já cumpridas.
+     */
+    it('I2: só intro/manuais dispensadas + tarefa pendente => proativa não-null e action hint', () => {
+        // Tarefas distintas: cada uma pede um tipo de bloco próprio, sem
+        // blockArgs (alerta de valor impossível) e sem gatilho (wrongTrigger
+        // impossível). O único alerta possível é o de ORDEM (tarefa posterior
+        // cumprida antes de uma anterior do mesmo personagem) - ele tem
+        // prioridade legítima sobre a proativa, então nesse caso só se
+        // confere que é mesmo 'order'.
+        const TASK_TYPES = ['forward', 'up', 'down', 'right', 'left'];
+        let checked = 0;
+        const shapes = [];
+        const build = function (prefix, len) {
+            if (prefix.length === len) {
+                shapes.push(prefix);
+                return;
+            }
+            ['manual', 'task'].forEach(function (k) {
+                build(prefix.concat([k]), len);
+            });
+        };
+        for (let len = 1; len <= 4; len++) {
+            build([], len);
+        }
+        shapes.forEach(function (shape) {
+            [false, true].forEach(function (withIntro) {
+                const kinds = (withIntro ? ['intro'] : []).concat(shape);
+                let taskIdx = 0;
+                const hints = kinds.map(function (k, i) {
+                    const id = 'h' + (i + 1);
+                    if (k === 'intro') return {id, text: 'intro', when: {type: 'mission_intro'}};
+                    if (k === 'manual') return manual(id);
+                    return blockHint(id, {blockTypes: [TASK_TYPES[taskIdx++]]});
+                });
+                const alwaysIds = hints.filter((h) => h.when.type !== 'character_missing_block_type').map((h) => h.id);
+                const tasks = hints.filter((h) => h.when.type === 'character_missing_block_type');
+                // Todo subconjunto de tarefas cumpridas x todo subconjunto de intro/manuais dispensadas.
+                for (let doneMask = 0; doneMask < (1 << tasks.length); doneMask++) {
+                    const doneTypes = tasks.filter((t, i) => doneMask & (1 << i)).map((t) => t.when.blockTypes[0]);
+                    const detailed = detailedFor([[onflag()].concat(doneTypes.map((t) => b(t, 1)))]);
+                    const anyTaskPending = tasks.length > 0 && doneTypes.length < tasks.length;
+                    for (let disMask = 0; disMask < (1 << alwaysIds.length); disMask++) {
+                        const dismissed = new Set(alwaysIds.filter((id, i) => disMask & (1 << i)));
+                        const next = nextProactiveHint(hints, detailed, dismissed);
+                        if (anyTaskPending) {
+                            expect(next).not.toBe(null);
+                            const d = decide({hints, detailed, dismissed});
+                            if (d.action && d.action.kind === 'alert') {
+                                // Só ordem pode alertar aqui (cumpriu uma posterior
+                                // antes de uma anterior do mesmo personagem).
+                                expect(d.action.info.kind).toBe('order');
+                            } else {
+                                expect(d.action).toEqual({kind: 'hint', hint: next});
+                            }
+                        }
+                        checked++;
+                    }
+                }
+            });
+        });
+        expect(checked).toBeGreaterThan(100);
+    });
+
+    it('I2 sem alertas possíveis (tarefas cumpridas só em ordem): action é sempre hint', () => {
+        // Prefixo cumprido: nenhuma posterior feita antes de anterior => sem
+        // alerta de ordem; a proativa tem que sair como 'hint'.
+        const hints = [intro, manual('h2'), blockHint('h3'), manual('h4'), blockHint('h5', {blockTypes: ['up']})];
+        [[], ['forward']].forEach(function (doneTypes) {
+            const detailed = detailedFor([[onflag()].concat(doneTypes.map((t) => b(t, 1)))]);
+            [[], ['h1'], ['h2'], ['h1', 'h2'], ['h1', 'h2', 'h4'], ['h4']].forEach(function (ids) {
+                const d = decide({hints, detailed, dismissed: new Set(ids)});
+                expect(d.action && d.action.kind).toBe('hint');
+                expect(d.buttonDot).toBe(true);
+            });
+        });
     });
 });
