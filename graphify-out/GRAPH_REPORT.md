@@ -1,4 +1,4 @@
-# Graph Report - src\app\src  (2026-10-30)
+# Graph Report - .  (2026-10-30)
 
 ## Corpus Check
 - 91 files · ~141,535 words
@@ -9,79 +9,74 @@
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 26 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
-## Graph Freshness
-- Built from commit: `c0b1a9a6`
-- Run `git rev-parse HEAD` and compare to check if the graph is stale.
-- Run `graphify update .` after code changes (no API cost).
-
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Community 0|Community 0]]
-- [[_COMMUNITY_Community 1|Community 1]]
-- [[_COMMUNITY_Community 2|Community 2]]
-- [[_COMMUNITY_Community 3|Community 3]]
-- [[_COMMUNITY_Community 4|Community 4]]
-- [[_COMMUNITY_Community 5|Community 5]]
-- [[_COMMUNITY_Community 6|Community 6]]
-- [[_COMMUNITY_Community 7|Community 7]]
-- [[_COMMUNITY_Community 8|Community 8]]
-- [[_COMMUNITY_Community 9|Community 9]]
-- [[_COMMUNITY_Community 10|Community 10]]
-- [[_COMMUNITY_Community 11|Community 11]]
-- [[_COMMUNITY_Community 12|Community 12]]
-- [[_COMMUNITY_Community 13|Community 13]]
-- [[_COMMUNITY_Community 14|Community 14]]
-- [[_COMMUNITY_Community 15|Community 15]]
-- [[_COMMUNITY_Community 16|Community 16]]
-- [[_COMMUNITY_Community 17|Community 17]]
-- [[_COMMUNITY_Community 18|Community 18]]
-- [[_COMMUNITY_Community 19|Community 19]]
-- [[_COMMUNITY_Community 20|Community 20]]
-- [[_COMMUNITY_Community 21|Community 21]]
-- [[_COMMUNITY_Community 22|Community 22]]
-- [[_COMMUNITY_Community 23|Community 23]]
-- [[_COMMUNITY_Community 24|Community 24]]
-- [[_COMMUNITY_Community 25|Community 25]]
-- [[_COMMUNITY_Community 26|Community 26]]
-- [[_COMMUNITY_Community 27|Community 27]]
-- [[_COMMUNITY_Community 28|Community 28]]
-- [[_COMMUNITY_Community 29|Community 29]]
-- [[_COMMUNITY_Community 30|Community 30]]
-- [[_COMMUNITY_Community 31|Community 31]]
-- [[_COMMUNITY_Community 32|Community 32]]
-- [[_COMMUNITY_Community 33|Community 33]]
-- [[_COMMUNITY_Community 34|Community 34]]
-- [[_COMMUNITY_Community 35|Community 35]]
-- [[_COMMUNITY_Community 36|Community 36]]
-- [[_COMMUNITY_Community 37|Community 37]]
-- [[_COMMUNITY_Community 38|Community 38]]
-- [[_COMMUNITY_Community 40|Community 40]]
-- [[_COMMUNITY_Community 41|Community 41]]
-- [[_COMMUNITY_Community 42|Community 42]]
-- [[_COMMUNITY_Community 43|Community 43]]
-- [[_COMMUNITY_Community 44|Community 44]]
-- [[_COMMUNITY_Community 45|Community 45]]
-- [[_COMMUNITY_Community 47|Community 47]]
-- [[_COMMUNITY_Community 48|Community 48]]
-- [[_COMMUNITY_Community 49|Community 49]]
-- [[_COMMUNITY_Community 52|Community 52]]
-- [[_COMMUNITY_Community 54|Community 54]]
-- [[_COMMUNITY_Community 55|Community 55]]
-- [[_COMMUNITY_Community 56|Community 56]]
-- [[_COMMUNITY_Community 63|Community 63]]
-- [[_COMMUNITY_Community 65|Community 65]]
-- [[_COMMUNITY_Community 66|Community 66]]
-- [[_COMMUNITY_Community 67|Community 67]]
-- [[_COMMUNITY_Community 69|Community 69]]
-- [[_COMMUNITY_Community 70|Community 70]]
-- [[_COMMUNITY_Community 71|Community 71]]
-- [[_COMMUNITY_Community 73|Community 73]]
-- [[_COMMUNITY_Community 74|Community 74]]
-- [[_COMMUNITY_Community 77|Community 77]]
-- [[_COMMUNITY_Community 78|Community 78]]
-- [[_COMMUNITY_Community 79|Community 79]]
-- [[_COMMUNITY_Community 80|Community 80]]
-- [[_COMMUNITY_Community 83|Community 83]]
-- [[_COMMUNITY_Community 86|Community 86]]
+- [[_COMMUNITY_Teacher Live Monitoring|Teacher Live Monitoring]]
+- [[_COMMUNITY_Paint Editor Actions|Paint Editor Actions]]
+- [[_COMMUNITY_Block Primitives Engine|Block Primitives Engine]]
+- [[_COMMUNITY_Sprite Behavior|Sprite Behavior]]
+- [[_COMMUNITY_Editor UI Shell|Editor UI Shell]]
+- [[_COMMUNITY_Backend API Client|Backend API Client]]
+- [[_COMMUNITY_Project Model & Hint Alignment|Project Model & Hint Alignment]]
+- [[_COMMUNITY_Audio & Localization|Audio & Localization]]
+- [[_COMMUNITY_SVG Drawing Tools|SVG Drawing Tools]]
+- [[_COMMUNITY_Native Platform Bridge|Native Platform Bridge]]
+- [[_COMMUNITY_ScratchJr App Core|ScratchJr App Core]]
+- [[_COMMUNITY_Sprite Thumbnails|Sprite Thumbnails]]
+- [[_COMMUNITY_SVG to Canvas Rendering|SVG to Canvas Rendering]]
+- [[_COMMUNITY_Shared Player Patches|Shared Player Patches]]
+- [[_COMMUNITY_Stage Rendering|Stage Rendering]]
+- [[_COMMUNITY_Project Lobby|Project Lobby]]
+- [[_COMMUNITY_Block Scripts Model|Block Scripts Model]]
+- [[_COMMUNITY_Media Library Browser|Media Library Browser]]
+- [[_COMMUNITY_Block Palette|Block Palette]]
+- [[_COMMUNITY_Menus & Alerts|Menus & Alerts]]
+- [[_COMMUNITY_Paint Vector Ops|Paint Vector Ops]]
+- [[_COMMUNITY_Teacher Assignment Authoring|Teacher Assignment Authoring]]
+- [[_COMMUNITY_Paint Ghost Preview|Paint Ghost Preview]]
+- [[_COMMUNITY_Block Model|Block Model]]
+- [[_COMMUNITY_Block Specs Lookup|Block Specs Lookup]]
+- [[_COMMUNITY_Home Screen|Home Screen]]
+- [[_COMMUNITY_Paint Editor Core|Paint Editor Core]]
+- [[_COMMUNITY_Vector Path Model|Vector Path Model]]
+- [[_COMMUNITY_Student Hint Badge UI|Student Hint Badge UI]]
+- [[_COMMUNITY_Page Model|Page Model]]
+- [[_COMMUNITY_Hint Engine Core|Hint Engine Core]]
+- [[_COMMUNITY_DOM Helper Utilities|DOM Helper Utilities]]
+- [[_COMMUNITY_Paint Transform Math|Paint Transform Math]]
+- [[_COMMUNITY_Snap.svg Vendor Lib|Snap.svg Vendor Lib]]
+- [[_COMMUNITY_Sound Recording|Sound Recording]]
+- [[_COMMUNITY_PointerTouch Events|Pointer/Touch Events]]
+- [[_COMMUNITY_Paint Layers|Paint Layers]]
+- [[_COMMUNITY_Undo Stack|Undo Stack]]
+- [[_COMMUNITY_Snap.svg Shim|Snap.svg Shim]]
+- [[_COMMUNITY_Block Argument Model|Block Argument Model]]
+- [[_COMMUNITY_Hint Engine Regression Tests|Hint Engine Regression Tests]]
+- [[_COMMUNITY_Hint Poll Scheduling|Hint Poll Scheduling]]
+- [[_COMMUNITY_Editor UI Helpers|Editor UI Helpers]]
+- [[_COMMUNITY_Stage Grid Overlay|Stage Grid Overlay]]
+- [[_COMMUNITY_Scripts Pane|Scripts Pane]]
+- [[_COMMUNITY_Hint Expected-Sequence Tests|Hint Expected-Sequence Tests]]
+- [[_COMMUNITY_Palette Scrolling|Palette Scrolling]]
+- [[_COMMUNITY_Rectangle Geometry|Rectangle Geometry]]
+- [[_COMMUNITY_Block Specs Data|Block Specs Data]]
+- [[_COMMUNITY_SVG Image Loading|SVG Image Loading]]
+- [[_COMMUNITY_Vector Math|Vector Math]]
+- [[_COMMUNITY_Paint Undo History|Paint Undo History]]
+- [[_COMMUNITY_Matrix Geometry|Matrix Geometry]]
+- [[_COMMUNITY_Native Media Library Bridge|Native Media Library Bridge]]
+- [[_COMMUNITY_Paint CameraZoom|Paint Camera/Zoom]]
+- [[_COMMUNITY_Gallery Restriction|Gallery Restriction]]
+- [[_COMMUNITY_Sample Projects|Sample Projects]]
+- [[_COMMUNITY_Hint Badge (misc)|Hint Badge (misc)]]
+- [[_COMMUNITY_Usage Time Tracking|Usage Time Tracking]]
+- [[_COMMUNITY_JSZip Vendor Shim|JSZip Vendor Shim]]
+- [[_COMMUNITY_Assignment Notices|Assignment Notices]]
+- [[_COMMUNITY_PNG Cache|PNG Cache]]
+- [[_COMMUNITY_Node Stream Shim|Node Stream Shim]]
+- [[_COMMUNITY_Entry Scripts (misc)|Entry Scripts (misc)]]
+- [[_COMMUNITY_Sound Playback|Sound Playback]]
+- [[_COMMUNITY_Freehand Draw Path|Freehand Draw Path]]
+- [[_COMMUNITY_SVG to Canvas (4)|SVG to Canvas (4)]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `gn()` - 338 edges
@@ -96,142 +91,142 @@
 10. `Sprite` - 63 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `teacherProject()` --calls--> `b()`  [INFERRED]
-  editor/ui/hintAlignment.test.js → snap/snap.svg-min.js
-- `_warnStudentCameOnline()` --calls--> `newHTML()`  [EXTRACTED]
-  entry/teacher.js → utils/lib.js
-- `applyStageState()` --calls--> `gn()`  [EXTRACTED]
-  editor/LiveMirror.js → utils/lib.js
-- `applyUiState()` --calls--> `gn()`  [EXTRACTED]
-  editor/LiveMirror.js → utils/lib.js
-- `_findHoverElement()` --calls--> `gn()`  [EXTRACTED]
-  editor/LiveMirror.js → utils/lib.js
+- `blockMatch()` --calls--> `evaluate()`  [INFERRED]
+  src/app/src/editor/ui/HintEngine.js → src/app/src/editor/ui/hintAlignment.test.js
+- `detailedFor()` --calls--> `Project`  [INFERRED]
+  src/app/src/editor/ui/hintRegressions.test.js → src/app/src/editor/ui/Project.js
+- `teacherProject()` --calls--> `script()`  [INFERRED]
+  src/app/src/editor/ui/hintAlignment.test.js → src/app/src/editor/ui/HintEngine.test.js
+- `detailedFor()` --calls--> `Project`  [INFERRED]
+  src/app/src/editor/ui/decideHintAction.test.js → src/app/src/editor/ui/Project.js
+- `proj()` --calls--> `Project`  [INFERRED]
+  src/app/src/editor/ui/hintAlignment.test.js → src/app/src/editor/ui/Project.js
 
 ## Import Cycles
-- 3-file cycle: `painteditor/Layer.js -> painteditor/Paint.js -> painteditor/PaintAction.js -> painteditor/Layer.js`
-- 3-file cycle: `painteditor/Ghost.js -> painteditor/Layer.js -> painteditor/Path.js -> painteditor/Ghost.js`
-- 3-file cycle: `editor/ScratchJr.js -> editor/ui/ScriptsPane.js -> editor/ui/Thumbs.js -> editor/ScratchJr.js`
-- 3-file cycle: `editor/ui/Palette.js -> editor/ui/ScriptsPane.js -> editor/ui/Thumbs.js -> editor/ui/Palette.js`
-- 3-file cycle: `editor/ui/ScriptsPane.js -> editor/ui/Thumbs.js -> editor/ui/UI.js -> editor/ui/ScriptsPane.js`
-- 3-file cycle: `painteditor/Paint.js -> painteditor/PaintAction.js -> painteditor/SVGImage.js -> painteditor/Paint.js`
-- 3-file cycle: `painteditor/Paint.js -> painteditor/Path.js -> painteditor/SVGImage.js -> painteditor/Paint.js`
-- 3-file cycle: `editor/ScratchJr.js -> editor/ui/Palette.js -> editor/blocks/Block.js -> editor/ScratchJr.js`
-- 3-file cycle: `editor/ui/Palette.js -> editor/ui/Undo.js -> editor/ui/Project.js -> editor/ui/Palette.js`
-- 3-file cycle: `editor/ui/Project.js -> editor/ui/UI.js -> editor/ui/Undo.js -> editor/ui/Project.js`
-- 3-file cycle: `editor/ui/Palette.js -> editor/ui/ScriptsPane.js -> editor/ui/Project.js -> editor/ui/Palette.js`
-- 3-file cycle: `editor/ui/Project.js -> editor/ui/UI.js -> editor/ui/ScriptsPane.js -> editor/ui/Project.js`
-- 3-file cycle: `editor/ScratchJr.js -> painteditor/Paint.js -> painteditor/PaintAction.js -> editor/ScratchJr.js`
-- 3-file cycle: `painteditor/Camera.js -> painteditor/Paint.js -> painteditor/PaintAction.js -> painteditor/Camera.js`
-- 3-file cycle: `editor/ScratchJr.js -> painteditor/Paint.js -> painteditor/PaintUndo.js -> editor/ScratchJr.js`
-- 3-file cycle: `editor/ScratchJr.js -> painteditor/Paint.js -> painteditor/Path.js -> editor/ScratchJr.js`
-- 3-file cycle: `painteditor/Ghost.js -> painteditor/Paint.js -> painteditor/Path.js -> painteditor/Ghost.js`
-- 3-file cycle: `painteditor/Camera.js -> painteditor/Ghost.js -> painteditor/PaintAction.js -> painteditor/Camera.js`
-- 3-file cycle: `painteditor/Ghost.js -> painteditor/PaintAction.js -> painteditor/Path.js -> painteditor/Ghost.js`
-- 3-file cycle: `iPad/IO.js -> iPad/MediaLib.js -> utils/Localization.js -> iPad/IO.js`
+- 3-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/Layer.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
+- 3-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
+- 3-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
+- 3-file cycle: `src/app/src/painteditor/Ghost.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/Ghost.js`
+- 3-file cycle: `src/app/src/editor/ScratchJr.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/Path.js -> src/app/src/editor/ScratchJr.js`
+- 3-file cycle: `src/app/src/painteditor/Paint.js -> src/app/src/painteditor/Path.js -> src/app/src/painteditor/SVGImage.js -> src/app/src/painteditor/Paint.js`
+- 3-file cycle: `src/app/src/painteditor/Layer.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Layer.js`
+- 3-file cycle: `src/app/src/editor/ScratchJr.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/editor/ScratchJr.js`
+- 3-file cycle: `src/app/src/editor/ScratchJr.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/PaintUndo.js -> src/app/src/editor/ScratchJr.js`
+- 3-file cycle: `src/app/src/editor/ScratchJr.js -> src/app/src/editor/ui/Palette.js -> src/app/src/editor/blocks/Block.js -> src/app/src/editor/ScratchJr.js`
+- 3-file cycle: `src/app/src/editor/ScratchJr.js -> src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Thumbs.js -> src/app/src/editor/ScratchJr.js`
+- 3-file cycle: `src/app/src/editor/ui/Palette.js -> src/app/src/editor/ui/Undo.js -> src/app/src/editor/ui/Project.js -> src/app/src/editor/ui/Palette.js`
+- 3-file cycle: `src/app/src/editor/ui/Project.js -> src/app/src/editor/ui/UI.js -> src/app/src/editor/ui/Undo.js -> src/app/src/editor/ui/Project.js`
+- 3-file cycle: `src/app/src/editor/ui/Palette.js -> src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Project.js -> src/app/src/editor/ui/Palette.js`
+- 3-file cycle: `src/app/src/editor/ui/Project.js -> src/app/src/editor/ui/UI.js -> src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Project.js`
+- 3-file cycle: `src/app/src/editor/ui/Palette.js -> src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Thumbs.js -> src/app/src/editor/ui/Palette.js`
+- 3-file cycle: `src/app/src/editor/ui/ScriptsPane.js -> src/app/src/editor/ui/Thumbs.js -> src/app/src/editor/ui/UI.js -> src/app/src/editor/ui/ScriptsPane.js`
+- 3-file cycle: `src/app/src/painteditor/Paint.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/SVGImage.js -> src/app/src/painteditor/Paint.js`
+- 3-file cycle: `src/app/src/painteditor/Camera.js -> src/app/src/painteditor/Paint.js -> src/app/src/painteditor/PaintAction.js -> src/app/src/painteditor/Camera.js`
+- 3-file cycle: `src/app/src/iPad/IO.js -> src/app/src/iPad/MediaLib.js -> src/app/src/utils/Localization.js -> src/app/src/iPad/IO.js`
 
 ## Communities (93 total, 41 thin omitted)
 
-### Community 0 - "Community 0"
+### Community 0 - "Teacher Live Monitoring"
 Cohesion: 0.06
 Nodes (69): applyHoverTarget(), applyPageList(), applyStageState(), applyUiState(), buildMirrorPayload(), fakeTouchEvent(), _findHoverElement(), hideLockOverlay() (+61 more)
 
-### Community 2 - "Community 2"
+### Community 2 - "Block Primitives Engine"
 Cohesion: 0.06
 Nodes (4): hopList, Prims, Runtime, Thread
 
-### Community 4 - "Community 4"
+### Community 4 - "Editor UI Shell"
 Cohesion: 0.06
 Nodes (3): UI, css_vh(), getViewportHeight()
 
-### Community 6 - "Community 6"
+### Community 6 - "Project Model & Hint Alignment"
 Cohesion: 0.07
 Nodes (5): evaluate(), proj(), teacherProject(), script(), Project
 
-### Community 7 - "Community 7"
+### Community 7 - "Audio & Localization"
 Cohesion: 0.08
 Nodes (9): keys, AppUsage, Cookie, Localization, localizationMessages, defaultSounds, projectSounds, ScratchAudio (+1 more)
 
-### Community 13 - "Community 13"
+### Community 13 - "Shared Player Patches"
 Cohesion: 0.09
 Nodes (11): applyScratchJrPlayerPatches(), applyPagePlayerPatches(), applySpritePlayerPatches(), applyStagePlayerPatches(), EMOJIS, LABELS, playerMain(), _prefetchMedia() (+3 more)
 
-### Community 15 - "Community 15"
+### Community 15 - "Project Lobby"
 Cohesion: 0.10
 Nodes (10): gettingStartedMain(), homeMain(), homeStrings(), inappAbout(), inappBlocksGuide(), inappInterfaceGuide(), inappPaintEditorGuide(), setClassOfElementById() (+2 more)
 
-### Community 18 - "Community 18"
+### Community 18 - "Block Palette"
 Cohesion: 0.09
 Nodes (3): Palette, drawScaled(), hitRect()
 
-### Community 19 - "Community 19"
+### Community 19 - "Menus & Alerts"
 Cohesion: 0.16
 Nodes (9): Menu, Alert, getStringSize(), globalx(), globaly(), newCanvas(), setCanvasSize(), setProps() (+1 more)
 
-### Community 20 - "Community 20"
+### Community 20 - "Paint Vector Ops"
 Cohesion: 0.14
 Nodes (21): maskCanvas, maskData, offscreen, targetOffscreen, deltaPoint, initialPoint, pensizes, cmdForClick (+13 more)
 
-### Community 21 - "Community 21"
+### Community 21 - "Teacher Assignment Authoring"
 Cohesion: 0.11
 Nodes (13): apiFetch(), authHeader(), closeOverlay(), GenerateActivityModal, gotoEditor(), guessDefaultLevel(), apiFetch(), AssignmentAuthorBar (+5 more)
 
-### Community 24 - "Community 24"
+### Community 24 - "Block Specs Lookup"
 Cohesion: 0.16
 Nodes (15): fontcolors, fontsizes, getshapes, loadassets, sendshapes, speeds, onBackButtonCallback, workingCanvas (+7 more)
 
-### Community 30 - "Community 30"
+### Community 30 - "Hint Engine Core"
 Cohesion: 0.13
 Nodes (20): actorLabelFor(), ALWAYS_PENDING_WHEN_TYPES, BLOCK_LABELS, blockMatch(), candidatesFor(), ENCODE_SKIPPED_TYPES, expectedCache, findSceneAndCharacter() (+12 more)
 
-### Community 31 - "Community 31"
+### Community 31 - "DOM Helper Utilities"
 Cohesion: 0.11
 Nodes (19): cachedHints, HINT_WHEN_LABELS, css_vw(), CSSTransition(), drawThumbnail(), ensureEditorFrames(), fitInRect(), getFit() (+11 more)
 
-### Community 33 - "Community 33"
+### Community 33 - "Snap.svg Vendor Lib"
 Cohesion: 0.32
 Nodes (26): a(), b(), c(), d(), e(), f(), g(), h() (+18 more)
 
-### Community 38 - "Community 38"
+### Community 38 - "Snap.svg Shim"
 Cohesion: 0.09
 Nodes (3): SnapElement, SnapPaper, SnapShim
 
-### Community 41 - "Community 41"
+### Community 41 - "Hint Engine Regression Tests"
 Cohesion: 0.16
 Nodes (15): decide(), detailedFor(), intro, alignmentInfo(), decideHintAction(), expectedResultOf(), expectedResultsFor(), nextProactiveHint() (+7 more)
 
-### Community 42 - "Community 42"
+### Community 42 - "Hint Poll Scheduling"
 Cohesion: 0.14
 Nodes (11): apiFetch(), authHeader(), blockBlinkEls, dismissedHintIds, recordHintEvent(), wrongValueAlerted, registerGalleryRestrictionProvider(), registerZeroBlockDefaultsProvider() (+3 more)
 
-### Community 43 - "Community 43"
+### Community 43 - "Editor UI Helpers"
 Cohesion: 0.16
 Nodes (4): getDocumentHeight(), getDocumentWidth(), newHTML(), newTextInput()
 
-### Community 44 - "Community 44"
+### Community 44 - "Stage Grid Overlay"
 Cohesion: 0.24
 Nodes (3): Grid, newDiv(), newP()
 
-### Community 47 - "Community 47"
+### Community 47 - "Hint Expected-Sequence Tests"
 Cohesion: 0.13
 Nodes (9): alertText(), blockLabel(), spokenValue(), ALL_PROJECTS, CARETS, FIXTURE_DIR, fixtures, SYNTHETIC (+1 more)
 
-### Community 67 - "Community 67"
+### Community 67 - "Gallery Restriction"
 Cohesion: 0.29
 Nodes (6): allCharactersAtLimit(), getGalleryRestriction(), isCharacterAtLimit(), showAssignmentToast(), useZeroBlockDefaults(), newImage()
 
-### Community 70 - "Community 70"
+### Community 70 - "Hint Badge (misc)"
 Cohesion: 0.25
 Nodes (3): freshAlignmentTarget(), nthEncodedBlock(), resolveLiveBlock()
 
-### Community 74 - "Community 74"
+### Community 74 - "Assignment Notices"
 Cohesion: 0.52
 Nodes (3): apiFetch(), AssignmentNotice, authHeader()
 
-### Community 78 - "Community 78"
+### Community 78 - "Node Stream Shim"
 Cohesion: 0.29
 Nodes (3): Readable, Transform, Writable
 
-### Community 79 - "Community 79"
+### Community 79 - "Entry Scripts (misc)"
 Cohesion: 0.40
 Nodes (6): indexFirstTime(), indexLoadOptions(), indexLoadStart(), indexLoadUsage(), indexMain(), indexSetUsage()
 
@@ -243,17 +238,17 @@ Nodes (6): indexFirstTime(), indexLoadOptions(), indexLoadStart(), indexLoadUsag
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `gn()` connect `Community 15` to `Community 0`, `Community 1`, `Community 2`, `Community 3`, `Community 4`, `Community 6`, `Community 7`, `Community 8`, `Community 9`, `Community 10`, `Community 11`, `Community 14`, `Community 17`, `Community 18`, `Community 19`, `Community 20`, `Community 22`, `Community 24`, `Community 25`, `Community 26`, `Community 27`, `Community 29`, `Community 31`, `Community 32`, `Community 34`, `Community 35`, `Community 36`, `Community 37`, `Community 39`, `Community 42`, `Community 43`, `Community 44`, `Community 45`, `Community 46`, `Community 50`, `Community 51`, `Community 53`, `Community 54`, `Community 56`, `Community 58`, `Community 59`, `Community 60`, `Community 61`, `Community 66`, `Community 67`, `Community 69`, `Community 70`, `Community 72`, `Community 74`, `Community 75`, `Community 76`, `Community 79`, `Community 81`, `Community 84`, `Community 85`?**
+- **Why does `gn()` connect `Project Lobby` to `Teacher Live Monitoring`, `Paint Editor Actions`, `Block Primitives Engine`, `Sprite Behavior`, `Editor UI Shell`, `Project Model & Hint Alignment`, `Audio & Localization`, `SVG Drawing Tools`, `Native Platform Bridge`, `ScratchJr App Core`, `Sprite Thumbnails`, `Stage Rendering`, `Media Library Browser`, `Block Palette`, `Menus & Alerts`, `Paint Vector Ops`, `Paint Ghost Preview`, `Block Specs Lookup`, `Home Screen`, `Paint Editor Core`, `Vector Path Model`, `Page Model`, `DOM Helper Utilities`, `Paint Transform Math`, `Sound Recording`, `Pointer/Touch Events`, `Paint Layers`, `Undo Stack`, `Vector Path Ops (2)`, `Hint Poll Scheduling`, `Editor UI Helpers`, `Stage Grid Overlay`, `Scripts Pane`, `ScratchJr Core (misc)`, `Vector Path Ops (3)`, `Vector Path Ops (4)`, `Paint Core (2)`, `SVG Image Loading`, `Paint Undo History`, `Paint Core (3)`, `Paint Core (4)`, `Paint Core (5)`, `Vector Path Ops (5)`, `Paint Camera/Zoom`, `Gallery Restriction`, `Sample Projects`, `Hint Badge (misc)`, `Paint Core (6)`, `Assignment Notices`, `Paint Core (7)`, `Vector Path Ops (6)`, `Entry Scripts (misc)`, `Paint Core (8)`, `ScratchJr Core (5)`, `ScratchJr Core (6)`?**
   _High betweenness centrality (0.300) - this node is a cross-community bridge._
-- **Why does `ScratchJr` connect `Community 10` to `Community 0`, `Community 2`, `Community 68`, `Community 7`, `Community 71`, `Community 42`, `Community 44`, `Community 13`, `Community 46`, `Community 19`, `Community 84`, `Community 85`, `Community 20`, `Community 24`, `Community 62`, `Community 31`?**
+- **Why does `ScratchJr` connect `ScratchJr App Core` to `Teacher Live Monitoring`, `Block Primitives Engine`, `ScratchJr Core (4)`, `Audio & Localization`, `Usage Time Tracking`, `Hint Poll Scheduling`, `Stage Grid Overlay`, `Shared Player Patches`, `ScratchJr Core (misc)`, `Menus & Alerts`, `ScratchJr Core (5)`, `ScratchJr Core (6)`, `Paint Vector Ops`, `Block Specs Lookup`, `ScratchJr Core (3)`, `DOM Helper Utilities`?**
   _High betweenness centrality (0.082) - this node is a cross-community bridge._
-- **Why does `Project` connect `Community 6` to `Community 0`, `Community 2`, `Community 7`, `Community 41`, `Community 42`, `Community 13`, `Community 24`, `Community 31`?**
+- **Why does `Project` connect `Project Model & Hint Alignment` to `Teacher Live Monitoring`, `Block Primitives Engine`, `Audio & Localization`, `Hint Engine Regression Tests`, `Hint Poll Scheduling`, `Shared Player Patches`, `Block Specs Lookup`, `DOM Helper Utilities`?**
   _High betweenness centrality (0.061) - this node is a cross-community bridge._
 - **What connects `_lastSpriteIds`, `workingCanvas`, `workingCanvas2` to the rest of the system?**
   _65 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Community 0` be split into smaller, more focused modules?**
+- **Should `Teacher Live Monitoring` be split into smaller, more focused modules?**
   _Cohesion score 0.06426906426906427 - nodes in this community are weakly interconnected._
-- **Should `Community 1` be split into smaller, more focused modules?**
+- **Should `Paint Editor Actions` be split into smaller, more focused modules?**
   _Cohesion score 0.058823529411764705 - nodes in this community are weakly interconnected._
-- **Should `Community 2` be split into smaller, more focused modules?**
+- **Should `Block Primitives Engine` be split into smaller, more focused modules?**
   _Cohesion score 0.05901639344262295 - nodes in this community are weakly interconnected._
