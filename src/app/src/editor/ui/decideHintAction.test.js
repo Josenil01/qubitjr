@@ -6,7 +6,7 @@ import {
     ALERT_IDLE_MS,
 } from './HintEngine.js';
 import {project, b, onflag, onclick} from '../../../../../shared/testing/projectFixtures.mjs';
-import {computeDetailedManifest} from '../../../../../shared/detailedManifest.mjs';
+import {computeDetailedManifest, scriptTokens} from '../../../../../shared/detailedManifest.mjs';
 
 /**
  * Testes de CARACTERIZAÇÃO de HintEngine.js#decideHintAction (Fase 1, R4):
@@ -175,6 +175,81 @@ describe('decideHintAction - caracterização do _evaluateHints antigo', () => {
         const dismissed = new Set(['h1']);
         expect(nextProactiveHint(hints, detailedFor([[onflag()]]), dismissed)).toBe(task);
         expect(decide({hints, dismissed})).toEqual({buttonDot: true, action: {kind: 'hint', hint: task}});
+    });
+});
+
+/**
+ * Fase 3 (E6c) - dicas com when.expected: alertas do alinhamento
+ * (info.source 'expected'). As caracterizações acima continuam sendo o
+ * caminho LEGADO (dicas sem expected) e não mudaram.
+ */
+describe('decideHintAction - alertas do alinhamento (when.expected)', () => {
+    const teacher = [onflag(), b('forward', 3), b('setspeed', 1), b('up', 2)];
+    const expectedHint = (id, covered) => blockHint(id, {
+        blockTypes: [], trigger: 'onflag',
+        expected: {trigger: 'onflag', triggerArg: null, script: scriptTokens(teacher), covered},
+    });
+    const hints = [intro, expectedHint('h2', [0]), expectedHint('h3', [1]), expectedHint('h4', [2])];
+    const dismissedIntro = new Set(['h1']);
+
+    it('kind value: info completo, spokenHint = a própria dica', () => {
+        const detailed = detailedFor([[onflag(), b('forward', 3), b('setspeed', 1), b('up', 5)]]);
+        const d = decide({hints, detailed, idleMs: ALERT_IDLE_MS});
+        expect(d.action.kind).toBe('alert');
+        expect(d.action.hint).toBe(hints[3]);
+        expect(d.action.spokenHint).toBe(hints[3]);
+        expect(d.action.info).toEqual({
+            source: 'expected', kind: 'value', sig: 'h4|align|value|0:3|up|5', state: 'wrong_value',
+            blockType: 'up', position: {scriptIndex: 0, path: [3]}, characterOccurrence: 1,
+            teacherIndex: 2, expected: 2, got: 5,
+        });
+        // Alerta antes da proativa (intro ainda pronta), mesma espera ALERT_IDLE_MS.
+        expect(decide({hints, detailed, idleMs: ALERT_IDLE_MS - 1})).toEqual({buttonDot: true, action: null});
+    });
+
+    it('kind order: a dica do bloco fora do lugar é a dita (não há "pendente pulada")', () => {
+        const detailed = detailedFor([[onflag(), b('setspeed', 1), b('forward', 3), b('up', 2)]]);
+        const d = decide({hints, detailed, dismissed: dismissedIntro});
+        expect(d.action.info.kind).toBe('order');
+        expect(d.action.spokenHint).toBe(d.action.hint);
+        expect(d.action.info.pendingHint).toBeUndefined();
+    });
+
+    it('kind extra: bloco a mais quando o resto está completo', () => {
+        const detailed = detailedFor([[onflag(), b('forward', 3), b('setspeed', 1), b('up', 2), b('up', 2)]]);
+        const d = decide({hints, detailed, dismissed: dismissedIntro});
+        expect(d.action.info).toMatchObject({kind: 'extra', blockType: 'up', extraCount: 1, position: {scriptIndex: 0, path: [4]}});
+        // Avisado: nada mais (todas as tarefas "pendentes" por causa da sobra, mas h4 não dispensada => proativa h4).
+        const after = decide({hints, detailed, dismissed: dismissedIntro, alerted: new Set([d.action.info.sig])});
+        expect(after.action).toEqual({kind: 'hint', hint: hints[3]});
+    });
+
+    it('kinds confirm/fill herdados do legado (unconfirmed / unset), nunca value', () => {
+        const confirm = decide({hints, dismissed: dismissedIntro, detailed: detailedFor([[onflag(), b('forward', 'unconfirmed:3')]])});
+        expect(confirm.action.info).toMatchObject({kind: 'confirm', reason: 'unconfirmed', got: 3});
+        const fill = decide({hints, dismissed: dismissedIntro, idleMs: 2000, detailed: detailedFor([[onflag(), b('forward', 'unconfirmed:1')]])});
+        expect(fill.action.info).toMatchObject({kind: 'fill', idleMs: 2000});
+        const speed = decide({hints, dismissed: dismissedIntro, idleMs: 2000, detailed: detailedFor([[onflag(), b('forward', 3), b('setspeed', 3)]])});
+        expect(speed.action.info).toMatchObject({kind: 'fill', blockType: 'setspeed', reason: 'unset'});
+    });
+
+    it('varredura na ordem das dicas: o 1º alerta não avisado vence', () => {
+        const detailed = detailedFor([[onflag(), b('forward', 4), b('setspeed', 1), b('up', 5)]]);
+        const first = decide({hints, detailed});
+        expect(first.action.hint.id).toBe('h2');
+        const second = decide({hints, detailed, alerted: new Set([first.action.info.sig])});
+        expect(second.action.hint.id).toBe('h4');
+    });
+
+    it('nada errado e tudo feito: sem alerta, pontinho apagado', () => {
+        const detailed = detailedFor([[onflag(), b('forward', 3), b('setspeed', 1), b('up', 2)]]);
+        expect(decide({hints, detailed, dismissed: dismissedIntro})).toEqual({buttonDot: false, action: null});
+    });
+
+    it('falta fazer (pending missing/no_script): sem alerta, só a proativa', () => {
+        expect(decide({hints, dismissed: dismissedIntro, detailed: detailedFor([])}).action).toEqual({kind: 'hint', hint: hints[1]});
+        expect(decide({hints, dismissed: dismissedIntro, detailed: detailedFor([[onflag(), b('forward', 3)]])}).action)
+            .toEqual({kind: 'hint', hint: hints[2]});
     });
 });
 

@@ -98,6 +98,10 @@ import {
     hintConditionHolds,
     decideHintAction,
     actorLabelFor,
+    alertText,
+    expectedResultsFor,
+    freshAlignmentTarget,
+    resolveLiveBlock,
 } from './HintEngine.js';
 import PollScheduler from './PollScheduler.js';
 
@@ -743,18 +747,15 @@ export default class AssignmentBadge {
             // Em "fora de ordem" o texto dito (e o evento gravado) é o da dica
             // PENDENTE que o aluno pulou, não o da que ele já montou.
             const spokenHint = action.spokenHint;
-            const kindText = {
-                trigger: 'Quase! O bloco está no lugar errado - confira qual bloco de início vem antes dele. ',
-                order: 'Opa, esse bloco vem depois! Primeiro faça: ',
-                confirm: 'Quase! Toque no número do bloco para confirmar o valor. ',
-                fill: 'Falta escolher o valor do bloco - toque nele para definir. ',
-                value: 'Quase! O valor do bloco ainda não está certo. ',
-            };
             recordHintEvent(spokenHint.id, 'shown');
+            // Evento = 'wrong_' + kind: value/order/confirm/fill (legado e
+            // alinhamento), trigger (só legado) e extra (só alinhamento -
+            // 'wrong_extra', novo na Fase 3).
             recordHintEvent(spokenHint.id, 'wrong_' + alertInfo.kind);
             AssignmentBadge._showCoachModal({
                 icon: '🤔',
-                text: (kindText[alertInfo.kind] || kindText.value) + spokenHint.text,
+                // Textos (legado e alinhamento) moram em HintEngine.js#alertText.
+                text: alertText(alertInfo, spokenHint),
                 extraClass: 'assignmentCoachCard',
                 onClose: function () {
                     wrongValueAlerted.add(alertInfo.sig);
@@ -893,6 +894,10 @@ export default class AssignmentBadge {
      */
     static _highlightMistake (hint, info) {
         AssignmentBadge._clearMistakeBlink();
+        if (info && info.source === 'expected') {
+            AssignmentBadge._highlightAligned(hint, info);
+            return;
+        }
         try {
             const when = hint.when;
             const scriptsEl = ScratchJr.getActiveScript();
@@ -936,6 +941,46 @@ export default class AssignmentBadge {
             }
         } catch (err) {
             console.warn('[AssignmentBadge] _highlightMistake falhou (não-fatal):', err && err.message);
+        }
+    }
+
+    /**
+     * _highlightMistake de um alerta do ALINHAMENTO (info.source 'expected',
+     * Fase 3): pisca exatamente UM bloco - o da posição que o alinhamento
+     * aponta. R8: nada do momento da decisão é reaproveitado além do kind -
+     * o projeto é relido AGORA (_readProjectJson, com a máscara de não
+     * confirmados, igual ao poll), o alinhamento é refeito
+     * (HintEngine.js#freshAlignmentTarget) e, se a mesma dica ainda está no
+     * mesmo kind de alerta, a posição FRESCA ({scriptIndex, path}) é mapeada
+     * pro Block vivo por HintEngine.js#resolveLiveBlock sobre
+     * getEncodableBlocks() da área de scripts do sprite selecionado - a mesma
+     * lista que Sprite.js#getData acabou de serializar (ver o docblock de
+     * resolveLiveBlock pra correspondência índice a índice). Estado
+     * mudou/sumiu, ou o sprite selecionado não é a cópia avaliada (cena/
+     * personagem/ocorrência, _isSelectedTarget): não pisca nada.
+     */
+    static _highlightAligned (hint, info) {
+        try {
+            const projectJson = AssignmentBadge._readProjectJson();
+            if (!projectJson) {
+                return;
+            }
+            const hints = (assignment && Array.isArray(assignment.hints)) ? assignment.hints : [hint];
+            const target = freshAlignmentTarget(hints, hint, info, computeDetailedManifest(projectJson));
+            const scriptsEl = ScratchJr.getActiveScript();
+            if (!target || !scriptsEl || !scriptsEl.owner ||
+                !AssignmentBadge._isSelectedTarget(hint.when, {characterOccurrence: target.characterOccurrence})) {
+                return;
+            }
+            const block = resolveLiveBlock(scriptsEl.owner.getEncodableBlocks(), target.position);
+            if (!block || !block.div) {
+                return;
+            }
+            blockBlinkEls = [block.div];
+            block.div.classList.add('assignmentBlockBlink');
+            blockBlinkTimer = window.setTimeout(AssignmentBadge._clearMistakeBlink, MISTAKE_BLINK_MS);
+        } catch (err) {
+            console.warn('[AssignmentBadge] _highlightAligned falhou (não-fatal):', err && err.message);
         }
     }
 
@@ -1015,6 +1060,9 @@ export default class AssignmentBadge {
         AssignmentBadge._recomputeLocal(); // status de cada dica no painel reflete o projeto agora
         const projectJson = AssignmentBadge._readProjectJson();
         const detailed = projectJson ? computeDetailedManifest(projectJson) : {scenes: []};
+        // Alinhamento (dicas com when.expected) calculado UMA vez pro painel
+        // inteiro - reaproveitado no status de cada dica a cada Anterior/Próxima.
+        const expectedResults = expectedResultsFor(hints, detailed);
 
         // Sempre começa na primeira dica, em ordem, cuja condição ainda
         // esteja batendo no projeto do aluno agora (primeira tarefa ainda
@@ -1033,13 +1081,13 @@ export default class AssignmentBadge {
         // normalmente pro modal automático (_evaluateHints) e pro botão
         // Anterior/Próxima dentro do painel já aberto.
         let startIndex = hints.findIndex(function (h) {
-            return h && h.when && h.when.type !== 'mission_intro' && hintConditionHolds(h, detailed);
+            return h && h.when && h.when.type !== 'mission_intro' && hintConditionHolds(h, detailed, expectedResults);
         });
         if (startIndex < 0) {
             startIndex = 0;
         }
 
-        AssignmentBadge._renderHintsPanel(hints, detailed, startIndex);
+        AssignmentBadge._renderHintsPanel(hints, detailed, startIndex, expectedResults);
     }
 
     /**
@@ -1049,7 +1097,7 @@ export default class AssignmentBadge {
      * clicando fora), e esse botão só funciona depois de CLOSE_DELAY_MS -
      * ver docblock daquela constante no topo do arquivo.
      */
-    static _renderHintsPanel (hints, detailed, startIndex) {
+    static _renderHintsPanel (hints, detailed, startIndex, expectedResults) {
         let index = startIndex;
 
         hintsPanelEl = newHTML('div', 'assignmentCompleteOverlay', document.body);
@@ -1082,7 +1130,7 @@ export default class AssignmentBadge {
             actorEl.textContent = actorLabel || '';
             actorEl.classList.toggle('hidden', !actorLabel);
             counter.textContent = (index + 1) + ' de ' + hints.length;
-            const stillNeeded = hint && hintConditionHolds(hint, detailed);
+            const stillNeeded = hint && hintConditionHolds(hint, detailed, expectedResults);
             status.textContent = stillNeeded ? '💡 ainda vale' : '✅ já resolvida';
             status.classList.toggle('done', !stillNeeded);
             prevBtn.disabled = index <= 0;

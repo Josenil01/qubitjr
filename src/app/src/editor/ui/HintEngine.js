@@ -26,6 +26,110 @@
  */
 
 import {ALL_WHEN_TYPES, MANUAL_WHEN_TYPE} from '../../../../../shared/hintSchema.mjs';
+import {hasExpected, evaluateExpectedHints} from '../../../../../shared/hintAlignment.mjs';
+
+// ---------------------------------------------------------------------------
+// Fase 3 (E6c) - dicas com when.expected usam SÓ o alinhamento
+// (shared/hintAlignment.mjs#evaluateExpectedHints). As funções legadas
+// (blockMatch/mistakeInfo/orderInfo) continuam valendo, intactas, para as
+// dicas SEM expected (salvas antes da Fase 3, ou que o gerador não conseguiu
+// mapear) - numa missão MISTA cada dica vai pelo seu caminho, e
+// legacyShadowedByExpected impede o mesmo bloco de alertar pelos dois.
+// ---------------------------------------------------------------------------
+
+/**
+ * Cache do alinhamento: detailed (objeto) -> Map(array de dicas -> resultados).
+ * evaluateExpectedHints precisa ver TODAS as dicas de uma vez (extra_block é
+ * uma visão cruzada do grupo), e um ciclo de decideHintAction/painel consulta
+ * o estado de várias dicas várias vezes (proativa, alertas, status) - sem o
+ * cache o alinhamento rodaria uma vez por consulta. WeakMap: o manifesto de um
+ * ciclo vira lixo junto com o cache dele (cada tick recalcula o detailed).
+ */
+const expectedCache = new WeakMap();
+
+/**
+ * Resultados do alinhamento (Map hint.id -> resultado, ver
+ * hintAlignment.mjs#evaluateExpectedHints) das dicas COM when.expected de
+ * `hints`, contra `detailed`. Calculado UMA vez por par (detailed, hints) -
+ * chamadas repetidas no mesmo ciclo devolvem o mesmo Map. Dicas sem expected
+ * não entram (caminho legado).
+ */
+export function expectedResultsFor (hints, detailed) {
+    const list = Array.isArray(hints) ? hints : [];
+    if (!detailed || typeof detailed !== 'object') {
+        return evaluateExpectedHints(list, detailed);
+    }
+    let byHints = expectedCache.get(detailed);
+    if (!byHints) {
+        byHints = new Map();
+        expectedCache.set(detailed, byHints);
+    }
+    if (!byHints.has(list)) {
+        byHints.set(list, evaluateExpectedHints(list, detailed));
+    }
+    return byHints.get(list);
+}
+
+/**
+ * Resultado do alinhamento de UMA dica com expected. Com `expectedResults`
+ * (o Map de expectedResultsFor do ciclo) usa o que já foi calculado; sem ele
+ * (chamador antigo de hintConditionHolds(hint, detailed)), avalia a dica
+ * sozinha - aproximação: sem as irmãs do mesmo script, a sobra (extra_block)
+ * é atribuída só a ela. Os chamadores do motor (decideHintAction, painel,
+ * simulador) sempre passam o Map.
+ */
+function expectedResultOf (hint, detailed, expectedResults) {
+    const cached = expectedResults && typeof expectedResults.get === 'function' ? expectedResults.get(hint.id) : null;
+    return cached || expectedResultsFor([hint], detailed).get(hint.id);
+}
+
+/**
+ * Rótulo PT-BR curto de cada tipo de bloco, como a criança o chama - usado
+ * nos textos dos alertas do alinhamento ("o número do bloco de andar pra
+ * frente era 3"). Não havia uma tabela dessas no projeto: localizations/pt.json
+ * é pt-PT e só tem DESCRIÇÕES longas ("Move o actor..."), e o gerador
+ * (backend/src/services/hintsGeneration.js, SYSTEM_PROMPT) só dá à LLM o jeito
+ * de mencionar cada bloco em prosa ("bloco de espere", "bloco de repita",
+ * "andar N passos pra frente") - os rótulos abaixo seguem essas mesmas
+ * palavras. Tipo fora da tabela cai no próprio nome do tipo.
+ */
+export const BLOCK_LABELS = Object.freeze({
+    forward: 'andar pra frente',
+    back: 'andar pra trás',
+    up: 'subir',
+    down: 'descer',
+    right: 'girar pra direita',
+    left: 'girar pra esquerda',
+    hop: 'pular',
+    home: 'voltar pro início',
+    wait: 'espere',
+    repeat: 'repita',
+    forever: 'repetir pra sempre',
+    setspeed: 'velocidade',
+    stopmine: 'parar',
+    grow: 'crescer',
+    shrink: 'encolher',
+    same: 'tamanho normal',
+    show: 'aparecer',
+    hide: 'sumir',
+    say: 'falar',
+    playsnd: 'som',
+    playusersnd: 'som gravado',
+    message: 'enviar mensagem',
+    gotopage: 'ir pra cena',
+    endstack: 'fim',
+});
+
+export function blockLabel (type) {
+    return BLOCK_LABELS[type] || String(type);
+}
+
+/**
+ * Mesmas palavras de shared/detailedManifest.mjs#SPEED_LABELS (não exportada
+ * lá) - o setspeed guarda 0/1/2, mas a criança vê os ícones lenta/normal/
+ * rápida, então o alerta fala a palavra, nunca o número.
+ */
+const SPEED_WORDS = ['lenta', 'normal', 'rápida'];
 
 /**
  * Encontra, dentro do detailedManifest, a cena com o sceneMd5 dado e
@@ -180,8 +284,16 @@ function isBlockHintDoneFor (character, when) {
  * (mesma nomenclatura/contrato que AssignmentAuthorBar.js usa pra
  * rotular as dicas na tela do professor). Nunca lança - when.type
  * desconhecido/malformado simplesmente não bate (retorna false).
+ *
+ * Fase 3: dica character_missing_block_type COM when.expected (hasExpected)
+ * vai SÓ pelo alinhamento - pendente = estado !== 'done' (pending, mas também
+ * wrong_value/wrong_order/extra_block: a tarefa não está cumprida enquanto o
+ * bloco estiver errado/fora do lugar/sobrando). Diferente do legado, o
+ * personagem inexistente conta como pendente (reason 'no_character'), não
+ * "resolvida". `expectedResults` (opcional) é o Map de expectedResultsFor do
+ * ciclo - ver expectedResultOf.
  */
-export function hintConditionHolds (hint, detailed) {
+export function hintConditionHolds (hint, detailed, expectedResults) {
     const when = hint && hint.when;
     // ALL_WHEN_TYPES (shared/hintSchema.mjs) é a fonte única - um when.type
     // que não está nela nunca bate, e o switch abaixo não precisa de um
@@ -243,6 +355,9 @@ export function hintConditionHolds (hint, detailed) {
         // nenhum script ainda é sempre [] (ver detailedManifest.js), então
         // já dá "ainda precisa" corretamente, sem precisar de um caso
         // especial.
+        if (hasExpected(hint)) {
+            return expectedResultOf(hint, detailed, expectedResults).state !== 'done';
+        }
         //
         // Achado em teste real (2) - `wanted.some(...)` (OU) considerava
         // a dica resolvida assim que QUALQUER UM dos blockTypes pedidos
@@ -343,10 +458,13 @@ const FILL_IDLE_MS = 2000;
  * que AssignmentBadge.js#_highlightMistake
  * usa pra piscar os blocos da cópia CERTA. A sig ganha '@N' só pra N > 1,
  * mantendo iguais as sigs de projetos sem cópias.
+ *
+ * Só CAMINHO LEGADO: dica com when.expected devolve null aqui - os erros dela
+ * vêm do alinhamento (alignmentInfo), nunca daqui.
  */
 export function mistakeInfo (hint, detailed) {
     const when = hint && hint.when;
-    if (!when || when.type !== 'character_missing_block_type') {
+    if (!when || when.type !== 'character_missing_block_type' || hasExpected(hint)) {
         return null;
     }
     const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
@@ -450,11 +568,18 @@ function mistakeInfoFor (hint, character) {
  * characterOccurrence no retorno é a cópia onde a dica posterior foi
  * montada - é ali que _highlightMistake pisca (mesma regra de mistakeInfo:
  * só presente com when.characterOccurrence ou 2+ cópias no aluno).
+ *
+ * Fase 3: só dicas LEGADAS (sem when.expected) entram - numa missão mista,
+ * uma dica com expected nem é a "posterior cumprida" nem a "anterior
+ * pendente" daqui (a ordem dela é conferida posição a posição pelo
+ * alinhamento, ver alignmentInfo kind 'order'). Sem isso, uma dica com
+ * expected ainda pendente seria acusada de "pulada" por uma legada cumprida -
+ * dois mecanismos falando da mesma ordem.
  */
 export function orderInfo (hints, detailed) {
     const scenes = (detailed && Array.isArray(detailed.scenes)) ? detailed.scenes : [];
     const blockHints = hints.filter(function (hint) {
-        return hint && hint.when && hint.when.type === 'character_missing_block_type';
+        return hint && hint.when && hint.when.type === 'character_missing_block_type' && !hasExpected(hint);
     });
     const sameActor = function (a, b) {
         return a.when.characterMd5 === b.when.characterMd5 && a.when.sceneMd5 === b.when.sceneMd5 &&
@@ -490,6 +615,254 @@ export function orderInfo (hints, detailed) {
         }
     }
     return null;
+}
+
+/**
+ * Alerta de UMA dica com when.expected, a partir do resultado do alinhamento
+ * dela (expectedResultsFor(...).get(hint.id)), ou null (nada a alertar: done,
+ * ou pendente "de verdade" - falta fazer, vale a dica proativa).
+ *
+ * Formato do info (source 'expected' distingue do caminho legado - mesmos
+ * nomes de kind onde o significado é o mesmo, pra telemetria 'wrong_' + kind
+ * continuar valendo):
+ *   {source: 'expected',
+ *    kind: 'value'   (wrong_value: bloco certo, número errado - evento wrong_value)
+ *        | 'order'   (wrong_order: bloco fora do lugar / dentro-fora do repeat - wrong_order)
+ *        | 'extra'   (extra_block: bloco a mais no script - evento NOVO wrong_extra)
+ *        | 'confirm' (pending 'unconfirmed' com o valor pedido - wrong_confirm)
+ *        | 'fill',   (pending 'unset', ou 'unconfirmed' com outro valor - wrong_fill)
+ *    sig, state, reason?, blockType, teacherIndex?,
+ *    position: {scriptIndex, path},   // bloco do ALUNO no momento da decisão
+ *    characterOccurrence,             // cópia do aluno avaliada (sempre presente)
+ *    expected?, got?, extraCount?, idleMs? (só 'fill')}
+ *
+ * Herança dos estados pendente/zerado do caminho legado (R3): 'unconfirmed'
+ * (bloco recém-arrastado, padrão não tocado) com got === expected ≈ antigo
+ * kind 'confirm' ("toque no número para confirmar"); com outro valor, ou
+ * 'unset' (numérico sem valor / velocidade "nenhuma"), ≈ antigo 'fill'
+ * (mesmo FILL_IDLE_MS). Professor sem valor exigido (expected null) +
+ * unconfirmed = 'confirm' (qualquer número serve, só falta tocar). say com
+ * texto padrão (unset) NÃO alerta - o legado também não (o say padrão nem
+ * entrava no manifesto): é "ainda não fez", vale a proativa. O alinhamento
+ * nunca transforma pending/unset em wrong_value, então bloco recém-arrastado
+ * nunca vira "valor errado".
+ *
+ * sig = id da dica + 'align' + kind + posição (scriptIndex:path) + tipo +
+ * valor do aluno (got; extraCount pra 'extra') + '@N' da cópia (N > 1).
+ * Estável: a mesma situação gera a mesma sig (não repete o alerta); trocar o
+ * valor errado por OUTRO valor errado, ou o bloco de lugar, gera sig nova.
+ */
+export function alignmentInfo (hint, result) {
+    if (!hint || !result || !result.position || !Array.isArray(result.position.path)) {
+        return null;
+    }
+    let kind = null;
+    if (result.state === 'wrong_value') {
+        kind = 'value';
+    } else if (result.state === 'wrong_order') {
+        kind = 'order';
+    } else if (result.state === 'extra_block') {
+        kind = 'extra';
+    } else if (result.state === 'pending' && result.reason === 'unconfirmed') {
+        kind = (result.expected === null || result.expected === undefined || result.got === result.expected) ? 'confirm' : 'fill';
+    } else if (result.state === 'pending' && result.reason === 'unset' && result.blockType !== 'say') {
+        kind = 'fill';
+    }
+    if (!kind) {
+        return null;
+    }
+    const occurrence = result.characterOccurrence;
+    const where = result.position.scriptIndex + ':' + result.position.path.join('.');
+    const detail = kind === 'extra' ? result.extraCount : result.got;
+    const info = {
+        source: 'expected',
+        kind: kind,
+        sig: [hint.id, 'align', kind, where, result.blockType, detail === undefined ? '' : detail].join('|') +
+            (occurrence > 1 ? '@' + occurrence : ''),
+        state: result.state,
+        blockType: result.blockType,
+        position: {scriptIndex: result.position.scriptIndex, path: result.position.path.slice()},
+        characterOccurrence: occurrence,
+    };
+    ['reason', 'teacherIndex', 'expected', 'got', 'extraCount'].forEach(function (key) {
+        if (result[key] !== undefined) {
+            info[key] = result[key];
+        }
+    });
+    if (kind === 'fill') {
+        info.idleMs = FILL_IDLE_MS;
+    }
+    return info;
+}
+
+/** Mesmo ator (cena+ocorrência, personagem, cópia) - cópia ausente casa com qualquer uma. */
+function sameActorLoose (a, b) {
+    return a.sceneMd5 === b.sceneMd5 && (a.sceneOccurrence || 1) === (b.sceneOccurrence || 1) &&
+        a.characterMd5 === b.characterMd5 &&
+        (!a.characterOccurrence || !b.characterOccurrence || a.characterOccurrence === b.characterOccurrence);
+}
+
+/**
+ * Missão MISTA (R3, "o mesmo bloco não gera alerta pelos dois caminhos"): a
+ * dica LEGADA `hint` está "à sombra" de uma dica com expected quando alguma
+ * dica com expected do MESMO personagem (cópia ausente em qualquer lado =
+ * mesma) ensina (covered) um bloco de um tipo de hint.when.blockTypes, no
+ * mesmo gatilho (se a legada tem when.trigger). Nesse caso os erros daquele
+ * bloco já são apontados, com posição exata, pelo alinhamento - mistakeInfo
+ * da legada (que só sabe "existe um bloco desse tipo com valor errado em
+ * algum lugar") é ignorado em decideHintAction, senão o aluno levaria dois
+ * alertas (sigs diferentes) pelo MESMO bloco. Conservador de propósito: na
+ * dúvida, cala o legado (o alinhamento é o mais preciso dos dois). A
+ * hintConditionHolds da legada NÃO muda (pendente/resolvida continua igual).
+ */
+export function legacyShadowedByExpected (hint, hints) {
+    const when = hint && hint.when;
+    if (!when || when.type !== 'character_missing_block_type' || hasExpected(hint)) {
+        return false;
+    }
+    const types = Array.isArray(when.blockTypes) ? when.blockTypes : [];
+    return (Array.isArray(hints) ? hints : []).some(function (other) {
+        if (!hasExpected(other) || !sameActorLoose(when, other.when)) {
+            return false;
+        }
+        const expected = other.when.expected;
+        if (when.trigger && when.trigger !== expected.trigger) {
+            return false;
+        }
+        const covered = Array.isArray(expected.covered) ? expected.covered : [];
+        return covered.some(function (c) {
+            const token = expected.script[c];
+            return !!token && types.includes(token.type);
+        });
+    });
+}
+
+/**
+ * R8 - alvo FRESCO de um alerta do alinhamento, recalculado na hora de piscar
+ * (o aluno pode ter mexido no projeto com o modal aberto): reavalia as dicas
+ * contra o `detailed` do projeto ATUAL e devolve {position, characterOccurrence}
+ * da MESMA dica se ela continua no mesmo kind de alerta (a posição pode ter
+ * mudado - o bloco certo é o de agora); null se o estado mudou/sumiu (aí não
+ * pisca nada - o bloco que o alerta descrevia não existe mais). Puro.
+ */
+export function freshAlignmentTarget (hints, hint, info, detailed) {
+    if (!hint || !info || info.source !== 'expected' || !hasExpected(hint)) {
+        return null;
+    }
+    const fresh = alignmentInfo(hint, expectedResultsFor(hints, detailed).get(hint.id));
+    if (!fresh || fresh.kind !== info.kind) {
+        return null;
+    }
+    return {position: fresh.position, characterOccurrence: fresh.characterOccurrence};
+}
+
+/**
+ * Carets que Project.js#encodeStrip PULA ao salvar (caretrepeat não: vira
+ * 'repeat' e ocupa posição).
+ */
+const ENCODE_SKIPPED_TYPES = ['caretcmd', 'caretend', 'caretstart'];
+
+/** N-ésimo bloco (0-based) de uma cadeia `next`, contando como encodeStrip conta. */
+function nthEncodedBlock (first, n) {
+    let block = first;
+    let index = 0;
+    for (let guard = 0; block && guard < 10000; guard++) {
+        if (!ENCODE_SKIPPED_TYPES.includes(block.blocktype)) {
+            if (index === n) {
+                return block;
+            }
+            index++;
+        }
+        block = block.next;
+    }
+    return null;
+}
+
+/**
+ * R8 - bloco VIVO do editor numa posição do alinhamento ({scriptIndex, path},
+ * ver shared/detailedManifest.mjs#tokenizeScript). Puro (duck typing sobre
+ * os Block do editor: blocktype, next, inside), testável sem DOM.
+ *
+ * Correspondência (conferida em Sprite.js#getData e Project.js#encodeStrip):
+ *  - sprite.scripts[k] do projeto salvo = encodeStrip(topBlocks[k]), onde
+ *    topBlocks = Scripts#getEncodableBlocks() da área de scripts do sprite
+ *    (TODO bloco com prev null, na ordem do DOM - inclusive um caret solto,
+ *    que vira um script vazio []; por isso scriptIndex conta vazios). Então
+ *    position.scriptIndex indexa topBlocks direto;
+ *  - dentro de um script, a tupla salva é a cadeia `next` a partir do bloco
+ *    de topo, PULANDO caretcmd/caretend/caretstart (caretrepeat vira repeat e
+ *    conta). path[0] é o índice nessa cadeia (o gatilho é 0);
+ *  - path [i, j, ...]: j é o índice, contado do mesmo jeito, na cadeia
+ *    `inside` do repeat em i (encodeStrip(b.inside) grava a tupla aninhada).
+ * Só vale se topBlocks é lido no MESMO instante do projectJson que gerou a
+ * posição (_highlightMistake faz os dois na hora, em sequência). null se o
+ * caminho não existe (projeto mudou entre um e outro).
+ */
+export function resolveLiveBlock (topBlocks, position) {
+    if (!position || !Array.isArray(position.path) || !position.path.length || !Array.isArray(topBlocks)) {
+        return null;
+    }
+    let chain = topBlocks[position.scriptIndex] || null;
+    let found = null;
+    for (let level = 0; level < position.path.length; level++) {
+        found = nthEncodedBlock(chain, position.path[level]);
+        if (!found) {
+            return null;
+        }
+        chain = found.inside || null;
+    }
+    return found;
+}
+
+/** Valor como a criança lê no bloco: setspeed em palavra, o resto só o número (sem unidade). */
+function spokenValue (blockType, value) {
+    if (blockType === 'setspeed' && SPEED_WORDS[value] !== undefined) {
+        return SPEED_WORDS[value];
+    }
+    return String(value);
+}
+
+// Prefixos do caminho LEGADO (moravam em AssignmentBadge.js#_evaluateHints).
+const LEGACY_ALERT_PREFIX = {
+    trigger: 'Quase! O bloco está no lugar errado - confira qual bloco de início vem antes dele. ',
+    order: 'Opa, esse bloco vem depois! Primeiro faça: ',
+    confirm: 'Quase! Toque no número do bloco para confirmar o valor. ',
+    fill: 'Falta escolher o valor do bloco - toque nele para definir. ',
+    value: 'Quase! O valor do bloco ainda não está certo. ',
+};
+
+/**
+ * Texto do modal de alerta (AssignmentBadge.js só exibe). Caminho legado:
+ * prefixo do kind + texto da dica dita (spokenHint) - igual ao de antes.
+ * Alinhamento (info.source 'expected'):
+ *  - 'value': "Ops! Acho que o número do bloco de X era N" - N = o valor do
+ *    PROFESSOR, sem unidade nenhuma (wait é décimo de segundo e o giro é
+ *    1/12 de volta - a criança só vê o número no bloco); setspeed fala a
+ *    velocidade ("Ops! Acho que o bloco de velocidade era normal");
+ *  - 'extra': "Ops! Acho que tem um bloco de X a mais";
+ *  - 'order': "Opa, esse bloco está fora do lugar! " + texto da dica cujo
+ *    bloco está fora do lugar (a própria dica - ela diz onde ele vai);
+ *  - 'confirm'/'fill': mesmos textos do legado.
+ */
+export function alertText (info, spokenHint) {
+    const hintText = (spokenHint && spokenHint.text) || '';
+    if (info && info.source === 'expected') {
+        if (info.kind === 'value') {
+            if (info.blockType === 'setspeed') {
+                return 'Ops! Acho que o bloco de velocidade era ' + spokenValue('setspeed', info.expected);
+            }
+            return 'Ops! Acho que o número do bloco de ' + blockLabel(info.blockType) + ' era ' +
+                spokenValue(info.blockType, info.expected);
+        }
+        if (info.kind === 'extra') {
+            return 'Ops! Acho que tem um bloco de ' + blockLabel(info.blockType) + ' a mais';
+        }
+        if (info.kind === 'order') {
+            return 'Opa, esse bloco está fora do lugar! ' + hintText;
+        }
+    }
+    const kind = info && info.kind;
+    return (LEGACY_ALERT_PREFIX[kind] || LEGACY_ALERT_PREFIX.value) + hintText;
 }
 
 // Esperas de ociosidade do caminho AUTOMÁTICO (poll) - moradas aqui (Fase 1,
@@ -545,10 +918,14 @@ const ALWAYS_PENDING_WHEN_TYPES = ['mission_intro', MANUAL_WHEN_TYPE];
  * dica proativa depois. Agora intro/manual JÁ DISPENSADAS são puladas (pra
  * elas, "dispensada" é o único jeito de ficarem resolvidas); NÃO
  * dispensadas continuam aparecendo normalmente na sua vez.
+ *
+ * `expectedResults` (opcional, Fase 3): o Map de expectedResultsFor do ciclo;
+ * ausente, é calculado (com cache) a partir de `hints`.
  */
-export function nextProactiveHint (hints, detailed, dismissed) {
+export function nextProactiveHint (hints, detailed, dismissed, expectedResults) {
+    const results = expectedResults || expectedResultsFor(hints, detailed);
     const firstPending = (hints || []).find(function (hint) {
-        return hint && hintConditionHolds(hint, detailed) &&
+        return hint && hintConditionHolds(hint, detailed, results) &&
             !(ALWAYS_PENDING_WHEN_TYPES.includes(hint.when.type) && dismissed.has(hint.id));
     });
     return (firstPending && !dismissed.has(firstPending.id)) ? firstPending : null;
@@ -595,6 +972,15 @@ export function nextProactiveHint (hints, detailed, dismissed) {
  * ALERT_IDLE_MS de ociosidade; dica proativa espera IDLE_BEFORE_HINT_MS. Se
  * existe um alerta pendente mas a ociosidade dele ainda não bateu, NADA é
  * mostrado neste ciclo - a dica proativa não "passa na frente" do alerta.
+ *
+ * Fase 3 (missão com when.expected, possivelmente mista): o alinhamento roda
+ * UMA vez por ciclo (expectedResultsFor). A varredura de alertas continua na
+ * ORDEM das dicas: dica com expected -> alignmentInfo (info.source
+ * 'expected', kinds value/order/extra/confirm/fill - ver lá); dica legada ->
+ * mistakeInfo, exceto se legacyShadowedByExpected (o bloco dela já é
+ * conferido pelo alinhamento). Depois, orderInfo (só entre legadas). Num
+ * alerta 'order' do alinhamento o texto dito é o da PRÓPRIA dica (a do bloco
+ * fora do lugar); só o 'order' legado fala a dica pendente pulada.
  */
 export function decideHintAction (opts) {
     const hints = Array.isArray(opts.hints) ? opts.hints : [];
@@ -604,7 +990,8 @@ export function decideHintAction (opts) {
     const detailed = opts.detailed;
     const alerted = opts.alerted;
     const idleMs = opts.idleMs;
-    const readyHint = nextProactiveHint(hints, detailed, opts.dismissed);
+    const expectedResults = expectedResultsFor(hints, detailed);
+    const readyHint = nextProactiveHint(hints, detailed, opts.dismissed, expectedResults);
     const buttonDot = !!readyHint;
 
     // Alerta de VALOR ERRADO - canal separado da dica proativa (readyHint):
@@ -618,7 +1005,12 @@ export function decideHintAction (opts) {
     let alertHint = null;
     let alertInfo = null;
     hints.some(function (hint) {
-        const info = mistakeInfo(hint, detailed);
+        let info = null;
+        if (hasExpected(hint)) {
+            info = alignmentInfo(hint, expectedResults.get(hint.id));
+        } else if (!legacyShadowedByExpected(hint, hints)) {
+            info = mistakeInfo(hint, detailed);
+        }
         if (info && !alerted.has(info.sig)) {
             alertHint = hint;
             alertInfo = info;
@@ -653,7 +1045,7 @@ export function decideHintAction (opts) {
         }
         // Em "fora de ordem" o texto dito (e o evento gravado) é o da dica
         // PENDENTE que o aluno pulou, não o da que ele já montou.
-        const spokenHint = alertInfo.kind === 'order' ? alertInfo.pendingHint : alertHint;
+        const spokenHint = alertInfo.kind === 'order' && alertInfo.source !== 'expected' ? alertInfo.pendingHint : alertHint;
         return {buttonDot, action: {kind: 'alert', hint: alertHint, info: alertInfo, spokenHint}};
     }
     if (idleMs < IDLE_BEFORE_HINT_MS) {
