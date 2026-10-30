@@ -41,6 +41,16 @@ const KNOWN = {
         I3: 'falhas 4/5: duas dicas "hop" (h6, h8) sem minCounts -> a 2a ja nasce cumprida e orderInfo acusa "fora de ordem" falso (h7|order|h8)',
     },
     mensagens: {I1: STALE, I3: STALE},
+    // D1 (blocos soltos ignorados pelo sistema inteiro): h11 pede `say` no
+    // Saci da 2a Woods, mas o unico `say` dele no projeto do professor e um
+    // script SOLTO (sem gatilho, nunca roda). A dica foi gerada antes da D1;
+    // regerar as dicas desta missao a remove. Mesma missao que o relatorio
+    // de impacto de requisitos (backend/scripts/requirementsImpact.js)
+    // acusa: say 9 -> 8.
+    'cenas-padrao': {
+        I1: 'D1: dica legada (h11) gerada a partir de um bloco say SOLTO do professor - regerar as dicas remove',
+        I3: 'D1: dica legada (h11) gerada a partir de um bloco say SOLTO do professor - regerar as dicas remove',
+    },
 };
 
 function check (name, inv, body) {
@@ -186,10 +196,13 @@ describe('simulador - personagem repetido na cena', () => {
         hint('h5', taskWhen({type: 'character_missing_block_type', characterMd5: RUBY, blockTypes: ['grow'], blockArgs: {grow: 2}, trigger: 'onclick'})),
     ];
 
-    // Falha 9: sem when.characterOccurrence a 2ª dica character_missing já
+    // Falha 9, caminho LEGADO: dicas antigas sem when.characterOccurrence
+    // (o gerador passou a gravá-lo quando há cópias - ver
+    // hintsGeneration.js#fillCharacterOccurrence; o teste seguinte cobre o
+    // formato novo). Sem o campo, a 2ª dica character_missing já
     // nasce resolvida (o 1º Ruby satisfaz) e o simulador nunca adiciona o 2º
     // personagem; as dicas de bloco do 2º Ruby ficam sem alvo.
-    it.fails('I3 (falha 9: personagem repetido sem characterOccurrence)', () => {
+    it.fails('I3 (falha 9, dicas legadas: personagem repetido sem characterOccurrence)', () => {
         const {failures} = simulateHints(teacher, hints);
         expect(failures).toEqual([]);
     });
