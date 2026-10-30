@@ -722,7 +722,7 @@ router.post('/:id/hints/:hintId/event', async (req, res) => {
         res.json({ success: true });
     } catch (err) {
         console.error('[assignments] POST /:id/hints/:hintId/event error:', err);
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'Falha ao processar dicas' });
     }
 });
 
@@ -766,7 +766,7 @@ router.get('/:id/hints/dismissed', async (req, res) => {
         res.json({ dismissed: Array.from(new Set((data || []).map((row) => row.hint_id))) });
     } catch (err) {
         console.error('[assignments] GET /:id/hints/dismissed error:', err);
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'Falha ao processar dicas' });
     }
 });
 
@@ -1053,7 +1053,7 @@ router.post('/:id/hints', async (req, res) => {
         res.json({ success: true });
     } catch (err) {
         console.error('[assignments] POST /:id/hints error:', err);
-        res.status(500).json({ error: err.message || 'Falha ao salvar dicas' });
+        res.status(500).json({ error: 'Falha ao salvar dicas' });
     }
 });
 
