@@ -16,7 +16,8 @@
  *   - alunos que dispensaram a intro;
  *   - quantos (n e %) receberam QUALQUER 'shown' de dica não-intro depois disso;
  *   - alertas por tipo (wrong_value, wrong_trigger, wrong_order, wrong_confirm,
- *     wrong_fill - os nomes reais de HINT_EVENT_TYPES em routes/assignments.js);
+ *     wrong_fill, wrong_extra - os nomes reais de HINT_EVENT_TYPES em
+ *     routes/assignments.js; wrong_extra = bloco a mais, Fase 3);
  *   - totais de shown/dismissed.
  * Linha "ALERTA" quando % proativa-após-intro < 5% com >= 5 alunos
  * (exit code 2 com --strict).
@@ -34,7 +35,7 @@
 
 const path = require('path');
 
-const ALERT_EVENT_TYPES = ['wrong_value', 'wrong_trigger', 'wrong_order', 'wrong_confirm', 'wrong_fill'];
+const ALERT_EVENT_TYPES = ['wrong_value', 'wrong_trigger', 'wrong_order', 'wrong_confirm', 'wrong_fill', 'wrong_extra'];
 const ALERT_MIN_STUDENTS = 5;
 const ALERT_MAX_PCT = 5;
 const PAGE_SIZE = 1000; // limite do PostgREST/Supabase por requisição

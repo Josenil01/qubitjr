@@ -51,6 +51,17 @@ describe('hintHealth', () => {
         expect(txt).not.toMatch(/aluno-secreto/);
     });
 
+    test('conta wrong_extra (alerta de bloco a mais da Fase 3) e mostra a coluna', () => {
+        const events = [
+            ev('a', 1, 'h0', 'dismissed', '2026-10-01T10:00:00'),
+            ev('a', 1, 'h1', 'wrong_extra', '2026-10-01T10:02:00'),
+            ev('a', 1, 'h1', 'wrong_extra', '2026-10-01T10:03:00'),
+        ];
+        const r = aggregate(events, idx);
+        expect(r.total.alerts.wrong_extra).toBe(2);
+        expect(formatReport(r, { since: '2026-09-28' })).toMatch(/w_extra/);
+    });
+
     test('parseArgs e timestamps sem fuso', () => {
         const o = parseArgs(['--since', '2026-09-28', '--json', '--strict', '--assignment', '7']);
         expect(o).toMatchObject({ since: '2026-09-28', json: true, strict: true, assignment: 7 });

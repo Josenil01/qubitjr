@@ -662,7 +662,10 @@ router.post('/:id/complete', async (req, res) => {
 // wrong_value/wrong_trigger: o alerta "quase!" (bloco existe mas com valor/gatilho
 // errado) - gravado ALÉM de shown/dismissed, pra dar pra medir quantas vezes o
 // aluno errou sem mexer nas contagens de shown/dismissed que share.js já soma.
-const HINT_EVENT_TYPES = new Set(['shown', 'dismissed', 'wrong_value', 'wrong_trigger', 'wrong_order', 'wrong_confirm', 'wrong_fill']);
+// wrong_extra (Fase 3 - alinhamento): alerta de bloco A MAIS no script que
+// corresponde ao do professor (estado extra_block de shared/hintAlignment.mjs).
+// wrong_value/wrong_order também são gravados pelo caminho de alinhamento.
+const HINT_EVENT_TYPES = new Set(['shown', 'dismissed', 'wrong_value', 'wrong_trigger', 'wrong_order', 'wrong_confirm', 'wrong_fill', 'wrong_extra']);
 
 /**
  * POST /api/assignments/:id/hints/:hintId/event

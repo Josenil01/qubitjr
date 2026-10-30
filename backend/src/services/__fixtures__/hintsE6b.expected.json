@@ -1,0 +1,400 @@
+{
+  "hints": [
+    {
+      "id": "h1",
+      "text": "🚀 Vamos fazer a Ruby pular e crescer com o Allan?",
+      "when": {
+        "type": "mission_intro"
+      }
+    },
+    {
+      "id": "h2",
+      "text": "Que tal colocar o cenário do Bosque?",
+      "when": {
+        "type": "scene_missing",
+        "sceneMd5": "Woods.svg",
+        "sceneOccurrence": 1
+      }
+    },
+    {
+      "id": "h3",
+      "text": "Faça a Ruby dizer 'Oi' quando a bandeira verde for clicada.",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Woods.svg",
+        "sceneOccurrence": 1,
+        "characterMd5": "HY-Ruby.svg",
+        "blockTypes": [
+          "say"
+        ],
+        "blockArgs": {},
+        "expected": {
+          "trigger": "onflag",
+          "triggerArg": null,
+          "script": [
+            {
+              "type": "say",
+              "num": null
+            },
+            {
+              "type": "hop",
+              "num": 2
+            },
+            {
+              "type": "hop",
+              "num": 4
+            },
+            {
+              "type": "repeat",
+              "num": 3
+            },
+            {
+              "type": "forward",
+              "num": 1
+            },
+            {
+              "type": "/repeat",
+              "num": null
+            },
+            {
+              "type": "forward",
+              "num": 5
+            }
+          ],
+          "covered": [
+            0
+          ]
+        },
+        "trigger": "onflag",
+        "triggerExclusive": true
+      }
+    },
+    {
+      "id": "h4",
+      "text": "Depois faça ela pular 2 passos.",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Woods.svg",
+        "sceneOccurrence": 1,
+        "characterMd5": "HY-Ruby.svg",
+        "blockTypes": [
+          "hop"
+        ],
+        "blockArgs": {},
+        "expected": {
+          "trigger": "onflag",
+          "triggerArg": null,
+          "script": [
+            {
+              "type": "say",
+              "num": null
+            },
+            {
+              "type": "hop",
+              "num": 2
+            },
+            {
+              "type": "hop",
+              "num": 4
+            },
+            {
+              "type": "repeat",
+              "num": 3
+            },
+            {
+              "type": "forward",
+              "num": 1
+            },
+            {
+              "type": "/repeat",
+              "num": null
+            },
+            {
+              "type": "forward",
+              "num": 5
+            }
+          ],
+          "covered": [
+            1
+          ]
+        },
+        "trigger": "onflag",
+        "triggerExclusive": true
+      }
+    },
+    {
+      "id": "h5",
+      "text": "Agora faça ela pular 4 passos.",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Woods.svg",
+        "sceneOccurrence": 1,
+        "characterMd5": "HY-Ruby.svg",
+        "blockTypes": [
+          "hop"
+        ],
+        "blockArgs": {},
+        "expected": {
+          "trigger": "onflag",
+          "triggerArg": null,
+          "script": [
+            {
+              "type": "say",
+              "num": null
+            },
+            {
+              "type": "hop",
+              "num": 2
+            },
+            {
+              "type": "hop",
+              "num": 4
+            },
+            {
+              "type": "repeat",
+              "num": 3
+            },
+            {
+              "type": "forward",
+              "num": 1
+            },
+            {
+              "type": "/repeat",
+              "num": null
+            },
+            {
+              "type": "forward",
+              "num": 5
+            }
+          ],
+          "covered": [
+            2
+          ]
+        },
+        "trigger": "onflag",
+        "minCounts": {
+          "hop": 2
+        },
+        "triggerExclusive": true
+      }
+    },
+    {
+      "id": "h6",
+      "text": "Faça ela andar 1 passo, 3 vezes, usando o bloco de repita.",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Woods.svg",
+        "sceneOccurrence": 1,
+        "characterMd5": "HY-Ruby.svg",
+        "blockTypes": [
+          "repeat",
+          "forward"
+        ],
+        "blockArgs": {
+          "repeat": 3
+        },
+        "expected": {
+          "trigger": "onflag",
+          "triggerArg": null,
+          "script": [
+            {
+              "type": "say",
+              "num": null
+            },
+            {
+              "type": "hop",
+              "num": 2
+            },
+            {
+              "type": "hop",
+              "num": 4
+            },
+            {
+              "type": "repeat",
+              "num": 3
+            },
+            {
+              "type": "forward",
+              "num": 1
+            },
+            {
+              "type": "/repeat",
+              "num": null
+            },
+            {
+              "type": "forward",
+              "num": 5
+            }
+          ],
+          "covered": [
+            3,
+            4
+          ]
+        },
+        "trigger": "onflag",
+        "triggerExclusive": true
+      }
+    },
+    {
+      "id": "h7",
+      "text": "Por fim, ela anda 5 passos.",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Woods.svg",
+        "sceneOccurrence": 1,
+        "characterMd5": "HY-Ruby.svg",
+        "blockTypes": [
+          "forward"
+        ],
+        "blockArgs": {},
+        "expected": {
+          "trigger": "onflag",
+          "triggerArg": null,
+          "script": [
+            {
+              "type": "say",
+              "num": null
+            },
+            {
+              "type": "hop",
+              "num": 2
+            },
+            {
+              "type": "hop",
+              "num": 4
+            },
+            {
+              "type": "repeat",
+              "num": 3
+            },
+            {
+              "type": "forward",
+              "num": 1
+            },
+            {
+              "type": "/repeat",
+              "num": null
+            },
+            {
+              "type": "forward",
+              "num": 5
+            }
+          ],
+          "covered": [
+            6
+          ]
+        },
+        "trigger": "onflag",
+        "minCounts": {
+          "forward": 2
+        },
+        "triggerExclusive": true
+      }
+    },
+    {
+      "id": "h8",
+      "text": "Coloque o Allan aqui.",
+      "when": {
+        "type": "character_missing",
+        "sceneMd5": "Woods.svg",
+        "sceneOccurrence": 1,
+        "characterMd5": "HY-Allan.svg"
+      }
+    },
+    {
+      "id": "h9",
+      "text": "Quando clicar no Allan, ele manda a mensagem azul.",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Woods.svg",
+        "sceneOccurrence": 1,
+        "characterMd5": "HY-Allan.svg",
+        "blockTypes": [
+          "message"
+        ],
+        "blockArgs": {},
+        "expected": {
+          "trigger": "onclick",
+          "triggerArg": null,
+          "script": [
+            {
+              "type": "message",
+              "num": null
+            }
+          ],
+          "covered": [
+            0
+          ]
+        },
+        "trigger": "onclick",
+        "triggerExclusive": true
+      }
+    },
+    {
+      "id": "h10",
+      "text": "Quando a Ruby receber a mensagem verde, ela cresce 4.",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Woods.svg",
+        "sceneOccurrence": 1,
+        "characterMd5": "HY-Ruby.svg",
+        "blockTypes": [
+          "grow"
+        ],
+        "blockArgs": {},
+        "expected": {
+          "trigger": "onmessage",
+          "triggerArg": "verde",
+          "script": [
+            {
+              "type": "grow",
+              "num": 4
+            }
+          ],
+          "covered": [
+            0
+          ]
+        },
+        "trigger": "onmessage",
+        "triggerArg": "verde"
+      }
+    },
+    {
+      "id": "h11",
+      "text": "Quando a Ruby receber a mensagem azul, ela cresce 2.",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Woods.svg",
+        "sceneOccurrence": 1,
+        "characterMd5": "HY-Ruby.svg",
+        "blockTypes": [
+          "grow"
+        ],
+        "blockArgs": {},
+        "expected": {
+          "trigger": "onmessage",
+          "triggerArg": "azul",
+          "script": [
+            {
+              "type": "grow",
+              "num": 2
+            }
+          ],
+          "covered": [
+            0
+          ]
+        },
+        "trigger": "onmessage",
+        "triggerArg": "azul"
+      }
+    },
+    {
+      "id": "h12",
+      "text": "A Ruby precisa receber a mensagem azul.",
+      "when": {
+        "type": "message_not_received",
+        "messageName": "azul"
+      }
+    }
+  ]
+}
