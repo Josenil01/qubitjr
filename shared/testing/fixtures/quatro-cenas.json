@@ -1,0 +1,401 @@
+{
+  "name": "quatro-cenas",
+  "source": "anonimizado",
+  "projectJson": {
+    "pages": [
+      "page1",
+      "page2",
+      "page3",
+      "page4"
+    ],
+    "currentPage": "page1",
+    "page1": {
+      "sprites": [
+        "sprite1_1",
+        "sprite1_2"
+      ],
+      "md5": "Woods.svg",
+      "sprite1_1": {
+        "type": "sprite",
+        "id": "sprite1_1",
+        "name": "Personagem 1",
+        "scripts": [
+          [
+            [
+              "onflag",
+              "null",
+              0,
+              0
+            ],
+            [
+              "say",
+              "Fala 1",
+              0,
+              0
+            ]
+          ]
+        ],
+        "md5": "HY-Lobsomem.svg"
+      },
+      "sprite1_2": {
+        "type": "sprite",
+        "id": "sprite1_2",
+        "name": "Personagem 2",
+        "scripts": [],
+        "md5": "HY-Casa2.svg"
+      }
+    },
+    "page2": {
+      "sprites": [
+        "sprite2_1",
+        "sprite2_2",
+        "sprite2_3"
+      ],
+      "md5": "Bedroom.svg",
+      "sprite2_1": {
+        "type": "sprite",
+        "id": "sprite2_1",
+        "name": "Personagem 3",
+        "scripts": [
+          [
+            [
+              "onflag",
+              "null",
+              0,
+              0
+            ],
+            [
+              "say",
+              "Fala 2",
+              0,
+              0
+            ]
+          ]
+        ],
+        "md5": "HY-Ruby.svg"
+      },
+      "sprite2_2": {
+        "type": "sprite",
+        "id": "sprite2_2",
+        "name": "Personagem 4",
+        "scripts": [
+          [
+            [
+              "onflag",
+              "null",
+              0,
+              0
+            ],
+            [
+              "wait",
+              10,
+              0,
+              0
+            ],
+            [
+              "say",
+              "Fala 3",
+              0,
+              0
+            ]
+          ]
+        ],
+        "md5": "HY-Allan.svg"
+      },
+      "sprite2_3": {
+        "type": "sprite",
+        "id": "sprite2_3",
+        "name": "Personagem 5",
+        "scripts": [
+          [
+            [
+              "onflag",
+              "null",
+              0,
+              0
+            ],
+            [
+              "wait",
+              10,
+              0,
+              0
+            ],
+            [
+              "say",
+              "Fala 3",
+              0,
+              0
+            ]
+          ]
+        ],
+        "md5": "HY-Cris.svg"
+      }
+    },
+    "page3": {
+      "sprites": [
+        "sprite3_1",
+        "sprite3_2"
+      ],
+      "md5": "Woods.svg",
+      "sprite3_1": {
+        "type": "sprite",
+        "id": "sprite3_1",
+        "name": "Personagem 6",
+        "scripts": [],
+        "md5": "HY-SaciPerere2.svg"
+      },
+      "sprite3_2": {
+        "type": "sprite",
+        "id": "sprite3_2",
+        "name": "Personagem 2",
+        "scripts": [],
+        "md5": "HY-Casa2.svg"
+      }
+    },
+    "page4": {
+      "sprites": [
+        "sprite4_1",
+        "sprite4_2",
+        "sprite4_3"
+      ],
+      "md5": "Bedroom.svg",
+      "sprite4_1": {
+        "type": "sprite",
+        "id": "sprite4_1",
+        "name": "Personagem 3",
+        "scripts": [
+          [
+            [
+              "onflag",
+              "null",
+              0,
+              0
+            ],
+            [
+              "say",
+              "Fala 4",
+              0,
+              0
+            ]
+          ]
+        ],
+        "md5": "HY-Ruby.svg"
+      },
+      "sprite4_2": {
+        "type": "sprite",
+        "id": "sprite4_2",
+        "name": "Personagem 4",
+        "scripts": [
+          [
+            [
+              "onflag",
+              "null",
+              0,
+              0
+            ],
+            [
+              "wait",
+              10,
+              0,
+              0
+            ],
+            [
+              "say",
+              "Fala 3",
+              0,
+              0
+            ]
+          ]
+        ],
+        "md5": "HY-Allan.svg"
+      },
+      "sprite4_3": {
+        "type": "sprite",
+        "id": "sprite4_3",
+        "name": "Personagem 5",
+        "scripts": [
+          [
+            [
+              "onflag",
+              "null",
+              0,
+              0
+            ],
+            [
+              "wait",
+              10,
+              0,
+              0
+            ],
+            [
+              "say",
+              "Fala 3",
+              0,
+              0
+            ]
+          ]
+        ],
+        "md5": "HY-Cris.svg"
+      }
+    }
+  },
+  "hints": [
+    {
+      "id": "h1",
+      "text": "Dica 1",
+      "when": {
+        "type": "scene_missing",
+        "sceneMd5": "Woods.svg",
+        "sceneOccurrence": 1
+      }
+    },
+    {
+      "id": "h2",
+      "text": "Dica 2",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Woods.svg",
+        "blockTypes": [
+          "say"
+        ],
+        "characterMd5": "HY-Lobsomem.svg",
+        "sceneOccurrence": 1
+      }
+    },
+    {
+      "id": "h3",
+      "text": "Dica 3",
+      "when": {
+        "type": "character_missing",
+        "sceneMd5": "Woods.svg",
+        "characterMd5": "HY-Casa2.svg",
+        "sceneOccurrence": 1
+      }
+    },
+    {
+      "id": "h4",
+      "text": "Dica 4",
+      "when": {
+        "type": "scene_missing",
+        "sceneMd5": "Bedroom.svg",
+        "sceneOccurrence": 1
+      }
+    },
+    {
+      "id": "h5",
+      "text": "Dica 5",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Bedroom.svg",
+        "blockTypes": [
+          "say"
+        ],
+        "characterMd5": "HY-Ruby.svg",
+        "sceneOccurrence": 1
+      }
+    },
+    {
+      "id": "h6",
+      "text": "Dica 6",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Bedroom.svg",
+        "blockTypes": [
+          "say"
+        ],
+        "characterMd5": "HY-Allan.svg",
+        "sceneOccurrence": 1
+      }
+    },
+    {
+      "id": "h7",
+      "text": "Dica 7",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Bedroom.svg",
+        "blockTypes": [
+          "say"
+        ],
+        "characterMd5": "HY-Cris.svg",
+        "sceneOccurrence": 1
+      }
+    },
+    {
+      "id": "h8",
+      "text": "Dica 8",
+      "when": {
+        "type": "scene_missing",
+        "sceneMd5": "Woods.svg",
+        "sceneOccurrence": 2
+      }
+    },
+    {
+      "id": "h9",
+      "text": "Dica 9",
+      "when": {
+        "type": "character_missing",
+        "sceneMd5": "Woods.svg",
+        "characterMd5": "HY-SaciPerere2.svg",
+        "sceneOccurrence": 2
+      }
+    },
+    {
+      "id": "h10",
+      "text": "Dica 10",
+      "when": {
+        "type": "character_missing",
+        "sceneMd5": "Woods.svg",
+        "characterMd5": "HY-Casa2.svg",
+        "sceneOccurrence": 2
+      }
+    },
+    {
+      "id": "h11",
+      "text": "Dica 11",
+      "when": {
+        "type": "scene_missing",
+        "sceneMd5": "Bedroom.svg",
+        "sceneOccurrence": 2
+      }
+    },
+    {
+      "id": "h12",
+      "text": "Dica 12",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Bedroom.svg",
+        "blockTypes": [
+          "say"
+        ],
+        "characterMd5": "HY-Ruby.svg",
+        "sceneOccurrence": 2
+      }
+    },
+    {
+      "id": "h13",
+      "text": "Dica 13",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Bedroom.svg",
+        "blockTypes": [
+          "say"
+        ],
+        "characterMd5": "HY-Allan.svg",
+        "sceneOccurrence": 2
+      }
+    },
+    {
+      "id": "h14",
+      "text": "Dica 14",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Bedroom.svg",
+        "blockTypes": [
+          "say"
+        ],
+        "characterMd5": "HY-Cris.svg",
+        "sceneOccurrence": 2
+      }
+    }
+  ]
+}
