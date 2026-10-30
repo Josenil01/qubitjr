@@ -49,15 +49,25 @@
  *  - Não há "alunos errados": o simulador só cumpre dicas, nunca erra. Os
  *    alertas de erro verdadeiros (valor errado, gatilho errado) são testados
  *    em decideHintAction.test.js / hintRegressions.test.js.
- *  - LIMITAÇÃO: a Fase 3 (when.expected, com os índices `covered` dos blocos
- *    do professor em cada dica) vai dizer EXATAMENTE quais blocos do professor
- *    cada dica cobre, e o simulador passará a aplicar esses blocos em vez de
- *    inferi-los de blockTypes/minCounts/trigger - tornando I3 exato.
+ *  - Dicas LEGADAS (sem when.expected) continuam nessa heurística.
+ *
+ * CAMINHO EXATO (Fase 3, dica com when.expected - ver applyExpected): o
+ * simulador acha o script do professor que a dica descreve (mesmo gatilho,
+ * mensagem, tokens - scriptTokens - e a `occurrence`-ésima cópia idêntica) e
+ * mantém, por script, o conjunto de posições do professor já ensinadas
+ * (união dos `covered` das dicas cumpridas). A cada dica o script do aluno é
+ * RECONSTRUÍDO a partir da tupla do professor com só essas posições - os
+ * valores são os do professor e cada bloco cai na posição certa (inclusive
+ * dentro do repeat certo; um repeat é criado assim que algo de dentro dele
+ * é ensinado, já com o valor do professor). covered [] só cria o script com o
+ * gatilho. Limitação: numa missão MISTA, um bloco que a heurística legada
+ * anexar a um script gerido pelo caminho exato some na próxima reconstrução.
  */
 
 import {project, b} from './projectFixtures.mjs';
-import {computeDetailedManifest} from '../detailedManifest.mjs';
-import {hintConditionHolds, nextProactiveHint, decideHintAction} from '../../src/app/src/editor/ui/HintEngine.js';
+import {computeDetailedManifest, scriptTokens, REPEAT_CLOSE} from '../detailedManifest.mjs';
+import {hasExpected} from '../hintAlignment.mjs';
+import {hintConditionHolds, nextProactiveHint, decideHintAction, expectedResultsFor} from '../../src/app/src/editor/ui/HintEngine.js';
 
 const TRIGGERS = new Set(['onflag', 'onclick', 'ontouch', 'onmessage']);
 const NON_TASK = new Set(['mission_intro', 'manual']);
@@ -77,6 +87,39 @@ function teacherScenesOf (projectJson) {
         return {md5, occurrence, sprites};
     });
 }
+
+const CARETS = new Set(['caretstart', 'caretend', 'caretrepeat', 'caretcmd']);
+
+/** Índice do 1º bloco real (não caret) da tupla; -1 se nenhum. */
+function headIndex (script) {
+    return script.findIndex((blk) => Array.isArray(blk) && blk.length > 0 && !CARETS.has(blk[0]));
+}
+
+/**
+ * Reconstrói um strip do professor com SÓ as posições (índices de token,
+ * mesma contagem de detailedManifest.mjs#tokenizeStrip: abertura do repeat,
+ * internos, fechamento) que estão em `applied`. Um repeat entra se ele mesmo
+ * foi ensinado ou se algo de dentro dele foi.
+ */
+function rebuildStrip (strip, startAt, counter, applied) {
+    const out = [];
+    for (let i = startAt; i < strip.length; i++) {
+        const blk = strip[i];
+        if (!Array.isArray(blk) || blk.length === 0 || CARETS.has(blk[0])) continue;
+        const idx = counter.n++;
+        if (blk[0] === 'repeat') {
+            const inner = rebuildStrip(Array.isArray(blk[4]) ? blk[4] : [], 0, counter, applied);
+            counter.n++; // fechamento (REPEAT_CLOSE)
+            if (applied.has(idx) || inner.length) out.push(b('repeat', blk[1], inner));
+        } else if (applied.has(idx)) {
+            out.push(b(blk[0], blk[1]));
+        }
+    }
+    return out;
+}
+
+const numOf = (t) => (t.num === undefined ? null : t.num);
+const sameTokens = (a, c) => a.length === c.length && a.every((t, i) => t.type === c[i].type && numOf(t) === numOf(c[i]));
 
 /** Script cru do professor -> {trigger, triggerArg, entries:[{type,arg,rep}]} (aninhados achatados). */
 function flattenScript (script) {
@@ -111,6 +154,9 @@ export class HintSimulator {
         this.pages = [{md5: null, sprites: []}];
         // Chave de repeat do professor -> tupla de repeat criada no aluno.
         this.repeats = new Map();
+        // Caminho exato (when.expected): chave do script do professor ->
+        // {applied: Set de posições ensinadas, script: array do aluno}.
+        this.exact = new Map();
         this.dismissed = new Set(hints.filter((h) => h && h.when && NON_TASK.has(h.when.type)).map((h) => h.id));
     }
 
@@ -124,6 +170,11 @@ export class HintSimulator {
 
     detailed () {
         return computeDetailedManifest(this.studentProject());
+    }
+
+    /** hintConditionHolds com o alinhamento do ciclo (todas as dicas juntas). */
+    holds (hint, detailed) {
+        return hintConditionHolds(hint, detailed, expectedResultsFor(this.hints, detailed));
     }
 
     // --- cenas ------------------------------------------------------------
@@ -209,7 +260,11 @@ export class HintSimulator {
             this.applyMessageReceiver(when.messageName);
             break;
         case 'character_missing_block_type':
-            this.applyBlocks(when);
+            if (hasExpected(hint)) {
+                this.applyExpected(when);
+            } else {
+                this.applyBlocks(when);
+            }
             break;
         default:
             break;
@@ -232,6 +287,51 @@ export class HintSimulator {
                 return;
             }
         }
+    }
+
+    /**
+     * Caminho EXATO (ver docblock do topo): ensina as posições covered do
+     * script do professor que when.expected descreve e reconstrói o script do
+     * aluno. Sem o script do professor (dica inconsistente) não faz nada - a
+     * regra (c) acusa.
+     */
+    applyExpected (when) {
+        const expected = when.expected;
+        const sprite = this.ensureCharacter(when);
+        const tsprite = this.teacherSprite(when, when.characterOccurrence || 1);
+        const wantedArg = expected.trigger === 'onmessage' && typeof expected.triggerArg === 'string' ? expected.triggerArg : null;
+        const matches = ((tsprite && tsprite.scripts) || []).filter((s) => {
+            if (!Array.isArray(s)) return false;
+            const h = headIndex(s);
+            if (h < 0 || s[h][0] !== expected.trigger) return false;
+            if (wantedArg !== null && s[h][1] !== wantedArg) return false;
+            return sameTokens(scriptTokens(s), expected.script);
+        });
+        const tscript = matches[(expected.occurrence || 1) - 1];
+        if (!tscript) return;
+        const h = headIndex(tscript);
+        const key = JSON.stringify([when.sceneMd5, when.sceneOccurrence || 1, when.characterMd5, when.characterOccurrence || 1,
+            expected.trigger, wantedArg, expected.occurrence || 1, expected.script]);
+        let entry = this.exact.get(key);
+        if (!entry || !sprite.scripts.includes(entry.script)) {
+            const claimed = new Set(Array.from(this.exact.values(), (e) => e.script));
+            // Reaproveita um script do aluno só com o gatilho (ex.: criado
+            // pela dica character_no_script) em vez de criar um 2º igual.
+            let target = sprite.scripts.find((s) => !claimed.has(s) && s.length === 1 &&
+                s[0][0] === tscript[h][0] && (wantedArg === null || s[0][1] === wantedArg));
+            if (!target) {
+                target = [];
+                sprite.scripts.push(target);
+            }
+            entry = {applied: new Set(), script: target};
+            this.exact.set(key, entry);
+        }
+        (Array.isArray(expected.covered) ? expected.covered : []).forEach((c) => {
+            if (Number.isInteger(c) && expected.script[c] && expected.script[c].type !== REPEAT_CLOSE) entry.applied.add(c);
+        });
+        const rebuilt = [b(tscript[h][0], tscript[h][1])].concat(rebuildStrip(tscript, h + 1, {n: 0}, entry.applied));
+        entry.script.length = 0;
+        rebuilt.forEach((blk) => entry.script.push(blk));
     }
 
     applyBlocks (when) {
@@ -327,7 +427,7 @@ export class HintSimulator {
     run () {
         const trace = [];
         const failures = [];
-        const pendingTasks = (detailed) => this.hints.filter((h) => isTaskHint(h) && hintConditionHolds(h, detailed));
+        const pendingTasks = (detailed) => this.hints.filter((h) => isTaskHint(h) && this.holds(h, detailed));
         this.hints.forEach((hint, step) => {
             if (!isTaskHint(hint)) return;
             const before = this.detailed();
@@ -338,7 +438,7 @@ export class HintSimulator {
             }
             this.applyHint(hint);
             const after = this.detailed();
-            if (hintConditionHolds(hint, after)) {
+            if (this.holds(hint, after)) {
                 failures.push({step, hintId: hint.id, rule: 'c', detail: 'dica ainda pendente depois de cumprida pelo simulador (' + hint.when.type + ')'});
             }
             const decision = this.decide(after);
