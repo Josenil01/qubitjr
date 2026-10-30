@@ -70,6 +70,39 @@ export const ALL_WHEN_TYPES = Object.freeze([...LLM_WHEN_TYPES, MANUAL_WHEN_TYPE
  *                                   mensagem escolhida - o 'null' literal do editor) =
  *                                   qualquer onmessage serve.
  *
+ *                                 - expected?: (Fase 3 - alinhamento posição a posição; ver
+ *                                   shared/hintAlignment.mjs) - quando presente, o cliente
+ *                                   avalia a dica por evaluateExpectedHints em vez do caminho
+ *                                   legado (blockTypes/blockArgs/minCounts/triggerExclusive,
+ *                                   que continuam gravados por compatibilidade com clientes
+ *                                   antigos e dicas salvas antes da Fase 3):
+ *                                   {trigger: string,          // gatilho do script do professor
+ *                                    triggerArg: string|null,  // nome da mensagem (só onmessage;
+ *                                                              //  null = qualquer onmessage)
+ *                                    script: [{type, num}],    // TODOS os tokens do script do
+ *                                                              //  professor, na ordem
+ *                                    covered: number[],        // índices em `script` que ESTA
+ *                                                              //  dica ensina
+ *                                    occurrence?: number}      // 1-based, só quando o MESMO
+ *                                                              //  personagem do professor tem
+ *                                                              //  2+ scripts com trigger+
+ *                                                              //  triggerArg+script idênticos
+ *                                   `script` sai de shared/detailedManifest.mjs#scriptTokens
+ *                                   (tupla crua) ou toExpectedTokens(manifesto scripts[].tokens)
+ *                                   - o MESMO tokenizador do lado do aluno. Formato do token:
+ *                                   {type, num}: num = valor numérico (tipos numéricos), null pra
+ *                                   say (texto livre - qualquer fala não-padrão serve), pros
+ *                                   tipos sem número, e pra numérico sem valor no professor
+ *                                   (= qualquer valor serve). Um repeat vira {type:'repeat',
+ *                                   num:N}, os tokens de dentro, e {type:'/repeat', num:null}
+ *                                   (REPEAT_CLOSE). O gatilho NÃO é token (vai em trigger/
+ *                                   triggerArg). covered nunca precisa listar '/repeat' (é
+ *                                   ignorado; o fechamento acompanha a abertura). covered vazio
+ *                                   = "crie o script com esse gatilho" (done assim que existir).
+ *                                   Todas as dicas de um mesmo script do professor carregam o
+ *                                   MESMO trigger/triggerArg/script/occurrence - é isso que as
+ *                                   agrupa (extra_block depende do grupo inteiro).
+ *
  * characterOccurrence (Fase 2, falha F9) - 1-based, qual CÓPIA do personagem
  *   (mesmo characterMd5) na cena, na ordem de page.sprites - mesma ideia de
  *   sceneOccurrence, um nível abaixo (manifesto: characters[].characterOccurrence).

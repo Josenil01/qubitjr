@@ -264,13 +264,140 @@ function isRealArg (arg) {
  * `blocks` já vem sem carets (walkScriptForDetail os pula), então blocks[0]
  * é sempre o próprio gatilho - slice(1) o tira.
  */
-function buildScriptDetail (head, blocks) {
+function buildScriptDetail (head, blocks, script, scriptIndex) {
     const trigger = head[0];
     return {
         trigger,
         triggerArg: trigger === 'onmessage' && isRealArg(head[1]) ? head[1] : null,
         blocks: blocks.slice(1),
+        // Fase 3 (alinhamento) - ver tokenizeScript abaixo. scriptIndex é o
+        // índice deste script em sprite.scripts ORIGINAL (contando vazios e
+        // soltos, que não viram item aqui) - é o que permite ao cliente
+        // achar o bloco VIVO no editor a partir de token.path.
+        scriptIndex,
+        tokens: tokenizeScript(script),
     };
+}
+
+/**
+ * Marcador de FECHAMENTO de um `repeat` na lista de tokens (Fase 3). O token
+ * de ABERTURA é o próprio bloco repeat ({type: 'repeat', num: N, ...}); os
+ * blocos de dentro vêm logo depois (path com um nível a mais) e o grupo
+ * termina com {type: REPEAT_CLOSE}. Sem valor (num sempre null). Existe pra
+ * que o alinhamento (shared/hintAlignment.mjs) saiba onde o corpo do repeat
+ * acaba: "forward dentro do repeat" e "forward depois do repeat" são
+ * posições DIFERENTES (falha F7), e com uma lista achatada sem fechamento
+ * as duas ficariam indistinguíveis.
+ */
+export const REPEAT_CLOSE = '/repeat';
+
+/** Índice (no array ORIGINAL) do 1º bloco real do script; -1 se nenhum. */
+function headIndex (script) {
+    for (let i = 0; i < script.length; i++) {
+        const block = script[i];
+        if (Array.isArray(block) && block.length > 0 && !CARET_TYPES.has(block[0])) return i;
+    }
+    return -1;
+}
+
+/**
+ * Um token a partir de uma tupla de bloco. Estados (Fase 3):
+ *  - num: valor numérico REAL (só tipos de NUMERIC_ARG_TYPES - mesma regra
+ *    de blocks[].num), senão null. say/message/sons/etc. sempre null: o
+ *    texto do say não importa (decisão do usuário) e mensagens têm
+ *    mecanismo próprio (triggerArg / message_not_received).
+ *  - pending: valor PADRÃO mascarado 'unconfirmed:N' (Project.maskUnconfirmed,
+ *    só no cliente - bloco recém-arrastado da paleta, aluno ainda não tocou
+ *    no número; mesma origem do kind 'confirm' de HintEngine.js#mistakeInfo).
+ *    num fica null.
+ *  - unset: o bloco ocupa a posição mas ainda não tem valor escolhido:
+ *    numérico sem argumento real (kind 'fill' do caminho legado),
+ *    setspeed 3 (velocidade "não escolhida" da paleta zerada de missão, ver
+ *    BlockArg.js - nunca é uma velocidade real, então num vira null) e say
+ *    com texto padrão / vazio (isDefaultSayText).
+ * pending e unset NUNCA contam como valor errado no alinhamento - o aluno
+ * está no meio do caminho, não errou.
+ */
+function blockToken (block, path) {
+    const type = block[0];
+    const arg = block[1];
+    const realArg = isRealArg(arg);
+    let num = NUMERIC_ARG_TYPES.has(type) && realArg ? Number(arg) : NaN;
+    num = Number.isNaN(num) ? null : num;
+    const pendingMatch = (typeof arg === 'string') ? /^unconfirmed:(-?\d+(?:\.\d+)?)$/.exec(arg) : null;
+    const pending = pendingMatch ? Number(pendingMatch[1]) : null;
+    let unset = false;
+    if (type === 'say') {
+        unset = !realArg || isDefaultSayText(arg);
+    } else if (type === 'setspeed' && num === 3) {
+        num = null;
+        unset = true;
+    } else if (NUMERIC_ARG_TYPES.has(type) && num === null && pending === null) {
+        unset = true;
+    }
+    return {type, num, pending, unset, path};
+}
+
+function tokenizeStrip (strip, startAt, prefix, out) {
+    for (let i = startAt; i < strip.length; i++) {
+        const block = strip[i];
+        if (!Array.isArray(block) || block.length === 0 || CARET_TYPES.has(block[0])) continue;
+        const path = prefix.concat(i);
+        out.push(blockToken(block, path));
+        if (block[0] === 'repeat') {
+            tokenizeStrip(Array.isArray(block[4]) ? block[4] : [], 0, path, out);
+            out.push({type: REPEAT_CLOSE, num: null, pending: null, unset: false, path});
+        }
+    }
+    return out;
+}
+
+/**
+ * Tokens de UM script (Fase 3 - alinhamento professor x aluno, ver
+ * shared/hintAlignment.mjs). Lista ORDENADA, sem o gatilho (o 1º bloco real)
+ * e sem carets, um token por bloco: {type, num, pending, unset, path}, com
+ * cada repeat virando ABERTURA (o próprio token 'repeat', com o valor) +
+ * tokens internos + FECHAMENTO {type: REPEAT_CLOSE} (mesmo path da
+ * abertura). Ver blockToken pros estados.
+ *
+ * path = índices dentro da tupla ORIGINAL do script: topo [i] (i conta o
+ * gatilho em 0 e os carets, ou seja, é o índice real no array salvo);
+ * aninhado [i, j, ...] dentro de block[4]. É o endereço pro cliente achar o
+ * bloco vivo (junto com scripts[].scriptIndex).
+ *
+ * Diferente de walkScriptForDetail/blocks: o say com texto padrão NÃO é
+ * pulado aqui (ocupa a posição, só fica unset) e o `repeat` sem o 'repeat'
+ * do strip vira dois tokens. blocks/agregados continuam exatamente como
+ * antes (caminho legado intacto).
+ */
+export function tokenizeScript (script) {
+    if (!Array.isArray(script)) return [];
+    const head = headIndex(script);
+    if (head < 0) return [];
+    return tokenizeStrip(script, head + 1, [], []);
+}
+
+/**
+ * Forma "esperada" de uma lista de tokens (lado do PROFESSOR, gravada em
+ * when.expected.script): só {type, num}. say sempre com num null (o texto
+ * não importa); numérico sem valor (unset) também null = "qualquer valor
+ * serve" no alinhamento.
+ */
+export function toExpectedTokens (tokens) {
+    return (Array.isArray(tokens) ? tokens : []).map(function (t) {
+        return {type: t.type, num: t.type === 'say' ? null : (t.num === undefined ? null : t.num)};
+    });
+}
+
+/**
+ * Tokens esperados de um script do professor, a partir da tupla crua
+ * (`sprite.scripts[k]`) - o que o gerador grava em when.expected.script.
+ * Mesmo código que tokeniza o aluno (tokenizeScript), garantindo que os
+ * dois lados do alinhamento falam a mesma língua. Equivale a
+ * toExpectedTokens(scripts[].tokens) do manifesto detalhado.
+ */
+export function scriptTokens (scriptTuples) {
+    return toExpectedTokens(tokenizeScript(scriptTuples));
 }
 
 /**
@@ -323,7 +450,8 @@ export function computeDetailedManifest (projectJson) {
             const scriptDetails = [];
             let hasScript = false;
 
-            for (const script of scripts) {
+            for (let scriptIndex = 0; scriptIndex < scripts.length; scriptIndex++) {
+                const script = scripts[scriptIndex];
                 if (!Array.isArray(script) || script.length === 0) continue; // empty script: no code
                 // Blocos SOLTOS (Fase 2, falha F10 - decisão D1 do usuário:
                 // ignorados pelo sistema inteiro). Um script que não começa
@@ -347,7 +475,7 @@ export function computeDetailedManifest (projectJson) {
                 hasScript = true;
                 agg.currentBlocks = [];
                 walkScriptForDetail(script, agg);
-                scriptDetails.push(buildScriptDetail(head, agg.currentBlocks));
+                scriptDetails.push(buildScriptDetail(head, agg.currentBlocks, script, scriptIndex));
             }
 
             const characterMd5 = sprite.md5 || null;
