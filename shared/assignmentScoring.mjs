@@ -155,12 +155,39 @@ function walkScript (script, agg) {
 }
 
 /**
+ * Script "solto" = script não vazio cujo PRIMEIRO bloco não é um gatilho
+ * (onflag/onclick/ontouch/onmessage). Decisão D1 do usuário: blocos soltos
+ * nunca executam (nada dispara o script), então o sistema inteiro os IGNORA -
+ * pontuação, requisitos e conclusão. Motivos: (1) um aluno não deve ganhar
+ * crédito por blocos que nunca rodam (arrastar blocos soltos pra "cumprir"
+ * a missão); (2) o professor não deve ter blocos soltos esquecidos no projeto
+ * de referência virando requisito; (3) consistência com o sistema de dicas
+ * (detailedManifest/HintEngine), que também ignora esses scripts. Por
+ * consequência um sprite que só tem blocos soltos NÃO tem script real (não
+ * qualifica personagem nem cena), e totalScriptCount/hasLoop/etc. também não
+ * os enxergam. O sprite/cena continuam em `present` (existem fisicamente).
+ */
+function isLooseScript (script) {
+    // O "primeiro bloco" ignora marcadores de caret do editor (ex.: caretstart
+    // vem ANTES do onflag em projetos reais - ver teste de caret).
+    const first = script.find((blk) => !(Array.isArray(blk) && CARET_TYPES.has(blk[0])));
+    return !(Array.isArray(first) && TRIGGER_TYPES.has(first[0]));
+}
+
+/**
  * Takes the PARSED project JSON object (already JSON.parse()'d by the
  * caller) and returns the requirements manifest described in the module
  * header. Never throws - malformed/missing input yields a zeroed-out
  * manifest of the same shape.
+ *
+ * Scripts soltos (sem gatilho no início) são ignorados em todos os agregados
+ * - ver isLooseScript. `options.includeLooseScripts: true` restaura o
+ * comportamento LEGADO (conta soltos) e existe SÓ para o relatório de impacto
+ * backend/scripts/requirementsImpact.js comparar antigo x novo; nenhum código
+ * de produção deve passá-lo.
  */
-export function computeProjectManifest (projectJson) {
+export function computeProjectManifest (projectJson, options) {
+    const includeLooseScripts = !!(options && options.includeLooseScripts);
     const manifest = emptyManifest();
 
     if (!projectJson || typeof projectJson !== 'object' || !Array.isArray(projectJson.pages)) {
@@ -239,11 +266,13 @@ export function computeProjectManifest (projectJson) {
 
             for (const script of scripts) {
                 if (!Array.isArray(script) || script.length === 0) continue; // empty script: no code
+                if (!includeLooseScripts && isLooseScript(script)) continue; // D1: nunca executa
 
                 spriteHasRealScript = true;
                 totalScriptCount += 1;
 
-                const triggerTuple = script[0];
+                // (script[0] pode ser um caret; o gatilho real é o 1º não-caret.)
+                const triggerTuple = script.find((blk) => !(Array.isArray(blk) && CARET_TYPES.has(blk[0])));
                 const triggerType = Array.isArray(triggerTuple) ? triggerTuple[0] : undefined;
 
                 if (triggerType === 'onmessage') onmessageTriggerCount += 1;
