@@ -220,10 +220,9 @@ describe('rotas de dicas (assignments.js) com Supabase mockado', () => {
             expect(errSpy).toHaveBeenCalled();
         });
 
-        // COMPORTAMENTO ESTRANHO documentado: a rota devolve err.message cru do
-        // Supabase no 500 (pode vazar nome de tabela/coluna). Hoje vaza; quando
-        // for sanitizado, este test.failing passa a falhar -> trocar por test.
-        test.failing('500 NÃO deveria vazar a mensagem interna do Supabase', async () => {
+        // O 500 devolve mensagem genérica: err.message cru do Supabase poderia
+        // vazar nome de tabela/coluna (o detalhe fica só no console.error).
+        test('500 NÃO deveria vazar a mensagem interna do Supabase', async () => {
             mockDb.failOn['hint_events.select'] = { code: 'XX000', message: 'boom interno' };
             const res = await getDismissed();
             expect(JSON.stringify(res.body)).not.toContain('boom interno');
@@ -312,7 +311,7 @@ describe('rotas de dicas (assignments.js) com Supabase mockado', () => {
             expect(errSpy).toHaveBeenCalled();
         });
 
-        test.failing('500 NÃO deveria vazar a mensagem interna do Supabase', async () => {
+        test('500 NÃO deveria vazar a mensagem interna do Supabase', async () => {
             mockDb.failOn['hint_events.insert'] = { code: 'XX000', message: 'segredo interno' };
             const res = await postEvent();
             expect(JSON.stringify(res.body)).not.toContain('segredo interno');
@@ -458,7 +457,7 @@ describe('rotas de dicas (assignments.js) com Supabase mockado', () => {
             expect(mockDb.updates).toEqual([]);
         });
 
-        test.failing('500 NÃO deveria vazar a mensagem interna do Supabase', async () => {
+        test('500 NÃO deveria vazar a mensagem interna do Supabase', async () => {
             mockDb.failOn['assignments.update'] = { code: 'XX000', message: 'falha no update' };
             const res = await postHints({ body: { hints: [H('h1')] } });
             expect(JSON.stringify(res.body)).not.toContain('falha no update');
