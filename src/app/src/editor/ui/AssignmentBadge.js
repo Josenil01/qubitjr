@@ -96,27 +96,18 @@ import Palette from './Palette.js';
 import {registerGalleryRestrictionProvider, registerZeroBlockDefaultsProvider, allCharactersAtLimit} from './GalleryRestriction.js';
 import {
     hintConditionHolds,
-    mistakeInfo as computeMistakeInfo,
-    orderInfo as computeOrderInfo,
+    decideHintAction,
     actorLabelFor,
 } from './HintEngine.js';
 import PollScheduler from './PollScheduler.js';
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
-const IDLE_BEFORE_HINT_MS = 3000; // aluno precisa ficar esse tempo sem clicar/arrastar/digitar em
-// lugar NENHUM da página antes da próxima dica poder aparecer sozinha - achado em teste real
-// ("cadência desordenada"): um tempo fixo desde o fechamento da dica anterior (mecanismo
-// antigo) não tinha relação com o que o aluno estava fazendo, podendo interromper ele no meio
-// de uma ação. Ver PollScheduler.idleFor()/PollScheduler.js. Só vale pro caminho automático
-// (poll) - o painel de dicas (_openHintsPanel) ignora, de propósito: é exatamente pra isso que
-// ele existe (ver docblock do ponto 7 no topo do arquivo).
-const ALERT_IDLE_MS = 1000; // o alerta "Quase!" (valor/gatilho errado) vem logo depois da AÇÃO do aluno
-// (soltar o bloco) - é quando a dica mais vale, então não espera os 3s de IDLE_BEFORE_HINT_MS
-// (esses são só pra dica proativa, que INTERROMPE o aluno). Ver _evaluateHints.
-// FILL_IDLE_MS (tempo de espera pro alerta de bloco zerado) mora agora em
-// HintEngine.js, junto da lógica que decide o kind 'fill' - este arquivo só
-// lê de volta via wrongValueInfo.idleMs, nunca precisa do valor em si.
+// IDLE_BEFORE_HINT_MS (ociosidade antes da dica proativa), ALERT_IDLE_MS
+// (antes do alerta "Quase!") e FILL_IDLE_MS (antes do alerta de bloco
+// zerado) moram em HintEngine.js, junto de decideHintAction - que é quem
+// compara a ociosidade com eles (Fase 1, R4). Este arquivo só passa
+// PollScheduler.idleFor() e executa a decisão.
 const MISTAKE_BLINK_MS = 8000; // por quanto tempo o bloco errado pisca depois do aluno fechar o alerta
 // Achado em teste real: fechar a dica/painel clicando fora do cartão, ou
 // clicando no botão de fechar rápido demais (reflexo/clique duplo), dispensava
@@ -716,80 +707,40 @@ export default class AssignmentBadge {
         if (!hints.length) {
             return;
         }
-        const detailed = computeDetailedManifest(projectJson);
-        // Só a dica MAIS ANTIGA (na ordem que o professor cadastrou) cujo
-        // requisito ainda não foi cumprido pode aparecer sozinha - mesmo que
-        // a condição de uma dica POSTERIOR já esteja batendo agora. Achado
-        // em teste real: fechar a dica 1 (sem o aluno ter feito a tarefa
-        // dela) deixava ela em dismissedHintIds, e o .find() de antes pulava
-        // direto pra dica 2 assim que a espera de ociosidade batesse - as
-        // dicas apareciam em sequência sem o aluno nunca ter cumprido a
-        // primeira. Agora, se a primeira pendente já foi dispensada, nenhuma
-        // dica aparece sozinha até ela ser resolvida de verdade (o botão
-        // flutuante de dica continua dando acesso a todas via _openHintsPanel,
-        // que ignora esta trava de propósito - ver docblock do ponto 7).
-        const firstPending = hints.find(function (hint) {
-            return hint && hintConditionHolds(hint, detailed);
-        });
-        const readyHint = (firstPending && !dismissedHintIds.has(firstPending.id)) ? firstPending : null;
-        // Ponto do botão flutuante: reflete "há dica pronta" mesmo quando ela
-        // ainda não pode ser MOSTRADA agora (ociosidade/modal já aberto, ver
-        // guardas abaixo) - ver docblock do ponto 1 no topo do arquivo. Bug
-        // real encontrado nesta refatoração: esta chamada nunca existia com
-        // `true`, só com `false` (no ramo isComplete acima) - o pontinho
-        // nunca ligava, mesmo quando havia dica pronta esperando o aluno
-        // ficar ocioso.
-        AssignmentBadge._updateHintButton(!!readyHint);
-        // Alerta de VALOR ERRADO - canal separado da dica proativa (readyHint):
-        // a dica proativa aparece uma vez e, fechada, nunca volta
-        // (dismissedHintIds); mas o aluno pode montar o bloco DEPOIS de
-        // fechá-la, com o valor errado - e ninguém avisava (achado em teste
-        // real, aluno Josué/missão "Cofrinho": grow 5 em vez de 2, silêncio).
-        // Independe de dismissedHintIds; cada combinação de valores errados
-        // avisa uma única vez (wrongValueAlerted) - mudar pra OUTRO valor
-        // errado avisa de novo, ficar parado no mesmo não repete.
-        let wrongValueHint = null;
-        let wrongValueInfo = null;
-        hints.some(function (hint) {
-            const info = computeMistakeInfo(hint, detailed);
-            if (info && !wrongValueAlerted.has(info.sig)) {
-                wrongValueHint = hint;
-                wrongValueInfo = info;
-                return true;
-            }
-            return false;
-        });
-
-        // Alerta de FORA DE ORDEM (só se não há erro de valor/gatilho a
-        // apontar): o aluno montou o bloco de uma dica POSTERIOR enquanto uma
-        // anterior do mesmo personagem ainda está pendente (achado em teste
-        // real: clique + say montados antes da bandeira + say que a dica
-        // pedia primeiro - nada avisava, a dica da bandeira já tinha sido
-        // fechada). Ver orderInfo em HintEngine.js.
-        if (!wrongValueHint) {
-            const orderInfo = computeOrderInfo(hints, detailed);
-            if (orderInfo && !wrongValueAlerted.has(orderInfo.sig)) {
-                wrongValueHint = orderInfo.doneHint;
-                wrongValueInfo = orderInfo;
-            }
-        }
-
-        if ((!readyHint && !wrongValueHint) || coachModalEl || hintsPanelEl) {
+        // TODA a decisão (qual dica/alerta, trava "só a mais antiga pendente",
+        // prioridade alerta > dica, esperas de ociosidade, guardas de modal/
+        // painel aberto) mora em HintEngine.js#decideHintAction - pura e
+        // testada (decideHintAction.test.js). Aqui só se executam os efeitos
+        // descritos pelo retorno: ponto do botão, eventos, modal, pisca.
+        const decision = decideHintAction({
+            hints: hints,
+            detailed: computeDetailedManifest(projectJson),
+            dismissed: dismissedHintIds,
+            alerted: wrongValueAlerted,
+            idleMs: PollScheduler.idleFor(),
+            modalOpen: !!coachModalEl,
             // hintsPanelEl aberto: o aluno já está olhando as dicas por conta
-            // própria (ver _openHintsPanel) - não faz sentido interromper com
-            // o modal automático por cima nesse momento.
+            // própria (ver _openHintsPanel) - não interrompe por cima.
+            panelOpen: !!hintsPanelEl,
+        });
+        // Ponto do botão flutuante: reflete "há dica pronta" mesmo quando ela
+        // ainda não pode ser MOSTRADA agora (ociosidade/modal já aberto) -
+        // ver docblock do ponto 1 no topo do arquivo. Bug real encontrado
+        // na refatoração Fase 0: esta chamada nunca existia com `true`, só
+        // com `false` (no ramo isComplete acima) - o pontinho nunca ligava.
+        if (decision.buttonDot !== null) {
+            AssignmentBadge._updateHintButton(decision.buttonDot);
+        }
+        const action = decision.action;
+        if (!action) {
             return;
         }
-        const idleFor = PollScheduler.idleFor();
-        if (wrongValueHint) {
-            if (idleFor < (wrongValueInfo.idleMs || ALERT_IDLE_MS)) {
-                return; // acabou de soltar/arrastar algo - espera só um instante, não os 3s da dica proativa
-            }
-            const alertHint = wrongValueHint;
-            const alertInfo = wrongValueInfo;
+        if (action.kind === 'alert') {
+            const alertHint = action.hint;
+            const alertInfo = action.info;
             // Em "fora de ordem" o texto dito (e o evento gravado) é o da dica
             // PENDENTE que o aluno pulou, não o da que ele já montou.
-            const spokenHint = alertInfo.kind === 'order' ? alertInfo.pendingHint : alertHint;
+            const spokenHint = action.spokenHint;
             const kindText = {
                 trigger: 'Quase! O bloco está no lugar errado - confira qual bloco de início vem antes dele. ',
                 order: 'Opa, esse bloco vem depois! Primeiro faça: ',
@@ -816,9 +767,7 @@ export default class AssignmentBadge {
             });
             return;
         }
-        if (idleFor < IDLE_BEFORE_HINT_MS) {
-            return; // pronta, mas o aluno ainda está mexendo em algo - espera ele parar
-        }
+        const readyHint = action.hint; // action.kind === 'hint'
         recordHintEvent(readyHint.id, 'shown');
         AssignmentBadge._showCoachModal({
             icon: '💡',

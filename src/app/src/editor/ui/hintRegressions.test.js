@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest';
-import {hintConditionHolds} from './HintEngine.js';
+import {hintConditionHolds, nextProactiveHint} from './HintEngine.js';
 import {project, b, repeat, onflag, onmessage} from '../../../../../shared/testing/projectFixtures.mjs';
 import {computeDetailedManifest} from '../../../../../shared/detailedManifest.mjs';
 
@@ -39,36 +39,27 @@ function blockHint (id, extra) {
 const intro = {id: 'h1', when: {type: 'mission_intro'}};
 const manual = (id) => ({id: id, when: {type: 'manual'}});
 
-/**
- * Réplica da trava atual de AssignmentBadge.js#_evaluateHints; a Fase 1 vai
- * trocar por HintEngine.nextProactiveHint. "Só a dica mais antiga pendente":
- * mission_intro/manual SEMPRE seguram a condição (true), então depois de
- * dispensadas continuam sendo a "primeira pendente" e travam todas as outras.
- */
-function legacyNextProactive (hints, detailed, dismissed) {
-    const firstPending = hints.find(function (h) {
-        return h && hintConditionHolds(h, detailed);
-    });
-    return (firstPending && !dismissed.has(firstPending.id)) ? firstPending : null;
-}
-
+// P1: a trava "só a dica mais antiga pendente" de AssignmentBadge.js#
+// _evaluateHints agora mora em HintEngine.nextProactiveHint (Fase 1, R4).
+// mission_intro/manual SEMPRE seguram a condição (true), então depois de
+// dispensadas continuavam sendo a "primeira pendente" e travavam as outras.
 describe('P1: dica proativa travada por intro/manual dispensada', () => {
     const detailed = detailedFor([[onflag()]]); // tarefa (forward) ainda não feita
 
     it.fails('com a intro dispensada e uma tarefa pendente, a proativa é a tarefa', () => {
         const task = blockHint('h2');
-        const next = legacyNextProactive([intro, task], detailed, new Set(['h1']));
+        const next = nextProactiveHint([intro, task], detailed, new Set(['h1']));
         expect(next && next.id).toBe('h2');
     });
 
     it.fails('com uma dica manual dispensada no meio, a proativa é a tarefa seguinte', () => {
         const task = blockHint('h3');
-        const next = legacyNextProactive([manual('h1'), manual('h2'), task], detailed, new Set(['h1', 'h2']));
+        const next = nextProactiveHint([manual('h1'), manual('h2'), task], detailed, new Set(['h1', 'h2']));
         expect(next && next.id).toBe('h3');
     });
 
     it('sanidade: sem nada dispensado a intro é a proativa', () => {
-        expect(legacyNextProactive([intro, blockHint('h2')], detailed, new Set()).id).toBe('h1');
+        expect(nextProactiveHint([intro, blockHint('h2')], detailed, new Set()).id).toBe('h1');
     });
 });
 
