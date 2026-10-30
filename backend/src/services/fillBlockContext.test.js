@@ -37,9 +37,26 @@ describe('detailedManifest scripts/blockCounts', () => {
         // campo nos dois lados, então o fixture precisa listá-lo também.
         // triggerArg (Fase 2, falha F8): nome da mensagem do onmessage -
         // null pros outros gatilhos.
+        // scriptIndex/tokens (Fase 3 - alinhamento): índice em sprite.scripts
+        // original e a lista ordenada de tokens (ver tokenizeScript em
+        // shared/detailedManifest.mjs). say com texto real não é unset.
         expect(c.scripts).toEqual([
-            { trigger: 'onflag', triggerArg: null, blocks: [{ type: 'say', num: null, pending: null }, { type: 'wait', num: 20, pending: null }, { type: 'say', num: null, pending: null }] },
-            { trigger: 'onclick', triggerArg: null, blocks: [{ type: 'grow', num: 2, pending: null }] },
+            {
+                trigger: 'onflag', triggerArg: null,
+                blocks: [{ type: 'say', num: null, pending: null }, { type: 'wait', num: 20, pending: null }, { type: 'say', num: null, pending: null }],
+                scriptIndex: 0,
+                tokens: [
+                    { type: 'say', num: null, pending: null, unset: false, path: [1] },
+                    { type: 'wait', num: 20, pending: null, unset: false, path: [2] },
+                    { type: 'say', num: null, pending: null, unset: false, path: [3] },
+                ],
+            },
+            {
+                trigger: 'onclick', triggerArg: null,
+                blocks: [{ type: 'grow', num: 2, pending: null }],
+                scriptIndex: 1,
+                tokens: [{ type: 'grow', num: 2, pending: null, unset: false, path: [1] }],
+            },
         ]);
     });
 });
