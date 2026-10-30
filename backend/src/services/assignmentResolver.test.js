@@ -131,3 +131,47 @@ describe('assignmentResolver.resolveAssignmentFields', () => {
         });
     });
 });
+
+describe('assignmentResolver.resolveHintsUpdatedAt', () => {
+    const { resolveHintsUpdatedAt } = require('./assignmentResolver');
+
+    /** Mock que responde em sequência a cada maybeSingle(). */
+    function seqMock(...results) {
+        const maybeSingle = jest.fn();
+        results.forEach((r) => maybeSingle.mockResolvedValueOnce(r));
+        const eq = jest.fn(() => ({ maybeSingle }));
+        const select = jest.fn(() => ({ eq }));
+        return { from: jest.fn(() => ({ select })), eq };
+    }
+
+    it('template: devolve o carimbo da própria linha', async () => {
+        const sb = seqMock(
+            { data: { id: 7, template_id: null }, error: null },
+            { data: { hints_updated_at: '2026-10-20T12:00:00Z' }, error: null }
+        );
+        await expect(resolveHintsUpdatedAt(sb, 7)).resolves.toBe('2026-10-20T12:00:00Z');
+        expect(sb.eq).toHaveBeenLastCalledWith('id', 7);
+    });
+
+    it('referência: lê o carimbo do template', async () => {
+        const sb = seqMock(
+            { data: { id: 9, template_id: 7 }, error: null },
+            { data: { hints_updated_at: '2026-10-20T12:00:00Z' }, error: null }
+        );
+        await expect(resolveHintsUpdatedAt(sb, 9)).resolves.toBe('2026-10-20T12:00:00Z');
+        expect(sb.eq).toHaveBeenLastCalledWith('id', 7);
+    });
+
+    it('NULL, linha ausente, erro (coluna inexistente) ou exceção => null', async () => {
+        await expect(resolveHintsUpdatedAt(seqMock(
+            { data: { id: 7, template_id: null }, error: null },
+            { data: { hints_updated_at: null }, error: null }), 7)).resolves.toBeNull();
+        await expect(resolveHintsUpdatedAt(seqMock({ data: null, error: null }), 7)).resolves.toBeNull();
+        await expect(resolveHintsUpdatedAt(seqMock(
+            { data: { id: 7, template_id: null }, error: null },
+            { data: null, error: { code: '42703', message: 'column does not exist' } }), 7)).resolves.toBeNull();
+        const boom = { from: () => { throw new Error('rede'); } };
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
+        await expect(resolveHintsUpdatedAt(boom, 7)).resolves.toBeNull();
+    });
+});
