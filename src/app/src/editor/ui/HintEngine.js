@@ -386,6 +386,177 @@ export function orderInfo (hints, detailed) {
     return null;
 }
 
+// Esperas de ociosidade do caminho AUTOMÁTICO (poll) - moradas aqui (Fase 1,
+// R4) junto de decideHintAction, que é quem as compara com idleMs. O
+// AssignmentBadge.js não precisa mais delas: só passa PollScheduler.idleFor().
+//
+// IDLE_BEFORE_HINT_MS: aluno precisa ficar esse tempo sem clicar/arrastar/
+// digitar em lugar NENHUM da página antes da próxima dica poder aparecer
+// sozinha - achado em teste real ("cadência desordenada"): um tempo fixo
+// desde o fechamento da dica anterior (mecanismo antigo) não tinha relação
+// com o que o aluno estava fazendo, podendo interromper ele no meio de uma
+// ação. Ver PollScheduler.idleFor()/PollScheduler.js. Só vale pro caminho
+// automático (poll) - o painel de dicas (_openHintsPanel) ignora, de
+// propósito: é exatamente pra isso que ele existe.
+export const IDLE_BEFORE_HINT_MS = 3000;
+// ALERT_IDLE_MS: o alerta "Quase!" (valor/gatilho errado) vem logo depois da
+// AÇÃO do aluno (soltar o bloco) - é quando a dica mais vale, então não
+// espera os 3s de IDLE_BEFORE_HINT_MS (esses são só pra dica proativa, que
+// INTERROMPE o aluno). Um info com idleMs próprio (kind 'fill', ver
+// FILL_IDLE_MS) sobrepõe este valor.
+export const ALERT_IDLE_MS = 1000;
+
+// Tipos cuja condição é SEMPRE verdadeira (hintConditionHolds devolve true
+// sem olhar o projeto) - só "resolvem" quando o aluno fecha. Ver
+// nextProactiveHint.
+const ALWAYS_PENDING_WHEN_TYPES = ['mission_intro', MANUAL_WHEN_TYPE];
+
+/**
+ * Dica PROATIVA (a que aparece sozinha depois da ociosidade) pronta agora,
+ * ou null. `dismissed` é o Set de ids já mostrados+fechados nesta sessão de
+ * aba (dismissedHintIds em AssignmentBadge.js).
+ *
+ * Só a dica MAIS ANTIGA (na ordem que o professor cadastrou) cujo requisito
+ * ainda não foi cumprido pode aparecer sozinha - mesmo que a condição de uma
+ * dica POSTERIOR já esteja batendo agora. Achado em teste real: fechar a
+ * dica 1 (sem o aluno ter feito a tarefa dela) deixava ela em
+ * dismissedHintIds, e o .find() de antes pulava direto pra dica 2 assim que
+ * a espera de ociosidade batesse - as dicas apareciam em sequência sem o
+ * aluno nunca ter cumprido a primeira. Agora, se a primeira pendente já foi
+ * dispensada, nenhuma dica aparece sozinha até ela ser resolvida de verdade
+ * (o botão flutuante de dica continua dando acesso a todas via
+ * _openHintsPanel, que ignora esta trava de propósito). Essa regra vale só
+ * pras dicas de TAREFA e é deliberada - não "conserte" pulando a tarefa
+ * dispensada.
+ *
+ * Exceção (Fase 1, falha P1): dicas SEMPRE-VERDADEIRAS (when.type
+ * 'mission_intro' e 'manual' - ver hintConditionHolds) nunca deixam de
+ * "estar pendentes", porque não há nada no projeto que as resolva. Então,
+ * uma vez dispensadas, a trava acima as tratava como "primeira pendente
+ * dispensada" PRA SEMPRE - e como a intro é sempre hints[0], nenhuma dica
+ * proativa aparecia mais depois de fechar a intro. Telemetria de produção:
+ * de 93 pares aluno/missão, 88 fecharam a intro e só 2 receberam qualquer
+ * dica proativa depois. Agora intro/manual JÁ DISPENSADAS são puladas (pra
+ * elas, "dispensada" é o único jeito de ficarem resolvidas); NÃO
+ * dispensadas continuam aparecendo normalmente na sua vez.
+ */
+export function nextProactiveHint (hints, detailed, dismissed) {
+    const firstPending = (hints || []).find(function (hint) {
+        return hint && hintConditionHolds(hint, detailed) &&
+            !(ALWAYS_PENDING_WHEN_TYPES.includes(hint.when.type) && dismissed.has(hint.id));
+    });
+    return (firstPending && !dismissed.has(firstPending.id)) ? firstPending : null;
+}
+
+/**
+ * Decisão COMPLETA de um ciclo de _evaluateHints (AssignmentBadge.js), sem
+ * efeito nenhum: o chamador só executa o que vier descrito aqui (DOM,
+ * recordHintEvent, _showCoachModal, ...). Puro - recebe todo o estado como
+ * argumento (os Sets não são modificados).
+ *
+ * Entrada (um objeto):
+ *  - hints: assignment.hints (na ordem do professor);
+ *  - detailed: computeDetailedManifest(projectJson) do projeto ATUAL;
+ *  - dismissed: Set de ids de dica já mostrada+fechada (dismissedHintIds);
+ *  - alerted: Set de assinaturas de alerta já dado (wrongValueAlerted);
+ *  - idleMs: há quanto tempo o aluno está parado (PollScheduler.idleFor());
+ *  - modalOpen: há um modal automático aberto agora (coachModalEl);
+ *  - panelOpen: o painel navegável de dicas está aberto (hintsPanelEl).
+ * A missão já completa NÃO entra aqui - o chamador trata antes (apaga o
+ * pontinho e sai, sem nem calcular o manifesto).
+ *
+ * Saída: {buttonDot, action}
+ *  - buttonDot: true/false = estado do pontinho do botão flutuante
+ *    (_updateHintButton) - "há dica proativa pronta", mesmo que ela não
+ *    possa ser MOSTRADA agora (ociosidade/modal); null = não mexe no ponto
+ *    (missão sem dicas - o código antigo saía antes de chamar
+ *    _updateHintButton).
+ *  - action: null (não mostra nada neste ciclo) ou
+ *    {kind: 'hint', hint}: mostrar a dica proativa `hint`;
+ *    {kind: 'alert', hint, info, spokenHint}: alerta de erro. `info` é o
+ *      retorno de mistakeInfo (info.kind 'value'/'trigger'/'confirm'/
+ *      'fill') ou de orderInfo (info.kind 'order'); `hint` é a dica cujo
+ *      bloco o aluno montou (vai pra _highlightMistake); `spokenHint` é a
+ *      dica cujo TEXTO é dito e cujo id vai nos eventos/dismissed - a
+ *      própria `hint`, exceto em 'order', onde é a PENDENTE que o aluno
+ *      pulou (info.pendingHint). Ao fechar, o chamador marca info.sig em
+ *      `alerted` e spokenHint.id em `dismissed`.
+ *
+ * Prioridade (igual ao código antigo): alerta de valor/gatilho/confirmação/
+ * preenchimento (primeira dica, na ordem, com mistakeInfo de sig ainda não
+ * avisada) > alerta de fora de ordem (orderInfo) > dica proativa. Nada é
+ * mostrado com modal ou painel abertos. Alerta espera info.idleMs ||
+ * ALERT_IDLE_MS de ociosidade; dica proativa espera IDLE_BEFORE_HINT_MS. Se
+ * existe um alerta pendente mas a ociosidade dele ainda não bateu, NADA é
+ * mostrado neste ciclo - a dica proativa não "passa na frente" do alerta.
+ */
+export function decideHintAction (opts) {
+    const hints = Array.isArray(opts.hints) ? opts.hints : [];
+    if (!hints.length) {
+        return {buttonDot: null, action: null};
+    }
+    const detailed = opts.detailed;
+    const alerted = opts.alerted;
+    const idleMs = opts.idleMs;
+    const readyHint = nextProactiveHint(hints, detailed, opts.dismissed);
+    const buttonDot = !!readyHint;
+
+    // Alerta de VALOR ERRADO - canal separado da dica proativa (readyHint):
+    // a dica proativa aparece uma vez e, fechada, nunca volta (dismissed);
+    // mas o aluno pode montar o bloco DEPOIS de fechá-la, com o valor errado
+    // - e ninguém avisava (achado em teste real, aluno Josué/missão
+    // "Cofrinho": grow 5 em vez de 2, silêncio). Independe de dismissed;
+    // cada combinação de valores errados avisa uma única vez (alerted) -
+    // mudar pra OUTRO valor errado avisa de novo, ficar parado no mesmo não
+    // repete.
+    let alertHint = null;
+    let alertInfo = null;
+    hints.some(function (hint) {
+        const info = mistakeInfo(hint, detailed);
+        if (info && !alerted.has(info.sig)) {
+            alertHint = hint;
+            alertInfo = info;
+            return true;
+        }
+        return false;
+    });
+
+    // Alerta de FORA DE ORDEM (só se não há erro de valor/gatilho a
+    // apontar): o aluno montou o bloco de uma dica POSTERIOR enquanto uma
+    // anterior do mesmo personagem ainda está pendente (achado em teste
+    // real: clique + say montados antes da bandeira + say que a dica pedia
+    // primeiro - nada avisava, a dica da bandeira já tinha sido fechada).
+    if (!alertHint) {
+        const order = orderInfo(hints, detailed);
+        if (order && !alerted.has(order.sig)) {
+            alertHint = order.doneHint;
+            alertInfo = order;
+        }
+    }
+
+    if ((!readyHint && !alertHint) || opts.modalOpen || opts.panelOpen) {
+        // Painel aberto: o aluno já está olhando as dicas por conta própria
+        // - não faz sentido interromper com o modal automático por cima.
+        return {buttonDot, action: null};
+    }
+    if (alertHint) {
+        if (idleMs < (alertInfo.idleMs || ALERT_IDLE_MS)) {
+            // Acabou de soltar/arrastar algo - espera só um instante, não os
+            // 3s da dica proativa.
+            return {buttonDot, action: null};
+        }
+        // Em "fora de ordem" o texto dito (e o evento gravado) é o da dica
+        // PENDENTE que o aluno pulou, não o da que ele já montou.
+        const spokenHint = alertInfo.kind === 'order' ? alertInfo.pendingHint : alertHint;
+        return {buttonDot, action: {kind: 'alert', hint: alertHint, info: alertInfo, spokenHint}};
+    }
+    if (idleMs < IDLE_BEFORE_HINT_MS) {
+        // Pronta, mas o aluno ainda está mexendo em algo - espera ele parar.
+        return {buttonDot, action: null};
+    }
+    return {buttonDot, action: {kind: 'hint', hint: readyHint}};
+}
+
 /**
  * Rótulo "🧑 Nome" mostrado acima do texto da dica no painel navegável -
  * pedido explícito do usuário depois de um teste real: o texto da dica
