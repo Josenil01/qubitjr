@@ -241,12 +241,16 @@ describe('buildExpectedForHints', () => {
         expect(report.every((r) => r.status === 'expected')).toBe(true);
     });
 
-    it('validação (I1): dica que não dá done no projeto do professor perde o expected e volta ao legado exato', () => {
+    it('empate de scripts do mesmo gatilho (antes rebaixado pela validação I1): agora as duas dicas ganham expected', () => {
         // S1 onflag [hop 1, forward 2], S2 onflag [forward 2]. A 1ª dica
-        // aponta o forward do S2; no alinhamento guloso o grupo dela é
-        // avaliado primeiro e empata S1/S2 -> fica com S1, e o grupo do S1
-        // (dica de hop) recebe o S2 do professor: hop "pending". O gerador
-        // detecta e devolve a dica do hop ao caminho legado.
+        // aponta o forward do S2. Até a E6d o alinhamento atribuía scripts de
+        // forma GULOSA: o grupo do S2 (1º no array) empatava S1/S2 e ficava
+        // com o S1, o grupo do S1 (dica de hop) recebia o S2 -> hop "pending"
+        // no próprio professor e a validação (regra 7) devolvia a dica do hop
+        // ao legado (este teste esperava report[1] = legacy/not_done). Com a
+        // atribuição ÓTIMA (shared/hintAlignment.mjs#assignScripts) cada
+        // grupo fica com o seu script e a dica do hop ganha expected. O
+        // caminho de rebaixamento continua coberto no teste seguinte.
         const p = fx.project([{ md5: SCENE, sprites: [{ md5: RUBY, name: 'Ruby', scripts: [
             [fx.onflag(), fx.b('hop', 1), fx.b('forward', 2)],
             [fx.onflag(), fx.b('forward', 2)],
@@ -256,13 +260,45 @@ describe('buildExpectedForHints', () => {
             blockHint(['forward'], { scriptRef: 'S2', blockIndices: [1] }),
             { text: 't', when: legacyWhen },
         ], p);
-        expect(report[0]).toMatchObject({ status: 'expected' });
-        expect(report[1]).toMatchObject({ status: 'legacy', reason: 'not_done' });
-        expect(hints[1].when).toEqual(legacyWhen);
-        // O que sobrou com expected dá done.
+        expect(report).toEqual([
+            { index: 0, status: 'expected', source: 'llm' },
+            { index: 1, status: 'expected', source: 'fallback' },
+        ]);
+        expect(hints[0].when.expected).toEqual({ trigger: 'onflag', triggerArg: null, script: [{ type: 'forward', num: 2 }], covered: [0] });
+        expect(hints[1].when.expected).toEqual({
+            trigger: 'onflag', triggerArg: null, script: [{ type: 'hop', num: 1 }, { type: 'forward', num: 2 }], covered: [0],
+        });
         hints.forEach((h, i) => { h.id = 'h' + i; });
         const results = evaluateExpectedHints(hints, computeDetailedManifest(p));
-        expect([...results.values()].map((r) => r.state)).toEqual(['done']);
+        expect([...results.values()].map((r) => r.state)).toEqual(['done', 'done']);
+    });
+
+    it('validação (I1): dica que não dá done no projeto do professor perde o expected e volta ao legado exato', () => {
+        // Com a atribuição ótima, achar um caso NATURAL de "not_done" no
+        // próprio professor deixou de ser trivial (o caso acima era o
+        // conhecido). A regra 7 continua sendo a rede de segurança, então
+        // ela é exercida com o alinhamento forçado a reprovar a 2ª dica.
+        jest.isolateModules(() => {
+            jest.doMock('./hintAlignment', () => {
+                const real = jest.requireActual('./hintAlignment');
+                return {
+                    ...real,
+                    evaluateExpectedHints: (hints, detailed) => {
+                        const out = real.evaluateExpectedHints(hints, detailed);
+                        out.set('__1', { state: 'pending', reason: 'missing', scriptIndex: 0, characterOccurrence: 1 });
+                        return out;
+                    },
+                };
+            });
+            const { buildExpectedForHints: build } = require('./hintsGeneration');
+            const legacyWhen = { ...blockHint(['grow']).when, trigger: 'onmessage', triggerArg: 'azul', minCounts: { grow: 1 } };
+            const { hints, report } = build([blockHint(['hop'], { scriptRef: 'S1', blockIndices: [2] }), { text: 't', when: legacyWhen }], project);
+            expect(report[0]).toMatchObject({ status: 'expected' });
+            expect(report[1]).toMatchObject({ status: 'legacy', reason: 'not_done', detail: { state: 'pending' } });
+            expect(hints[1].when).toEqual(legacyWhen);
+            expect(hints[0].when.expected.covered).toEqual([1]);
+        });
+        jest.dontMock('./hintAlignment');
     });
 
     it('a LLM nunca injeta valor: expected/blockArgs inventados são ignorados, num vem do projeto', () => {

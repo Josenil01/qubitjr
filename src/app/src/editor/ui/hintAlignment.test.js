@@ -449,12 +449,75 @@ describe('evaluateExpectedHints - cópias e scripts repetidos', () => {
         expect(partial.h1).toMatchObject({state: 'wrong_value', characterOccurrence: 2});
     });
 
-    it('dois scripts do professor com o mesmo gatilho: atribuição gulosa de scripts distintos', () => {
+    it('dois scripts do professor com o mesmo gatilho: cada um com um script distinto do aluno', () => {
         const h = hintsFrom(proj([[onflag(), b('forward', 3)], [onflag(), b('hop', 2)]]));
         expect(states(evaluate(h, proj([[onflag(), b('hop', 2)], [onflag(), b('forward', 3)]])))).toEqual({h1: 'done', h2: 'done'});
+        // Um script só pra dois grupos que empatam nele: fica com o 1º grupo
+        // (ordem do array), o outro fica sem script.
         const r = evaluate(h, proj([[onflag(), b('forward', 3), b('hop', 2)]]));
         expect(r.h1.state).toBe('done');
         expect(r.h2.reason).toBe('no_script');
+    });
+
+    describe('atribuição ótima de scripts (empate da gulosa)', () => {
+        // Professor S1 onflag [hop 1, forward 2], S2 onflag [forward 2]; a
+        // dica do S2 vem ANTES no array. A gulosa antiga dava o S1 do aluno
+        // pro grupo do S2 (empate no forward = o 1º script) e o S2 pro grupo
+        // do S1 -> hop "pending" até no projeto do próprio professor.
+        const teacher = proj([[onflag(), b('hop', 1), b('forward', 2)], [onflag(), b('forward', 2)]]);
+        const expS1 = scriptTokens([onflag(), b('hop', 1), b('forward', 2)]);
+        const expS2 = scriptTokens([onflag(), b('forward', 2)]);
+        const hint = (id, exp, covered) => ({id, text: '', when: {
+            type: 'character_missing_block_type', sceneMd5: SCENE, sceneOccurrence: 1, characterMd5: RUBY,
+            blockTypes: [], expected: {trigger: 'onflag', triggerArg: null, script: exp, covered},
+        }});
+        const hints = [hint('fwdS2', expS2, [0]), hint('hopS1', expS1, [0]), hint('fwdS1', expS1, [1])];
+
+        it('no projeto do professor tudo dá done (qualquer ordem das dicas)', () => {
+            expect(states(evaluate(hints, teacher))).toEqual({fwdS2: 'done', hopS1: 'done', fwdS1: 'done'});
+            expect(states(evaluate(hints.slice().reverse(), teacher))).toEqual({fwdS2: 'done', hopS1: 'done', fwdS1: 'done'});
+            expect(evaluate(hints, teacher).hopS1.scriptIndex).toBe(0);
+            expect(evaluate(hints, teacher).fwdS2.scriptIndex).toBe(1);
+        });
+
+        it('aluno com os scripts na ordem trocada também pareia certo', () => {
+            const student = proj([[onflag(), b('forward', 2)], [onflag(), b('hop', 1), b('forward', 2)]]);
+            const r = evaluate(hints, student);
+            expect(states(r)).toEqual({fwdS2: 'done', hopS1: 'done', fwdS1: 'done'});
+            expect(r.hopS1.scriptIndex).toBe(1);
+            expect(r.fwdS2.scriptIndex).toBe(0);
+        });
+
+        it('aluno só com o script longo: ele vai pro grupo que ganha mais (S1), o S2 fica sem script', () => {
+            const r = evaluate(hints, proj([[onflag(), b('hop', 1), b('forward', 2)]]));
+            expect(states(r)).toEqual({fwdS2: 'pending', hopS1: 'done', fwdS1: 'done'});
+            expect(r.fwdS2.reason).toBe('no_script');
+        });
+
+        it('ganhar script vence pontuação: grupo sem par nenhum ainda recebe um script do gatilho', () => {
+            // Professor: [hop 1] e [grow 2]; aluno: [hop 1] e [] (script vazio
+            // com gatilho). O grupo do grow fica com o script vazio
+            // ("missing", não "no_script") em vez de ficar sem nada.
+            const t2 = proj([[onflag(), b('hop', 1)], [onflag(), b('grow', 2)]]);
+            const r = evaluate(hintsFrom(t2), proj([[onflag()], [onflag(), b('hop', 1)]]));
+            expect(r.h1).toMatchObject({state: 'done', scriptIndex: 1});
+            expect(r.h2).toMatchObject({state: 'pending', reason: 'missing', scriptIndex: 0});
+        });
+
+        it('scripts idênticos: occurrence 1 fica com o 1º script do aluno mesmo com a dica da 2ª antes', () => {
+            const twins = hintsFrom(proj([[onflag(), b('forward', 3)], [onflag(), b('forward', 3)]]));
+            const r = evaluate(twins.slice().reverse(), proj([[onflag(), b('forward', 3)], [onflag(), b('forward', 1)]]));
+            expect(r.h1).toMatchObject({state: 'done', scriptIndex: 0});
+            expect(r.h2).toMatchObject({state: 'wrong_value', scriptIndex: 1});
+        });
+
+        it('determinístico e acima do limite cai na gulosa sem quebrar', () => {
+            expect(evaluate(hints, teacher)).toEqual(evaluate(hints, teacher));
+            const many = [];
+            for (let i = 0; i < 14; i++) many.push([onflag(), b('forward', i + 1)]);
+            const big = hintsFrom(proj(many));
+            expect(Object.values(states(evaluate(big, proj(many)))).every((s) => s === 'done')).toBe(true);
+        });
     });
 
     it('scripts idênticos do professor -> expected.occurrence separa os grupos', () => {

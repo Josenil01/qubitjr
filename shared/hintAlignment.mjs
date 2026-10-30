@@ -341,7 +341,7 @@ function evaluateGroup (group, script) {
     // (um bloco de outro tipo é invenção do aluno, não sobra de um passo);
     // nunca say (fala é livre). Scripts do aluno com gatilho/mensagem que o
     // professor não tem nunca chegam aqui, nem os que sobraram na
-    // atribuição gulosa (ver evaluateCopy) - conservador: só acusa sobra
+    // atribuição de scripts (ver assignScripts) - conservador: só acusa sobra
     // dentro do script que corresponde ao do professor. Cada sobra vai pra
     // 1ª dica (ordem do array) cujo covered tem um token daquele tipo.
     const allPaired = T.every(function (t, ti) {
@@ -408,38 +408,145 @@ function evaluateGroup (group, script) {
 }
 
 /**
+ * Acima disto, a atribuição ótima por bitmask (assignScripts) deixa de valer
+ * a pena (2^n estados por grupo) e cai na gulosa. Um personagem com mais de
+ * 12 scripts DO MESMO GATILHO não aparece em projeto de criança; o limite só
+ * existe pra o custo nunca explodir com entrada patológica.
+ */
+const MAX_OPTIMAL_SCRIPTS = 12;
+
+/** a > b, comparando [pareados, score, exact] lexicograficamente. */
+function tripleBetter (a, b) {
+    for (let i = 0; i < 3; i++) {
+        if (a[i] !== b[i]) return a[i] > b[i];
+    }
+    return false;
+}
+
+/**
+ * Atribuição grupo -> script do aluno, por GATILHO (grupos de gatilhos
+ * diferentes nunca competem pelo mesmo script). Maximiza, nesta ordem:
+ * quantos grupos ganham script, soma de score, soma de exact (os mesmos
+ * critérios de alignScript). Empate total: a atribuição lexicograficamente
+ * mais cedo - grupos em ordem de expected.occurrence (depois a ordem de
+ * chegada no array), cada um preferindo o script que vem antes em
+ * character.scripts. Efeito: entre scripts IDÊNTICOS do professor, a 1ª
+ * ocorrência fica com o 1º script do aluno (mesma posição relativa).
+ *
+ * Por que não a gulosa de antes ("cada grupo, na ordem da 1ª dica, pega o
+ * melhor script livre; empate = o 1º"): professor S1 onflag [hop 1,
+ * forward 2] e S2 onflag [forward 2], com a dica do S2 antes no array -> o
+ * grupo do S2 empata S1/S2 (o forward pareia igual nos dois), fica com o
+ * S1, e o grupo do S1 recebe o S2: o hop aparece "pending" até no PRÓPRIO
+ * projeto do professor (o gerador rebaixava a dica pra legada) e, no aluno,
+ * o script errado era comparado. Com a soma ótima S1-S1 + S2-S2 (6) vence
+ * S2-S1 + S1-S2 (4), qualquer que seja a ordem das dicas ou dos scripts.
+ *
+ * DP sobre (índice do grupo, máscara de scripts usados) com memo - conjuntos
+ * pequenos; acima de MAX_OPTIMAL_SCRIPTS, gulosa na mesma ordem de grupos.
+ * Retorna um array paralelo a `groups`: índice em `scripts` ou null.
+ */
+function assignScripts (groups, scripts) {
+    const assignment = new Array(groups.length).fill(null);
+    const byTrigger = new Map();
+    groups.forEach(function (group, g) {
+        if (!byTrigger.has(group.trigger)) byTrigger.set(group.trigger, []);
+        byTrigger.get(group.trigger).push(g);
+    });
+    byTrigger.forEach(function (gIdx, trigger) {
+        const order = gIdx.slice().sort(function (a, b) {
+            return (groups[a].occurrence - groups[b].occurrence) || (a - b);
+        });
+        const cand = [];
+        scripts.forEach(function (script, k) {
+            if (script.trigger === trigger) cand.push(k);
+        });
+        // w[i][c] = [score, exact] do grupo order[i] no script cand[c], ou
+        // null se a mensagem não bate.
+        const w = order.map(function (g) {
+            const group = groups[g];
+            return cand.map(function (k) {
+                const script = scripts[k];
+                if (group.triggerArg !== null && script.triggerArg !== group.triggerArg) return null;
+                const al = alignScript(group.teacher, script.tokens);
+                return [al.score, al.exact];
+            });
+        });
+        if (cand.length > MAX_OPTIMAL_SCRIPTS) {
+            const used = new Set();
+            order.forEach(function (g, i) {
+                let best = -1;
+                cand.forEach(function (k, c) {
+                    if (used.has(c) || !w[i][c]) return;
+                    if (best < 0 || better(w[i][c], w[i][best])) best = c;
+                });
+                if (best >= 0) {
+                    used.add(best);
+                    assignment[g] = cand[best];
+                }
+            });
+            return;
+        }
+        const memo = new Map();
+        // Melhor [pareados, score, exact] dos grupos order[i..] com `mask`
+        // ocupada; choice = c (índice em cand) ou -1 (sem script).
+        const solve = function (i, mask) {
+            if (i === order.length) return {value: [0, 0, 0], choice: -1};
+            const key = i + ':' + mask;
+            if (memo.has(key)) return memo.get(key);
+            // "Sem script" primeiro só como base; qualquer opção estritamente
+            // melhor substitui, e scripts são tentados em ordem crescente -
+            // empate fica com o 1º script (ou, se nenhum ajuda, com nenhum).
+            const skip = solve(i + 1, mask).value;
+            let best = {value: skip, choice: -1};
+            let bestScript = null;
+            for (let c = 0; c < cand.length; c++) {
+                if ((mask & (1 << c)) || !w[i][c]) continue;
+                const rest = solve(i + 1, mask | (1 << c)).value;
+                const v = [rest[0] + 1, rest[1] + w[i][c][0], rest[2] + w[i][c][1]];
+                if (!bestScript || tripleBetter(v, bestScript.value)) bestScript = {value: v, choice: c};
+            }
+            // Ganhar um script sempre vence (1º critério); o if só protege a
+            // ordem da comparação.
+            if (bestScript && !tripleBetter(skip, bestScript.value)) best = bestScript;
+            memo.set(key, best);
+            return best;
+        };
+        let mask = 0;
+        order.forEach(function (g, i) {
+            const c = solve(i, mask).choice;
+            if (c >= 0) {
+                assignment[g] = cand[c];
+                mask |= 1 << c;
+            }
+        });
+    });
+    return assignment;
+}
+
+/**
  * Avalia todos os grupos de um personagem contra UMA cópia dele no projeto
- * do aluno. Atribuição GULOSA de scripts: grupos na ordem em que a 1ª dica
- * de cada um aparece no array; cada grupo pega, entre os scripts do aluno
- * ainda não usados com o mesmo gatilho (e mesma mensagem, se o professor
- * tem uma), o de maior pontuação de alinhamento (empate: o que vem antes em
- * character.scripts). Assim, se o professor tem dois scripts "ao tocar na
- * bandeira", cada um é comparado com um script DIFERENTE do aluno.
+ * do aluno. Cada grupo (script do professor) recebe no máximo um script do
+ * aluno com o mesmo gatilho (e mesma mensagem, se o professor tem uma), e
+ * scripts diferentes pra grupos diferentes - atribuição ÓTIMA, ver
+ * assignScripts. Assim, se o professor tem dois scripts "ao tocar na
+ * bandeira", cada um é comparado com um script DIFERENTE do aluno, e com o
+ * que melhor corresponde a ele no conjunto.
  */
 function evaluateCopy (groups, character) {
     const scripts = Array.isArray(character.scripts) ? character.scripts : [];
-    const used = new Set();
     const results = new Map();
     let score = 0;
     let exact = 0;
-    groups.forEach(function (group) {
-        let best = null;
-        let bestAl = null;
-        scripts.forEach(function (script, k) {
-            if (used.has(k) || script.trigger !== group.trigger) return;
-            if (group.triggerArg !== null && script.triggerArg !== group.triggerArg) return;
-            const al = alignScript(group.teacher, script.tokens);
-            if (!bestAl || better([al.score, al.exact], [bestAl.score, bestAl.exact])) {
-                best = k;
-                bestAl = al;
-            }
-        });
-        if (best !== null) {
-            used.add(best);
-            score += bestAl.score;
-            exact += bestAl.exact;
+    const assignment = assignScripts(groups, scripts);
+    groups.forEach(function (group, g) {
+        const k = assignment[g];
+        if (k !== null) {
+            const al = alignScript(group.teacher, scripts[k].tokens);
+            score += al.score;
+            exact += al.exact;
         }
-        evaluateGroup(group, best === null ? null : scripts[best]).forEach(function (r, id) {
+        evaluateGroup(group, k === null ? null : scripts[k]).forEach(function (r, id) {
             results.set(id, r);
         });
     });
@@ -501,6 +608,7 @@ export function evaluateExpectedHints (hints, detailed) {
             groups.set(key, {
                 trigger: when.expected.trigger,
                 triggerArg: expectedTriggerArg(when.expected),
+                occurrence: Number.isInteger(when.expected.occurrence) && when.expected.occurrence > 0 ? when.expected.occurrence : 1,
                 teacher: when.expected.script.map(function (t) {
                     return {type: t && t.type, num: t ? numOf(t) : null};
                 }),
