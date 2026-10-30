@@ -65,7 +65,7 @@ describe('P1: dica proativa travada por intro/manual dispensada', () => {
 });
 
 describe('P8: onmessage não confere QUAL mensagem', () => {
-    it.fails('blocos sob onmessage de OUTRA mensagem não resolvem a dica', () => {
+    it('blocos sob onmessage de OUTRA mensagem não resolvem a dica', () => {
         const hint = blockHint('h2', {trigger: 'onmessage', triggerArg: 'abrir'});
         const detailed = detailedFor([[onmessage('fechar'), b('forward', 3)]]);
         expect(hintConditionHolds(hint, detailed)).toBe(true);
@@ -75,12 +75,12 @@ describe('P8: onmessage não confere QUAL mensagem', () => {
 describe('P9: personagem repetido na cena, só a 1ª cópia é avaliada', () => {
     const twin = (scripts) => ({md5: CHAR, name: 'Ruby 2', scripts: scripts});
 
-    it.fails('(a) dica legada: blocos só na 2ª cópia contam como feita ("qualquer cópia")', () => {
+    it('(a) dica legada: blocos só na 2ª cópia contam como feita ("qualquer cópia")', () => {
         const detailed = detailedFor([[onflag()]], [twin([[onflag(), b('forward', 3)]])]);
         expect(hintConditionHolds(blockHint('h2'), detailed)).toBe(false);
     });
 
-    it.fails('(b) characterOccurrence: 2 avalia só a 2ª cópia', () => {
+    it('(b) characterOccurrence: 2 avalia só a 2ª cópia', () => {
         // Blocos só na 1ª cópia; a dica da 2ª continua pendente.
         const detailed = detailedFor([[onflag(), b('forward', 3)]], [twin([[onflag()]])]);
         expect(hintConditionHolds(blockHint('h2', {characterOccurrence: 2}), detailed)).toBe(true);
@@ -88,7 +88,7 @@ describe('P9: personagem repetido na cena, só a 1ª cópia é avaliada', () => 
 });
 
 describe('P10: blocos soltos (sem gatilho) satisfazem dica sem when.trigger', () => {
-    it.fails('blocos só num script solto: a dica continua pendente', () => {
+    it('blocos só num script solto: a dica continua pendente', () => {
         const detailed = detailedFor([[b('forward', 3)]]);
         expect(hintConditionHolds(blockHint('h2'), detailed)).toBe(true);
     });

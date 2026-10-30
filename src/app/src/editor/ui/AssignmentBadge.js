@@ -88,7 +88,7 @@
 
 import ScratchJr from '../ScratchJr.js';
 import Project from './Project.js';
-import {newHTML} from '../../utils/lib.js';
+import {newHTML, gn} from '../../utils/lib.js';
 import {computeProjectManifest, compareManifests} from '../../../../../shared/assignmentScoring.mjs';
 import {computeDetailedManifest} from '../../../../../shared/detailedManifest.mjs';
 import MediaLib from '../../iPad/MediaLib.js';
@@ -787,16 +787,19 @@ export default class AssignmentBadge {
     }
 
     /**
-     * Gatilho (onflag/onclick/...) do script onde `block` está - sobe pela
-     * cadeia prev até o primeiro bloco; se ele for o miolo de um `repeat`
-     * (ninguém aponta pra ele por prev), sobe pro repeat que o contém.
-     * null se o script não começa com um bloco de início.
+     * BLOCO de gatilho (onflag/onclick/...) do script onde `block` está -
+     * sobe pela cadeia prev até o primeiro bloco; se ele for o miolo de um
+     * `repeat` (ninguém aponta pra ele por prev), sobe pro repeat que o
+     * contém. Devolve o próprio Block (não só o tipo) porque o onmessage
+     * precisa também do NOME da mensagem (getArgValue - falha F8, ver
+     * _triggerMatches). null se o script não começa com um bloco de início
+     * (bloco solto).
      */
     static _triggerOfBlock (block, allBlocks) {
         let first = block.findFirst();
         for (let guard = 0; guard < 20; guard++) {
             if (/^on(flag|click|touch|message)$/.test(first.blocktype)) {
-                return first.blocktype;
+                return first;
             }
             const first0 = first;
             const owner = allBlocks.find(function (b) {
@@ -811,21 +814,89 @@ export default class AssignmentBadge {
     }
 
     /**
+     * O bloco de gatilho `triggerBlock` (ver _triggerOfBlock) é o que a dica
+     * pede? Sem when.trigger, qualquer script COM gatilho serve (bloco solto
+     * nunca - falha F10/decisão D1: blocos soltos não contam pra nada). Com
+     * when.triggerArg (onmessage, falha F8), a mensagem também precisa bater -
+     * mesma regra de HintEngine.js#blockMatch.
+     */
+    static _triggerMatches (triggerBlock, when) {
+        if (!triggerBlock) {
+            return false;
+        }
+        if (!when.trigger) {
+            return true;
+        }
+        if (triggerBlock.blocktype !== when.trigger) {
+            return false;
+        }
+        if (when.trigger === 'onmessage' && typeof when.triggerArg === 'string') {
+            return triggerBlock.getArgValue() === when.triggerArg;
+        }
+        return true;
+    }
+
+    /**
+     * O sprite selecionado AGORA no editor é a cópia do personagem que o
+     * alerta aponta? Confere, no estado ATUAL do palco (nada guardado do
+     * momento em que o alerta foi decidido - regra R8: o aluno pode ter
+     * trocado de cena/personagem, apagado ou criado cópias com o modal
+     * aberto):
+     *  - a página atual é a ocorrência certa do fundo (when.sceneOccurrence,
+     *    contada na ordem de stage.pages - a mesma ordem que
+     *    Project.js grava e que o manifesto percorre);
+     *  - o sprite selecionado tem o md5 da dica e, quando há uma cópia
+     *    específica (info.characterOccurrence, vinda de mistakeInfo/orderInfo -
+     *    ver HintEngine.js), é a N-ésima cópia desse md5 na página (ordem de
+     *    Page#getSprites = ordem de page.sprites, a mesma do manifesto). Sem
+     *    info.characterOccurrence (personagem sem cópias / dica legada sem
+     *    cópias no aluno) qualquer cópia selecionada serve, como antes.
+     */
+    static _isSelectedTarget (when, info) {
+        const spr = ScratchJr.getSprite();
+        if (!spr || spr.md5 !== when.characterMd5) {
+            return false;
+        }
+        const stage = ScratchJr.stage;
+        const page = stage.currentPage;
+        if (when.sceneMd5) {
+            const sameBackground = stage.pages.filter(function (p) {
+                return p.md5 === when.sceneMd5;
+            });
+            if (sameBackground.indexOf(page) !== (when.sceneOccurrence || 1) - 1) {
+                return false;
+            }
+        }
+        if (info.characterOccurrence) {
+            const copies = page.getSprites().filter(function (id) {
+                return gn(id).owner.md5 === when.characterMd5;
+            });
+            if (copies.indexOf(page.currentSpriteName) !== info.characterOccurrence - 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Faz PISCAR no editor o(s) bloco(s) que o alerta "Quase!" aponta como
      * errado: os do tipo da dica com valor diferente do exigido (kind
      * 'value') ou sob outro gatilho (kind 'trigger'). Só quando o personagem
-     * da dica é o que está selecionado agora (a área de scripts mostrada é a
-     * dele) - senão não há o que piscar ali, e o texto do alerta já disse o
-     * que fazer. Best-effort: qualquer surpresa no DOM legado vira no-op,
-     * nunca um erro pro aluno. Sai sozinho depois de MISTAKE_BLINK_MS.
+     * da dica - a CÓPIA certa, na cena certa (ver _isSelectedTarget) - é o
+     * que está selecionado agora (a área de scripts mostrada é a dele) -
+     * senão não há o que piscar ali, e o texto do alerta já disse o que
+     * fazer. Os blocos vivos são lidos AGORA (getBlocks() do editor no
+     * momento do highlight, chamado no onClose do modal), nunca guardados do
+     * momento do alerta - R8. Best-effort: qualquer surpresa no DOM legado
+     * vira no-op, nunca um erro pro aluno. Sai sozinho depois de
+     * MISTAKE_BLINK_MS.
      */
     static _highlightMistake (hint, info) {
         AssignmentBadge._clearMistakeBlink();
         try {
             const when = hint.when;
-            const spr = ScratchJr.getSprite();
             const scriptsEl = ScratchJr.getActiveScript();
-            if (!spr || spr.md5 !== when.characterMd5 || !scriptsEl || !scriptsEl.owner) {
+            if (!AssignmentBadge._isSelectedTarget(when, info) || !scriptsEl || !scriptsEl.owner) {
                 return;
             }
             const blocks = scriptsEl.owner.getBlocks();
@@ -835,21 +906,21 @@ export default class AssignmentBadge {
                 if (!wantedTypes.includes(b.blocktype)) {
                     return false;
                 }
-                const trigger = AssignmentBadge._triggerOfBlock(b, blocks);
+                const triggerBlock = AssignmentBadge._triggerOfBlock(b, blocks);
+                const inRightTrigger = AssignmentBadge._triggerMatches(triggerBlock, when);
                 if (info.kind === 'confirm' || info.kind === 'fill') {
-                    if (when.trigger && trigger !== when.trigger) {
-                        return false;
-                    }
-                    return !!(b.arg && b.arg.unconfirmed);
+                    return inRightTrigger && !!(b.arg && b.arg.unconfirmed);
                 }
                 if (info.kind === 'order') {
                     // Os blocos que ele já montou da dica posterior (no gatilho dela).
-                    return !when.trigger || trigger === when.trigger;
+                    return inRightTrigger;
                 }
                 if (info.kind === 'trigger') {
-                    return trigger !== when.trigger;
+                    // Inclui blocos soltos do tipo: também estão "no lugar
+                    // errado" (nunca executam) - é o que o aluno precisa mover.
+                    return !inRightTrigger;
                 }
-                if (when.trigger && trigger !== when.trigger) {
+                if (!inRightTrigger) {
                     return false;
                 }
                 const want = wantedArgs[b.blocktype];

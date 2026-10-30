@@ -1103,3 +1103,93 @@ describe('generateHints', () => {
         });
     });
 });
+
+// ---------------------------------------------------------------------------
+// Fase 2 do sistema de dicas (F8/F9/F10) - pipeline inteiro com a LLM mockada.
+// Projetos montados com shared/testing/projectFixtures.mjs.
+// ---------------------------------------------------------------------------
+describe('generateHints - Fase 2 (onmessage por mensagem, cópias, blocos soltos)', () => {
+    const fx = require('../../../shared/testing/projectFixtures.mjs');
+    const ORIGINAL_KEY = process.env.DEEPSEEK_API_KEY;
+    const SCENE = 'Woods.svg';
+    const RUBY = 'HY-Ruby.svg';
+    const blockWhen = (blockTypes, extra) => ({
+        type: 'character_missing_block_type', sceneMd5: SCENE, sceneOccurrence: 1, characterMd5: RUBY, blockTypes, ...extra,
+    });
+
+    beforeEach(() => {
+        mockCreate.mockReset();
+        process.env.DEEPSEEK_API_KEY = 'fake-test-key';
+    });
+
+    afterAll(() => {
+        if (ORIGINAL_KEY === undefined) delete process.env.DEEPSEEK_API_KEY;
+        else process.env.DEEPSEEK_API_KEY = ORIGINAL_KEY;
+    });
+
+    it('F9/R5: o transcript anota [characterOccurrence: N] só pras cópias repetidas na mesma cena', async () => {
+        const project = fx.project([{ md5: SCENE, sprites: [
+            { md5: RUBY, name: 'Ruby', scripts: [[fx.onflag(), fx.b('say', 'Oi')]] },
+            { md5: RUBY, name: 'Ruby', scripts: [] },
+            { md5: 'HY-Allan.svg', name: 'Allan', scripts: [] },
+        ] }]);
+        mockLlmResponse(JSON.stringify({ hints: [] }));
+        await generateHints(project);
+        const transcript = mockCreate.mock.calls[0][0].messages[1].content;
+        expect(transcript).toContain(`[characterMd5: ${RUBY}] [characterOccurrence: 1]`);
+        expect(transcript).toContain(`[characterMd5: ${RUBY}] [characterOccurrence: 2]`);
+        expect(transcript).not.toContain('[characterMd5: HY-Allan.svg] [characterOccurrence');
+    });
+
+    it('F9/R5: grava characterOccurrence com cópias e valida os blockTypes contra a cópia certa', async () => {
+        const project = fx.project([{ md5: SCENE, sprites: [
+            { md5: RUBY, name: 'Ruby', scripts: [[fx.onflag(), fx.b('say', 'Oi')]] },
+            { md5: RUBY, name: 'Ruby', scripts: [[fx.onclick(), fx.b('forward', 4)]] },
+        ] }]);
+        mockLlmResponse(JSON.stringify({ hints: [
+            { text: 'a', when: blockWhen(['say'], { characterOccurrence: 1 }) },
+            { text: 'b', when: blockWhen(['forward']) }, // LLM omitiu: código escolhe a 2ª
+            { text: 'c', when: blockWhen(['say', 'forward']) }, // nenhuma cópia tem os dois: descartada
+        ] }));
+        const hints = stripIntro((await generateHints(project)).hints);
+        const blockHints = hints.filter((h) => h.when.type === 'character_missing_block_type');
+        expect(blockHints.map((h) => h.text)).toEqual(['a', 'b']);
+        expect(blockHints[0].when).toMatchObject({ characterOccurrence: 1, trigger: 'onflag' });
+        expect(blockHints[1].when).toMatchObject({ characterOccurrence: 2, trigger: 'onclick', blockArgs: { forward: 4 } });
+    });
+
+    it('F9/R5: personagem sem cópias nunca leva characterOccurrence, mesmo se a LLM mandar', async () => {
+        const project = fx.project([{ md5: SCENE, sprites: [{ md5: RUBY, name: 'Ruby', scripts: [[fx.onflag(), fx.b('say', 'Oi')]] }] }]);
+        mockLlmResponse(JSON.stringify({ hints: [{ text: 'a', when: blockWhen(['say'], { characterOccurrence: 1 }) }] }));
+        const hints = stripIntro((await generateHints(project)).hints);
+        const blockHint = hints.find((h) => h.when.type === 'character_missing_block_type');
+        expect('characterOccurrence' in blockHint.when).toBe(false);
+    });
+
+    it('F8/R2: grava when.triggerArg (nome da mensagem) numa dica sob onmessage', async () => {
+        const project = fx.project([{ md5: SCENE, sprites: [{ md5: RUBY, name: 'Ruby', scripts: [
+            [fx.onmessage('azul'), fx.b('hop', 2)],
+            [fx.onmessage('verde'), fx.b('forward', 1)],
+        ] }] }]);
+        mockLlmResponse(JSON.stringify({ hints: [{ text: 'a', when: blockWhen(['forward']) }] }));
+        const hints = stripIntro((await generateHints(project)).hints);
+        const blockHint = hints.find((h) => h.when.type === 'character_missing_block_type');
+        expect(blockHint.when).toMatchObject({ trigger: 'onmessage', triggerArg: 'verde', triggerExclusive: true });
+    });
+
+    it('F10: bloco que o professor só tem num script solto não gera dica (rejeitada na validação)', async () => {
+        const project = fx.project([{ md5: SCENE, sprites: [{ md5: RUBY, name: 'Ruby', scripts: [
+            [fx.onflag(), fx.b('say', 'Oi')],
+            [fx.b('forward', 9)], // solto - nunca executa
+        ] }] }]);
+        mockLlmResponse(JSON.stringify({ hints: [
+            { text: 'fala', when: blockWhen(['say']) },
+            { text: 'anda', when: blockWhen(['forward']) },
+        ] }));
+        const hints = stripIntro((await generateHints(project)).hints);
+        expect(hints.map((h) => h.text)).toContain('fala');
+        expect(hints.map((h) => h.text)).not.toContain('anda');
+        const transcript = mockCreate.mock.calls[0][0].messages[1].content;
+        expect(transcript).not.toContain('forward');
+    });
+});

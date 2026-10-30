@@ -226,20 +226,50 @@ function walkScriptForDetail (script, agg) {
 }
 
 /**
- * Resume um script: `trigger` (script[0][0] se for um dos blocos de início -
- * onflag/onclick/ontouch/onmessage; null se o script começa solto) e `blocks`
- * (os demais, na ordem real, com o valor numérico quando existe - {type,
- * num}). Permite às dicas conferir EM QUAL gatilho o bloco está (when.trigger)
- * e quantos blocos de um tipo existem (when.minCounts), coisas que a lista
- * achatada blockTypes/blockSequence não sabe dizer.
+ * Primeiro bloco REAL do script (pula marcadores de caret - artefatos de UI
+ * do editor que podem aparecer antes do gatilho, ver o teste "excludes
+ * caret/UI-marker types"). null se o script não tem nenhum bloco real.
  */
-function buildScriptDetail (script, blocks) {
-    const first = script[0];
-    const firstType = Array.isArray(first) ? first[0] : null;
-    const isTrigger = TRIGGER_TYPES.has(firstType);
+function firstRealBlock (script) {
+    for (const block of script) {
+        if (Array.isArray(block) && block.length > 0 && !CARET_TYPES.has(block[0])) return block;
+    }
+    return null;
+}
+
+/**
+ * Mesmo critério de "argumento real" de walkScriptForDetail (ver hasRealArg
+ * lá): 'null' literal é o sentinela de "sem argumento" que
+ * Project.js#encodeStrip grava pra um message/onmessage sem mensagem
+ * escolhida no dropdown.
+ */
+function isRealArg (arg) {
+    return arg !== null && arg !== undefined && arg !== 'null' && arg !== '';
+}
+
+/**
+ * Resume um script COM gatilho (só esses chegam aqui - ver a regra de blocos
+ * soltos em computeDetailedManifest): `trigger` (onflag/onclick/ontouch/
+ * onmessage), `triggerArg` (Fase 2, falha F8: o NOME da mensagem de um
+ * onmessage - null pros outros gatilhos e pra um onmessage ainda sem
+ * mensagem escolhida) e `blocks` (os demais, na ordem real, com o valor
+ * numérico quando existe - {type, num, pending}). Permite às dicas conferir
+ * EM QUAL gatilho o bloco está (when.trigger + when.triggerArg) e quantos
+ * blocos de um tipo existem (when.minCounts), coisas que a lista achatada
+ * blockTypes/blockSequence não sabe dizer. Sem triggerArg, "quando receber
+ * a mensagem azul" e "quando receber a mensagem vermelha" eram o MESMO
+ * gatilho pras dicas - um bloco montado sob a mensagem errada resolvia a
+ * dica (regressão P8, hintRegressions.test.js).
+ *
+ * `blocks` já vem sem carets (walkScriptForDetail os pula), então blocks[0]
+ * é sempre o próprio gatilho - slice(1) o tira.
+ */
+function buildScriptDetail (head, blocks) {
+    const trigger = head[0];
     return {
-        trigger: isTrigger ? firstType : null,
-        blocks: isTrigger ? blocks.slice(1) : blocks,
+        trigger,
+        triggerArg: trigger === 'onmessage' && isRealArg(head[1]) ? head[1] : null,
+        blocks: blocks.slice(1),
     };
 }
 
@@ -269,6 +299,9 @@ export function computeDetailedManifest (projectJson) {
 
         const spriteIds = Array.isArray(page.sprites) ? page.sprites : [];
         const characters = [];
+        // characterMd5 -> quantas cópias desse MESMO personagem já apareceram
+        // nesta cena (Fase 2, falha F9) - ver characterOccurrence abaixo.
+        const characterOccurrenceByMd5 = new Map();
 
         for (const spriteId of spriteIds) {
             const sprite = page[spriteId];
@@ -292,14 +325,47 @@ export function computeDetailedManifest (projectJson) {
 
             for (const script of scripts) {
                 if (!Array.isArray(script) || script.length === 0) continue; // empty script: no code
+                // Blocos SOLTOS (Fase 2, falha F10 - decisão D1 do usuário:
+                // ignorados pelo sistema inteiro). Um script que não começa
+                // com um bloco de início nunca executa no ScratchJr - não é
+                // "código" do personagem. Antes eles entravam em TUDO
+                // (blockTypes, blockCounts, blockArgs, scripts com trigger
+                // null, sayTexts, messagesSent, blockSequence, hasScript) e
+                // resolviam qualquer dica sem when.trigger: a criança
+                // arrastava um `forward 3` pro canto, sem bandeira, e
+                // recebia a dica por feita (regressão P10). Agora o script
+                // inteiro é pulado ANTES do walk, então nenhum agregado o
+                // vê - blockTypes/blockCounts/blockArgs/sayTexts/
+                // messagesSent/messagesReceived/blockSequence/scripts - e um
+                // personagem que só tem blocos soltos fica com
+                // hasScript=false ("sem script ainda", mesma leitura que o
+                // gerador e character_no_script já fazem). Vale pros dois
+                // lados (é este mesmo arquivo): o projeto do professor com
+                // blocos soltos também não gera dica sobre eles.
+                const head = firstRealBlock(script);
+                if (!head || !TRIGGER_TYPES.has(head[0])) continue;
                 hasScript = true;
                 agg.currentBlocks = [];
                 walkScriptForDetail(script, agg);
-                scriptDetails.push(buildScriptDetail(script, agg.currentBlocks));
+                scriptDetails.push(buildScriptDetail(head, agg.currentBlocks));
+            }
+
+            const characterMd5 = sprite.md5 || null;
+            let characterOccurrence = null;
+            if (characterMd5) {
+                characterOccurrence = (characterOccurrenceByMd5.get(characterMd5) || 0) + 1;
+                characterOccurrenceByMd5.set(characterMd5, characterOccurrence);
             }
 
             characters.push({
-                characterMd5: sprite.md5 || null,
+                characterMd5,
+                // 1 na 1ª cópia deste personagem (mesmo md5) NESTA cena, 2 na
+                // 2ª cópia, etc. (Fase 2, falha F9) - mesma ideia de
+                // sceneOccurrence, um nível abaixo. Ordem = page.sprites
+                // (ordem em que foram criados no editor). null junto com
+                // characterMd5 null. Ver when.characterOccurrence em
+                // shared/hintSchema.mjs.
+                characterOccurrence,
                 // Nome dado pelo professor (ex. "Ruby"), NÃO o md5 do asset -
                 // sprite.name é a mesma propriedade que Sprite.js#getSpriteData()
                 // grava. Só usado pra deixar o texto das dicas mais natural
