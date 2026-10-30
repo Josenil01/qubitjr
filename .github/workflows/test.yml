@@ -1,0 +1,42 @@
+name: Testes
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  frontend:
+    name: Raiz (vitest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Node >= 22.12: o backend faz require() síncrono de .mjs (shared/).
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12'
+          cache: npm
+      - run: npm ci
+      - run: npx vitest run
+      # R9: cobertura só como RELATÓRIO, nunca bloqueia o CI.
+      - name: Cobertura (informativa)
+        continue-on-error: true
+        run: |
+          npx vitest run --coverage.enabled --coverage.provider=v8 \
+            --coverage.reporter=text-summary \
+            --coverage.include=src/app/src/editor/ui/HintEngine.js \
+            --coverage.include=shared/hintAlignment.mjs
+
+  backend:
+    name: Backend (jest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+        working-directory: backend
+      - run: npx jest
+        working-directory: backend
