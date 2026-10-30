@@ -292,6 +292,16 @@
     margin-bottom: 8px;
 }
 
+/* Miniatura do personagem a que a dica/alerta se refere (ver
+ * AssignmentBadge._showCoachModal#characterThumbSrc) - some junto com o
+ * emoji quando a dica não tem personagem (scene_missing/mission_intro/...). */
+.assignmentCompleteThumb {
+    display: block;
+    max-width: 90px;
+    max-height: 90px;
+    margin: 0 auto 10px;
+}
+
 .assignmentCompleteText {
     font-size: 16px;
     line-height: 1.4;

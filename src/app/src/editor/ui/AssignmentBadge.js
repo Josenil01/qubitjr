@@ -92,6 +92,7 @@ import {newHTML, gn} from '../../utils/lib.js';
 import {computeProjectManifest, compareManifests} from '../../../../../shared/assignmentScoring.mjs';
 import {computeDetailedManifest} from '../../../../../shared/detailedManifest.mjs';
 import MediaLib from '../../iPad/MediaLib.js';
+import IO from '../../iPad/IO.js';
 import Palette from './Palette.js';
 import {registerGalleryRestrictionProvider, registerZeroBlockDefaultsProvider, allCharactersAtLimit} from './GalleryRestriction.js';
 import {
@@ -120,6 +121,21 @@ const MISTAKE_BLINK_MS = 8000; // por quanto tempo o bloco errado pisca depois d
 // pelos primeiros CLOSE_DELAY_MS depois de aberto - ver _showCoachModal/
 // _renderHintsPanel.
 const CLOSE_DELAY_MS = 2000;
+
+/**
+ * Caminho do thumbnail PNG (pnglibrary) de um personagem a partir do seu
+ * characterMd5 (ex.: 'HY-Tamandua.svg') - mesmo padrão de
+ * Library.js#addLocalThumbChoose (MediaLib.path é o svglibrary; os PNGs
+ * pré-reduzidos vivem no mesmo nome de pasta trocando svg->png). null
+ * quando não há characterMd5 (dica sem personagem) ou a lib de mídia ainda
+ * não carregou (MediaLib.path indefinido antes de loadMediaLib terminar).
+ */
+function characterThumbSrc (characterMd5) {
+    if (!characterMd5 || !MediaLib.path) {
+        return null;
+    }
+    return MediaLib.path.replace('svg', 'png') + IO.getFilename(characterMd5) + '.png';
+}
 
 let assignment = null; // { id, projectName, requirements, nivel, turmaId, existingProjectId }
 let lastProgress = null; // último resultado calculado (pro popover não ficar vazio ao abrir)
@@ -757,6 +773,7 @@ export default class AssignmentBadge {
                 // Textos (legado e alinhamento) moram em HintEngine.js#alertText.
                 text: alertText(alertInfo, spokenHint),
                 extraClass: 'assignmentCoachCard',
+                characterMd5: spokenHint.when && spokenHint.when.characterMd5,
                 onClose: function () {
                     wrongValueAlerted.add(alertInfo.sig);
                     // Esta dica já foi dita (agora) - não repete a versão
@@ -776,6 +793,7 @@ export default class AssignmentBadge {
             icon: '💡',
             text: readyHint.text,
             extraClass: 'assignmentCoachCard',
+            characterMd5: readyHint.when && readyHint.when.characterMd5,
             onClose: function () {
                 dismissedHintIds.add(readyHint.id);
                 recordHintEvent(readyHint.id, 'dismissed');
@@ -1184,7 +1202,7 @@ export default class AssignmentBadge {
      * isso pra marcar a dica como dispensada nesta sessão (ver
      * dismissedHintIds).
      */
-    static _showCoachModal ({icon, title, text, extraClass, onClose}) {
+    static _showCoachModal ({icon, title, text, extraClass, characterMd5, onClose}) {
         if (coachModalEl) {
             return; // já tem um modal (parabéns ou dica) aberto - não duplica/sobrepõe
         }
@@ -1201,6 +1219,23 @@ export default class AssignmentBadge {
         const card = newHTML('div', cardClass, coachModalEl);
         const emoji = newHTML('div', 'assignmentCompleteEmoji', card);
         emoji.textContent = icon || '💡';
+        // Miniatura de QUAL personagem a dica/alerta se refere (pnglibrary,
+        // ver characterThumbSrc acima) - sem ela a criança só tem o texto
+        // pra adivinhar de quem está falando. Ausente pra dicas sem
+        // personagem (scene_missing/message_not_received/mission_intro/
+        // manual - when.characterMd5 nunca existe nessas) ou se o asset
+        // não existir (onerror remove, não deixa ícone quebrado).
+        const thumbSrc = characterThumbSrc(characterMd5);
+        if (thumbSrc) {
+            const thumb = newHTML('img', 'assignmentCompleteThumb', card);
+            thumb.src = thumbSrc;
+            thumb.alt = '';
+            thumb.onerror = function () {
+                if (thumb.parentNode) {
+                    thumb.parentNode.removeChild(thumb);
+                }
+            };
+        }
         if (title) {
             const titleEl = newHTML('div', 'assignmentCompleteTitle', card);
             titleEl.textContent = title;
