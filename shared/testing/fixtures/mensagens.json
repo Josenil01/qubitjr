@@ -1,0 +1,249 @@
+{
+  "name": "mensagens",
+  "source": "anonimizado",
+  "projectJson": {
+    "pages": [
+      "page1"
+    ],
+    "currentPage": "page1",
+    "page1": {
+      "sprites": [
+        "sprite1_1",
+        "sprite1_2",
+        "sprite1_3"
+      ],
+      "md5": "Creek.svg",
+      "sprite1_1": {
+        "type": "sprite",
+        "id": "sprite1_1",
+        "name": "Personagem 1",
+        "scripts": [
+          [
+            [
+              "onflag",
+              "null",
+              0,
+              0
+            ],
+            [
+              "say",
+              "Fala 1",
+              0,
+              0
+            ],
+            [
+              "say",
+              "Fala 2",
+              0,
+              0
+            ],
+            [
+              "say",
+              "Fala 3",
+              0,
+              0
+            ],
+            [
+              "say",
+              "Fala 4",
+              0,
+              0
+            ],
+            [
+              "message",
+              "Orange",
+              0,
+              0
+            ],
+            [
+              "say",
+              "Fala 5",
+              0,
+              0
+            ],
+            [
+              "say",
+              "Fala 6",
+              0,
+              0
+            ],
+            [
+              "message",
+              "Red",
+              0,
+              0
+            ]
+          ]
+        ],
+        "md5": "HY-Ruby.svg"
+      },
+      "sprite1_2": {
+        "type": "sprite",
+        "id": "sprite1_2",
+        "name": "Personagem 2",
+        "scripts": [
+          [
+            [
+              "onmessage",
+              "Orange",
+              0,
+              0
+            ],
+            [
+              "show",
+              "null",
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              "onflag",
+              "null",
+              0,
+              0
+            ],
+            [
+              "hide",
+              "null",
+              0,
+              0
+            ]
+          ]
+        ],
+        "md5": "HY-Tamandua.svg"
+      },
+      "sprite1_3": {
+        "type": "sprite",
+        "id": "sprite1_3",
+        "name": "Personagem 3",
+        "scripts": [
+          [
+            [
+              "onflag",
+              "null",
+              0,
+              0
+            ],
+            [
+              "hide",
+              "null",
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              "onmessage",
+              "Red",
+              0,
+              0
+            ],
+            [
+              "show",
+              "null",
+              0,
+              0
+            ]
+          ]
+        ],
+        "md5": "HY-Onca.svg"
+      }
+    }
+  },
+  "hints": [
+    {
+      "id": "h1",
+      "text": "Dica 1",
+      "when": {
+        "type": "scene_missing",
+        "sceneMd5": "Creek.svg"
+      }
+    },
+    {
+      "id": "h2",
+      "text": "Dica 2",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Creek.svg",
+        "blockTypes": [
+          "say"
+        ],
+        "characterMd5": "HY-Ruby.svg"
+      }
+    },
+    {
+      "id": "h3",
+      "text": "Dica 3",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Creek.svg",
+        "blockTypes": [
+          "say"
+        ],
+        "characterMd5": "HY-Ruby.svg"
+      }
+    },
+    {
+      "id": "h4",
+      "text": "Dica 4",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Creek.svg",
+        "blockTypes": [
+          "message"
+        ],
+        "characterMd5": "HY-Ruby.svg"
+      }
+    },
+    {
+      "id": "h5",
+      "text": "Dica 5",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Creek.svg",
+        "blockTypes": [
+          "show",
+          "hide"
+        ],
+        "characterMd5": "HY-Tamandua.svg"
+      }
+    },
+    {
+      "id": "h6",
+      "text": "Dica 6",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Creek.svg",
+        "blockTypes": [
+          "say"
+        ],
+        "characterMd5": "HY-Tamandua.svg"
+      }
+    },
+    {
+      "id": "h7",
+      "text": "Dica 7",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Creek.svg",
+        "blockTypes": [
+          "message"
+        ],
+        "characterMd5": "HY-Ruby.svg"
+      }
+    },
+    {
+      "id": "h8",
+      "text": "Dica 8",
+      "when": {
+        "type": "character_missing_block_type",
+        "sceneMd5": "Creek.svg",
+        "blockTypes": [
+          "show"
+        ],
+        "characterMd5": "HY-Onca.svg"
+      }
+    }
+  ]
+}

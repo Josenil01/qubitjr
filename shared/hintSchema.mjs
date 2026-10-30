@@ -48,16 +48,70 @@ export const ALL_WHEN_TYPES = Object.freeze([...LLM_WHEN_TYPES, MANUAL_WHEN_TYPE
  * entender o contrato sem precisar ler os dois arquivos lado a lado):
  *
  * scene_missing:                {type, sceneMd5, sceneOccurrence}
- * character_missing:             {type, sceneMd5, sceneOccurrence, characterMd5}
- * character_no_script:           {type, sceneMd5, sceneOccurrence, characterMd5}
+ * character_missing:             {type, sceneMd5, sceneOccurrence, characterMd5,
+ *                                  characterOccurrence?: number}
+ * character_no_script:           {type, sceneMd5, sceneOccurrence, characterMd5,
+ *                                  characterOccurrence?: number}
  * character_missing_block_type:  {type, sceneMd5, sceneOccurrence, characterMd5,
+ *                                  characterOccurrence?: number,
  *                                  blockTypes: string[], blockArgs?: {[blockType]: number},
  *                                  minCounts?: {[blockType]: number}, trigger?: string,
- *                                  triggerExclusive?: true}
- *                                 - blockArgs/minCounts/trigger/triggerExclusive são
- *                                   preenchidos por CÓDIGO depois da LLM gerar a dica
+ *                                  triggerArg?: string, triggerExclusive?: true}
+ *                                 - blockArgs/minCounts/trigger/triggerArg/triggerExclusive
+ *                                   são preenchidos por CÓDIGO depois da LLM gerar a dica
  *                                   (fillBlockArgs/fillBlockContext em hintsGeneration.js),
  *                                   nunca confiados ao texto que a LLM devolve.
+ *                                 - triggerArg (Fase 2, falha F8): só com trigger
+ *                                   'onmessage' - o NOME da mensagem do script do professor
+ *                                   (manifesto: scripts[].triggerArg). O bloco só conta sob
+ *                                   "quando receber ESSA mensagem"; minCounts e
+ *                                   triggerExclusive também são por (gatilho, mensagem).
+ *                                   Ausente (dica legada, ou onmessage do professor sem
+ *                                   mensagem escolhida - o 'null' literal do editor) =
+ *                                   qualquer onmessage serve.
+ *
+ *                                 - expected?: (Fase 3 - alinhamento posição a posição; ver
+ *                                   shared/hintAlignment.mjs) - quando presente, o cliente
+ *                                   avalia a dica por evaluateExpectedHints em vez do caminho
+ *                                   legado (blockTypes/blockArgs/minCounts/triggerExclusive,
+ *                                   que continuam gravados por compatibilidade com clientes
+ *                                   antigos e dicas salvas antes da Fase 3):
+ *                                   {trigger: string,          // gatilho do script do professor
+ *                                    triggerArg: string|null,  // nome da mensagem (só onmessage;
+ *                                                              //  null = qualquer onmessage)
+ *                                    script: [{type, num}],    // TODOS os tokens do script do
+ *                                                              //  professor, na ordem
+ *                                    covered: number[],        // índices em `script` que ESTA
+ *                                                              //  dica ensina
+ *                                    occurrence?: number}      // 1-based, só quando o MESMO
+ *                                                              //  personagem do professor tem
+ *                                                              //  2+ scripts com trigger+
+ *                                                              //  triggerArg+script idênticos
+ *                                   `script` sai de shared/detailedManifest.mjs#scriptTokens
+ *                                   (tupla crua) ou toExpectedTokens(manifesto scripts[].tokens)
+ *                                   - o MESMO tokenizador do lado do aluno. Formato do token:
+ *                                   {type, num}: num = valor numérico (tipos numéricos), null pra
+ *                                   say (texto livre - qualquer fala não-padrão serve), pros
+ *                                   tipos sem número, e pra numérico sem valor no professor
+ *                                   (= qualquer valor serve). Um repeat vira {type:'repeat',
+ *                                   num:N}, os tokens de dentro, e {type:'/repeat', num:null}
+ *                                   (REPEAT_CLOSE). O gatilho NÃO é token (vai em trigger/
+ *                                   triggerArg). covered nunca precisa listar '/repeat' (é
+ *                                   ignorado; o fechamento acompanha a abertura). covered vazio
+ *                                   = "crie o script com esse gatilho" (done assim que existir).
+ *                                   Todas as dicas de um mesmo script do professor carregam o
+ *                                   MESMO trigger/triggerArg/script/occurrence - é isso que as
+ *                                   agrupa (extra_block depende do grupo inteiro).
+ *
+ * characterOccurrence (Fase 2, falha F9) - 1-based, qual CÓPIA do personagem
+ *   (mesmo characterMd5) na cena, na ordem de page.sprites - mesma ideia de
+ *   sceneOccurrence, um nível abaixo (manifesto: characters[].characterOccurrence).
+ *   O gerador (fillCharacterOccurrence em hintsGeneration.js) só grava quando a
+ *   cena do PROFESSOR tem cópias repetidas daquele personagem; senão o campo não
+ *   existe. Ausente = regra "qualquer cópia" no cliente (HintEngine.js#candidatesFor):
+ *   a dica conta como feita se QUALQUER cópia a satisfaz, pendente se nenhuma.
+ *   character_missing com characterOccurrence N = pendente enquanto o aluno não
+ *   tem N cópias. Nunca usado em default_character_present.
  * message_not_received:          {type, messageName}
  * default_character_present:     {type, sceneMd5, sceneOccurrence, characterMd5: 'HY-Ruby.svg'}
  * mission_intro:                 {type} - sem cena/personagem, sempre o 1º hint do array,

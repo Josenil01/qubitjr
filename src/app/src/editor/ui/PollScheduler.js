@@ -18,8 +18,8 @@
  * depois, mesma garantia que _lockCompletion() já dava. idleFor() devolve
  * há quanto tempo (ms) o aluno não interage com a página - consumido por
  * AssignmentBadge._evaluateHints() pra decidir SE uma dica pronta pode
- * interromper agora (IDLE_BEFORE_HINT_MS/ALERT_IDLE_MS continuam em
- * AssignmentBadge.js: são política de QUANDO mostrar, não de agendamento).
+ * interromper agora (IDLE_BEFORE_HINT_MS/ALERT_IDLE_MS são exportadas
+ * de HintEngine.js: são política de QUANDO mostrar, não de agendamento).
  *
  * Correção de 2 vazamentos encontrados ao extrair (ambos herdados do
  * código original, nunca intencionais - ver docblock de `active` abaixo):

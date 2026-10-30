@@ -95,4 +95,45 @@ async function resolveAssignmentFields(supabase, assignmentRow) {
     }
 }
 
-module.exports = { resolveAssignmentFields };
+/**
+ * Carimbo de "última vez que o professor salvou as dicas" do TEMPLATE de uma
+ * missão (assignments.hints_updated_at). Os ids de dica são posicionais
+ * (h1..hN), então uma dispensa gravada antes do carimbo pertence a OUTRA
+ * geração de dicas e não pode valer pra nova - GET /:id/hints/dismissed usa
+ * isto pra descartá-las. Referências herdam as dicas do template ao vivo
+ * (ver resolveAssignmentFields), então o carimbo também é o do template.
+ *
+ * Nunca lança: devolve null (= comportamento legado, sem filtro) se a linha
+ * não existe, se o carimbo é NULL (dicas anteriores à coluna) ou se qualquer
+ * consulta falha - em especial quando o SQL que cria a coluna ainda não foi
+ * aplicado no banco ("column ... does not exist").
+ *
+ * @returns {Promise<string|null>} timestamp ISO/Postgres ou null.
+ */
+async function resolveHintsUpdatedAt(supabase, assignmentId) {
+    try {
+        // Só colunas antigas aqui: esta consulta não pode quebrar por causa
+        // da coluna nova.
+        const { data: row, error } = await supabase
+            .from('assignments')
+            .select('id, template_id')
+            .eq('id', assignmentId)
+            .maybeSingle();
+        if (error || !row) return null;
+
+        const templateId = row.template_id || row.id;
+        const { data: tpl, error: tplErr } = await supabase
+            .from('assignments')
+            .select('hints_updated_at')
+            .eq('id', templateId)
+            .maybeSingle();
+        if (tplErr || !tpl) return null;
+
+        return tpl.hints_updated_at || null;
+    } catch (err) {
+        console.warn('[assignmentResolver] Falha ao ler hints_updated_at (degradando para sem filtro):', err.message);
+        return null;
+    }
+}
+
+module.exports = { resolveAssignmentFields, resolveHintsUpdatedAt };

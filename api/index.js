@@ -60,6 +60,7 @@ const SHARED_ESM_SPECIFIERS = [
   '../shared/assignmentScoring.mjs',
   '../shared/detailedManifest.mjs',
   '../shared/hintSchema.mjs',
+  '../shared/hintAlignment.mjs',
 ];
 
 let preloadPromise = null;

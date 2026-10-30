@@ -88,7 +88,7 @@
 
 import ScratchJr from '../ScratchJr.js';
 import Project from './Project.js';
-import {newHTML} from '../../utils/lib.js';
+import {newHTML, gn} from '../../utils/lib.js';
 import {computeProjectManifest, compareManifests} from '../../../../../shared/assignmentScoring.mjs';
 import {computeDetailedManifest} from '../../../../../shared/detailedManifest.mjs';
 import MediaLib from '../../iPad/MediaLib.js';
@@ -96,27 +96,22 @@ import Palette from './Palette.js';
 import {registerGalleryRestrictionProvider, registerZeroBlockDefaultsProvider, allCharactersAtLimit} from './GalleryRestriction.js';
 import {
     hintConditionHolds,
-    mistakeInfo as computeMistakeInfo,
-    orderInfo as computeOrderInfo,
+    decideHintAction,
     actorLabelFor,
+    alertText,
+    expectedResultsFor,
+    freshAlignmentTarget,
+    resolveLiveBlock,
 } from './HintEngine.js';
 import PollScheduler from './PollScheduler.js';
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
-const IDLE_BEFORE_HINT_MS = 3000; // aluno precisa ficar esse tempo sem clicar/arrastar/digitar em
-// lugar NENHUM da página antes da próxima dica poder aparecer sozinha - achado em teste real
-// ("cadência desordenada"): um tempo fixo desde o fechamento da dica anterior (mecanismo
-// antigo) não tinha relação com o que o aluno estava fazendo, podendo interromper ele no meio
-// de uma ação. Ver PollScheduler.idleFor()/PollScheduler.js. Só vale pro caminho automático
-// (poll) - o painel de dicas (_openHintsPanel) ignora, de propósito: é exatamente pra isso que
-// ele existe (ver docblock do ponto 7 no topo do arquivo).
-const ALERT_IDLE_MS = 1000; // o alerta "Quase!" (valor/gatilho errado) vem logo depois da AÇÃO do aluno
-// (soltar o bloco) - é quando a dica mais vale, então não espera os 3s de IDLE_BEFORE_HINT_MS
-// (esses são só pra dica proativa, que INTERROMPE o aluno). Ver _evaluateHints.
-// FILL_IDLE_MS (tempo de espera pro alerta de bloco zerado) mora agora em
-// HintEngine.js, junto da lógica que decide o kind 'fill' - este arquivo só
-// lê de volta via wrongValueInfo.idleMs, nunca precisa do valor em si.
+// IDLE_BEFORE_HINT_MS (ociosidade antes da dica proativa), ALERT_IDLE_MS
+// (antes do alerta "Quase!") e FILL_IDLE_MS (antes do alerta de bloco
+// zerado) moram em HintEngine.js, junto de decideHintAction - que é quem
+// compara a ociosidade com eles (Fase 1, R4). Este arquivo só passa
+// PollScheduler.idleFor() e executa a decisão.
 const MISTAKE_BLINK_MS = 8000; // por quanto tempo o bloco errado pisca depois do aluno fechar o alerta
 // Achado em teste real: fechar a dica/painel clicando fora do cartão, ou
 // clicando no botão de fechar rápido demais (reflexo/clique duplo), dispensava
@@ -689,8 +684,10 @@ export default class AssignmentBadge {
 
     /**
      * Avalia assignment.hints (nesta ordem - ver docblock do topo do
-     * arquivo) e acha a primeira ainda não dispensada cujo `when` está
-     * batendo agora no projeto do aluno. Duas coisas acontecem com esse
+     * arquivo) e acha a dica proativa pronta (HintEngine.js#
+     * nextProactiveHint: a primeira pendente, se não dispensada - intro/
+     * manual já dispensadas são puladas, ver o porquê lá: sem isso, fechar
+     * a intro calava todas as dicas proativas da missão). Duas coisas acontecem com esse
      * resultado, independentemente uma da outra:
      *  1. O ponto/indicador do botão flutuante é atualizado (ver
      *     _updateHintButton) - reflete "há dica pronta" mesmo que ela não
@@ -716,92 +713,49 @@ export default class AssignmentBadge {
         if (!hints.length) {
             return;
         }
-        const detailed = computeDetailedManifest(projectJson);
-        // Só a dica MAIS ANTIGA (na ordem que o professor cadastrou) cujo
-        // requisito ainda não foi cumprido pode aparecer sozinha - mesmo que
-        // a condição de uma dica POSTERIOR já esteja batendo agora. Achado
-        // em teste real: fechar a dica 1 (sem o aluno ter feito a tarefa
-        // dela) deixava ela em dismissedHintIds, e o .find() de antes pulava
-        // direto pra dica 2 assim que a espera de ociosidade batesse - as
-        // dicas apareciam em sequência sem o aluno nunca ter cumprido a
-        // primeira. Agora, se a primeira pendente já foi dispensada, nenhuma
-        // dica aparece sozinha até ela ser resolvida de verdade (o botão
-        // flutuante de dica continua dando acesso a todas via _openHintsPanel,
-        // que ignora esta trava de propósito - ver docblock do ponto 7).
-        const firstPending = hints.find(function (hint) {
-            return hint && hintConditionHolds(hint, detailed);
-        });
-        const readyHint = (firstPending && !dismissedHintIds.has(firstPending.id)) ? firstPending : null;
-        // Ponto do botão flutuante: reflete "há dica pronta" mesmo quando ela
-        // ainda não pode ser MOSTRADA agora (ociosidade/modal já aberto, ver
-        // guardas abaixo) - ver docblock do ponto 1 no topo do arquivo. Bug
-        // real encontrado nesta refatoração: esta chamada nunca existia com
-        // `true`, só com `false` (no ramo isComplete acima) - o pontinho
-        // nunca ligava, mesmo quando havia dica pronta esperando o aluno
-        // ficar ocioso.
-        AssignmentBadge._updateHintButton(!!readyHint);
-        // Alerta de VALOR ERRADO - canal separado da dica proativa (readyHint):
-        // a dica proativa aparece uma vez e, fechada, nunca volta
-        // (dismissedHintIds); mas o aluno pode montar o bloco DEPOIS de
-        // fechá-la, com o valor errado - e ninguém avisava (achado em teste
-        // real, aluno Josué/missão "Cofrinho": grow 5 em vez de 2, silêncio).
-        // Independe de dismissedHintIds; cada combinação de valores errados
-        // avisa uma única vez (wrongValueAlerted) - mudar pra OUTRO valor
-        // errado avisa de novo, ficar parado no mesmo não repete.
-        let wrongValueHint = null;
-        let wrongValueInfo = null;
-        hints.some(function (hint) {
-            const info = computeMistakeInfo(hint, detailed);
-            if (info && !wrongValueAlerted.has(info.sig)) {
-                wrongValueHint = hint;
-                wrongValueInfo = info;
-                return true;
-            }
-            return false;
-        });
-
-        // Alerta de FORA DE ORDEM (só se não há erro de valor/gatilho a
-        // apontar): o aluno montou o bloco de uma dica POSTERIOR enquanto uma
-        // anterior do mesmo personagem ainda está pendente (achado em teste
-        // real: clique + say montados antes da bandeira + say que a dica
-        // pedia primeiro - nada avisava, a dica da bandeira já tinha sido
-        // fechada). Ver orderInfo em HintEngine.js.
-        if (!wrongValueHint) {
-            const orderInfo = computeOrderInfo(hints, detailed);
-            if (orderInfo && !wrongValueAlerted.has(orderInfo.sig)) {
-                wrongValueHint = orderInfo.doneHint;
-                wrongValueInfo = orderInfo;
-            }
-        }
-
-        if ((!readyHint && !wrongValueHint) || coachModalEl || hintsPanelEl) {
+        // TODA a decisão (qual dica/alerta, trava "só a mais antiga pendente",
+        // prioridade alerta > dica, esperas de ociosidade, guardas de modal/
+        // painel aberto) mora em HintEngine.js#decideHintAction - pura e
+        // testada (decideHintAction.test.js). Aqui só se executam os efeitos
+        // descritos pelo retorno: ponto do botão, eventos, modal, pisca.
+        const decision = decideHintAction({
+            hints: hints,
+            detailed: computeDetailedManifest(projectJson),
+            dismissed: dismissedHintIds,
+            alerted: wrongValueAlerted,
+            idleMs: PollScheduler.idleFor(),
+            modalOpen: !!coachModalEl,
             // hintsPanelEl aberto: o aluno já está olhando as dicas por conta
-            // própria (ver _openHintsPanel) - não faz sentido interromper com
-            // o modal automático por cima nesse momento.
+            // própria (ver _openHintsPanel) - não interrompe por cima.
+            panelOpen: !!hintsPanelEl,
+        });
+        // Ponto do botão flutuante: reflete "há dica pronta" mesmo quando ela
+        // ainda não pode ser MOSTRADA agora (ociosidade/modal já aberto) -
+        // ver docblock do ponto 1 no topo do arquivo. Bug real encontrado
+        // na refatoração Fase 0: esta chamada nunca existia com `true`, só
+        // com `false` (no ramo isComplete acima) - o pontinho nunca ligava.
+        if (decision.buttonDot !== null) {
+            AssignmentBadge._updateHintButton(decision.buttonDot);
+        }
+        const action = decision.action;
+        if (!action) {
             return;
         }
-        const idleFor = PollScheduler.idleFor();
-        if (wrongValueHint) {
-            if (idleFor < (wrongValueInfo.idleMs || ALERT_IDLE_MS)) {
-                return; // acabou de soltar/arrastar algo - espera só um instante, não os 3s da dica proativa
-            }
-            const alertHint = wrongValueHint;
-            const alertInfo = wrongValueInfo;
+        if (action.kind === 'alert') {
+            const alertHint = action.hint;
+            const alertInfo = action.info;
             // Em "fora de ordem" o texto dito (e o evento gravado) é o da dica
             // PENDENTE que o aluno pulou, não o da que ele já montou.
-            const spokenHint = alertInfo.kind === 'order' ? alertInfo.pendingHint : alertHint;
-            const kindText = {
-                trigger: 'Quase! O bloco está no lugar errado - confira qual bloco de início vem antes dele. ',
-                order: 'Opa, esse bloco vem depois! Primeiro faça: ',
-                confirm: 'Quase! Toque no número do bloco para confirmar o valor. ',
-                fill: 'Falta escolher o valor do bloco - toque nele para definir. ',
-                value: 'Quase! O valor do bloco ainda não está certo. ',
-            };
+            const spokenHint = action.spokenHint;
             recordHintEvent(spokenHint.id, 'shown');
+            // Evento = 'wrong_' + kind: value/order/confirm/fill (legado e
+            // alinhamento), trigger (só legado) e extra (só alinhamento -
+            // 'wrong_extra', novo na Fase 3).
             recordHintEvent(spokenHint.id, 'wrong_' + alertInfo.kind);
             AssignmentBadge._showCoachModal({
                 icon: '🤔',
-                text: (kindText[alertInfo.kind] || kindText.value) + spokenHint.text,
+                // Textos (legado e alinhamento) moram em HintEngine.js#alertText.
+                text: alertText(alertInfo, spokenHint),
                 extraClass: 'assignmentCoachCard',
                 onClose: function () {
                     wrongValueAlerted.add(alertInfo.sig);
@@ -816,9 +770,7 @@ export default class AssignmentBadge {
             });
             return;
         }
-        if (idleFor < IDLE_BEFORE_HINT_MS) {
-            return; // pronta, mas o aluno ainda está mexendo em algo - espera ele parar
-        }
+        const readyHint = action.hint; // action.kind === 'hint'
         recordHintEvent(readyHint.id, 'shown');
         AssignmentBadge._showCoachModal({
             icon: '💡',
@@ -836,16 +788,19 @@ export default class AssignmentBadge {
     }
 
     /**
-     * Gatilho (onflag/onclick/...) do script onde `block` está - sobe pela
-     * cadeia prev até o primeiro bloco; se ele for o miolo de um `repeat`
-     * (ninguém aponta pra ele por prev), sobe pro repeat que o contém.
-     * null se o script não começa com um bloco de início.
+     * BLOCO de gatilho (onflag/onclick/...) do script onde `block` está -
+     * sobe pela cadeia prev até o primeiro bloco; se ele for o miolo de um
+     * `repeat` (ninguém aponta pra ele por prev), sobe pro repeat que o
+     * contém. Devolve o próprio Block (não só o tipo) porque o onmessage
+     * precisa também do NOME da mensagem (getArgValue - falha F8, ver
+     * _triggerMatches). null se o script não começa com um bloco de início
+     * (bloco solto).
      */
     static _triggerOfBlock (block, allBlocks) {
         let first = block.findFirst();
         for (let guard = 0; guard < 20; guard++) {
             if (/^on(flag|click|touch|message)$/.test(first.blocktype)) {
-                return first.blocktype;
+                return first;
             }
             const first0 = first;
             const owner = allBlocks.find(function (b) {
@@ -860,21 +815,93 @@ export default class AssignmentBadge {
     }
 
     /**
+     * O bloco de gatilho `triggerBlock` (ver _triggerOfBlock) é o que a dica
+     * pede? Sem when.trigger, qualquer script COM gatilho serve (bloco solto
+     * nunca - falha F10/decisão D1: blocos soltos não contam pra nada). Com
+     * when.triggerArg (onmessage, falha F8), a mensagem também precisa bater -
+     * mesma regra de HintEngine.js#blockMatch.
+     */
+    static _triggerMatches (triggerBlock, when) {
+        if (!triggerBlock) {
+            return false;
+        }
+        if (!when.trigger) {
+            return true;
+        }
+        if (triggerBlock.blocktype !== when.trigger) {
+            return false;
+        }
+        if (when.trigger === 'onmessage' && typeof when.triggerArg === 'string') {
+            return triggerBlock.getArgValue() === when.triggerArg;
+        }
+        return true;
+    }
+
+    /**
+     * O sprite selecionado AGORA no editor é a cópia do personagem que o
+     * alerta aponta? Confere, no estado ATUAL do palco (nada guardado do
+     * momento em que o alerta foi decidido - regra R8: o aluno pode ter
+     * trocado de cena/personagem, apagado ou criado cópias com o modal
+     * aberto):
+     *  - a página atual é a ocorrência certa do fundo (when.sceneOccurrence,
+     *    contada na ordem de stage.pages - a mesma ordem que
+     *    Project.js grava e que o manifesto percorre);
+     *  - o sprite selecionado tem o md5 da dica e, quando há uma cópia
+     *    específica (info.characterOccurrence, vinda de mistakeInfo/orderInfo -
+     *    ver HintEngine.js), é a N-ésima cópia desse md5 na página (ordem de
+     *    Page#getSprites = ordem de page.sprites, a mesma do manifesto). Sem
+     *    info.characterOccurrence (personagem sem cópias / dica legada sem
+     *    cópias no aluno) qualquer cópia selecionada serve, como antes.
+     */
+    static _isSelectedTarget (when, info) {
+        const spr = ScratchJr.getSprite();
+        if (!spr || spr.md5 !== when.characterMd5) {
+            return false;
+        }
+        const stage = ScratchJr.stage;
+        const page = stage.currentPage;
+        if (when.sceneMd5) {
+            const sameBackground = stage.pages.filter(function (p) {
+                return p.md5 === when.sceneMd5;
+            });
+            if (sameBackground.indexOf(page) !== (when.sceneOccurrence || 1) - 1) {
+                return false;
+            }
+        }
+        if (info.characterOccurrence) {
+            const copies = page.getSprites().filter(function (id) {
+                return gn(id).owner.md5 === when.characterMd5;
+            });
+            if (copies.indexOf(page.currentSpriteName) !== info.characterOccurrence - 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Faz PISCAR no editor o(s) bloco(s) que o alerta "Quase!" aponta como
      * errado: os do tipo da dica com valor diferente do exigido (kind
      * 'value') ou sob outro gatilho (kind 'trigger'). Só quando o personagem
-     * da dica é o que está selecionado agora (a área de scripts mostrada é a
-     * dele) - senão não há o que piscar ali, e o texto do alerta já disse o
-     * que fazer. Best-effort: qualquer surpresa no DOM legado vira no-op,
-     * nunca um erro pro aluno. Sai sozinho depois de MISTAKE_BLINK_MS.
+     * da dica - a CÓPIA certa, na cena certa (ver _isSelectedTarget) - é o
+     * que está selecionado agora (a área de scripts mostrada é a dele) -
+     * senão não há o que piscar ali, e o texto do alerta já disse o que
+     * fazer. Os blocos vivos são lidos AGORA (getBlocks() do editor no
+     * momento do highlight, chamado no onClose do modal), nunca guardados do
+     * momento do alerta - R8. Best-effort: qualquer surpresa no DOM legado
+     * vira no-op, nunca um erro pro aluno. Sai sozinho depois de
+     * MISTAKE_BLINK_MS.
      */
     static _highlightMistake (hint, info) {
         AssignmentBadge._clearMistakeBlink();
+        if (info && info.source === 'expected') {
+            AssignmentBadge._highlightAligned(hint, info);
+            return;
+        }
         try {
             const when = hint.when;
-            const spr = ScratchJr.getSprite();
             const scriptsEl = ScratchJr.getActiveScript();
-            if (!spr || spr.md5 !== when.characterMd5 || !scriptsEl || !scriptsEl.owner) {
+            if (!AssignmentBadge._isSelectedTarget(when, info) || !scriptsEl || !scriptsEl.owner) {
                 return;
             }
             const blocks = scriptsEl.owner.getBlocks();
@@ -884,21 +911,21 @@ export default class AssignmentBadge {
                 if (!wantedTypes.includes(b.blocktype)) {
                     return false;
                 }
-                const trigger = AssignmentBadge._triggerOfBlock(b, blocks);
+                const triggerBlock = AssignmentBadge._triggerOfBlock(b, blocks);
+                const inRightTrigger = AssignmentBadge._triggerMatches(triggerBlock, when);
                 if (info.kind === 'confirm' || info.kind === 'fill') {
-                    if (when.trigger && trigger !== when.trigger) {
-                        return false;
-                    }
-                    return !!(b.arg && b.arg.unconfirmed);
+                    return inRightTrigger && !!(b.arg && b.arg.unconfirmed);
                 }
                 if (info.kind === 'order') {
                     // Os blocos que ele já montou da dica posterior (no gatilho dela).
-                    return !when.trigger || trigger === when.trigger;
+                    return inRightTrigger;
                 }
                 if (info.kind === 'trigger') {
-                    return trigger !== when.trigger;
+                    // Inclui blocos soltos do tipo: também estão "no lugar
+                    // errado" (nunca executam) - é o que o aluno precisa mover.
+                    return !inRightTrigger;
                 }
-                if (when.trigger && trigger !== when.trigger) {
+                if (!inRightTrigger) {
                     return false;
                 }
                 const want = wantedArgs[b.blocktype];
@@ -914,6 +941,46 @@ export default class AssignmentBadge {
             }
         } catch (err) {
             console.warn('[AssignmentBadge] _highlightMistake falhou (não-fatal):', err && err.message);
+        }
+    }
+
+    /**
+     * _highlightMistake de um alerta do ALINHAMENTO (info.source 'expected',
+     * Fase 3): pisca exatamente UM bloco - o da posição que o alinhamento
+     * aponta. R8: nada do momento da decisão é reaproveitado além do kind -
+     * o projeto é relido AGORA (_readProjectJson, com a máscara de não
+     * confirmados, igual ao poll), o alinhamento é refeito
+     * (HintEngine.js#freshAlignmentTarget) e, se a mesma dica ainda está no
+     * mesmo kind de alerta, a posição FRESCA ({scriptIndex, path}) é mapeada
+     * pro Block vivo por HintEngine.js#resolveLiveBlock sobre
+     * getEncodableBlocks() da área de scripts do sprite selecionado - a mesma
+     * lista que Sprite.js#getData acabou de serializar (ver o docblock de
+     * resolveLiveBlock pra correspondência índice a índice). Estado
+     * mudou/sumiu, ou o sprite selecionado não é a cópia avaliada (cena/
+     * personagem/ocorrência, _isSelectedTarget): não pisca nada.
+     */
+    static _highlightAligned (hint, info) {
+        try {
+            const projectJson = AssignmentBadge._readProjectJson();
+            if (!projectJson) {
+                return;
+            }
+            const hints = (assignment && Array.isArray(assignment.hints)) ? assignment.hints : [hint];
+            const target = freshAlignmentTarget(hints, hint, info, computeDetailedManifest(projectJson));
+            const scriptsEl = ScratchJr.getActiveScript();
+            if (!target || !scriptsEl || !scriptsEl.owner ||
+                !AssignmentBadge._isSelectedTarget(hint.when, {characterOccurrence: target.characterOccurrence})) {
+                return;
+            }
+            const block = resolveLiveBlock(scriptsEl.owner.getEncodableBlocks(), target.position);
+            if (!block || !block.div) {
+                return;
+            }
+            blockBlinkEls = [block.div];
+            block.div.classList.add('assignmentBlockBlink');
+            blockBlinkTimer = window.setTimeout(AssignmentBadge._clearMistakeBlink, MISTAKE_BLINK_MS);
+        } catch (err) {
+            console.warn('[AssignmentBadge] _highlightAligned falhou (não-fatal):', err && err.message);
         }
     }
 
@@ -993,6 +1060,9 @@ export default class AssignmentBadge {
         AssignmentBadge._recomputeLocal(); // status de cada dica no painel reflete o projeto agora
         const projectJson = AssignmentBadge._readProjectJson();
         const detailed = projectJson ? computeDetailedManifest(projectJson) : {scenes: []};
+        // Alinhamento (dicas com when.expected) calculado UMA vez pro painel
+        // inteiro - reaproveitado no status de cada dica a cada Anterior/Próxima.
+        const expectedResults = expectedResultsFor(hints, detailed);
 
         // Sempre começa na primeira dica, em ordem, cuja condição ainda
         // esteja batendo no projeto do aluno agora (primeira tarefa ainda
@@ -1011,13 +1081,13 @@ export default class AssignmentBadge {
         // normalmente pro modal automático (_evaluateHints) e pro botão
         // Anterior/Próxima dentro do painel já aberto.
         let startIndex = hints.findIndex(function (h) {
-            return h && h.when && h.when.type !== 'mission_intro' && hintConditionHolds(h, detailed);
+            return h && h.when && h.when.type !== 'mission_intro' && hintConditionHolds(h, detailed, expectedResults);
         });
         if (startIndex < 0) {
             startIndex = 0;
         }
 
-        AssignmentBadge._renderHintsPanel(hints, detailed, startIndex);
+        AssignmentBadge._renderHintsPanel(hints, detailed, startIndex, expectedResults);
     }
 
     /**
@@ -1027,7 +1097,7 @@ export default class AssignmentBadge {
      * clicando fora), e esse botão só funciona depois de CLOSE_DELAY_MS -
      * ver docblock daquela constante no topo do arquivo.
      */
-    static _renderHintsPanel (hints, detailed, startIndex) {
+    static _renderHintsPanel (hints, detailed, startIndex, expectedResults) {
         let index = startIndex;
 
         hintsPanelEl = newHTML('div', 'assignmentCompleteOverlay', document.body);
@@ -1060,7 +1130,7 @@ export default class AssignmentBadge {
             actorEl.textContent = actorLabel || '';
             actorEl.classList.toggle('hidden', !actorLabel);
             counter.textContent = (index + 1) + ' de ' + hints.length;
-            const stillNeeded = hint && hintConditionHolds(hint, detailed);
+            const stillNeeded = hint && hintConditionHolds(hint, detailed, expectedResults);
             status.textContent = stillNeeded ? '💡 ainda vale' : '✅ já resolvida';
             status.classList.toggle('done', !stillNeeded);
             prevBtn.disabled = index <= 0;

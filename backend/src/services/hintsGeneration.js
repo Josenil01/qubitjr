@@ -77,6 +77,32 @@
  * "Casa 2", ...) - ver numberFor() dentro de buildTranscript(). Só nomes que
  * realmente se repetem (2+) são numerados; um nome único nunca ganha número.
  *
+ * Fase 2 do sistema de dicas (falhas F8/F9/F10):
+ *  - F8: o manifesto detalhado agora guarda `triggerArg` (nome da mensagem)
+ *    por script; fillBlockContext() conta ocorrências/minCounts/
+ *    triggerExclusive por (gatilho, MENSAGEM) e grava when.triggerArg quando
+ *    when.trigger === 'onmessage' - sem isso um minCounts podia somar blocos
+ *    de dois onmessage diferentes e gerar uma dica impossível.
+ *  - F9: personagem com CÓPIAS na mesma cena (mesmo md5 duas vezes) -
+ *    fillCharacterOccurrence() grava when.characterOccurrence (1-based) só
+ *    quando o professor tem cópias; todo o resto (validação, blockArgs,
+ *    blockContext, character_missing de reserva) passa a olhar a cópia certa.
+ *  - F10: blocos soltos (script sem gatilho) não existem pro manifesto (ver
+ *    shared/detailedManifest.mjs), então também nunca viram dica aqui.
+ *
+ * Fase 3 do sistema de dicas (E6b - alinhamento posição a posição):
+ *  - o transcript ganha, abaixo de cada personagem com script, uma linha
+ *    NUMERADA por script ("S1 (onflag): #1 forward[3] #2 repeat[2] {
+ *    #3 hop[1] #4 }") - ver formatNumberedScript; "#N" = índice N-1 em
+ *    when.expected.script.
+ *  - a LLM devolve só PONTEIROS (when.scriptRef + when.blockIndices); o
+ *    código monta when.expected = {trigger, triggerArg, script, covered,
+ *    occurrence?} a partir do projeto, com fallback por tipos quando os
+ *    ponteiros faltam/são inválidos, e valida que toda dica com expected dá
+ *    'done' no PRÓPRIO projeto do professor - ver buildExpectedForHints
+ *    (também usada pela migração das dicas já salvas). Os campos legados
+ *    continuam gravados, coerentes com expected.
+ *
  * Personagem default (achado em teste real - nenhuma dica nunca mandava
  * remover a Ruby que sobra): toda página em branco no ScratchJr cria
  * automaticamente um personagem com o asset de ScratchJr.defaultSprite
@@ -93,7 +119,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const { computeDetailedManifest } = require('./detailedManifest');
+const { computeDetailedManifest, toExpectedTokens, REPEAT_CLOSE } = require('./detailedManifest');
+const { evaluateExpectedHints } = require('./hintAlignment');
 const { callLLM } = require('./llmProvider');
 const { LLM_WHEN_TYPES } = require('../../../shared/hintSchema.mjs');
 
@@ -190,31 +217,37 @@ REGRA DE NOME DE CENA: quando a linha da cena trouxer \`nome exibido ao aluno: "
 
 REGRA DE CENA REPETIDA: cada cena na transcrição também traz um número de ocorrência entre colchetes, tipo \`[sceneOccurrence: 2]\` - é 1 na primeira vez que aquele fundo aparece no projeto, 2 se for a segunda cena a reusar o MESMO fundo, etc. Copie esse número EXATAMENTE pro campo "sceneOccurrence" de todo "when" com escopo de cena (scene_missing, character_missing, character_no_script, character_missing_block_type, default_character_present) - mesmo quando for 1. Isso é o que permite duas dicas sobre o mesmo fundo (a cena aparecendo de novo mais adiante na história) serem tratadas como passos DIFERENTES e não uma só.
 
+REGRA DE PERSONAGEM REPETIDO NA CENA: quando a MESMA cena tem mais de uma cópia do mesmo personagem (mesmo characterMd5), cada cópia vem com um número de cópia entre colchetes, tipo \`[characterMd5: HY-Ruby.svg] [characterOccurrence: 2]\` - copie esse número EXATAMENTE pro campo "characterOccurrence" do "when" de toda dica sobre aquela cópia (character_missing, character_no_script, character_missing_block_type). Quando a anotação não aparecer, NÃO inclua o campo.
+
 REGRA DE NOME REPETIDO: quando o MESMO nome de personagem aparece em mais de uma instância no projeto inteiro (ex.: a mesma "Casa" numa cena e de novo em outra), cada instância aparece na transcrição com um número junto do nome, tipo \`"Casa 2" [characterMd5: ...]\` - use o nome JUNTO com esse número no texto da dica (ver regra de tom acima). Um nome que aparece só uma vez no projeto NUNCA vem com número - não invente um.
+
+REGRA DE SCRIPTS NUMERADOS: logo abaixo da linha de um personagem com script vem UMA linha por script dele, tipo \`S2 (onmessage["azul"]): #1 forward[3] #2 repeat[2] { #3 hop[1] #4 } #5 say["Oi"]\` - "S2" identifica o script (o gatilho vem entre parênteses) e cada "#N" numera um bloco desse script, na ordem. Um repita aparece como "repeat[N] {", os blocos de dentro dele, e "}" (o fim do repita, que também ganha um número só pra contagem não pular). Em TODA dica "character_missing_block_type", inclua no "when": "scriptRef" com o rótulo do script onde estão os blocos que a dica ensina (ex.: "S1"), e "blockIndices" com os números #N EXATOS dos blocos que ESTA dica ensina, desse mesmo script (ex.: [2, 3]). Cada número só pode aparecer em UMA dica - se o personagem tem dois "hop" e você gera duas dicas de pular, a primeira usa o número do 1º hop e a segunda o do 2º. Ao ensinar um repita, inclua o número do "repeat" e dos blocos de dentro que a dica ensina (o número do "}" nunca precisa entrar). Esses números são SÓ posições - nunca escreva valores (passos, tempo, velocidade) em nenhum campo do "when"; os valores são lidos do projeto por código.
 
 Exemplo de transcrição de entrada e a saída correta correspondente:
 Entrada:
   PASSO 1 - Cena 1 (fundo: Spring.svg, nome exibido ao aluno: "Primavera") [sceneOccurrence: 1]:
     PASSO 2 - "Ruby" [characterMd5: HY-Ruby.svg]: tem script (sequência: onflag → say["Olá, primavera!"])
+      S1 (onflag): #1 say["Olá, primavera!"]
 ➡️ TROCA DE CENA - saem: "Ruby" [characterMd5: HY-Ruby.svg]. entram: "Allan" [characterMd5: HY-Allan.svg].
   PASSO 3 - Cena 2 (fundo: Summer.svg, nome exibido ao aluno: "Verão") [sceneOccurrence: 1]:
     PASSO 4 - "Allan" [characterMd5: HY-Allan.svg]: sem script ainda
 ➡️ TROCA DE CENA - saem: "Allan" [characterMd5: HY-Allan.svg]. entram: "Ruby" [characterMd5: HY-Ruby.svg].
   PASSO 5 - Cena 3 (fundo: Spring.svg, nome exibido ao aluno: "Primavera") [sceneOccurrence: 2]:
     PASSO 6 - "Ruby" [characterMd5: HY-Ruby.svg]: tem script (sequência: onflag → say["Voltei!"])
+      S1 (onflag): #1 say["Voltei!"]
 Saída correta pra essas três cenas (NESTA ORDEM, seguindo os números PASSO 1 a 6 - reparem que a dica de cena vem ANTES das dicas de personagem de cada cena, a fala sugerida é a MESMA que o exemplo já usa, o nome "Primavera" é usado literalmente como veio da transcrição, e a Cena 3 tem sceneOccurrence 2 e um texto que deixa claro que é um RETORNO, não a primeira vez):
   {"text": "Que tal colocar o cenário da Primavera?", "when": {"type": "scene_missing", "sceneMd5": "Spring.svg", "sceneOccurrence": 1}}
-  {"text": "Agora faça a Ruby dizer 'Olá, primavera!' quando a bandeira verde for clicada.", "when": {"type": "character_missing_block_type", "sceneMd5": "Spring.svg", "sceneOccurrence": 1, "characterMd5": "HY-Ruby.svg", "blockTypes": ["say"]}}
+  {"text": "Agora faça a Ruby dizer 'Olá, primavera!' quando a bandeira verde for clicada.", "when": {"type": "character_missing_block_type", "sceneMd5": "Spring.svg", "sceneOccurrence": 1, "characterMd5": "HY-Ruby.svg", "blockTypes": ["say"], "scriptRef": "S1", "blockIndices": [1]}}
   {"text": "Crie uma página nova com o cenário de Verão.", "when": {"type": "scene_missing", "sceneMd5": "Summer.svg", "sceneOccurrence": 1}}
   {"text": "Nessa cena é a vez do Allan. A Ruby não aparece mais aqui.", "when": {"type": "character_missing", "sceneMd5": "Summer.svg", "sceneOccurrence": 1, "characterMd5": "HY-Allan.svg"}}
   {"text": "Vamos voltar pra Primavera de novo?", "when": {"type": "scene_missing", "sceneMd5": "Spring.svg", "sceneOccurrence": 2}}
-  {"text": "Dessa vez a Ruby diz 'Voltei!'. Pode fazer ela falar isso?", "when": {"type": "character_missing_block_type", "sceneMd5": "Spring.svg", "sceneOccurrence": 2, "characterMd5": "HY-Ruby.svg", "blockTypes": ["say"]}}
+  {"text": "Dessa vez a Ruby diz 'Voltei!'. Pode fazer ela falar isso?", "when": {"type": "character_missing_block_type", "sceneMd5": "Spring.svg", "sceneOccurrence": 2, "characterMd5": "HY-Ruby.svg", "blockTypes": ["say"], "scriptRef": "S1", "blockIndices": [1]}}
 
 O campo "when.type" deve ser exatamente um destes valores, com exatamente estes campos (usando SOMENTE os identificadores sceneMd5/characterMd5/messageName/sceneOccurrence que aparecem literalmente na transcrição recebida, sempre copiados por extenso incluindo extensão de arquivo quando houver - nunca invente um valor que não esteja lá, e nunca substitua um identificador pelo nome do personagem):
 - "scene_missing": {"type":"scene_missing","sceneMd5":"<da transcrição>","sceneOccurrence":<da transcrição>}
 - "character_missing": {"type":"character_missing","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"..."}
 - "character_no_script": {"type":"character_no_script","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"..."}
-- "character_missing_block_type": {"type":"character_missing_block_type","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"...","blockTypes":["wait","say"]} - blockTypes é a lista EXATA de tipos de bloco que essa dica pede - o aluno precisa colocar TODOS eles (não basta um só) pro personagem antes da dica ser considerada feita, então copie SOMENTE os tipos que aparecem de verdade na "sequência" da transcrição pra esse trecho, na mesma ordem. NUNCA liste um tipo que o personagem não usa de verdade (ex.: se a sequência mostra só "say", use ["say"]; se mostra "wait → say", use ["wait","say"]) - um tipo a mais deixaria a dica impossível de resolver. NÃO inclua um campo separado pro valor numérico do bloco (isso é calculado por código, não pela LLM) - em vez disso, siga a regra OBRIGATÓRIO abaixo sobre mencionar o valor no TEXTO da dica.
+- "character_missing_block_type": {"type":"character_missing_block_type","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"...","blockTypes":["wait","say"]} - blockTypes é a lista EXATA de tipos de bloco que essa dica pede - o aluno precisa colocar TODOS eles (não basta um só) pro personagem antes da dica ser considerada feita, então copie SOMENTE os tipos que aparecem de verdade na "sequência" da transcrição pra esse trecho, na mesma ordem. NUNCA liste um tipo que o personagem não usa de verdade (ex.: se a sequência mostra só "say", use ["say"]; se mostra "wait → say", use ["wait","say"]) - um tipo a mais deixaria a dica impossível de resolver. NÃO inclua um campo separado pro valor numérico do bloco (isso é calculado por código, não pela LLM) - em vez disso, siga a regra OBRIGATÓRIO abaixo sobre mencionar o valor no TEXTO da dica. Inclua SEMPRE também "scriptRef" e "blockIndices" (ver REGRA DE SCRIPTS NUMERADOS).
 - "message_not_received": {"type":"message_not_received","messageName":"..."}
 - "default_character_present": {"type":"default_character_present","sceneMd5":"...","sceneOccurrence":<...>,"characterMd5":"HY-Ruby.svg"} - characterMd5 é SEMPRE "HY-Ruby.svg" pra este tipo (é o personagem default, nunca outro) - só gere pra cenas que NÃO têm a Ruby na lista de personagens (ver regra OBRIGATÓRIA acima).
 
@@ -222,14 +255,16 @@ Exemplo rápido de mencionar o valor exato de blocos numéricos no texto (sequê
 Entrada (trecho):
   PASSO 1 - Cena 1 (fundo: City.svg, nome exibido ao aluno: "Cidade") [sceneOccurrence: 1]:
     PASSO 2 - "Carro" [characterMd5: HY-Carro.svg]: tem script (sequência: onflag → setspeed[normal] → forward[3])
+      S1 (onflag): #1 setspeed[normal] #2 forward[3]
 Saída correta (o texto menciona a velocidade E a quantidade de passos - nenhum campo extra no "when", só blockTypes com os tipos):
   {"text": "Que tal colocar o cenário da Cidade?", "when": {"type": "scene_missing", "sceneMd5": "City.svg", "sceneOccurrence": 1}}
-  {"text": "Faça o Carro andar 3 passos pra frente com velocidade normal, quando a bandeira verde for clicada.", "when": {"type": "character_missing_block_type", "sceneMd5": "City.svg", "sceneOccurrence": 1, "characterMd5": "HY-Carro.svg", "blockTypes": ["setspeed", "forward"]}}
+  {"text": "Faça o Carro andar 3 passos pra frente com velocidade normal, quando a bandeira verde for clicada.", "when": {"type": "character_missing_block_type", "sceneMd5": "City.svg", "sceneOccurrence": 1, "characterMd5": "HY-Carro.svg", "blockTypes": ["setspeed", "forward"], "scriptRef": "S1", "blockIndices": [1, 2]}}
 
 Exemplo rápido de "default_character_present" (cena SEM a Ruby na transcrição) e "REGRA DE NOME REPETIDO" (a mesma "Casa" reaparecendo):
 Entrada (trecho):
   PASSO 1 - Cena 1 (fundo: Woods.svg, nome exibido ao aluno: "Bosque") [sceneOccurrence: 1]:
     PASSO 2 - "Lobisomem" [characterMd5: HY-Lobsomem.svg]: tem script (sequência: onflag → say["Au!"])
+      S1 (onflag): #1 say["Au!"]
     PASSO 3 - "Casa 1" [characterMd5: HY-Casa2.svg]: sem script ainda
 ➡️ TROCA DE CENA - saem: "Lobisomem" [characterMd5: HY-Lobsomem.svg], "Casa 1" [characterMd5: HY-Casa2.svg].
   PASSO 4 - Cena 2 (fundo: Woods.svg, nome exibido ao aluno: "Bosque") [sceneOccurrence: 2]:
@@ -237,7 +272,7 @@ Entrada (trecho):
 Saída correta (repare: dica default_character_present logo após scene_missing, ANTES das dicas de personagem; "Casa 1"/"Casa 2" usados com o número; a Ruby não aparece em nenhuma das duas cenas, então as duas ganham a dica; ordem segue PASSO 1 a 5):
   {"text": "Que tal colocar o cenário do Bosque?", "when": {"type": "scene_missing", "sceneMd5": "Woods.svg", "sceneOccurrence": 1}}
   {"text": "Apague a Ruby.", "when": {"type": "default_character_present", "sceneMd5": "Woods.svg", "sceneOccurrence": 1, "characterMd5": "HY-Ruby.svg"}}
-  {"text": "Faça o Lobisomem dizer 'Au!' quando a bandeira verde for clicada.", "when": {"type": "character_missing_block_type", "sceneMd5": "Woods.svg", "sceneOccurrence": 1, "characterMd5": "HY-Lobsomem.svg", "blockTypes": ["say"]}}
+  {"text": "Faça o Lobisomem dizer 'Au!' quando a bandeira verde for clicada.", "when": {"type": "character_missing_block_type", "sceneMd5": "Woods.svg", "sceneOccurrence": 1, "characterMd5": "HY-Lobsomem.svg", "blockTypes": ["say"], "scriptRef": "S1", "blockIndices": [1]}}
   {"text": "Agora coloque a Casa 1 no Bosque.", "when": {"type": "character_missing", "sceneMd5": "Woods.svg", "sceneOccurrence": 1, "characterMd5": "HY-Casa2.svg"}}
   {"text": "Vamos voltar pro Bosque de novo? Crie outra página com ele.", "when": {"type": "scene_missing", "sceneMd5": "Woods.svg", "sceneOccurrence": 2}}
   {"text": "Apague a Ruby de novo aqui.", "when": {"type": "default_character_present", "sceneMd5": "Woods.svg", "sceneOccurrence": 2, "characterMd5": "HY-Ruby.svg"}}
@@ -260,11 +295,14 @@ Gere uma dica por passo de construção realmente relevante da transcrição INT
  * a usar esse número junto do nome no texto da dica, pra diferenciar essa
  * instância de outras com o mesmo nome no projeto (ver docblock do topo).
  */
-function characterDescriptor(character, number) {
+function characterDescriptor(character, number, occurrence) {
     const namePart = character.characterName
         ? `"${character.characterName}${number ? ' ' + number : ''}" `
         : '';
-    return `${namePart}[characterMd5: ${character.characterMd5}]`;
+    // occurrence só vem quando a cena tem cópias repetidas desse md5 (ver
+    // buildTranscript e REGRA DE PERSONAGEM REPETIDO NA CENA no prompt).
+    const occurrencePart = occurrence ? ` [characterOccurrence: ${occurrence}]` : '';
+    return `${namePart}[characterMd5: ${character.characterMd5}]${occurrencePart}`;
 }
 
 /**
@@ -320,8 +358,11 @@ function formatBlocksFragment(character) {
  * ação em si), deixando o ponto exato da troca impossível de confundir com
  * mais uma linha de personagem comum.
  */
-function buildTranscript(manifest) {
+function buildTranscript(manifest, projectJson) {
     const lines = [];
+    // Só pros rótulos das linhas numeradas de script (texto do say etc.) -
+    // ver mapRawSprites/formatNumberedScript. Opcional.
+    const rawSprites = mapRawSprites(projectJson, manifest);
     let sceneNumber = 0;
     let stepNumber = 0;
     let previousByMd5 = null; // Map<characterMd5, character> of the last describable scene, or null before the first
@@ -391,21 +432,137 @@ function buildTranscript(manifest) {
         const occurrence = scene.sceneOccurrence || 1;
         lines.push(`PASSO ${stepNumber} - Cena ${sceneNumber} (fundo: ${scene.sceneMd5}${nameFragment}) [sceneOccurrence: ${occurrence}]:`);
 
+        // Cópias do mesmo md5 nesta cena (falha F9): só elas ganham a
+        // anotação [characterOccurrence: N] - um personagem único na cena
+        // nunca a recebe (a LLM só deve emitir o campo quando ele aparece).
+        const copiesByMd5 = new Map();
+        for (const c of describableCharacters) copiesByMd5.set(c.characterMd5, (copiesByMd5.get(c.characterMd5) || 0) + 1);
+
         for (const character of describableCharacters) {
             stepNumber += 1;
-            const descriptor = characterDescriptor(character, numberFor(character));
+            const occurrence = copiesByMd5.get(character.characterMd5) > 1 ? character.characterOccurrence : null;
+            const descriptor = characterDescriptor(character, numberFor(character), occurrence);
             if (!character.hasScript) {
                 lines.push(`  PASSO ${stepNumber} - ${descriptor}: sem script ainda`);
                 continue;
             }
             const blocksFragment = formatBlocksFragment(character);
             lines.push(`  PASSO ${stepNumber} - ${descriptor}: tem script (sequência: ${blocksFragment})`);
+            // Fase 3 (E6b): uma linha NUMERADA por script, logo abaixo - é a
+            // referência que a LLM usa em scriptRef/blockIndices. Sem PASSO
+            // próprio (é detalhe do mesmo passo, não uma ação nova).
+            const rawSprite = rawSprites ? rawSprites.get(character) : null;
+            (character.scripts || []).forEach((script, s) => {
+                const raw = rawSprite && Array.isArray(rawSprite.scripts) ? rawSprite.scripts[script.scriptIndex] : null;
+                lines.push(`      ${formatNumberedScript(script, s, raw)}`);
+            });
         }
 
         previousByMd5 = currentByMd5;
     }
 
     return lines.join('\n');
+}
+
+/**
+ * Fase 3 (E6b) - casa cada personagem do manifesto com o sprite CRU do
+ * projectJson (Map<objeto character do manifesto, sprite cru>), percorrendo
+ * páginas/sprites com EXATAMENTE os mesmos filtros de
+ * shared/detailedManifest.mjs#computeDetailedManifest (página fantasma/não
+ * objeto pulada; sprite fantasma ou type !== 'sprite' pulado) - então
+ * scenes[i].characters[j] <-> j-ésimo sprite aceito da i-ésima página
+ * aceita. Serve só pra RÓTULO do transcript (texto do say, nome da mensagem
+ * enviada - os tokens do manifesto não guardam texto). Sem projectJson (ou
+ * formato estranho) devolve null e os rótulos caem pro tipo[valor].
+ */
+function mapRawSprites(projectJson, manifest) {
+    if (!projectJson || typeof projectJson !== 'object' || !Array.isArray(projectJson.pages)) return null;
+    const out = new Map();
+    let sceneIdx = 0;
+    for (const pageId of projectJson.pages) {
+        const page = projectJson[pageId];
+        if (!page || typeof page !== 'object') continue;
+        const scene = manifest.scenes[sceneIdx++];
+        if (!scene) break;
+        let charIdx = 0;
+        for (const spriteId of Array.isArray(page.sprites) ? page.sprites : []) {
+            const sprite = page[spriteId];
+            if (!sprite || typeof sprite !== 'object' || sprite.type !== 'sprite') continue;
+            const character = scene.characters[charIdx++];
+            if (character) out.set(character, sprite);
+        }
+    }
+    return out;
+}
+
+/** Tupla crua de um token (token.path dentro do script cru) ou null. */
+function tupleAt(rawScript, path) {
+    let strip = rawScript;
+    let tuple = null;
+    for (const i of path || []) {
+        if (!Array.isArray(strip)) return null;
+        tuple = strip[i];
+        strip = Array.isArray(tuple) ? tuple[4] : null;
+    }
+    return Array.isArray(tuple) ? tuple : null;
+}
+
+const SPEED_LABELS_PT = ['lenta', 'normal', 'rápida'];
+
+/**
+ * Rótulo de UM token no transcript numerado - mesmo vocabulário da
+ * "sequência" (say["texto"], forward[3], setspeed[normal], message["nome"]),
+ * pra LLM reconhecer os mesmos blocos nas duas linhas. Repeat abre com "{"
+ * e o fechamento é só "}" (ver formatNumberedScript). Numérico sem valor no
+ * professor = tipo[?] (raro; o código nunca cobre essa posição - ver
+ * buildExpectedForHints).
+ */
+function tokenLabel(token, rawScript) {
+    if (token.type === REPEAT_CLOSE) return '}';
+    const tuple = rawScript ? tupleAt(rawScript, token.path) : null;
+    const arg = tuple ? tuple[1] : null;
+    const realArg = arg !== null && arg !== undefined && arg !== 'null' && arg !== '';
+    if (token.type === 'say') {
+        return token.unset || !realArg ? 'say[(texto padrão)]' : `say["${arg}"]`;
+    }
+    if (token.type === 'message') return realArg ? `message["${arg}"]` : 'message';
+    let label = token.type;
+    if (token.type === 'setspeed' && token.num !== null && SPEED_LABELS_PT[token.num]) {
+        label = `setspeed[${SPEED_LABELS_PT[token.num]}]`;
+    } else if (token.num !== null && token.num !== undefined) {
+        label = `${token.type}[${token.num}]`;
+    } else if (token.unset) {
+        label = `${token.type}[?]`;
+    }
+    return token.type === 'repeat' ? `${label} {` : label;
+}
+
+/**
+ * Fase 3 (E6b) - uma linha do transcript por script do professor, com os
+ * blocos NUMERADOS: `S2 (onmessage["azul"]): #1 forward[3] #2 repeat[2] {
+ * #3 hop[1] #4 } #5 say["Oi"]`.
+ *  - "S<n>": n = posição 1-based do script em character.scripts do
+ *    manifesto (só scripts COM gatilho - os soltos nunca aparecem). É o
+ *    valor que a LLM devolve em when.scriptRef.
+ *  - "#<n>": n = (índice em when.expected.script) + 1, ou seja, o índice
+ *    1-based nos tokens de scriptTokens()/manifest.tokens - INCLUINDO o
+ *    fechamento do repeat. O gatilho não é token (fica no rótulo do script).
+ *  - Fechamento do repeat: decisão - ele GANHA número ("#4 }") em vez de
+ *    ficar sem número. Pular o número ("#2 repeat[2] { #3 hop[1] } #5 ...")
+ *    faria a LLM achar que falta um bloco #4; numerado, a sequência é
+ *    contínua e o prompt explica que o número do "}" nunca precisa ir em
+ *    blockIndices (se vier, o código ignora em silêncio - não é posição
+ *    ensinável, ver buildExpectedForHints).
+ */
+function formatNumberedScript(script, s, rawScript) {
+    const triggerLabel = script.trigger === 'onmessage' && script.triggerArg
+        ? `onmessage["${script.triggerArg}"]`
+        : script.trigger;
+    const tokens = Array.isArray(script.tokens) ? script.tokens : [];
+    const body = tokens.length
+        ? tokens.map((t, i) => `#${i + 1} ${tokenLabel(t, rawScript)}`).join(' ')
+        : '(sem blocos)';
+    return `S${s + 1} (${triggerLabel}): ${body}`;
 }
 
 /**
@@ -451,8 +608,14 @@ function sceneKey(sceneMd5, occurrence) {
 function buildValidationIndex(manifest) {
     const sceneKeySet = new Set();
     const charactersByScene = new Map(); // sceneKey(sceneMd5,occurrence) -> Set<characterMd5>
-    const blockTypesByCharacter = new Map(); // sceneKey::characterMd5 -> Set<blockType>
-    const blockArgsByCharacter = new Map(); // sceneKey::characterMd5 -> Map<blockType, Set<number>>
+    const blockTypesByCharacter = new Map(); // sceneKey::characterMd5 -> Set<blockType> (união das cópias)
+    const blockArgsByCharacter = new Map(); // sceneKey::characterMd5 -> Map<blockType, Set<number>> (união das cópias)
+    // Falha F9 - o mesmo, por CÓPIA (characterKey com a ocorrência): uma
+    // dica com when.characterOccurrence é validada/preenchida contra a cópia
+    // dela, não contra a união de todas.
+    const copiesByCharacter = new Map(); // sceneKey::characterMd5 -> quantas cópias na cena
+    const blockTypesByCopy = new Map(); // characterKey(...) -> Set<blockType>
+    const blockArgsByCopy = new Map(); // characterKey(...) -> Map<blockType, Set<number>>
     const allMessagesSent = new Set();
 
     for (const scene of manifest.scenes) {
@@ -470,19 +633,43 @@ function buildValidationIndex(manifest) {
                 blockTypesByCharacter.set(blockTypeKey, blockTypeSet);
 
                 const argsByType = blockArgsByCharacter.get(blockTypeKey) || new Map();
+                const copyArgs = new Map();
                 for (const [blockType, values] of Object.entries(character.blockArgs || {})) {
                     const valueSet = argsByType.get(blockType) || new Set();
                     for (const v of values) valueSet.add(v);
                     argsByType.set(blockType, valueSet);
+                    copyArgs.set(blockType, new Set(values));
                 }
                 blockArgsByCharacter.set(blockTypeKey, argsByType);
+
+                const copy = (copiesByCharacter.get(blockTypeKey) || 0) + 1;
+                copiesByCharacter.set(blockTypeKey, copy);
+                const copyKey = characterKey(scene.sceneMd5, scene.sceneOccurrence, character.characterMd5, copy);
+                blockTypesByCopy.set(copyKey, new Set(character.blockTypes || []));
+                blockArgsByCopy.set(copyKey, copyArgs);
             }
             for (const name of character.messagesSent) allMessagesSent.add(name);
         }
         charactersByScene.set(key, charSet);
     }
 
-    return { sceneKeySet, charactersByScene, blockTypesByCharacter, blockArgsByCharacter, allMessagesSent };
+    return {
+        sceneKeySet, charactersByScene, blockTypesByCharacter, blockArgsByCharacter, allMessagesSent,
+        copiesByCharacter, blockTypesByCopy, blockArgsByCopy,
+    };
+}
+
+/**
+ * Chave de UMA cópia de personagem (falha F9): cena+ocorrência+md5+cópia.
+ * copy ausente = 1 (personagem sem cópias / dica sem characterOccurrence).
+ */
+function characterKey(sceneMd5, sceneOccurrence, characterMd5, copy) {
+    return `${sceneKey(sceneMd5, sceneOccurrence)}::${characterMd5}#${copy || 1}`;
+}
+
+/** characterOccurrence válido (inteiro 1..copies) ou null. */
+function validOccurrence(value, copies) {
+    return Number.isInteger(value) && value >= 1 && value <= copies ? value : null;
 }
 
 /**
@@ -534,6 +721,8 @@ function isHintValid(hint, index) {
             // nunca teria como "completar o conjunto").
             const blockTypeKey = `${key}::${when.characterMd5}`;
             const realBlockTypes = index.blockTypesByCharacter.get(blockTypeKey);
+            if (!realBlockTypes) return false;
+            if (!when.blockTypes.every((t) => typeof t === 'string' && t.length > 0)) return false;
             // when.blockArgs (o valor exato de cada bloco numérico) NÃO é
             // validado aqui de propósito - é derivado por código logo depois
             // via fillBlockArgs(), que sobrescreve qualquer coisa que a LLM
@@ -541,8 +730,19 @@ function isHintValid(hint, index) {
             // docblock de fillBlockArgs pra entender por quê). Confiar na
             // LLM pra copiar o número certo seria só mais uma chance de
             // alucinação sobre algo que o código já sabe com certeza.
-            return !!realBlockTypes &&
-                when.blockTypes.every((t) => typeof t === 'string' && t.length > 0 && realBlockTypes.has(t));
+            //
+            // Falha F9 - com cópias, todos os tipos precisam estar numa MESMA
+            // cópia (o cliente exige todos numa só - ver
+            // HintEngine.js#candidatesFor). Qual cópia é decidido depois, por
+            // código (fillCharacterOccurrence corrige um characterOccurrence
+            // errado da LLM), então aqui basta existir UMA cópia com todos.
+            // Sem cópias = a checagem de sempre (o único personagem tem todos).
+            const copies = index.copiesByCharacter.get(blockTypeKey) || 1;
+            for (let copy = 1; copy <= copies; copy += 1) {
+                const types = index.blockTypesByCopy.get(characterKey(when.sceneMd5, when.sceneOccurrence, when.characterMd5, copy));
+                if (types && when.blockTypes.every((t) => types.has(t))) return true;
+            }
+            return false;
         }
         case 'message_not_received':
             return typeof when.messageName === 'string' && index.allMessagesSent.has(when.messageName);
@@ -596,7 +796,11 @@ function fillBlockArgs(hints, manifest) {
     for (const hint of hints) {
         if (!hint.when || hint.when.type !== 'character_missing_block_type') continue;
         const blockTypeKey = `${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}`;
-        const argsByType = index.blockArgsByCharacter.get(blockTypeKey);
+        // Com characterOccurrence (falha F9), os valores DAQUELA cópia - a
+        // outra cópia pode usar o mesmo bloco com outro valor.
+        const argsByType = hint.when.characterOccurrence
+            ? index.blockArgsByCopy.get(characterKey(hint.when.sceneMd5, hint.when.sceneOccurrence, hint.when.characterMd5, hint.when.characterOccurrence))
+            : index.blockArgsByCharacter.get(blockTypeKey);
         if (!argsByType) continue;
 
         const blockArgs = {};
@@ -614,25 +818,39 @@ function fillBlockArgs(hints, manifest) {
 }
 
 /**
+ * Identidade do gatilho de um script do manifesto pra contagem: (gatilho,
+ * mensagem). Falha F8 - "quando receber azul" e "quando receber verde" são
+ * gatilhos DIFERENTES; contá-los juntos fazia minCounts somar blocos dos
+ * dois e a dica pedir, sob UMA mensagem, mais blocos do que o professor
+ * pôs ali (dica impossível). triggerArg ausente (manifesto antigo / outro
+ * gatilho / onmessage sem mensagem) = null.
+ */
+function triggerKeyOf(script) {
+    return `${script.trigger}|${script.triggerArg == null ? '' : script.triggerArg}`;
+}
+
+/**
  * Acha, no personagem do professor, a k-ésima ocorrência (1-based, contando
  * em todos os scripts na ordem) do bloco `type`. Devolve o gatilho do script
- * onde ela está e quantas ocorrências desse tipo existem ATÉ ali só entre
- * os scripts do MESMO gatilho (triggerCount) - é esse número, e não k, que
- * o cliente compara, já que ele conta só dentro do gatilho da dica. null se
- * o personagem não tem k ocorrências (ex.: manifesto antigo, sem `scripts`).
+ * onde ela está (trigger + triggerArg) e quantas ocorrências desse tipo
+ * existem ATÉ ali só entre os scripts do MESMO gatilho - mesma mensagem, no
+ * caso do onmessage (triggerCount) - é esse número, e não k, que o cliente
+ * compara, já que ele conta só dentro do gatilho da dica. null se o
+ * personagem não tem k ocorrências (ex.: manifesto antigo, sem `scripts`).
  */
 function locateOccurrence(character, type, k) {
     if (!character || !Array.isArray(character.scripts)) return null;
     let globalCount = 0;
     const perTrigger = new Map();
     for (const script of character.scripts) {
+        const tKey = triggerKeyOf(script);
         for (const block of script.blocks || []) {
             if (block.type !== type) continue;
             globalCount++;
-            const soFar = (perTrigger.get(script.trigger) || 0) + 1;
-            perTrigger.set(script.trigger, soFar);
+            const soFar = (perTrigger.get(tKey) || 0) + 1;
+            perTrigger.set(tKey, soFar);
             if (globalCount === k) {
-                return { trigger: script.trigger, triggerCount: soFar };
+                return { trigger: script.trigger, triggerArg: script.triggerArg == null ? null : script.triggerArg, triggerKey: tKey, triggerCount: soFar };
             }
         }
     }
@@ -658,21 +876,35 @@ function locateOccurrence(character, type, k) {
  *    script) - senão fica de fora e o cliente aceita o bloco em qualquer
  *    script, como antes (achado em teste real: "quando clicar no Cofrinho,
  *    faça crescer" era dada por feita com o `grow` sob a bandeira verde).
+ *  - triggerArg (falha F8): com trigger 'onmessage', o NOME da mensagem do
+ *    script do professor. Contagem (triggerCount/minCounts) e
+ *    triggerExclusive passam a ser por (gatilho, mensagem) - ver
+ *    triggerKeyOf. "Mesmo gatilho" entre os blockTypes da dica também exige
+ *    a mesma mensagem. Um onmessage do professor SEM mensagem escolhida
+ *    (triggerArg null) não grava triggerArg: o cliente aceita qualquer
+ *    onmessage ali (comportamento antigo) e o minCounts, contado só entre
+ *    os onmessage sem mensagem, fica no máximo frouxo, nunca impossível.
+ * Personagem com cópias na cena (falha F9): olha a cópia de
+ * when.characterOccurrence (gravado antes por fillCharacterOccurrence) e
+ * numera minCounts por cópia; sem o campo, a 1ª/única cópia.
  * Dicas antigas sem esses campos continuam funcionando (cliente trata
  * ausente como "qualquer script, pelo menos 1").
  */
 function fillBlockContext(hints, manifest) {
     const charactersByKey = new Map();
     for (const scene of (manifest && manifest.scenes) || []) {
+        const copies = new Map();
         for (const character of scene.characters || []) {
-            charactersByKey.set(`${sceneKey(scene.sceneMd5, scene.sceneOccurrence)}::${character.characterMd5}`, character);
+            const copy = (copies.get(character.characterMd5) || 0) + 1;
+            copies.set(character.characterMd5, copy);
+            charactersByKey.set(characterKey(scene.sceneMd5, scene.sceneOccurrence, character.characterMd5, copy), character);
         }
     }
 
     const consumed = new Map(); // key::blockType -> quantas dicas anteriores já pediram esse tipo
     for (const hint of hints) {
         if (!hint.when || hint.when.type !== 'character_missing_block_type') continue;
-        const key = `${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}`;
+        const key = characterKey(hint.when.sceneMd5, hint.when.sceneOccurrence, hint.when.characterMd5, hint.when.characterOccurrence);
         const character = charactersByKey.get(key);
         const types = Array.isArray(hint.when.blockTypes) ? hint.when.blockTypes : [];
 
@@ -688,11 +920,15 @@ function fillBlockContext(hints, manifest) {
 
         delete hint.when.minCounts;
         delete hint.when.trigger;
+        delete hint.when.triggerArg;
         delete hint.when.triggerExclusive;
         const sameTrigger = locations.length > 0 &&
-            locations.every((loc) => loc && loc.trigger && loc.trigger === locations[0].trigger);
+            locations.every((loc) => loc && loc.trigger && loc.triggerKey === locations[0].triggerKey);
         if (sameTrigger) {
             hint.when.trigger = locations[0].trigger;
+            if (hint.when.trigger === 'onmessage' && locations[0].triggerArg !== null) {
+                hint.when.triggerArg = locations[0].triggerArg;
+            }
             // triggerExclusive: o professor só usa esses tipos sob ESTE
             // gatilho. Só então o cliente pode afirmar "está no lugar errado"
             // ao achar o bloco sob outro gatilho - se o mesmo tipo também
@@ -700,7 +936,7 @@ function fillBlockContext(hints, manifest) {
             // na bandeira E no clique), um `say` fora do gatilho pode ser o
             // de outra dica, não um erro.
             const exclusive = types.every((type) => character.scripts.every((script) =>
-                script.trigger === hint.when.trigger || !script.blocks.some((b) => b.type === type)));
+                triggerKeyOf(script) === locations[0].triggerKey || !script.blocks.some((b) => b.type === type)));
             if (exclusive) hint.when.triggerExclusive = true;
         }
 
@@ -792,10 +1028,80 @@ function fillMissingDefaultCharacterHints(hints, manifest) {
  * dica), inserido logo ANTES da primeira dica de comportamento daquele
  * personagem - mesma posição que a LLM é instruída a usar.
  */
-function findCharacterInManifest(manifest, sceneMd5, sceneOccurrence, characterMd5) {
+function findCharacterInManifest(manifest, sceneMd5, sceneOccurrence, characterMd5, characterOccurrence) {
     const scene = manifest.scenes.find((s) => s.sceneMd5 === sceneMd5 && (s.sceneOccurrence || 1) === (sceneOccurrence || 1));
     if (!scene) return null;
-    return scene.characters.find((c) => c.characterMd5 === characterMd5) || null;
+    return scene.characters.filter((c) => c.characterMd5 === characterMd5)[(characterOccurrence || 1) - 1] || null;
+}
+
+/**
+ * Falha F9 - grava/normaliza `when.characterOccurrence` (1-based) nas dicas
+ * com escopo de personagem (character_missing, character_no_script,
+ * character_missing_block_type), SÓ quando a cena do professor tem cópias
+ * repetidas daquele personagem (mesmo md5). Sem cópias o campo é apagado
+ * (mesmo que a LLM tenha mandado) - o cliente então usa a regra legada
+ * "qualquer cópia" (HintEngine.js#candidatesFor), que pra um personagem
+ * único dá no mesmo.
+ *
+ * Com cópias: mantém o valor da LLM (copiado da anotação
+ * [characterOccurrence: N] do transcript) se for válido E coerente; senão
+ * escolhe por código:
+ *  - character_missing_block_type: a 1ª cópia que tem TODOS os blockTypes
+ *    (isHintValid já garantiu que existe uma);
+ *  - character_no_script: a 1ª cópia sem script (ou a pedida/1ª, se todas
+ *    têm script);
+ *  - character_missing: a k-ésima dica character_missing desse personagem
+ *    nessa cena vira a cópia k (limitado ao nº de cópias) - "coloque a
+ *    Ruby" duas vezes = a 1ª e a 2ª cópia.
+ * Roda ANTES de fillBlockArgs/fillBlockContext (que leem o campo).
+ */
+function fillCharacterOccurrence(hints, manifest) {
+    const SCOPED_TYPES = new Set(['character_missing', 'character_no_script', 'character_missing_block_type']);
+    const copiesOf = (when) => {
+        const scene = manifest.scenes.find((s) => s.sceneMd5 === when.sceneMd5 && (s.sceneOccurrence || 1) === (when.sceneOccurrence || 1));
+        return scene ? scene.characters.filter((c) => c.characterMd5 === when.characterMd5) : [];
+    };
+    const missingSeen = new Map(); // sceneKey::md5 -> quantas character_missing já vistas
+
+    for (const hint of hints) {
+        const when = hint.when;
+        if (!when || typeof when !== 'object') continue;
+        if (!SCOPED_TYPES.has(when.type)) {
+            delete when.characterOccurrence;
+            continue;
+        }
+        const copies = copiesOf(when);
+        if (copies.length <= 1) {
+            delete when.characterOccurrence;
+            continue;
+        }
+        const asked = validOccurrence(when.characterOccurrence, copies.length);
+        let chosen = null;
+        if (when.type === 'character_missing_block_type') {
+            const types = Array.isArray(when.blockTypes) ? when.blockTypes : [];
+            const hasAll = (c) => types.every((t) => (c.blockTypes || []).includes(t));
+            if (asked && hasAll(copies[asked - 1])) {
+                chosen = asked;
+            } else {
+                const idx = copies.findIndex(hasAll);
+                chosen = idx >= 0 ? idx + 1 : (asked || 1);
+            }
+        } else if (when.type === 'character_no_script') {
+            if (asked && !copies[asked - 1].hasScript) {
+                chosen = asked;
+            } else {
+                const idx = copies.findIndex((c) => !c.hasScript);
+                chosen = idx >= 0 ? idx + 1 : (asked || 1);
+            }
+        } else {
+            const k = `${sceneKey(when.sceneMd5, when.sceneOccurrence)}::${when.characterMd5}`;
+            const nth = (missingSeen.get(k) || 0) + 1;
+            missingSeen.set(k, nth);
+            chosen = asked || Math.min(nth, copies.length);
+        }
+        when.characterOccurrence = chosen;
+    }
+    return hints;
 }
 
 function fillMissingCharacterAddedHints(hints, manifest) {
@@ -804,7 +1110,7 @@ function fillMissingCharacterAddedHints(hints, manifest) {
 
     for (const hint of hints) {
         if (hint.when && hint.when.type === 'character_missing') {
-            characterAddedCovered.add(`${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}`);
+            characterAddedCovered.add(`${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}#${hint.when.characterOccurrence || 0}`);
         }
     }
 
@@ -819,7 +1125,8 @@ function fillMissingCharacterAddedHints(hints, manifest) {
         // um passo real, então esta rede de segurança não se aplica a ela.
         if (hint.when.characterMd5 === DEFAULT_CHARACTER_MD5) continue;
 
-        const scopeKey = `${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}`;
+        // Cópia (falha F9) faz parte do escopo: colocar a 1ª Ruby não cobre a 2ª.
+        const scopeKey = `${sceneKey(hint.when.sceneMd5, hint.when.sceneOccurrence)}::${hint.when.characterMd5}#${hint.when.characterOccurrence || 0}`;
         if (characterAddedCovered.has(scopeKey) || seenBehaviorFor.has(scopeKey)) continue;
         seenBehaviorFor.add(scopeKey);
 
@@ -827,7 +1134,7 @@ function fillMissingCharacterAddedHints(hints, manifest) {
         // Ruby aqui" soa um pouco menos natural que "coloque a Ruby", mas
         // evita chutar o gênero errado; melhor que o genérico "esse
         // personagem" quando o nome está disponível.
-        const character = findCharacterInManifest(manifest, hint.when.sceneMd5, hint.when.sceneOccurrence, hint.when.characterMd5);
+        const character = findCharacterInManifest(manifest, hint.when.sceneMd5, hint.when.sceneOccurrence, hint.when.characterMd5, hint.when.characterOccurrence);
         const text = character && character.characterName
             ? `Antes disso, coloque ${character.characterName} aqui.`
             : 'Antes disso, coloque esse personagem na cena.';
@@ -841,11 +1148,363 @@ function fillMissingCharacterAddedHints(hints, manifest) {
                 characterMd5: hint.when.characterMd5,
             },
         };
+        if (hint.when.characterOccurrence) fallback.when.characterOccurrence = hint.when.characterOccurrence;
         const insertAt = result.indexOf(hint); // reencontra - índices já podem ter mudado por inserções anteriores neste loop
         result.splice(insertAt, 0, fallback);
     }
 
     return result;
+}
+
+// ---------------------------------------------------------------------------
+// Fase 3 (E6b) - when.expected gerado por CÓDIGO
+// ---------------------------------------------------------------------------
+
+const TRIGGER_BLOCK_TYPES = new Set(['onflag', 'onclick', 'ontouch', 'onmessage']);
+
+/**
+ * scriptRef da LLM ("S2", "s2", 2 ou "2") -> índice 0-based em
+ * character.scripts do manifesto, ou -1 se não der pra ler/fora do
+ * intervalo. Ver formatNumberedScript pro "S<n>".
+ */
+function parseScriptRef(ref, count) {
+    let n = NaN;
+    if (Number.isInteger(ref)) n = ref;
+    else if (typeof ref === 'string') {
+        const m = /^\s*[sS]?\s*(\d+)\s*$/.exec(ref);
+        if (m) n = Number(m[1]);
+    }
+    return Number.isInteger(n) && n >= 1 && n <= count ? n - 1 : -1;
+}
+
+/**
+ * Posição do professor que nunca pode ser coberta: fechamento de repeat
+ * (acompanha a abertura) e token sem valor escolhido no PRÓPRIO professor
+ * (unset/pending - say com texto padrão, numérico vazio, setspeed 3): o
+ * alinhamento trata o lado do aluno pareado com ela como "pending" nunca
+ * 'done' no próprio professor, então cobri-la tornaria a dica impossível.
+ */
+function isCoverable(token) {
+    return !!token && token.type !== REPEAT_CLOSE && token.unset !== true &&
+        (token.pending === null || token.pending === undefined);
+}
+
+/**
+ * Preenche `when.expected` (Fase 3 - ver shared/hintSchema.mjs e
+ * shared/hintAlignment.mjs) em toda dica "character_missing_block_type" que
+ * dá pra ancorar num script REAL do professor, e devolve uma CÓPIA da lista
+ * (a entrada nunca é mutada). Pura e determinística - a mesma entrada dá
+ * sempre a mesma saída. Usada em dois lugares:
+ *  - generateHintsCore (dicas novas): honra os ponteiros que a LLM mandou
+ *    (when.scriptRef = "S<n>" e when.blockIndices = números "#<n>" do
+ *    transcript - ver formatNumberedScript);
+ *  - a MIGRAÇÃO (backend/scripts/backfillHintExpected.js): dicas JÁ SALVAS,
+ *    sem ponteiro nenhum - cai inteira no fallback por tipos abaixo.
+ *
+ * @param {Array<object>} hints - lista de dicas ({text, when, id?}), em ordem.
+ *   Dicas de outros tipos passam intactas (só perdem scriptRef/blockIndices/
+ *   expected soltos que a LLM tenha inventado nelas).
+ * @param {object} projectJson - projeto do professor JÁ parseado.
+ * @param {{manifest?: object, reconcileLegacy?: boolean}} [options]
+ *   manifest: computeDetailedManifest(projectJson) já calculado (evita
+ *   recomputar); reconcileLegacy (default true): reescreve os campos legados
+ *   (blockTypes/trigger/triggerArg/minCounts/blockArgs/triggerExclusive) pra
+ *   ficarem coerentes com expected - ver "Legado" abaixo.
+ * @returns {{hints: Array<object>, report: Array<{index: number, status:
+ *   'expected'|'legacy', source?: 'llm'|'fallback', reason?: string,
+ *   detail?: object}>}} - report tem uma entrada por dica de bloco (index =
+ *   posição em `hints`); reason em 'legacy': 'no_character' (personagem/
+ *   scripts não achados), 'no_script' (nenhum script tem todos os tipos
+ *   ainda livres), 'not_done' (montou mas não deu 'done' no projeto do
+ *   professor - detail traz o resultado do alinhamento).
+ *
+ * Regras (em ordem, por dica; o estado "posições já cobertas" é por
+ * personagem-cópia + script do professor e avança dica a dica):
+ *  1. A LLM NUNCA fornece valores: when.expected/scriptRef/blockIndices que
+ *     vierem dela são apagados; script/trigger/triggerArg vêm do manifesto
+ *     (toExpectedTokens(scripts[k].tokens) == scriptTokens(tupla crua) - o
+ *     MESMO tokenizador do aluno). Os números da LLM só APONTAM posições.
+ *  2. Com scriptRef válido (e, se blockTypes lista um gatilho, o script tem
+ *     esse gatilho): cada blockIndices n vira o índice n-1; descartados os
+ *     não-inteiros, fora do intervalo, de tipo fora de blockTypes, não
+ *     cobríveis (isCoverable; o "}" do repeat é ignorado em silêncio) e os já
+ *     cobertos por uma dica ANTERIOR do mesmo script (a posterior perde a
+ *     posição). Tipo de blockTypes que ficou sem posição recebe a posição do
+ *     fallback (regra 4) DENTRO desse script. Se nada sobrar, regra 3.
+ *  3. Fallback de localização (sem ponteiros, ou ponteiros inúteis): o 1º
+ *     script do personagem (ordem do manifesto) que tem, pra CADA tipo não-
+ *     gatilho de blockTypes, ao menos uma posição cobrível ainda não coberta
+ *     (e o gatilho certo, se blockTypes lista um). É a generalização de
+ *     locateOccurrence/fillBlockContext (R2): com dicas consumindo em ordem,
+ *     "1ª posição ainda livre" == "k-ésima ocorrência", e a escolha é por
+ *     script inteiro, então (gatilho, MENSAGEM) saem juntos - o forward sob
+ *     "quando receber verde" nunca é ancorado no script de "azul".
+ *  4. Posições do fallback, por tipo: a 1ª ainda livre no script; e, se
+ *     NENHUMA dica posterior do mesmo personagem-cópia pede esse tipo, TODAS
+ *     as livres restantes dele (cobre "ande 3 vezes" = 3 forwards numa dica
+ *     só). Por que não "todas sempre": duas dicas "hop" seguidas (falha F4)
+ *     - a 1ª pegaria os dois hops e a 2ª ficaria sem nada; com a olhada pra
+ *     frente a 1ª fica com o 1º hop e a 2ª com o 2º.
+ *     4b. A absorção para ANTES da próxima posição livre (no mesmo script)
+ *     de qualquer tipo que uma dica posterior do mesmo personagem-cópia
+ *     ensina: "diga 'Fala 2'" em say,say,say,message,say não engole a fala
+ *     depois do message (achado no fixture mensagens.json) - cobri-la
+ *     prenderia a dica de fala até a criança montar um bloco que o texto
+ *     nem menciona, e o message da dica seguinte viraria wrong_order.
+ *     Posições que nenhuma dica cobre simplesmente não são conferidas
+ *     (mesmo comportamento do caminho legado).
+ *  5. Sem posição pra nenhum tipo -> sem expected (dica legada, intacta).
+ *     blockTypes só com gatilho (ex.: ["onmessage"]) -> covered [] ("crie o
+ *     script com esse gatilho", done assim que existir).
+ *  6. occurrence (1-based) só quando o personagem do professor tem 2+
+ *     scripts com trigger+triggerArg+tokens idênticos.
+ *  7. VALIDAÇÃO por código: todas as dicas com expected são avaliadas com
+ *     evaluateExpectedHints contra o manifesto do PRÓPRIO professor; a que
+ *     não der 'done' (inclui qualquer wrong_value/wrong_order/extra_block - ex.: atribuição
+ *     gulosa de scripts idênticos do alinhamento pareando o grupo errado)
+ *     perde o expected e volta EXATAMENTE aos campos legados de antes desta
+ *     função (fillBlockArgs/fillBlockContext já os validaram). Repete até
+ *     estabilizar, porque tirar uma dica de um grupo muda a visão cruzada
+ *     (dono do extra_block) das demais.
+ *
+ * Legado (reconcileLegacy): com expected, os campos antigos passam a
+ * DERIVAR dele, pra cliente antigo e novo concordarem: trigger/triggerArg =
+ * os do expected; blockTypes = os da LLM que ficaram com posição (+ o
+ * gatilho, se ela o listou); minCounts[T] = quantos T existem nos scripts do
+ * mesmo escopo do cliente legado (mesmo gatilho; mesma mensagem se houver)
+ * ANTES deste script + os deste script até a última posição coberta de T
+ * (só > 1); blockArgs = os já calculados por fillBlockArgs, menos tipos que
+ * saíram de blockTypes ou cujo valor não bate com TODAS as posições cobertas
+ * daquele tipo; triggerExclusive recalculado pro novo escopo.
+ */
+function buildExpectedForHints(hints, projectJson, options) {
+    const opts = options || {};
+    const manifest = opts.manifest || computeDetailedManifest(projectJson);
+    const reconcileLegacy = opts.reconcileLegacy !== false;
+    const out = JSON.parse(JSON.stringify(Array.isArray(hints) ? hints : []));
+    const report = [];
+
+    const charactersByKey = new Map();
+    for (const scene of (manifest && manifest.scenes) || []) {
+        const copies = new Map();
+        for (const character of scene.characters || []) {
+            const copy = (copies.get(character.characterMd5) || 0) + 1;
+            copies.set(character.characterMd5, copy);
+            charactersByKey.set(characterKey(scene.sceneMd5, scene.sceneOccurrence, character.characterMd5, copy), character);
+        }
+    }
+
+    // Ponteiros da LLM saem de TODA dica (nunca ficam gravados).
+    const entries = [];
+    out.forEach((hint, index) => {
+        const when = hint && hint.when;
+        if (!when || typeof when !== 'object') return;
+        const pointers = { scriptRef: when.scriptRef, blockIndices: when.blockIndices };
+        delete when.scriptRef;
+        delete when.blockIndices;
+        delete when.expected;
+        if (when.type !== 'character_missing_block_type') return;
+        const key = characterKey(when.sceneMd5, when.sceneOccurrence, when.characterMd5, when.characterOccurrence);
+        entries.push({ index, hint, key, pointers });
+    });
+
+    const coveredByScript = new Map(); // key + '@' + s -> Set<índice do professor>
+    const takenIn = (key, s) => {
+        const k = `${key}@${s}`;
+        if (!coveredByScript.has(k)) coveredByScript.set(k, new Set());
+        return coveredByScript.get(k);
+    };
+
+    const built = []; // {entry, character, s, covered, legacyWhen}
+    entries.forEach((entry, e) => {
+        const when = entry.hint.when;
+        const character = charactersByKey.get(entry.key);
+        const scripts = character && Array.isArray(character.scripts) ? character.scripts : [];
+        if (!scripts.length) {
+            report.push({ index: entry.index, status: 'legacy', reason: 'no_character' });
+            return;
+        }
+        const types = (Array.isArray(when.blockTypes) ? when.blockTypes : []).filter((t) => typeof t === 'string');
+        const triggerTypes = types.filter((t) => TRIGGER_BLOCK_TYPES.has(t));
+        const bodyTypes = [...new Set(types.filter((t) => !TRIGGER_BLOCK_TYPES.has(t)))];
+        const triggerOk = (script) => triggerTypes.length === 0 || triggerTypes.includes(script.trigger);
+        // Regra 4: alguma dica posterior do mesmo personagem-cópia pede o tipo?
+        const laterWants = (type) => entries.slice(e + 1).some((other) =>
+            other.key === entry.key && Array.isArray(other.hint.when.blockTypes) && other.hint.when.blockTypes.includes(type));
+        const freeOf = (s, type) => {
+            const taken = takenIn(entry.key, s);
+            const positions = [];
+            (scripts[s].tokens || []).forEach((t, i) => {
+                if (t.type === type && isCoverable(t) && !taken.has(i)) positions.push(i);
+            });
+            return positions;
+        };
+        const laterTypes = new Set();
+        entries.slice(e + 1).forEach((other) => {
+            if (other.key !== entry.key || !Array.isArray(other.hint.when.blockTypes)) return;
+            other.hint.when.blockTypes.forEach((t) => laterTypes.add(t));
+        });
+        const fallbackFor = (s, type, already) => {
+            const free = freeOf(s, type).filter((i) => !already.includes(i));
+            if (!free.length) return [];
+            if (laterWants(type)) return [free[0]];
+            // Absorve só até a próxima posição livre de um tipo que uma dica
+            // POSTERIOR ensina (regra 4b): "diga Fala 2" não engole as falas
+            // que vêm depois do `message` da dica seguinte.
+            const taken = takenIn(entry.key, s);
+            let boundary = Infinity;
+            (scripts[s].tokens || []).forEach((t, i) => {
+                if (i > free[0] && i < boundary && laterTypes.has(t.type) && isCoverable(t) && !taken.has(i)) boundary = i;
+            });
+            return free.filter((i) => i < boundary);
+        };
+
+        let s = -1;
+        let covered = [];
+        let source = 'fallback';
+
+        // Regra 2 - ponteiros da LLM.
+        const ref = parseScriptRef(entry.pointers.scriptRef, scripts.length);
+        if (ref >= 0 && triggerOk(scripts[ref]) && bodyTypes.length === 0) {
+            // Só gatilho em blockTypes ("crie o script quando receber X"):
+            // o script apontado basta, covered [].
+            s = ref;
+            source = 'llm';
+        } else if (ref >= 0 && triggerOk(scripts[ref]) && Array.isArray(entry.pointers.blockIndices)) {
+            const tokens = scripts[ref].tokens || [];
+            const taken = takenIn(entry.key, ref);
+            const picked = [];
+            for (const n of entry.pointers.blockIndices) {
+                const i = Number.isInteger(n) ? n - 1 : -1;
+                const t = tokens[i];
+                if (!t || !bodyTypes.includes(t.type) || !isCoverable(t) || taken.has(i) || picked.includes(i)) continue;
+                picked.push(i);
+            }
+            if (picked.length) {
+                for (const type of bodyTypes) {
+                    if (!picked.some((i) => tokens[i].type === type)) picked.push(...fallbackFor(ref, type, picked));
+                }
+                s = ref;
+                covered = picked;
+                source = 'llm';
+            }
+        }
+
+        // Regra 3/4 - fallback por tipos.
+        if (s < 0) {
+            for (let k = 0; k < scripts.length && s < 0; k++) {
+                if (!triggerOk(scripts[k])) continue;
+                if (bodyTypes.every((type) => freeOf(k, type).length > 0)) s = k;
+            }
+            if (s < 0) {
+                report.push({ index: entry.index, status: 'legacy', reason: 'no_script' });
+                return;
+            }
+            covered = [];
+            for (const type of bodyTypes) covered.push(...fallbackFor(s, type, covered));
+        }
+
+        covered = [...new Set(covered)].sort((a, b) => a - b);
+        const taken = takenIn(entry.key, s);
+        covered.forEach((i) => taken.add(i));
+
+        const script = scripts[s];
+        const expectedScript = toExpectedTokens(script.tokens);
+        const triggerArg = script.trigger === 'onmessage' && script.triggerArg != null ? script.triggerArg : null;
+        const expected = { trigger: script.trigger, triggerArg, script: expectedScript, covered };
+        // Regra 6 - scripts idênticos do mesmo personagem.
+        const sig = (sc) => JSON.stringify([sc.trigger, sc.trigger === 'onmessage' ? sc.triggerArg : null, toExpectedTokens(sc.tokens)]);
+        const mySig = sig(script);
+        const twins = scripts.map((sc, k) => (sig(sc) === mySig ? k : -1)).filter((k) => k >= 0);
+        if (twins.length >= 2) expected.occurrence = twins.indexOf(s) + 1;
+
+        const legacyWhen = JSON.parse(JSON.stringify(when));
+        when.expected = expected;
+        if (reconcileLegacy) reconcileLegacyFields(when, character, script, s, covered);
+        built.push({ entry, legacyWhen, source });
+    });
+
+    // Regra 7 - validação contra o PRÓPRIO projeto do professor.
+    const failed = new Map(); // index -> resultado do alinhamento
+    for (let round = 0; round < built.length + 1; round++) {
+        const live = built.filter((b) => !failed.has(b.entry.index));
+        if (!live.length) break;
+        const evalHints = live.map((b) => ({ id: `__${b.entry.index}`, when: b.entry.hint.when }));
+        const results = evaluateExpectedHints(evalHints, manifest);
+        let changed = false;
+        for (const b of live) {
+            const r = results.get(`__${b.entry.index}`);
+            if (!r || r.state !== 'done') {
+                failed.set(b.entry.index, r || { state: 'missing_result' });
+                b.entry.hint.when = b.legacyWhen; // volta EXATAMENTE ao legado de antes
+                changed = true;
+            }
+        }
+        if (!changed) break;
+    }
+
+    for (const b of built) {
+        if (failed.has(b.entry.index)) {
+            report.push({ index: b.entry.index, status: 'legacy', reason: 'not_done', detail: failed.get(b.entry.index) });
+        } else {
+            report.push({ index: b.entry.index, status: 'expected', source: b.source });
+        }
+    }
+    report.sort((a, b) => a.index - b.index);
+    return { hints: out, report };
+}
+
+/**
+ * Reescreve os campos legados de uma dica de bloco a partir do expected que
+ * acabou de ganhar (ver "Legado" no docblock de buildExpectedForHints).
+ * `script` = character.scripts[s] do manifesto do professor.
+ */
+function reconcileLegacyFields(when, character, script, s, covered) {
+    const tokens = script.tokens || [];
+    const coveredTypes = new Set(covered.map((i) => tokens[i].type));
+    const types = (Array.isArray(when.blockTypes) ? when.blockTypes : []).filter((t) =>
+        coveredTypes.has(t) || t === script.trigger);
+    when.blockTypes = [...new Set(types)];
+
+    delete when.trigger;
+    delete when.triggerArg;
+    delete when.minCounts;
+    delete when.triggerExclusive;
+    when.trigger = script.trigger;
+    const triggerArg = script.trigger === 'onmessage' && script.triggerArg != null ? script.triggerArg : null;
+    if (triggerArg !== null) when.triggerArg = triggerArg;
+
+    // Escopo do cliente legado (HintEngine.js#blockMatch): mesmo gatilho e,
+    // se triggerArg, mesma mensagem.
+    const scripts = character.scripts || [];
+    const inScope = (sc) => sc.trigger === script.trigger && (triggerArg === null || sc.triggerArg === triggerArg);
+    const minCounts = {};
+    for (const type of coveredTypes) {
+        let n = 0;
+        for (let k = 0; k < s; k++) {
+            if (inScope(scripts[k])) n += (scripts[k].blocks || []).filter((b) => b.type === type).length;
+        }
+        const last = Math.max(...covered.filter((i) => tokens[i].type === type));
+        // say unset (texto padrão) não existe em `blocks` - não conta, pra
+        // nunca exigir mais do que o professor tem pro cliente legado.
+        for (let i = 0; i <= last; i++) {
+            if (tokens[i].type === type && !(type === 'say' && tokens[i].unset)) n++;
+        }
+        if (n > 1) minCounts[type] = n;
+    }
+    if (Object.keys(minCounts).length) when.minCounts = minCounts;
+
+    if (when.blockArgs && typeof when.blockArgs === 'object') {
+        for (const type of Object.keys(when.blockArgs)) {
+            const nums = covered.filter((i) => tokens[i].type === type).map((i) => tokens[i].num);
+            if (!coveredTypes.has(type) || !nums.every((v) => v === when.blockArgs[type])) delete when.blockArgs[type];
+        }
+    }
+
+    const key = triggerKeyOf(script);
+    const exclusive = [...coveredTypes].every((type) => scripts.every((sc) =>
+        triggerKeyOf(sc) === key || !(sc.blocks || []).some((b) => b.type === type)));
+    if (exclusive && coveredTypes.size > 0) when.triggerExclusive = true;
 }
 
 /**
@@ -935,7 +1594,7 @@ function buildIntroHint(hintContext, projectName, llmIntro) {
  */
 async function generateHintsCore(projectJson, hintContext, projectName, provider, model) {
     const manifest = computeDetailedManifest(projectJson);
-    const transcript = buildTranscript(manifest);
+    const transcript = buildTranscript(manifest, projectJson);
     const introHint = buildIntroHint(hintContext, projectName);
 
     if (!transcript) {
@@ -980,10 +1639,22 @@ async function generateHintsCore(projectJson, hintContext, projectName, provider
         }
     }
 
-    const withBlockArgs = fillBlockContext(fillBlockArgs(validHints, manifest), manifest);
+    const withOccurrence = fillCharacterOccurrence(validHints, manifest);
+    const withBlockArgs = fillBlockContext(fillBlockArgs(withOccurrence, manifest), manifest);
     const withCharacterAddedHints = fillMissingCharacterAddedHints(withBlockArgs, manifest);
     const withDefaultCharacterHints = fillMissingDefaultCharacterHints(withCharacterAddedHints, manifest);
-    const withIntro = [buildIntroHint(hintContext, projectName, parsed && parsed.intro), ...withDefaultCharacterHints];
+    // Fase 3 (E6b): when.expected por código (scriptRef/blockIndices da LLM
+    // são só ponteiros; script/valores vêm do projeto) + validação de que
+    // toda dica com expected dá 'done' no PRÓPRIO projeto do professor - ver
+    // buildExpectedForHints. Por último entre as etapas de dica, pra ver a
+    // lista final (inclusive as injetadas, que não são de bloco).
+    const withExpected = buildExpectedForHints(withDefaultCharacterHints, projectJson, { manifest });
+    for (const entry of withExpected.report) {
+        if (entry.status === 'legacy' && entry.reason === 'not_done') {
+            console.warn('[hintsGeneration] when.expected removido (não dá done no projeto do professor):', entry.detail);
+        }
+    }
+    const withIntro = [buildIntroHint(hintContext, projectName, parsed && parsed.intro), ...withExpected.hints];
 
     const hints = withIntro.map((hint, idx) => ({
         id: `h${idx + 1}`,
@@ -1019,4 +1690,10 @@ function generateHintsWithProvider(projectJson, hintContext, projectName, provid
     return generateHintsCore(projectJson, hintContext, projectName, provider, model);
 }
 
-module.exports = { generateHints, generateHintsWithProvider, stripDashes, fillBlockContext };
+module.exports = {
+    generateHints, generateHintsWithProvider, stripDashes, fillBlockContext, fillCharacterOccurrence,
+    // Fase 3 (E6b): buildExpectedForHints é reusada pela migração
+    // (backend/scripts/backfillHintExpected.js); buildTranscript exportada
+    // pros testes do formato numerado.
+    buildExpectedForHints, buildTranscript,
+};

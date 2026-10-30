@@ -60,7 +60,7 @@ const { createClient } = require('@supabase/supabase-js');
 const { getTurmaIdFromClaims, getNivelFromClaims, verifyAndDecode } = require('../services/identity');
 const { notifyAssignmentRegistered } = require('../services/helloyotta');
 const { computeProjectManifest, compareManifests } = require('../services/assignmentScoring');
-const { resolveAssignmentFields } = require('../services/assignmentResolver');
+const { resolveAssignmentFields, resolveHintsUpdatedAt } = require('../services/assignmentResolver');
 const { generateHints } = require('../services/hintsGeneration');
 const { readCompletionSnapshot, persistCompletion } = require('../services/completionSnapshot');
 const { generateActivityPlan } = require('../services/activityGeneration');
@@ -662,7 +662,10 @@ router.post('/:id/complete', async (req, res) => {
 // wrong_value/wrong_trigger: o alerta "quase!" (bloco existe mas com valor/gatilho
 // errado) - gravado ALÉM de shown/dismissed, pra dar pra medir quantas vezes o
 // aluno errou sem mexer nas contagens de shown/dismissed que share.js já soma.
-const HINT_EVENT_TYPES = new Set(['shown', 'dismissed', 'wrong_value', 'wrong_trigger', 'wrong_order', 'wrong_confirm', 'wrong_fill']);
+// wrong_extra (Fase 3 - alinhamento): alerta de bloco A MAIS no script que
+// corresponde ao do professor (estado extra_block de shared/hintAlignment.mjs).
+// wrong_value/wrong_order também são gravados pelo caminho de alinhamento.
+const HINT_EVENT_TYPES = new Set(['shown', 'dismissed', 'wrong_value', 'wrong_trigger', 'wrong_order', 'wrong_confirm', 'wrong_fill', 'wrong_extra']);
 
 /**
  * POST /api/assignments/:id/hints/:hintId/event
@@ -719,7 +722,7 @@ router.post('/:id/hints/:hintId/event', async (req, res) => {
         res.json({ success: true });
     } catch (err) {
         console.error('[assignments] POST /:id/hints/:hintId/event error:', err);
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'Falha ao processar dicas' });
     }
 });
 
@@ -741,12 +744,19 @@ router.get('/:id/hints/dismissed', async (req, res) => {
     if (!supabase) return res.status(503).json({ error: 'Database not configured' });
 
     try {
-        const { data, error } = await supabase
+        // Ids de dica são posicionais (h1..hN): dispensas anteriores à última
+        // vez que o professor salvou as dicas (carimbo do TEMPLATE) são de
+        // outra geração e não valem. null = legado/coluna ausente = sem filtro.
+        const hintsUpdatedAt = await resolveHintsUpdatedAt(supabase, assignmentId);
+
+        let query = supabase
             .from('hint_events')
             .select('hint_id')
             .eq('student_id', req.userId)
             .eq('assignment_id', assignmentId)
             .eq('event_type', 'dismissed');
+        if (hintsUpdatedAt) query = query.gte('created_at', hintsUpdatedAt);
+        const { data, error } = await query;
 
         if (error) {
             if (error.code === '42P01') return res.json({ dismissed: [] });
@@ -756,7 +766,7 @@ router.get('/:id/hints/dismissed', async (req, res) => {
         res.json({ dismissed: Array.from(new Set((data || []).map((row) => row.hint_id))) });
     } catch (err) {
         console.error('[assignments] GET /:id/hints/dismissed error:', err);
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: 'Falha ao processar dicas' });
     }
 });
 
@@ -1028,6 +1038,11 @@ router.post('/:id/hints', async (req, res) => {
         const { httpError } = await findOwnedTemplateProject(supabase, assignmentId, req.userId);
         if (httpError) return res.status(httpError.status).json(httpError.body);
 
+        // NÃO envia hints_updated_at daqui de propósito: o carimbo é posto
+        // pelo trigger BEFORE UPDATE OF hints (backend/supabase-setup.sql)
+        // com now() do BANCO - supabase-js não expressa now() num update, e o
+        // relógio do Node poderia divergir do DEFAULT de hint_events.created_at.
+        // Bônus: se o SQL ainda não foi aplicado, este update segue funcionando.
         const { error: updateErr } = await supabase
             .from('assignments')
             .update({ hints })
@@ -1038,7 +1053,7 @@ router.post('/:id/hints', async (req, res) => {
         res.json({ success: true });
     } catch (err) {
         console.error('[assignments] POST /:id/hints error:', err);
-        res.status(500).json({ error: err.message || 'Falha ao salvar dicas' });
+        res.status(500).json({ error: 'Falha ao salvar dicas' });
     }
 });
 

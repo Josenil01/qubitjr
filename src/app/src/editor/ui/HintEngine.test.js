@@ -8,6 +8,8 @@ import {
     actorLabelFor,
 } from './HintEngine.js';
 import {ALL_WHEN_TYPES, LLM_WHEN_TYPES, MANUAL_WHEN_TYPE} from '../../../../../shared/hintSchema.mjs';
+import {project, b, onflag, onclick, onmessage} from '../../../../../shared/testing/projectFixtures.mjs';
+import {computeDetailedManifest} from '../../../../../shared/detailedManifest.mjs';
 
 /**
  * Constrói um personagem no formato que detailedManifest.js#computeDetailedManifest
@@ -43,7 +45,8 @@ function script (trigger, blocks) {
 
 describe('findSceneAndCharacter', () => {
     it('retorna scene/character null quando a cena não existe', () => {
-        expect(findSceneAndCharacter([], 'Woods.svg', 'HY-Ruby.svg', 1)).toEqual({scene: null, character: null});
+        // `characters` (todas as cópias do personagem na cena) entrou na Fase 2 (falha F9).
+        expect(findSceneAndCharacter([], 'Woods.svg', 'HY-Ruby.svg', 1)).toEqual({scene: null, character: null, characters: []});
     });
 
     it('desambigua cenas repetidas pelo sceneOccurrence (1-based)', () => {
@@ -324,5 +327,94 @@ describe('contrato com shared/hintSchema.mjs', () => {
     it('um when.type fora de ALL_WHEN_TYPES nunca bate', () => {
         expect(ALL_WHEN_TYPES.includes('nao_existe')).toBe(false);
         expect(hintConditionHolds({id: 'h1', when: {type: 'nao_existe'}}, {scenes: []})).toBe(false);
+    });
+});
+
+/**
+ * Fase 2 (falhas F8/F9) - com projetos sintéticos reais (projectFixtures +
+ * computeDetailedManifest), não com o manifesto escrito à mão acima.
+ */
+describe('Fase 2 - cópias do mesmo personagem (F9) e mensagem do onmessage (F8)', () => {
+    const SCENE = 'Woods.svg';
+    const RUBY = 'HY-Ruby.svg';
+    const twins = (first, second) => computeDetailedManifest(project([{md5: SCENE, sprites: [
+        {md5: RUBY, name: 'Ruby', scripts: first},
+        {md5: RUBY, name: 'Ruby', scripts: second},
+    ]}]));
+    const blockHint = (id, extra) => ({
+        id: id,
+        when: Object.assign({type: 'character_missing_block_type', sceneMd5: SCENE, sceneOccurrence: 1, characterMd5: RUBY, blockTypes: ['forward']}, extra),
+    });
+
+    it('findSceneAndCharacter devolve a N-ésima cópia e todas em `characters`', () => {
+        const d = twins([[onflag()]], [[onclick()]]);
+        const found = findSceneAndCharacter(d.scenes, SCENE, RUBY, 1, 2);
+        expect(found.characters.length).toBe(2);
+        expect(found.character.scripts[0].trigger).toBe('onclick');
+        expect(findSceneAndCharacter(d.scenes, SCENE, RUBY, 1, 3).character).toBeNull();
+    });
+
+    it('character_missing com characterOccurrence 2: pendente até existir a 2ª cópia', () => {
+        const hint = {id: 'h1', when: {type: 'character_missing', sceneMd5: SCENE, sceneOccurrence: 1, characterMd5: RUBY, characterOccurrence: 2}};
+        const one = computeDetailedManifest(project([{md5: SCENE, sprites: [{md5: RUBY, scripts: []}]}]));
+        expect(hintConditionHolds(hint, one)).toBe(true);
+        expect(hintConditionHolds(hint, twins([], []))).toBe(false);
+    });
+
+    it('character_no_script legado: resolvida se QUALQUER cópia tem script', () => {
+        const hint = {id: 'h1', when: {type: 'character_no_script', sceneMd5: SCENE, sceneOccurrence: 1, characterMd5: RUBY}};
+        expect(hintConditionHolds(hint, twins([], [[onflag(), b('say', 'Oi')]]))).toBe(false);
+        expect(hintConditionHolds(hint, twins([], []))).toBe(true);
+        // Com a cópia pedida: só ela conta.
+        const second = {id: 'h2', when: Object.assign({}, hint.when, {characterOccurrence: 2})};
+        expect(hintConditionHolds(second, twins([[onflag(), b('say', 'Oi')]], []))).toBe(true);
+    });
+
+    it('orderInfo distingue as cópias: dica da 2ª cópia feita não acusa a pendente da 1ª', () => {
+        const first = blockHint('h1', {characterOccurrence: 1, blockTypes: ['say']});
+        const second = blockHint('h2', {characterOccurrence: 2, blockArgs: {forward: 3}});
+        const d = twins([[onflag()]], [[onflag(), b('forward', 3)]]);
+        expect(orderInfo([first, second], d)).toBeNull();
+        // Mesma cópia: aí sim é fora de ordem, e o retorno diz em qual cópia piscar.
+        const secondEarlier = blockHint('h1', {characterOccurrence: 2, blockTypes: ['say']});
+        expect(orderInfo([secondEarlier, second], d)).toMatchObject({kind: 'order', pendingHint: secondEarlier, characterOccurrence: 2});
+    });
+
+    it('orderInfo legado (sem characterOccurrence) aceita a dica posterior feita em qualquer cópia', () => {
+        const earlier = blockHint('h1', {blockTypes: ['say']});
+        const later = blockHint('h2', {blockArgs: {forward: 3}});
+        const d = twins([[onflag()]], [[onflag(), b('forward', 3)]]);
+        expect(orderInfo([earlier, later], d)).toMatchObject({kind: 'order', doneHint: later, characterOccurrence: 2});
+    });
+
+    it('mistakeInfo aponta a cópia do erro (characterOccurrence) e não alerta se outra cópia já cumpriu', () => {
+        const hint = blockHint('h1', {blockArgs: {forward: 3}});
+        const wrongInSecond = twins([[onflag()]], [[onflag(), b('forward', 5)]]);
+        expect(mistakeInfo(hint, wrongInSecond)).toMatchObject({kind: 'value', characterOccurrence: 2, sig: 'h1|value|forward=5@2'});
+        const doneInFirst = twins([[onflag(), b('forward', 3)]], [[onflag(), b('forward', 5)]]);
+        expect(mistakeInfo(hint, doneInFirst)).toBeNull();
+    });
+
+    it('actorLabelFor numera a cópia quando a dica tem characterOccurrence e a cena tem cópias', () => {
+        const d = twins([], []);
+        expect(actorLabelFor(blockHint('h1', {characterOccurrence: 2}), d)).toBe('🧑 Ruby (2º)');
+        // Legado: igual a antes, sem número.
+        expect(actorLabelFor(blockHint('h1'), d)).toBe('🧑 Ruby');
+        // Uma cópia só no aluno: sem número, mesmo com characterOccurrence 1.
+        const one = computeDetailedManifest(project([{md5: SCENE, sprites: [{md5: RUBY, name: 'Ruby', scripts: []}]}]));
+        expect(actorLabelFor(blockHint('h1', {characterOccurrence: 1}), one)).toBe('🧑 Ruby');
+    });
+
+    it('blockMatch com triggerArg: só conta sob a mensagem certa; wrongTrigger por mensagem', () => {
+        const when = blockHint('h1', {trigger: 'onmessage', triggerArg: 'abrir', triggerExclusive: true}).when;
+        const wrongMsg = computeDetailedManifest(project([{md5: SCENE, sprites: [{md5: RUBY, scripts: [[onmessage('fechar'), b('forward', 3)]]}]}]));
+        const ruby = wrongMsg.scenes[0].characters[0];
+        expect(blockMatch(ruby, when)).toMatchObject({typesOk: false, wrongTrigger: true});
+        expect(mistakeInfo({id: 'h1', when}, wrongMsg)).toMatchObject({kind: 'trigger', sig: 'h1|trigger|onmessage:fechar'});
+        const rightMsg = computeDetailedManifest(project([{md5: SCENE, sprites: [{md5: RUBY, scripts: [[onmessage('abrir'), b('forward', 3)]]}]}]));
+        expect(blockMatch(rightMsg.scenes[0].characters[0], when).typesOk).toBe(true);
+        // Legado (sem triggerArg): qualquer onmessage serve.
+        const legacy = blockHint('h1', {trigger: 'onmessage'}).when;
+        expect(blockMatch(ruby, legacy).typesOk).toBe(true);
     });
 });

@@ -226,21 +226,178 @@ function walkScriptForDetail (script, agg) {
 }
 
 /**
- * Resume um script: `trigger` (script[0][0] se for um dos blocos de início -
- * onflag/onclick/ontouch/onmessage; null se o script começa solto) e `blocks`
- * (os demais, na ordem real, com o valor numérico quando existe - {type,
- * num}). Permite às dicas conferir EM QUAL gatilho o bloco está (when.trigger)
- * e quantos blocos de um tipo existem (when.minCounts), coisas que a lista
- * achatada blockTypes/blockSequence não sabe dizer.
+ * Primeiro bloco REAL do script (pula marcadores de caret - artefatos de UI
+ * do editor que podem aparecer antes do gatilho, ver o teste "excludes
+ * caret/UI-marker types"). null se o script não tem nenhum bloco real.
  */
-function buildScriptDetail (script, blocks) {
-    const first = script[0];
-    const firstType = Array.isArray(first) ? first[0] : null;
-    const isTrigger = TRIGGER_TYPES.has(firstType);
+function firstRealBlock (script) {
+    for (const block of script) {
+        if (Array.isArray(block) && block.length > 0 && !CARET_TYPES.has(block[0])) return block;
+    }
+    return null;
+}
+
+/**
+ * Mesmo critério de "argumento real" de walkScriptForDetail (ver hasRealArg
+ * lá): 'null' literal é o sentinela de "sem argumento" que
+ * Project.js#encodeStrip grava pra um message/onmessage sem mensagem
+ * escolhida no dropdown.
+ */
+function isRealArg (arg) {
+    return arg !== null && arg !== undefined && arg !== 'null' && arg !== '';
+}
+
+/**
+ * Resume um script COM gatilho (só esses chegam aqui - ver a regra de blocos
+ * soltos em computeDetailedManifest): `trigger` (onflag/onclick/ontouch/
+ * onmessage), `triggerArg` (Fase 2, falha F8: o NOME da mensagem de um
+ * onmessage - null pros outros gatilhos e pra um onmessage ainda sem
+ * mensagem escolhida) e `blocks` (os demais, na ordem real, com o valor
+ * numérico quando existe - {type, num, pending}). Permite às dicas conferir
+ * EM QUAL gatilho o bloco está (when.trigger + when.triggerArg) e quantos
+ * blocos de um tipo existem (when.minCounts), coisas que a lista achatada
+ * blockTypes/blockSequence não sabe dizer. Sem triggerArg, "quando receber
+ * a mensagem azul" e "quando receber a mensagem vermelha" eram o MESMO
+ * gatilho pras dicas - um bloco montado sob a mensagem errada resolvia a
+ * dica (regressão P8, hintRegressions.test.js).
+ *
+ * `blocks` já vem sem carets (walkScriptForDetail os pula), então blocks[0]
+ * é sempre o próprio gatilho - slice(1) o tira.
+ */
+function buildScriptDetail (head, blocks, script, scriptIndex) {
+    const trigger = head[0];
     return {
-        trigger: isTrigger ? firstType : null,
-        blocks: isTrigger ? blocks.slice(1) : blocks,
+        trigger,
+        triggerArg: trigger === 'onmessage' && isRealArg(head[1]) ? head[1] : null,
+        blocks: blocks.slice(1),
+        // Fase 3 (alinhamento) - ver tokenizeScript abaixo. scriptIndex é o
+        // índice deste script em sprite.scripts ORIGINAL (contando vazios e
+        // soltos, que não viram item aqui) - é o que permite ao cliente
+        // achar o bloco VIVO no editor a partir de token.path.
+        scriptIndex,
+        tokens: tokenizeScript(script),
     };
+}
+
+/**
+ * Marcador de FECHAMENTO de um `repeat` na lista de tokens (Fase 3). O token
+ * de ABERTURA é o próprio bloco repeat ({type: 'repeat', num: N, ...}); os
+ * blocos de dentro vêm logo depois (path com um nível a mais) e o grupo
+ * termina com {type: REPEAT_CLOSE}. Sem valor (num sempre null). Existe pra
+ * que o alinhamento (shared/hintAlignment.mjs) saiba onde o corpo do repeat
+ * acaba: "forward dentro do repeat" e "forward depois do repeat" são
+ * posições DIFERENTES (falha F7), e com uma lista achatada sem fechamento
+ * as duas ficariam indistinguíveis.
+ */
+export const REPEAT_CLOSE = '/repeat';
+
+/** Índice (no array ORIGINAL) do 1º bloco real do script; -1 se nenhum. */
+function headIndex (script) {
+    for (let i = 0; i < script.length; i++) {
+        const block = script[i];
+        if (Array.isArray(block) && block.length > 0 && !CARET_TYPES.has(block[0])) return i;
+    }
+    return -1;
+}
+
+/**
+ * Um token a partir de uma tupla de bloco. Estados (Fase 3):
+ *  - num: valor numérico REAL (só tipos de NUMERIC_ARG_TYPES - mesma regra
+ *    de blocks[].num), senão null. say/message/sons/etc. sempre null: o
+ *    texto do say não importa (decisão do usuário) e mensagens têm
+ *    mecanismo próprio (triggerArg / message_not_received).
+ *  - pending: valor PADRÃO mascarado 'unconfirmed:N' (Project.maskUnconfirmed,
+ *    só no cliente - bloco recém-arrastado da paleta, aluno ainda não tocou
+ *    no número; mesma origem do kind 'confirm' de HintEngine.js#mistakeInfo).
+ *    num fica null.
+ *  - unset: o bloco ocupa a posição mas ainda não tem valor escolhido:
+ *    numérico sem argumento real (kind 'fill' do caminho legado),
+ *    setspeed 3 (velocidade "não escolhida" da paleta zerada de missão, ver
+ *    BlockArg.js - nunca é uma velocidade real, então num vira null) e say
+ *    com texto padrão / vazio (isDefaultSayText).
+ * pending e unset NUNCA contam como valor errado no alinhamento - o aluno
+ * está no meio do caminho, não errou.
+ */
+function blockToken (block, path) {
+    const type = block[0];
+    const arg = block[1];
+    const realArg = isRealArg(arg);
+    let num = NUMERIC_ARG_TYPES.has(type) && realArg ? Number(arg) : NaN;
+    num = Number.isNaN(num) ? null : num;
+    const pendingMatch = (typeof arg === 'string') ? /^unconfirmed:(-?\d+(?:\.\d+)?)$/.exec(arg) : null;
+    const pending = pendingMatch ? Number(pendingMatch[1]) : null;
+    let unset = false;
+    if (type === 'say') {
+        unset = !realArg || isDefaultSayText(arg);
+    } else if (type === 'setspeed' && num === 3) {
+        num = null;
+        unset = true;
+    } else if (NUMERIC_ARG_TYPES.has(type) && num === null && pending === null) {
+        unset = true;
+    }
+    return {type, num, pending, unset, path};
+}
+
+function tokenizeStrip (strip, startAt, prefix, out) {
+    for (let i = startAt; i < strip.length; i++) {
+        const block = strip[i];
+        if (!Array.isArray(block) || block.length === 0 || CARET_TYPES.has(block[0])) continue;
+        const path = prefix.concat(i);
+        out.push(blockToken(block, path));
+        if (block[0] === 'repeat') {
+            tokenizeStrip(Array.isArray(block[4]) ? block[4] : [], 0, path, out);
+            out.push({type: REPEAT_CLOSE, num: null, pending: null, unset: false, path});
+        }
+    }
+    return out;
+}
+
+/**
+ * Tokens de UM script (Fase 3 - alinhamento professor x aluno, ver
+ * shared/hintAlignment.mjs). Lista ORDENADA, sem o gatilho (o 1º bloco real)
+ * e sem carets, um token por bloco: {type, num, pending, unset, path}, com
+ * cada repeat virando ABERTURA (o próprio token 'repeat', com o valor) +
+ * tokens internos + FECHAMENTO {type: REPEAT_CLOSE} (mesmo path da
+ * abertura). Ver blockToken pros estados.
+ *
+ * path = índices dentro da tupla ORIGINAL do script: topo [i] (i conta o
+ * gatilho em 0 e os carets, ou seja, é o índice real no array salvo);
+ * aninhado [i, j, ...] dentro de block[4]. É o endereço pro cliente achar o
+ * bloco vivo (junto com scripts[].scriptIndex).
+ *
+ * Diferente de walkScriptForDetail/blocks: o say com texto padrão NÃO é
+ * pulado aqui (ocupa a posição, só fica unset) e o `repeat` sem o 'repeat'
+ * do strip vira dois tokens. blocks/agregados continuam exatamente como
+ * antes (caminho legado intacto).
+ */
+export function tokenizeScript (script) {
+    if (!Array.isArray(script)) return [];
+    const head = headIndex(script);
+    if (head < 0) return [];
+    return tokenizeStrip(script, head + 1, [], []);
+}
+
+/**
+ * Forma "esperada" de uma lista de tokens (lado do PROFESSOR, gravada em
+ * when.expected.script): só {type, num}. say sempre com num null (o texto
+ * não importa); numérico sem valor (unset) também null = "qualquer valor
+ * serve" no alinhamento.
+ */
+export function toExpectedTokens (tokens) {
+    return (Array.isArray(tokens) ? tokens : []).map(function (t) {
+        return {type: t.type, num: t.type === 'say' ? null : (t.num === undefined ? null : t.num)};
+    });
+}
+
+/**
+ * Tokens esperados de um script do professor, a partir da tupla crua
+ * (`sprite.scripts[k]`) - o que o gerador grava em when.expected.script.
+ * Mesmo código que tokeniza o aluno (tokenizeScript), garantindo que os
+ * dois lados do alinhamento falam a mesma língua. Equivale a
+ * toExpectedTokens(scripts[].tokens) do manifesto detalhado.
+ */
+export function scriptTokens (scriptTuples) {
+    return toExpectedTokens(tokenizeScript(scriptTuples));
 }
 
 /**
@@ -269,6 +426,9 @@ export function computeDetailedManifest (projectJson) {
 
         const spriteIds = Array.isArray(page.sprites) ? page.sprites : [];
         const characters = [];
+        // characterMd5 -> quantas cópias desse MESMO personagem já apareceram
+        // nesta cena (Fase 2, falha F9) - ver characterOccurrence abaixo.
+        const characterOccurrenceByMd5 = new Map();
 
         for (const spriteId of spriteIds) {
             const sprite = page[spriteId];
@@ -290,16 +450,50 @@ export function computeDetailedManifest (projectJson) {
             const scriptDetails = [];
             let hasScript = false;
 
-            for (const script of scripts) {
+            for (let scriptIndex = 0; scriptIndex < scripts.length; scriptIndex++) {
+                const script = scripts[scriptIndex];
                 if (!Array.isArray(script) || script.length === 0) continue; // empty script: no code
+                // Blocos SOLTOS (Fase 2, falha F10 - decisão D1 do usuário:
+                // ignorados pelo sistema inteiro). Um script que não começa
+                // com um bloco de início nunca executa no ScratchJr - não é
+                // "código" do personagem. Antes eles entravam em TUDO
+                // (blockTypes, blockCounts, blockArgs, scripts com trigger
+                // null, sayTexts, messagesSent, blockSequence, hasScript) e
+                // resolviam qualquer dica sem when.trigger: a criança
+                // arrastava um `forward 3` pro canto, sem bandeira, e
+                // recebia a dica por feita (regressão P10). Agora o script
+                // inteiro é pulado ANTES do walk, então nenhum agregado o
+                // vê - blockTypes/blockCounts/blockArgs/sayTexts/
+                // messagesSent/messagesReceived/blockSequence/scripts - e um
+                // personagem que só tem blocos soltos fica com
+                // hasScript=false ("sem script ainda", mesma leitura que o
+                // gerador e character_no_script já fazem). Vale pros dois
+                // lados (é este mesmo arquivo): o projeto do professor com
+                // blocos soltos também não gera dica sobre eles.
+                const head = firstRealBlock(script);
+                if (!head || !TRIGGER_TYPES.has(head[0])) continue;
                 hasScript = true;
                 agg.currentBlocks = [];
                 walkScriptForDetail(script, agg);
-                scriptDetails.push(buildScriptDetail(script, agg.currentBlocks));
+                scriptDetails.push(buildScriptDetail(head, agg.currentBlocks, script, scriptIndex));
+            }
+
+            const characterMd5 = sprite.md5 || null;
+            let characterOccurrence = null;
+            if (characterMd5) {
+                characterOccurrence = (characterOccurrenceByMd5.get(characterMd5) || 0) + 1;
+                characterOccurrenceByMd5.set(characterMd5, characterOccurrence);
             }
 
             characters.push({
-                characterMd5: sprite.md5 || null,
+                characterMd5,
+                // 1 na 1ª cópia deste personagem (mesmo md5) NESTA cena, 2 na
+                // 2ª cópia, etc. (Fase 2, falha F9) - mesma ideia de
+                // sceneOccurrence, um nível abaixo. Ordem = page.sprites
+                // (ordem em que foram criados no editor). null junto com
+                // characterMd5 null. Ver when.characterOccurrence em
+                // shared/hintSchema.mjs.
+                characterOccurrence,
                 // Nome dado pelo professor (ex. "Ruby"), NÃO o md5 do asset -
                 // sprite.name é a mesma propriedade que Sprite.js#getSpriteData()
                 // grava. Só usado pra deixar o texto das dicas mais natural

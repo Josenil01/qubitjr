@@ -474,6 +474,43 @@ WITH orphan AS (
 )
 UPDATE assignments SET active = false WHERE template_id IN (SELECT id FROM orphan);
 
+-- [2026-10] Versionamento das dispensas de dica (hints_updated_at).
+-- Os ids de dica são POSICIONAIS (h1..hN, hintsGeneration.js) e as dispensas
+-- do aluno ficam em hint_events sem versão: ao regenerar/salvar as dicas, a
+-- nova 'h3' (outra dica) nascia "dispensada" pra quem fechou a 'h3' antiga.
+-- Solução: carimbo de quando o professor salvou as dicas pela última vez; GET
+-- /api/assignments/:id/hints/dismissed só conta dispensas com
+-- created_at >= carimbo do TEMPLATE da missão (referências herdam do template).
+-- NULL = legado (dicas anteriores a esta coluna): sem filtro, comportamento
+-- antigo. A API degrada pra esse mesmo comportamento se a coluna não existir.
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS hints_updated_at TIMESTAMPTZ;
+
+-- Quem carimba é o BANCO (now()), não o Node: supabase-js não expressa now()
+-- num update e o relógio do servidor de aplicação poderia divergir do DEFAULT
+-- CURRENT_TIMESTAMP de hint_events.created_at com que é comparado.
+-- pg_trigger_depth() = 1 garante que só UPDATE direto de assignments.hints
+-- (POST /api/assignments/:id/hints) carimba. O trigger de arquivar/restaurar
+-- dicas (sync_template_hints_on_project_delete, acima) mexe em assignments a
+-- partir de um trigger em projects, ou seja, em profundidade 2: NÃO dispara o
+-- carimbo (apagar/restaurar o projeto do professor não invalida dispensas -
+-- as dicas voltam idênticas). Ele também não escreve na coluna hints_updated_at.
+CREATE OR REPLACE FUNCTION stamp_assignment_hints_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF pg_trigger_depth() = 1 AND NEW.hints IS NOT NULL THEN
+    NEW.hints_updated_at := now();
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_assignments_hints_updated_at ON assignments;
+CREATE TRIGGER trg_assignments_hints_updated_at
+BEFORE UPDATE OF hints ON assignments
+FOR EACH ROW
+WHEN (OLD.hints IS DISTINCT FROM NEW.hints)
+EXECUTE FUNCTION stamp_assignment_hints_updated_at();
+
 -- ============================================
 -- Cole o conteúdo acima no Supabase SQL Editor
 -- ============================================
