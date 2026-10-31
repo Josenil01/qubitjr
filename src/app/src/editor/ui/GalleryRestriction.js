@@ -134,3 +134,55 @@ export function showAssignmentToast (text) {
         }
     }, 4000);
 }
+
+let blockModalEl = null;
+
+/**
+ * Modal central (não um toast que some sozinho) pedindo pro aluno terminar
+ * as tarefas da missão antes de testar a animação - usado por
+ * UI.js#toggleRun (ver isMissionPending acima). Reaproveita as MESMAS
+ * classes CSS do cartão de dica (.assignmentCompleteOverlay/Card/Emoji/
+ * Text/Close + acento âmbar .assignmentCoachCard - ver
+ * AssignmentBadge.js#_showCoachModal e assignment.css) pra ficar visualmente
+ * idêntico, mas é reconstruído aqui, só com DOM puro, pelo mesmo motivo do
+ * resto deste arquivo (não puxar o grafo de dependências de
+ * AssignmentBadge.js pro bundle do player.js - ver docblock no topo).
+ * Um modal por vez (fecha o anterior, se houver, antes de abrir outro).
+ */
+export function showAssignmentBlockModal (text) {
+    if (blockModalEl && blockModalEl.parentNode) {
+        blockModalEl.parentNode.removeChild(blockModalEl);
+    }
+    const overlay = document.createElement('div');
+    overlay.className = 'assignmentCompleteOverlay';
+    const card = document.createElement('div');
+    card.className = 'assignmentCompleteCard assignmentCoachCard';
+    overlay.appendChild(card);
+
+    const emoji = document.createElement('div');
+    emoji.className = 'assignmentCompleteEmoji';
+    emoji.textContent = '🎯';
+    card.appendChild(emoji);
+
+    const textEl = document.createElement('div');
+    textEl.className = 'assignmentCompleteText';
+    textEl.textContent = text;
+    card.appendChild(textEl);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'assignmentCompleteClose';
+    closeBtn.textContent = 'Fechar';
+    closeBtn.onclick = function () {
+        if (overlay.parentNode) {
+            overlay.parentNode.removeChild(overlay);
+        }
+        if (blockModalEl === overlay) {
+            blockModalEl = null;
+        }
+    };
+    card.appendChild(closeBtn);
+
+    document.body.appendChild(overlay);
+    blockModalEl = overlay;
+}

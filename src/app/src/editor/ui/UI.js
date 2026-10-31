@@ -18,7 +18,7 @@ import IO from '../../iPad/IO.js';
 import MediaLib from '../../iPad/MediaLib.js';
 import Paint from '../../painteditor/Paint.js';
 import Events from '../../utils/Events.js';
-import {getGalleryRestriction, allCharactersAtLimit, showAssignmentToast, isMissionPending} from './GalleryRestriction.js';
+import {getGalleryRestriction, allCharactersAtLimit, showAssignmentToast, isMissionPending, showAssignmentBlockModal} from './GalleryRestriction.js';
 import Localization from '../../utils/Localization.js';
 import ScratchAudio from '../../utils/ScratchAudio.js';
 import {frame, gn, CSSTransition, localx, newHTML, scaleMultiplier, getIdFor, isTablet, newDiv,
@@ -763,7 +763,7 @@ export default class UI {
             // deixa rodar, só avisa - pedido explícito pra não deixar a criança
             // "testar" a animação antes de terminar as tarefas da missão.
             if (isMissionPending()) {
-                showAssignmentToast('🎯 Termine as tarefas da missão antes de testar a animação!');
+                showAssignmentBlockModal('Termine as tarefas da missão antes de testar a animação!');
                 return;
             }
             ScratchJr.runStrips(e);
