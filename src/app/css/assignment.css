@@ -269,27 +269,30 @@
 }
 
 .assignmentCompleteCard {
-    max-width: min(90vw, 380px);
-    padding: 32px 28px;
-    border-radius: 20px;
+    /* Aumentado (pedido explícito - "maior, mais visível e fácil de ler",
+     * achado em teste real com a dica de alerta/coach) - 90vw continua
+     * limitando em telas pequenas, só o teto em telas grandes subiu. */
+    max-width: min(92vw, 520px);
+    padding: 44px 40px;
+    border-radius: 24px;
     background: #fff;
     color: #333;
     text-align: center;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
-    border: 3px solid #01bebc;
+    border: 4px solid #01bebc;
 }
 
 .assignmentCompleteEmoji {
-    font-size: 48px;
+    font-size: 64px;
     line-height: 1;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
 }
 
 .assignmentCompleteTitle {
-    font-size: 24px;
+    font-size: 30px;
     font-weight: 700;
     color: #01bebc;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 /* Miniatura do personagem a que a dica/alerta se refere (ver
@@ -297,26 +300,27 @@
  * emoji quando a dica não tem personagem (scene_missing/mission_intro/...). */
 .assignmentCompleteThumb {
     display: block;
-    max-width: 90px;
-    max-height: 90px;
-    margin: 0 auto 10px;
+    max-width: 120px;
+    max-height: 120px;
+    margin: 0 auto 14px;
 }
 
 .assignmentCompleteText {
-    font-size: 16px;
-    line-height: 1.4;
-    margin-bottom: 22px;
+    font-size: 22px;
+    line-height: 1.5;
+    font-weight: 500;
+    margin-bottom: 28px;
     word-break: break-word;
 }
 
 .assignmentCompleteClose {
     border: none;
-    border-radius: 22px;
-    padding: 10px 30px;
+    border-radius: 26px;
+    padding: 14px 40px;
     background: #01bebc;
     color: #fff;
     font-weight: 700;
-    font-size: 15px;
+    font-size: 19px;
     cursor: pointer;
 }
 
@@ -692,18 +696,18 @@
  * abaixo (status por dica + contador + Anterior/Próxima).
  */
 .assignmentHintsPanelCard {
-    max-width: min(90vw, 420px);
+    max-width: min(92vw, 560px);
 }
 
 .assignmentHintsPanelStatus {
     display: inline-block;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 12px;
+    padding: 4px 12px;
+    border-radius: 14px;
     background: #fdf0dc;
     color: #b9770e;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .assignmentHintsPanelStatus.done {
@@ -712,10 +716,10 @@
 }
 
 .assignmentHintsPanelActor {
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 700;
     color: #6c4a1e;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .assignmentHintsPanelActor.hidden {
@@ -723,26 +727,26 @@
 }
 
 .assignmentHintsPanelCounter {
-    font-size: 13px;
+    font-size: 15px;
     color: #888;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
 }
 
 .assignmentHintsPanelNav {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
 }
 
 .assignmentHintsPanelNavBtn {
     border: 2px solid #f5a623;
-    border-radius: 18px;
-    padding: 8px 16px;
+    border-radius: 20px;
+    padding: 10px 20px;
     background: #fff;
     color: #d68910;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 17px;
     cursor: pointer;
 }
 
