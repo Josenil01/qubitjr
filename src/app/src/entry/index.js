@@ -3,7 +3,6 @@ import {gn, getUrlVars, isAndroid, isiOS} from '../utils/lib.js';
 import iOS from '../iPad/iOS.js';
 import UI from '../editor/ui/UI.js';
 import Localization from '../utils/Localization.js';
-import AppUsage from '../utils/AppUsage.js';
 
 export function indexMain () { // eslint-disable-line import/prefer-default-export
     // Verificar se elementos existem antes de acessar (para SPA com múltiplas páginas no DOM)
@@ -90,15 +89,10 @@ function indexFirstTime () {
 }
 
 function indexLoadOptions () {
-    if (window.Settings.edition != 'PBS' && AppUsage.askForUsage()) {
-        indexLoadUsage();
-    } else {
-        indexLoadStart();
-    }
-    
+    indexLoadStart();
 }
 
-function indexLoadStart (afterUsage) {
+function indexLoadStart () {
     // Verificações null para SPA
     const authorsEl = gn('authors');
     if (authorsEl) authorsEl.className = 'credits hide';
@@ -127,29 +121,6 @@ function indexLoadStart (afterUsage) {
         
         const gearEl = gn('gear');
         if (gearEl) gearEl.className = 'gear show';
-        
-        if (afterUsage) {
-            const catfaceEl = gn('catface');
-            if (catfaceEl) catfaceEl.className = 'catface show';
-            
-            const jrlogoEl = gn('jrlogo');
-            if (jrlogoEl) jrlogoEl.className = 'jrlogo show';
-            
-            const usageQuestionEl = gn('usageQuestion');
-            if (usageQuestionEl) usageQuestionEl.className = 'usageQuestion hide';
-            
-            const usageSchoolEl = gn('usageSchool');
-            if (usageSchoolEl) usageSchoolEl.className = 'usageSchool hide';
-            
-            const usageHomeEl = gn('usageHome');
-            if (usageHomeEl) usageHomeEl.className = 'usageHome hide';
-            
-            const usageOtherEl = gn('usageOther');
-            if (usageOtherEl) usageOtherEl.className = 'usageOther hide';
-            
-            const usageNoanswerEl = gn('usageNoanswer');
-            if (usageNoanswerEl) usageNoanswerEl.className = 'usageNoanswer hide';
-        }
     }
     
     const gettingsEl = gn('gettings');
@@ -163,51 +134,6 @@ function indexLoadStart (afterUsage) {
     if (isAndroid) {
         AndroidInterface.notifySplashDone();
     }
-}
-
-function indexLoadUsage() {
-    // Verificações null para SPA
-    const authorsEl = gn('authors');
-    if (authorsEl) authorsEl.className = 'credits show';
-    
-    const authorsTextEl = gn('authorsText');
-    if (authorsTextEl) authorsTextEl.className = 'creditsText hide';
-    
-    const purpleguyEl = gn('purpleguy');
-    if (purpleguyEl) purpleguyEl.className = 'purple hide';
-    
-    const blueguyEl = gn('blueguy');
-    if (blueguyEl) blueguyEl.className = 'blue hide';
-    
-    const redguyEl = gn('redguy');
-    if (redguyEl) redguyEl.className = 'red hide';
-    
-    const catfaceEl = gn('catface');
-    if (catfaceEl) catfaceEl.className = 'catface hide';
-    
-    const jrlogoEl = gn('jrlogo');
-    if (jrlogoEl) jrlogoEl.className = 'jrlogo hide';
-    
-    
-    const usageQuestionEl = gn('usageQuestion');
-    if (usageQuestionEl) usageQuestionEl.textContent = Localization.localize('USAGE_QUESTION');
-    
-    const useSchoolTextEl = gn('useSchoolText');
-    if (useSchoolTextEl) useSchoolTextEl.textContent = Localization.localize('USAGE_SCHOOL');
-    gn('useHomeText').textContent = Localization.localize('USAGE_HOME');
-    gn('useOtherText').textContent = Localization.localize('USAGE_OTHER');
-    gn('usageNoanswerText').textContent = Localization.localize('USAGE_NONE');
-    
-    gn('usageQuestion').className = 'usageQuestion show';
-    gn('usageSchool').className = 'usageSchool show';
-    gn('usageHome').className = 'usageHome show';
-    gn('usageOther').className = 'usageOther show';
-    gn('usageNoanswer').className = 'usageNoanswer show';
-    gn('usageSchool').onmousedown = indexSetUsage;
-    gn('usageHome').onmousedown = indexSetUsage;
-    gn('usageOther').onmousedown = indexSetUsage;
-    gn('usageNoanswer').onmousedown = indexSetUsage;
-
 }
 
 function setClassOfElementById(id, className) { // eslint-disable-line no-unused-vars
@@ -246,29 +172,6 @@ function indexGettingstarted () {
     window.ScratchJrRouter.navigateTo('starting');
 }
 
-function indexSetUsage (e) {
-    var usageText = '';
-
-    switch (e.target.parentElement.id) {
-    case 'usageSchool':
-        usageText = 'school';
-        break;
-    case 'usageHome':
-        usageText = 'home';
-        break;
-    case 'usageOther':
-        usageText = 'other';
-        break;
-    case 'usageNoanswer':
-        usageText = 'noanswer';
-        break;
-    }
-    // Send one-time analytics event about usage
-    iOS.analyticsEvent('lobby', 'scratchjr_usage', usageText);
-    AppUsage.setUsage(usageText);
-    ScratchAudio.sndFX('tap.wav');
-    indexLoadStart(true);
-}
 // For PBS KIDS edition only
 function indexInfo () {
     ScratchAudio.sndFX('tap.wav');
