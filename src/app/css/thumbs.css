@@ -235,11 +235,17 @@
    (.projectthumb.missionCompleted em missions.css) se estende ~30px pra
    fora do card (gap + anel + brilho) - com 2dvh de espaço entre cards
    vizinhos esse anel ficava espremido/cortado contra o card ao lado. 4dvh
-   dá respiro suficiente pro anel nunca encostar no vizinho. */
+   dá respiro suficiente pro anel nunca encostar no vizinho.
+   padding adicionado pelo mesmo motivo, mas nas BORDAS do container: o
+   gap só dá respiro ENTRE cards - o primeiro/último card de cada linha
+   fica colado na borda do próprio #scrollarea, sem espaço nenhum, e o
+   anel verde cortava ali também (achado em teste real, confirmado pelo
+   usuário). */
 #scrollarea:has(.projectthumb) {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-content: flex-start;
     gap: ${css_vh(4)};
+    padding: ${12 * scaleMultiplier}px;
 }
