@@ -85,7 +85,14 @@ export function editorMain () { // eslint-disable-line import/prefer-default-exp
         // startAssignmentId acima (que é o ALUNO iniciando um projeto NOVO a
         // partir de uma missão). Nunca cria projeto, sempre carrega o
         // existente via patchIOForAssignmentEdit (ver docblock acima).
-        var editAssignmentId = urlvars.editAssignmentId;
+        // `activityId` é um alias aceito pelo mesmo motivo - a HelloYotta já
+        // manda esse nome (junto com teacherMode=author, pensado só pro fluxo
+        // de CRIAR missão nova) nos links de edição do painel admin; em vez
+        // de depender de uma mudança do lado deles, tratamos os dois nomes
+        // como equivalentes aqui. `editAssignmentId` tem prioridade se os
+        // dois vierem juntos (não deveria acontecer, mas não há motivo pra
+        // um vencer silenciosamente o outro por acidente de ordem de código).
+        var editAssignmentId = urlvars.editAssignmentId || urlvars.activityId;
         var rawName = urlvars.projectName;
         var projectName = rawName ? decodeURIComponent(rawName.replace(/\+/g, ' ')) : null;
 
