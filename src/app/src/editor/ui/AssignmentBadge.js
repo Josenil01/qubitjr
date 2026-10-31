@@ -94,7 +94,7 @@ import {computeDetailedManifest} from '../../../../../shared/detailedManifest.mj
 import MediaLib from '../../iPad/MediaLib.js';
 import IO from '../../iPad/IO.js';
 import Palette from './Palette.js';
-import {registerGalleryRestrictionProvider, registerZeroBlockDefaultsProvider, allCharactersAtLimit} from './GalleryRestriction.js';
+import {registerGalleryRestrictionProvider, registerZeroBlockDefaultsProvider, registerMissionPendingProvider, allCharactersAtLimit} from './GalleryRestriction.js';
 import {
     hintConditionHolds,
     decideHintAction,
@@ -319,6 +319,17 @@ export default class AssignmentBadge {
         if (everCompleted) return false;
         return !!assignment.existingProjectId &&
             String(ScratchJr.currentProject) === String(assignment.existingProjectId);
+    }
+
+    /**
+     * Mesma condição de zeroDefaultsActive acima (missão ativa, dentro do
+     * projeto dela, ainda não concluída) - usado por
+     * GalleryRestriction.js#isMissionPending pra UI.js#toggleRun bloquear a
+     * bandeira verde até a missão terminar, pedindo pro aluno terminar as
+     * tarefas antes de testar a animação.
+     */
+    static get missionPending () {
+        return AssignmentBadge.zeroDefaultsActive;
     }
 
     /**
@@ -1329,4 +1340,7 @@ registerZeroBlockDefaultsProvider(function () {
 });
 registerGalleryRestrictionProvider(function () {
     return AssignmentBadge.galleryRestriction;
+});
+registerMissionPendingProvider(function () {
+    return AssignmentBadge.missionPending;
 });

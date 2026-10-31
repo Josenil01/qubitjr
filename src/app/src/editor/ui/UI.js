@@ -18,7 +18,7 @@ import IO from '../../iPad/IO.js';
 import MediaLib from '../../iPad/MediaLib.js';
 import Paint from '../../painteditor/Paint.js';
 import Events from '../../utils/Events.js';
-import {getGalleryRestriction, allCharactersAtLimit, showAssignmentToast} from './GalleryRestriction.js';
+import {getGalleryRestriction, allCharactersAtLimit, showAssignmentToast, isMissionPending} from './GalleryRestriction.js';
 import Localization from '../../utils/Localization.js';
 import ScratchAudio from '../../utils/ScratchAudio.js';
 import {frame, gn, CSSTransition, localx, newHTML, scaleMultiplier, getIdFor, isTablet, newDiv,
@@ -757,6 +757,15 @@ export default class UI {
     static toggleRun (e) {
         var isOff = ScratchJr.runtime.inactive();
         if (isOff) {
+            // Missão ativa ainda não concluída (ver AssignmentBadge.missionPending
+            // via GalleryRestriction.js, mesmo canal indireto do resto deste
+            // arquivo - nunca false em projeto livre/missão já concluída): não
+            // deixa rodar, só avisa - pedido explícito pra não deixar a criança
+            // "testar" a animação antes de terminar as tarefas da missão.
+            if (isMissionPending()) {
+                showAssignmentToast('🎯 Termine as tarefas da missão antes de testar a animação!');
+                return;
+            }
             ScratchJr.runStrips(e);
         } else {
             ScratchJr.stopStripsFromTop(e);

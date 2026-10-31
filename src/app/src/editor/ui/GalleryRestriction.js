@@ -58,6 +58,24 @@ export function getGalleryRestriction () {
     return provider ? provider() : null;
 }
 
+let missionPendingProvider = null;
+
+/**
+ * AssignmentBadge.js registra aqui (uma vez) a pergunta "existe uma missão
+ * ativa, dentro do projeto dela, ainda não concluída?" - mesmas condições
+ * de zeroDefaultsActive/galleryRestriction (ver AssignmentBadge.js). Usado
+ * por UI.js#toggleRun pra bloquear a bandeira verde até a missão terminar,
+ * sem precisar importar AssignmentBadge.js direto (mesmo motivo do resto
+ * deste arquivo - ver docblock no topo).
+ */
+export function registerMissionPendingProvider (fn) {
+    missionPendingProvider = fn;
+}
+
+export function isMissionPending () {
+    return missionPendingProvider ? !!missionPendingProvider() : false;
+}
+
 /**
  * O personagem `md5` já atingiu o limite de quantidade da missão (ver
  * AssignmentBadge.galleryRestriction: characterMaxCounts/characterCounts,
