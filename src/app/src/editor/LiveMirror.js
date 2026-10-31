@@ -32,6 +32,7 @@ import Palette from './ui/Palette.js';
 import Library from './ui/Library.js';
 import IO from '../iPad/IO.js';
 import { gn } from '../utils/lib.js';
+import { refreshStagePlacementGhosts } from './ui/GalleryRestriction.js';
 
 // zIndex do vidro de bloqueio e de tudo que precisa ficar clicável por cima
 // dele (avisos, botões de handoff) — exportados pra quem monta a própria UI
@@ -106,12 +107,17 @@ export function showLockOverlay() {
         position: 'fixed', top: '0', left: '0', right: '0', bottom: '0',
         zIndex: String(LOCK_OVERLAY_Z_INDEX), background: 'rgba(0, 0, 0, 0.02)', cursor: 'not-allowed',
     });
+    // Professor pilotando o editor do aluno: some com a sombra de
+    // posicionamento da missão (ver StagePlacementGhost.js) até o controle
+    // voltar - no-op no teacher.html, onde ninguém registra o renderer.
+    refreshStagePlacementGhosts();
 }
 
 export function hideLockOverlay() {
     if (lockOverlayEl && lockOverlayEl.parentNode) lockOverlayEl.parentNode.removeChild(lockOverlayEl);
     lockOverlayEl = null;
     reserveFrameTopSpace(0); // desfaz qualquer espaço reservado pro aviso/barra — ver reserveFrameTopSpace
+    refreshStagePlacementGhosts(); // controle voltou ao aluno - redesenha a sombra (ver showLockOverlay)
 }
 
 export function isLockOverlayShown() {

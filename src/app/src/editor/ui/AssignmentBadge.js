@@ -94,7 +94,19 @@ import {computeDetailedManifest} from '../../../../../shared/detailedManifest.mj
 import MediaLib from '../../iPad/MediaLib.js';
 import IO from '../../iPad/IO.js';
 import Palette from './Palette.js';
-import {registerGalleryRestrictionProvider, registerZeroBlockDefaultsProvider, registerMissionPendingProvider, allCharactersAtLimit} from './GalleryRestriction.js';
+import {
+    registerGalleryRestrictionProvider,
+    registerZeroBlockDefaultsProvider,
+    registerMissionPendingProvider,
+    registerStagePlacementsProvider,
+    refreshStagePlacementGhosts,
+    allCharactersAtLimit,
+} from './GalleryRestriction.js';
+// Só pelo efeito colateral: registra o renderer da sombra de posicionamento
+// em GalleryRestriction.js (ver StagePlacementGhost.js) - este arquivo é o
+// único que o importa, então ele nunca entra no bundle de player.js.
+import './StagePlacementGhost.js';
+import {isLockOverlayShown} from '../LiveMirror.js';
 import {
     hintConditionHolds,
     decideHintAction,
@@ -137,7 +149,7 @@ function characterThumbSrc (characterMd5) {
     return MediaLib.path.replace('svg', 'png') + IO.getFilename(characterMd5) + '.png';
 }
 
-let assignment = null; // { id, projectName, requirements, nivel, turmaId, existingProjectId }
+let assignment = null; // { id, projectName, requirements, stagePlacements, nivel, turmaId, existingProjectId }
 let lastProgress = null; // último resultado calculado (pro popover não ficar vazio ao abrir)
 let bannerEl = null;
 let badgeEl = null;
@@ -330,6 +342,39 @@ export default class AssignmentBadge {
      */
     static get missionPending () {
         return AssignmentBadge.zeroDefaultsActive;
+    }
+
+    /**
+     * Estado da sombra de posicionamento no palco (StagePlacementGhost.js,
+     * via GalleryRestriction.js#getStagePlacements): onde o professor deixou
+     * cada personagem DA CENA ATUAL. Mesma guarda de missionPending/
+     * zeroDefaultsActive (missão ativa, dentro do projeto dela, ainda não
+     * concluída - everCompleted devolve null aqui igual lá), então concluir a
+     * missão apaga todas as sombras. null também sem stagePlacements (missão
+     * cadastrada antes do recurso / coluna ainda não migrada) ou com o palco
+     * ainda não montado.
+     *  - sceneIndex: posição da cena atual em stage.pages - mesma ordem de
+     *    project.pages que buildStagePlacements indexa (Project.getProject
+     *    grava as páginas nessa ordem; página fantasma não existe ao vivo).
+     *  - hidden: professor pilotando o editor do aluno pelo LiveWatch (vidro
+     *    de LiveMirror.showLockOverlay) - sombra fora até o controle voltar.
+     *  - inFullscreen: a sombra já some por CSS em tela cheia; aqui só pra
+     *    não contar um arrasto em tela cheia como "posicionou".
+     */
+    static get stagePlacementsState () {
+        if (!AssignmentBadge.missionPending) return null;
+        const all = assignment.stagePlacements;
+        if (!Array.isArray(all) || !all.length) return null;
+        const stage = ScratchJr.stage;
+        if (!stage || !stage.currentPage || !Array.isArray(stage.pages)) return null;
+        const sceneIndex = stage.pages.indexOf(stage.currentPage);
+        return {
+            page: stage.currentPage,
+            sceneIndex: sceneIndex,
+            placements: (sceneIndex >= 0 && Array.isArray(all[sceneIndex])) ? all[sceneIndex] : [],
+            hidden: isLockOverlayShown(),
+            inFullscreen: !!ScratchJr.inFullscreen,
+        };
     }
 
     /**
@@ -565,6 +610,11 @@ export default class AssignmentBadge {
         if (everCompleted) {
             return;
         }
+        // Sombra de posicionamento (StagePlacementGhost.js): reconciliação
+        // idempotente e barata - cobre a primeira renderização depois do
+        // init() assíncrono e serve de rede de segurança pra qualquer
+        // mudança do palco que não passe pelos ganchos de Stage/Thumbs.
+        refreshStagePlacementGhosts();
         // Aluno com um campo de bloco em edição (teclado de texto do say ou
         // teclado numérico) - não avalia nada AINDA. Pedido explícito: os
         // parabéns (e os alertas) só depois que ele termina e o campo perde o
@@ -614,6 +664,10 @@ export default class AssignmentBadge {
             return; // missão mudou/sumiu no meio da sessão - não é o escopo deste refresh
         }
         assignment.requirements = data.assignment.requirements;
+        // Sem esta linha a sombra de posicionamento (StagePlacementGhost.js)
+        // nunca veria o professor mover um personagem e reautorar a missão
+        // no meio da sessão do aluno - o _recomputeLocal abaixo a redesenha.
+        assignment.stagePlacements = data.assignment.stagePlacements;
         AssignmentBadge._recomputeLocal();
     }
 
@@ -654,6 +708,10 @@ export default class AssignmentBadge {
             everCompleted = true;
             AssignmentBadge._syncSceneLimitUi();
             AssignmentBadge._lockCompletion();
+            // stagePlacementsState já devolve null (everCompleted) - isto só
+            // remove AGORA as sombras ainda na tela (o tick que as
+            // redesenharia não roda mais depois de concluída).
+            refreshStagePlacementGhosts();
         }
         if (wasComplete === false && isComplete) {
             // Parabéns tem prioridade sobre uma dica de coach eventualmente
@@ -1343,4 +1401,7 @@ registerGalleryRestrictionProvider(function () {
 });
 registerMissionPendingProvider(function () {
     return AssignmentBadge.missionPending;
+});
+registerStagePlacementsProvider(function () {
+    return AssignmentBadge.stagePlacementsState;
 });

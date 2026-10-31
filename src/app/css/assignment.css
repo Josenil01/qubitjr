@@ -758,3 +758,27 @@
     opacity: 0.35;
     cursor: default;
 }
+
+/* ===========================================================
+   Sombra de posicionamento no palco (StagePlacementGhost.js):
+   silhueta do personagem onde o professor o deixou, guiando o
+   aluno a arrastar o próprio personagem até lá. brightness(0)
+   deixa o clone preto (silhueta, não "um segundo personagem");
+   opacity 0.35 mantém o cenário visível por baixo. Nunca recebe
+   clique (pointer-events: none - redundante com a ausência de
+   .owner, que já a tira do hit-test de Stage.whoIsIt).
+   =========================================================== */
+.stagePlacementGhost {
+    opacity: 0.35;
+    filter: brightness(0);
+    -webkit-filter: brightness(0);
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Tela cheia (#stage ganha a classe 'fullscreen' em
+   UI.enterFullScreen) é pra assistir a animação - sem guias. */
+.stage.fullscreen .stagePlacementGhost {
+    display: none;
+}

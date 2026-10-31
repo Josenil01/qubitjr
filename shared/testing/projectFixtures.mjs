@@ -50,9 +50,15 @@ export function script (...blocks) {
 }
 
 /**
- * Monta o projectJson. pages: [{md5, sprites:[{md5, name, scripts, type?}]}].
+ * Monta o projectJson. pages: [{md5, sprites:[{md5, name, scripts, type?,
+ * homex?, homey?, homescale?, homeshown?}]}].
  * Ids de página/sprite são determinísticos (page1.., sprite<pagina>_<n>).
  * Cada `scripts` é um array de scripts (cada script um array de blocos).
+ * homex/homey/homescale/homeshown (opcionais - casa do personagem, ver
+ * detailedManifest.mjs#buildStagePlacements): omitidos, valem o mesmo que
+ * Page.js#addSprite grava num personagem recém-adicionado (240, 180, a
+ * escala do sprite, visível). xcoor/ycoor acompanham a casa (é onde o
+ * personagem está depois de goHome).
  */
 export function project (pages) {
     const out = {pages: [], currentPage: null};
@@ -67,6 +73,8 @@ export function project (pages) {
             const spriteId = 'sprite' + (pi + 1) + '_' + (si + 1);
             page.sprites.push(spriteId);
             if (si === 0) page.lastSprite = spriteId;
+            const homex = s.homex === undefined ? 240 : s.homex;
+            const homey = s.homey === undefined ? 180 : s.homey;
             const data = {
                 shown: true,
                 type: s.type || 'sprite',
@@ -76,6 +84,12 @@ export function project (pages) {
                 angle: 0,
                 scale: 1,
                 speed: 1,
+                homex: homex,
+                homey: homey,
+                homescale: s.homescale === undefined ? 1 : s.homescale,
+                homeshown: s.homeshown === undefined ? true : s.homeshown,
+                xcoor: homex,
+                ycoor: homey,
                 scripts: s.scripts || [],
             };
             if (s.md5) data.md5 = s.md5;

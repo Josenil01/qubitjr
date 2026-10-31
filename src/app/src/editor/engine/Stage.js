@@ -13,6 +13,7 @@ import {newHTML, newDiv, gn,
     getIdFor, setProps,
     scaleMultiplier, setCanvasSize,
     globaly, globalx} from '../../utils/lib.js';
+import {refreshStagePlacementGhosts} from '../ui/GalleryRestriction.js';
 
 export default class Stage {
     constructor (div) {
@@ -557,6 +558,9 @@ export default class Stage {
             this.clickOnElement(e, Events.dragthumbnail);
         } else {
             this.moveElementBy(spr);
+            // Soltou o personagem: confere se chegou na sombra da missão
+            // (ver StagePlacementGhost.js - no-op fora do editor do aluno).
+            refreshStagePlacementGhosts({droppedSprite: spr});
             if (spr.type == 'sprite') {
                 ScratchJr.runtime.threadsRunning = ScratchJr.runtime.threadsRunning.concat(spr.threads);
                 ScratchJr.startCurrentPageStrips(['ontouch']);
@@ -598,6 +602,7 @@ export default class Stage {
         }
         this.currentPage.updateThumb();
         this.updatePageBlocks();
+        refreshStagePlacementGhosts(); // personagem apagado não tem mais sombra
     }
 
     removeCharacter (spr) {

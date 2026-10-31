@@ -1,5 +1,7 @@
 'use strict';
 
+const { readStagePlacements } = require('./stagePlacements');
+
 /**
  * assignmentResolver.js
  *
@@ -33,19 +35,42 @@
  * @param {object|null|undefined} assignmentRow - linha (ou trecho de linha)
  *   já buscada pelo chamador na tabela `assignments`, com pelo menos os
  *   campos id/template_id/project_name/requirements/hints.
- * @returns {Promise<{ projectName: any, requirements: any, hints: any[] } | null>}
+ * @param {{ includeStagePlacements?: boolean }} [options] - com
+ *   includeStagePlacements, o retorno ganha também `stagePlacements` (sombra
+ *   de posicionamento no palco, ver services/stagePlacements.js), herdado do
+ *   MESMO lugar de onde vieram requirements/hints (o template, numa
+ *   referência; a própria linha, num template ou quando o template não pôde
+ *   ser lido). Opt-in de propósito: só GET /active precisa disso, e a
+ *   leitura é uma consulta SEPARADA e tolerante (a coluna nunca entra no
+ *   SELECT abaixo - pode ainda não ter sido migrada; nesse caso vem null).
+ * @returns {Promise<{ projectName: any, requirements: any, hints: any[], stagePlacements?: any[]|null } | null>}
  */
-async function resolveAssignmentFields(supabase, assignmentRow) {
+async function resolveAssignmentFields(supabase, assignmentRow, options) {
+    const resolved = await resolveBaseFields(supabase, assignmentRow);
+    if (!resolved) return null;
+    if (!(options && options.includeStagePlacements)) return resolved.fields;
+    return {
+        ...resolved.fields,
+        stagePlacements: await readStagePlacements(supabase, resolved.sourceId),
+    };
+}
+
+/**
+ * Corpo original de resolveAssignmentFields - devolve {fields, sourceId},
+ * onde sourceId é o id da linha de onde os campos efetivamente vieram
+ * (usado pra ler stage_placements do mesmo lugar, ver acima).
+ */
+async function resolveBaseFields(supabase, assignmentRow) {
     if (!assignmentRow) return null;
 
     // template_id ausente/null/0: esta linha É o template - seus próprios
     // campos já são a resposta certa, sem precisar de outra consulta.
     if (!assignmentRow.template_id) {
-        return {
+        return { sourceId: assignmentRow.id, fields: {
             projectName: assignmentRow.project_name,
             requirements: assignmentRow.requirements,
             hints: assignmentRow.hints || [],
-        };
+        } };
     }
 
     // template_id presente: esta linha é uma referência - busca os campos
@@ -67,18 +92,18 @@ async function resolveAssignmentFields(supabase, assignmentRow) {
                 '- degradando para os campos próprios da linha:',
                 error ? error.message : 'template não encontrado (possivelmente apagado)'
             );
-            return {
+            return { sourceId: assignmentRow.id, fields: {
                 projectName: assignmentRow.project_name,
                 requirements: assignmentRow.requirements,
                 hints: assignmentRow.hints || [],
-            };
+            } };
         }
 
-        return {
+        return { sourceId: assignmentRow.template_id, fields: {
             projectName: template.project_name,
             requirements: template.requirements,
             hints: template.hints || [],
-        };
+        } };
     } catch (err) {
         console.warn(
             '[assignmentResolver] Erro inesperado ao resolver template_id',
@@ -87,11 +112,11 @@ async function resolveAssignmentFields(supabase, assignmentRow) {
             '- degradando para os campos próprios da linha:',
             err.message
         );
-        return {
+        return { sourceId: assignmentRow.id, fields: {
             projectName: assignmentRow.project_name,
             requirements: assignmentRow.requirements,
             hints: assignmentRow.hints || [],
-        };
+        } };
     }
 }
 
