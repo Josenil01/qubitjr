@@ -72,12 +72,20 @@
    leve - em vez do preenchimento sólido anterior. right mantido em 14vh:
    a borda direita do botão fica aí, a esquerda da .bellnotice (right:4vh +
    width:9vh = 13vh) - 1vh de folga - e o botão só cresce pra ESQUERDA
-   (longe do sino), nunca sobrepondo. */
+   (longe do sino), nunca sobrepondo.
+   box-sizing:border-box é o que faz o botão CABER dentro do #topbar
+   (height:10.42dvh, ver lobby.css): sem isso, a border de 2px soma POR
+   FORA da height:9dvh (content-box é o default do navegador), e
+   top(1.5) + height(9) + border(2x2px) passava da altura do topbar,
+   fazendo o botão vazar pra faixa laranja abaixo - achado em teste real
+   (captura mostrando o botão cortado pelo #topbar). Com border-box a
+   borda fica DENTRO dos 9dvh declarados, nunca estoura. */
 #topbar .missionsTab {
     position: absolute;
     top: ${css_vh(1.5)};
     right: ${css_vh(14)};
-    height: ${css_vh(9)};
+    height: ${css_vh(8)};
+    box-sizing: border-box;
     padding: 0 ${16 * scaleMultiplier}px;
     border-radius: ${10 * scaleMultiplier}px;
     background: #fff;

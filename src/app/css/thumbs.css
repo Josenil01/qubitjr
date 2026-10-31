@@ -230,11 +230,16 @@
 /* Real wrapping grid for the project cards on the Home/Lobby page.
    Scoped with :has() so this never touches librarymodal.css's own
    #scrollarea (the character-picker modal), which reuses the same
-   id/class but never has .projectthumb children. */
+   id/class but never has .projectthumb children.
+   gap aumentado de 2dvh pra 4dvh: o anel verde de "missão concluída"
+   (.projectthumb.missionCompleted em missions.css) se estende ~30px pra
+   fora do card (gap + anel + brilho) - com 2dvh de espaço entre cards
+   vizinhos esse anel ficava espremido/cortado contra o card ao lado. 4dvh
+   dá respiro suficiente pro anel nunca encostar no vizinho. */
 #scrollarea:has(.projectthumb) {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-content: flex-start;
-    gap: ${css_vh(2)};
+    gap: ${css_vh(4)};
 }
