@@ -10,7 +10,7 @@ import Undo from './Undo.js';
 import UI from './UI.js';
 import Events from '../../utils/Events.js';
 import ScratchAudio from '../../utils/ScratchAudio.js';
-import {getGalleryRestriction, showAssignmentToast} from './GalleryRestriction.js';
+import {getGalleryRestriction, showAssignmentToast, refreshStagePlacementGhosts} from './GalleryRestriction.js';
 import {frame, gn, localx, newHTML, scaleMultiplier, getIdFor,
     isTablet, newImage, localy, setProps} from '../../utils/lib.js';
 
@@ -18,6 +18,13 @@ let caret = undefined;
 
 export default class Thumbs {
     static updatePages () {
+        // Ponto por onde passa toda mudança estrutural do palco já concluída
+        // (sprite/página adicionado, copiado, apagado, Undo/Redo, LiveMirror,
+        // troca de página, arrasto solto) - redesenha a sombra de
+        // posicionamento da missão (no-op fora do editor do aluno, ver
+        // GalleryRestriction.js#refreshStagePlacementGhosts). Adiada pro
+        // próximo ciclo, então a ordem aqui não importa.
+        refreshStagePlacementGhosts();
         var pthumbs = gn('pagecc');
         while (pthumbs.childElementCount > 0) {
             pthumbs.removeChild(pthumbs.childNodes[0]);

@@ -401,6 +401,102 @@ export function scriptTokens (scriptTuples) {
 }
 
 /**
+ * Fonte ÚNICA da numeração de cópias de um mesmo personagem numa cena
+ * (characterOccurrence, Fase 2, falha F9): 1 na 1ª cópia deste md5, 2 na
+ * 2ª, etc. `seenByMd5` é um Map NOVO por cena (md5 -> quantas cópias já
+ * vistas), alimentado na ordem de page.sprites e só com sprites de
+ * personagem (type 'sprite' - caixas de texto nunca contam). null quando o
+ * personagem não tem md5. Usada por computeDetailedManifest, por
+ * buildStagePlacements e pelo editor (StagePlacementGhost.js, contando os
+ * sprites VIVOS da cena) - os três precisam numerar as cópias do mesmo jeito
+ * pra "2ª Ruby do professor" casar com "2ª Ruby do aluno".
+ */
+export function nextCharacterOccurrence (seenByMd5, characterMd5) {
+    if (!characterMd5) return null;
+    const occurrence = (seenByMd5.get(characterMd5) || 0) + 1;
+    seenByMd5.set(characterMd5, occurrence);
+    return occurrence;
+}
+
+/**
+ * Casa padrão de todo personagem recém-adicionado (Page.js#addSprite: homex
+ * 240, homey 180 - o centro do palco). Um personagem que o professor nunca
+ * arrastou fica aqui - não é uma posição escolhida, então não vira sombra.
+ */
+const DEFAULT_HOME_X = 240;
+const DEFAULT_HOME_Y = 180;
+
+function finiteOrNull (value) {
+    const n = Number(value);
+    return (value === null || value === undefined || value === '' || !Number.isFinite(n)) ? null : n;
+}
+
+/**
+ * Onde o PROFESSOR deixou cada personagem, cena a cena - alimenta a sombra
+ * de posicionamento no palco do aluno (src/app/src/editor/ui/
+ * StagePlacementGhost.js) e é gravado em assignments.stage_placements no
+ * POST /api/assignments/register. Função À PARTE de computeDetailedManifest
+ * de propósito: aquele manifesto roda no cliente a cada tick de avaliação
+ * de dicas e tem testes com toEqual estrito em characters[] - posição de
+ * palco não é assunto dele.
+ *
+ * Retorno: array ALINHADO À ORDEM DAS CENAS (mesma regra de
+ * computeDetailedManifest/presentCountsByScene: uma entrada por página real
+ * de projectJson.pages, página fantasma não conta nem indexa), cada entrada
+ * uma lista de {characterMd5, characterOccurrence, homex, homey, homescale}.
+ * Array por índice e NÃO dicionário por sceneMd5: cenas sem fundo têm
+ * sceneMd5 null e colidiriam todas na mesma chave.
+ *
+ * Usa a posição de CASA (homex/homey/homescale - onde ScratchJr.resetSprites/
+ * goHome põe o personagem quando a animação recomeça, gravada ao soltar um
+ * arrasto em Stage.moveElementBy), nunca xcoor/ycoor: se o professor testou
+ * a animação e salvou depois, xcoor/ycoor é onde ela TERMINOU, não onde ele
+ * posicionou. Sem ângulo/espelhamento: goHome sempre zera o ângulo e nunca
+ * mexe no flip, então não existe "ângulo de casa" pra cobrar do aluno.
+ *
+ * Ficam DE FORA (mas continuam contando na numeração de cópias, pra a 2ª
+ * Ruby continuar sendo a 2ª mesmo que a 1ª seja pulada):
+ *  - personagem na casa padrão (240, 180) - nunca foi posicionado;
+ *  - homeshown === false - só aparece via bloco "mostrar"; revelar onde ele
+ *    fica entregaria a resposta de um bloco que o aluno ainda não montou;
+ *  - casa sem coordenadas numéricas (rascunho incompleto).
+ * Nunca lança - entrada inválida devolve [].
+ */
+export function buildStagePlacements (projectJson) {
+    if (!projectJson || typeof projectJson !== 'object' || !Array.isArray(projectJson.pages)) {
+        return [];
+    }
+    const scenes = [];
+    for (const pageId of projectJson.pages) {
+        const page = projectJson[pageId];
+        if (!page || typeof page !== 'object') continue; // página fantasma: mesma regra de computeDetailedManifest
+
+        const placements = [];
+        const seenByMd5 = new Map();
+        const spriteIds = Array.isArray(page.sprites) ? page.sprites : [];
+        for (const spriteId of spriteIds) {
+            const sprite = page[spriteId];
+            if (!sprite || typeof sprite !== 'object' || sprite.type !== 'sprite') continue;
+
+            const characterMd5 = sprite.md5 || null;
+            const characterOccurrence = nextCharacterOccurrence(seenByMd5, characterMd5);
+            if (!characterMd5) continue;
+            if (sprite.homeshown === false) continue;
+
+            const homex = finiteOrNull(sprite.homex);
+            const homey = finiteOrNull(sprite.homey);
+            if (homex === null || homey === null) continue;
+            if (homex === DEFAULT_HOME_X && homey === DEFAULT_HOME_Y) continue;
+
+            const homescale = finiteOrNull(sprite.homescale) || finiteOrNull(sprite.scale) || 1;
+            placements.push({characterMd5, characterOccurrence, homex, homey, homescale});
+        }
+        scenes.push(placements);
+    }
+    return scenes;
+}
+
+/**
  * Takes the PARSED project JSON object (already JSON.parse()'d by the
  * caller) and returns the detailed, order-preserving manifest described in
  * the module header. Never throws - malformed/missing input yields
@@ -479,11 +575,7 @@ export function computeDetailedManifest (projectJson) {
             }
 
             const characterMd5 = sprite.md5 || null;
-            let characterOccurrence = null;
-            if (characterMd5) {
-                characterOccurrence = (characterOccurrenceByMd5.get(characterMd5) || 0) + 1;
-                characterOccurrenceByMd5.set(characterMd5, characterOccurrence);
-            }
+            const characterOccurrence = nextCharacterOccurrence(characterOccurrenceByMd5, characterMd5);
 
             characters.push({
                 characterMd5,

@@ -63,6 +63,8 @@ const { computeProjectManifest, compareManifests } = require('../services/assign
 const { resolveAssignmentFields, resolveHintsUpdatedAt } = require('../services/assignmentResolver');
 const { generateHints } = require('../services/hintsGeneration');
 const { readCompletionSnapshot, persistCompletion } = require('../services/completionSnapshot');
+const { buildStagePlacements } = require('../services/detailedManifest');
+const { persistStagePlacements } = require('../services/stagePlacements');
 const { generateActivityPlan } = require('../services/activityGeneration');
 const { buildProjectFromPlan } = require('../services/activityProjectBuilder');
 
@@ -269,6 +271,10 @@ router.post('/register', async (req, res) => {
         }
 
         const requirements = computeProjectManifest(projectJson);
+        // Onde o professor deixou cada personagem, cena a cena - sombra de
+        // posicionamento no palco do aluno (ver shared/detailedManifest.mjs#
+        // buildStagePlacements). Gravado abaixo, depois dos dois ramos.
+        const stagePlacements = buildStagePlacements(projectJson);
 
         let assignmentId = null;
         let updatedExistingTemplate = false;
@@ -395,6 +401,15 @@ router.post('/register', async (req, res) => {
             }
         }
 
+        // stage_placements nos DOIS ramos acima (reautoria = update do
+        // template; primeiro cadastro = linha recém-inserida), num UPDATE À
+        // PARTE e tolerante - NÃO dentro do update/insert principal: a coluna
+        // vem de uma migração manual (supabase-setup.sql) e, enquanto ela não
+        // for aplicada, o PostgREST rejeitaria o comando inteiro (PGRST204) e
+        // o professor não conseguiria mais cadastrar missão nenhuma. Aqui, sem
+        // a coluna, só não há sombra. Ver services/stagePlacements.js.
+        await persistStagePlacements(supabase, assignmentId, stagePlacements);
+
         // Notificação best-effort, fire-and-forget — nunca deve bloquear nem
         // derrubar a resposta HTTP ao professor (mesmo padrão do sync de
         // mídia em WebInterface.js's io_setmedia). turmaId/nivel vêm das
@@ -471,10 +486,15 @@ router.get('/active', async (req, res) => {
         // uma referência (template_id setado), busca os valores do template —
         // é assim que edições no template (e reaprovações de dicas) propagam
         // pras turmas que o referenciam. Ver services/assignmentResolver.js.
-        const resolved = (await resolveAssignmentFields(supabase, assignment)) || {
+        // includeStagePlacements: stage_placements (sombra de posicionamento)
+        // vem do mesmo lugar, numa consulta SEPARADA e tolerante - de
+        // propósito fora do SELECT acima, pra que a coluna ainda não migrada
+        // nunca derrube /active (ver services/stagePlacements.js).
+        const resolved = (await resolveAssignmentFields(supabase, assignment, { includeStagePlacements: true })) || {
             projectName: assignment.project_name,
             requirements: assignment.requirements,
             hints: assignment.hints || [],
+            stagePlacements: null,
         };
 
         res.json({
@@ -483,6 +503,11 @@ router.get('/active', async (req, res) => {
                 projectName: resolved.projectName,
                 requirements: resolved.requirements,
                 hints: resolved.hints,
+                // Array por cena (ordem de project.pages) de {characterMd5,
+                // characterOccurrence, homex, homey, homescale}, ou null (missão
+                // anterior ao recurso / coluna não migrada) - ver
+                // src/app/src/editor/ui/StagePlacementGhost.js.
+                stagePlacements: resolved.stagePlacements || null,
                 nivel: assignment.nivel,
                 turmaId: assignment.turma_id,
                 existingProjectId: existingProject ? existingProject.id : null,

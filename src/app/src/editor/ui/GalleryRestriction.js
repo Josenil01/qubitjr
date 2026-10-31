@@ -6,6 +6,9 @@
  * e Library.js (quem LÊ, toda vez que abre a galeria de personagens/fundos,
  * pra restringi-la ao que o projeto de referência do professor usa - "siga
  * o exemplo do professor primeiro, libere tudo depois de concluir").
+ * Mesmo papel, depois, pra outros leitores leves: Palette.js (blocos
+ * zerados), UI.js (bandeira bloqueada) e Stage.js/Thumbs.js/LiveMirror.js
+ * (sombra de posicionamento no palco - ver StagePlacementGhost.js).
  *
  * Existe como arquivo À PARTE, sem importar nada além de si mesmo, só pra
  * EVITAR que Library.js precise importar AssignmentBadge.js diretamente.
@@ -74,6 +77,47 @@ export function registerMissionPendingProvider (fn) {
 
 export function isMissionPending () {
     return missionPendingProvider ? !!missionPendingProvider() : false;
+}
+
+let stagePlacementsProvider = null;
+
+/**
+ * Sombra de posicionamento no palco (ver StagePlacementGhost.js) - mesmo
+ * padrão de registerMissionPendingProvider acima. AssignmentBadge.js
+ * registra aqui (uma vez) quem responde "que sombras a cena atual deve
+ * mostrar agora?": devolve {page, sceneIndex, placements, hidden,
+ * inFullscreen} - ver AssignmentBadge.stagePlacementsState - ou null quando
+ * não há sombra nenhuma pra mostrar (sem missão, fora do projeto dela,
+ * missão já concluída). Fora do editor do aluno (player.js, teacher.js)
+ * ninguém registra e getStagePlacements() fica null pra sempre.
+ */
+export function registerStagePlacementsProvider (fn) {
+    stagePlacementsProvider = fn;
+}
+
+export function getStagePlacements () {
+    return stagePlacementsProvider ? stagePlacementsProvider() : null;
+}
+
+let stagePlacementGhostRenderer = null;
+
+/**
+ * O outro sentido do mesmo canal: Stage.js/Thumbs.js/LiveMirror.js avisam
+ * "o palco mudou, redesenhe as sombras" chamando
+ * refreshStagePlacementGhosts() - sem importar StagePlacementGhost.js
+ * (que só o editor do aluno carrega, via AssignmentBadge.js). Sem renderer
+ * registrado (player.js, teacher.js, editor do professor) é um no-op.
+ * opts.droppedSprite: o sprite que o aluno acabou de soltar num arrasto -
+ * confere se ele chegou perto da sombra dele (Stage.js#mouseUp).
+ */
+export function registerStagePlacementGhostRenderer (fn) {
+    stagePlacementGhostRenderer = fn;
+}
+
+export function refreshStagePlacementGhosts (opts) {
+    if (stagePlacementGhostRenderer) {
+        stagePlacementGhostRenderer(opts || {});
+    }
 }
 
 /**

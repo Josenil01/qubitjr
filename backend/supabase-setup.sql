@@ -511,6 +511,28 @@ FOR EACH ROW
 WHEN (OLD.hints IS DISTINCT FROM NEW.hints)
 EXECUTE FUNCTION stamp_assignment_hints_updated_at();
 
+-- [2026-10] Sombra de posicionamento no palco (stage_placements).
+-- Onde o PROFESSOR deixou cada personagem no projeto de referência - o editor
+-- do aluno desenha uma silhueta semi-transparente ali pra induzir a criança a
+-- arrastar o próprio personagem até o lugar (só guia visual: nunca posiciona
+-- nada sozinho e não entra na avaliação/nota). Calculada no POST
+-- /api/assignments/register por shared/detailedManifest.mjs#buildStagePlacements
+-- a partir da posição de CASA (homex/homey/homescale - onde o personagem começa
+-- quando a animação reinicia), não de xcoor/ycoor (que podem ser o fim de uma
+-- animação testada antes de salvar). Formato: array alinhado à ordem das cenas
+-- de project.pages, cada item uma lista de
+--   { characterMd5, characterOccurrence, homex, homey, homescale }
+-- (array por índice e não dicionário por md5 do fundo: cenas sem fundo têm
+-- md5 null e colidiriam numa mesma chave). Personagem na casa padrão (240,180)
+-- ou que começa escondido (homeshown=false) fica de fora. Só existe na linha
+-- TEMPLATE (mesma regra de `hints`/`requirements` - referências herdam do
+-- template via assignmentResolver.js). NULL = missão cadastrada antes desta
+-- coluna (sem sombra). A API degrada pra "sem sombra" se a coluna não existir
+-- (leitura e gravação em consulta separada, tolerante - ver
+-- backend/src/services/stagePlacements.js), então aplicar esta migração depois
+-- do deploy não derruba nenhuma rota.
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS stage_placements JSONB;
+
 -- ============================================
 -- Cole o conteúdo acima no Supabase SQL Editor
 -- ============================================
