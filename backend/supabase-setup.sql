@@ -547,6 +547,23 @@ ALTER TABLE assignments ADD COLUMN IF NOT EXISTS stage_placements JSONB;
 ALTER TABLE assignments ADD COLUMN IF NOT EXISTS is_official BOOLEAN NOT NULL DEFAULT false;
 CREATE INDEX IF NOT EXISTS idx_assignments_official ON assignments(is_official) WHERE is_official = true;
 
+-- [2026-10] Badge "feito com IA" no catálogo oficial (OfficialCatalog.js) -
+-- decisão explícita do usuário: automático, com opção de editar manualmente
+-- depois. `projects.created_via` guarda a ORIGEM do projeto no momento em
+-- que ele é criado ('ai' quando sai de POST /assignments/generate-from-theme,
+-- NULL pro caminho normal - ver routes/assignments.js) - é a única rota que
+-- sabe essa origem de verdade, no instante da criação. `assignments.
+-- generated_by_ai` é o que o catálogo oficial de fato lê (GET /official);
+-- POST /register copia created_via='ai' do projeto-exemplo pra cá no
+-- momento em que a missão é cadastrada/reautorada (projeto e missão são
+-- entidades diferentes - um projeto solto criado por IA só vira "missão
+-- gerada por IA" quando o professor efetivamente cadastra a aula). PATCH
+-- /:id/official (admin) pode corrigir manualmente os dois lados depois,
+-- pro caso de a detecção automática errar ou um admin importar uma missão
+-- antiga sem essa origem registrada.
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS created_via TEXT;
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS generated_by_ai BOOLEAN NOT NULL DEFAULT false;
+
 -- ============================================
 -- Cole o conteúdo acima no Supabase SQL Editor
 -- ============================================

@@ -28,6 +28,8 @@
  * GET  /api/assignments/official            — professor OU admin (qualquer turma) lista
  *                                              o catálogo de missões marcadas is_official
  *                                              (ver backend/supabase-setup.sql)
+ * PATCH /api/assignments/:id/official       — admin liga/desliga is_official e/ou
+ *                                              generated_by_ai de QUALQUER missão
  * GET  /api/assignments/my-progress         — aluno consulta o próprio progresso na
  *                                              missão ativa (mesma lógica de
  *                                              GET /api/public/students/:id/assignment-score
@@ -190,6 +192,12 @@ router.post('/generate-from-theme', async (req, res) => {
                 version: 'iOSv01',
                 ctime: now,
                 mtime: now,
+                // Única rota que sabe de verdade que este projeto nasceu de
+                // IA (ver migração em supabase-setup.sql) - POST /register
+                // copia isso pra assignments.generated_by_ai quando a missão
+                // é cadastrada, que é o que o catálogo oficial (GET /official,
+                // OfficialCatalog.js) de fato lê.
+                created_via: 'ai',
             })
             .select('id')
             .single();
@@ -268,7 +276,7 @@ router.post('/register', async (req, res) => {
     try {
         const { data: project, error: fetchErr } = await supabase
             .from('projects')
-            .select('id, name, json, owner, assignment_id')
+            .select('id, name, json, owner, assignment_id, created_via')
             .eq('id', projectId)
             .eq('owner', req.userId)
             .single();
@@ -276,6 +284,11 @@ router.post('/register', async (req, res) => {
         if (fetchErr || !project) {
             return res.status(404).json({ error: 'Project not found or access denied' });
         }
+        // Ver docblock de projects.created_via/assignments.generated_by_ai
+        // em supabase-setup.sql - só POST /generate-from-theme marca 'ai',
+        // propagado pra missão agora (nos dois ramos abaixo, criação e
+        // reautoria) porque é só aqui que o projeto VIRA uma missão de fato.
+        const generatedByAi = project.created_via === 'ai';
 
         const { turmaId, nivel } = await getTurmaAndNivel(req);
         if (!turmaId) {
@@ -347,6 +360,7 @@ router.post('/register', async (req, res) => {
                         requirements,
                         nivel,
                         active: true,
+                        generated_by_ai: generatedByAi,
                     })
                     .eq('id', existingAssignment.id);
 
@@ -393,6 +407,7 @@ router.post('/register', async (req, res) => {
                     project_name: project.name,
                     requirements,
                     active: true,
+                    generated_by_ai: generatedByAi,
                 })
                 .select('id')
                 .single();
@@ -573,7 +588,7 @@ router.get('/official', async (req, res) => {
     try {
         const { data: rows, error } = await supabase
             .from('assignments')
-            .select('id, teacher_id, project_name, requirements, nivel, created_at')
+            .select('id, teacher_id, project_name, requirements, nivel, created_at, generated_by_ai')
             .eq('is_official', true)
             .is('template_id', null)
             .order('created_at', { ascending: false });
@@ -588,10 +603,71 @@ router.get('/official', async (req, res) => {
                 requirements: row.requirements,
                 nivel: row.nivel,
                 createdAt: row.created_at,
+                generatedByAi: !!row.generated_by_ai,
             })),
         });
     } catch (err) {
         console.error('[assignments] GET /official error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * PATCH /api/assignments/:id/official
+ * Body: { isOfficial?: boolean, generatedByAi?: boolean }
+ *
+ * Admin-only (não dono - diferente de GET/PUT /:id/project acima, curadoria
+ * do catálogo é decisão de plataforma, não do professor-autor): liga/desliga
+ * a tag "oficial" de QUALQUER missão, e corrige manualmente o selo "feito
+ * com IA" quando a detecção automática de POST /register errar ou faltar
+ * (ex.: missão antiga, cadastrada antes desta coluna existir). Pelo menos
+ * um dos dois campos precisa vir no corpo - um PATCH vazio não faz sentido.
+ * Mesmo filtro `template_id IS NULL` do GET /official - marcar uma
+ * referência não teria efeito nenhum na leitura (ver docblock da coluna em
+ * supabase-setup.sql), então nem deixa tentar.
+ */
+router.patch('/:id/official', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+    if (req.role !== 'admin') {
+        return res.status(403).json({ error: 'Só administradores podem curar o catálogo oficial' });
+    }
+
+    const assignmentId = parseInt(req.params.id, 10);
+    if (!Number.isFinite(assignmentId)) return res.status(400).json({ error: 'Invalid assignment id' });
+
+    const body = req.body || {};
+    const update = {};
+    if (typeof body.isOfficial === 'boolean') update.is_official = body.isOfficial;
+    if (typeof body.generatedByAi === 'boolean') update.generated_by_ai = body.generatedByAi;
+    if (Object.keys(update).length === 0) {
+        return res.status(400).json({ error: 'Informe isOfficial e/ou generatedByAi (boolean)' });
+    }
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    try {
+        const { data: assignment, error: fetchErr } = await supabase
+            .from('assignments')
+            .select('id, template_id')
+            .eq('id', assignmentId)
+            .maybeSingle();
+
+        if (fetchErr) throw fetchErr;
+        if (!assignment) return res.status(404).json({ error: 'Missão não encontrada' });
+        if (assignment.template_id) {
+            return res.status(400).json({ error: 'Não é possível marcar uma referência - só o molde (template) original da missão.' });
+        }
+
+        const { error: updateErr } = await supabase
+            .from('assignments')
+            .update(update)
+            .eq('id', assignmentId);
+        if (updateErr) throw updateErr;
+
+        res.json({ success: true, ...update });
+    } catch (err) {
+        console.error('[assignments] PATCH /:id/official error:', err);
         res.status(500).json({ error: err.message });
     }
 });

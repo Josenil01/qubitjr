@@ -230,3 +230,116 @@
 .missionItem.completed .missionItem-status {
     color: #27ae60;
 }
+
+/* === 3. Botão "🏅 Catálogo" (topbar) + painel do catálogo oficial ===
+   Ver lobby/OfficialCatalog.js - catálogo global (GET /api/assignments/
+   official), diferente do histórico por turma de MissionsMenu.js acima.
+   Empilhado NUMA SEGUNDA LINHA abaixo do .missionsTab (mesmo `right: 14vh`,
+   `top` começando onde o de cima termina + 1vh de respiro) em vez de ficar
+   ao lado - os dois botões têm largura variável (texto, não ícone fixo) e
+   ambos usam `right` fixo crescendo pra ESQUERDA (mesmo truque do
+   .missionsTab, ver comentário dele); colocar um ao lado do outro exigiria
+   calcular a largura renderizada de "Missões" em tempo real pra não
+   sobrepor. Empilhar verticalmente evita esse problema por completo,
+   funciona em qualquer largura de texto. Dourado (#f5a623) pra diferenciar
+   visualmente do teal (#01bebc) do botão de Missões - "selo"/destaque, não
+   "progresso". */
+#topbar .officialCatalogTab {
+    position: absolute;
+    top: ${css_vh(10.5)};
+    right: ${css_vh(14)};
+    height: ${css_vh(8)};
+    box-sizing: border-box;
+    padding: 0 ${16 * scaleMultiplier}px;
+    border-radius: ${10 * scaleMultiplier}px;
+    background: #fff;
+    border: ${2 * scaleMultiplier}px solid #f5a623;
+    box-shadow: 0 ${2 * scaleMultiplier}px ${6 * scaleMultiplier}px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+#topbar .officialCatalogTab.hidden {display: none;}
+#topbar .officialCatalogTab:not(.hidden) {display: flex;}
+#topbar .officialCatalogTab:hover {background: #fff7e9;}
+
+#topbar .officialCatalogTab-icon {
+    color: #f5a623;
+    font-weight: 700;
+    font-size: ${css_vh(2.6)};
+    line-height: 1;
+}
+
+/* Painel: reaproveita .missionsPanel/.missionsPanelTitle/.missionsPanelList/
+   .missionItem inteiros (mesma estrutura de card) - .officialCatalogPanel só
+   sobrescreve a cor de destaque (borda) pra dourado, consistente com o
+   botão que abre o painel. */
+.officialCatalogPanel {
+    border-color: #f5a623;
+}
+
+.officialCatalogPanel .missionsPanelTitle {
+    color: #f5a623;
+}
+
+/* .officialItem não usa o selo circular ✓ de .missionItem-check (não existe
+   aqui - "concluído" não se aplica a um item de catálogo) - .missionItem-name
+   ocupa a linha toda, o selo/dourado fica numa linha própria embaixo. */
+.officialItem {
+    flex-direction: column;
+    align-items: flex-start;
+    cursor: default;
+}
+
+.officialItem.editable {
+    cursor: pointer;
+}
+
+.officialItemBadges {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    width: 100%;
+}
+
+.officialBadge {
+    flex: 1;
+    font-size: 11px;
+    font-weight: 700;
+    color: #b8720a;
+    background: #fff3de;
+    border: 1px solid #f5a623;
+    border-radius: 999px;
+    padding: 2px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Botões de curadoria (admin-only, ver OfficialCatalog.js) - discretos, só
+   o emoji, sem fundo até :hover - não competem visualmente com o selo. */
+.officialItemAction {
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    line-height: 1;
+    padding: 4px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.officialItemAction:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.officialItemAiBtn.active {
+    opacity: 1;
+    background: #e8f0ff;
+}

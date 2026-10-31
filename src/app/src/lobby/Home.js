@@ -11,6 +11,7 @@ import ScratchAudio from '../utils/ScratchAudio.js';
 import Vector from '../geom/Vector.js';
 import AssignmentNotice from './AssignmentNotice.js';
 import MissionsMenu from './MissionsMenu.js';
+import OfficialCatalog from './OfficialCatalog.js';
 import GenerateActivityModal from './GenerateActivityModal.js';
 import {gn, newHTML, isTablet} from '../utils/lib.js';
 
@@ -37,6 +38,10 @@ export default class Home {
         // no-op silencioso se a turma nunca teve nenhuma missão registrada
         // (ver MissionsMenu.js).
         MissionsMenu.init();
+        // Botão "🏅 Catálogo" no topbar - catálogo oficial inteiro (qualquer
+        // turma), no-op silencioso pra quem não é professor/admin ou se o
+        // catálogo estiver vazio (ver OfficialCatalog.js).
+        OfficialCatalog.init();
         // Botão flutuante "Gerar atividade com IA" - no-op silencioso pra
         // quem não é professor (ver GenerateActivityModal.js).
         GenerateActivityModal.init();
