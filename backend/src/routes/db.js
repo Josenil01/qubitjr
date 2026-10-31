@@ -129,8 +129,8 @@ function countPages(jsonStr) {
 /**
  * Translate INSERT / UPDATE / DELETE SQL into a Supabase mutation.
  * userId: quando fornecido, injeta/verifica owner para tabelas multi-tenant.
- * role: 'professor' | null (ver identityMiddleware em index.js) - isenta o
- * professor/ADM do limite diário de criação de projetos abaixo.
+ * role: 'professor' | 'admin' | null (ver identityMiddleware em index.js) -
+ * isenta o professor/ADM do limite diário de criação de projetos abaixo.
  */
 async function buildMutationQuery(supabase, sql, values = [], userId = null, role = null) {
   const sqlLower = sql.toLowerCase().trim();
@@ -191,7 +191,7 @@ async function buildMutationQuery(supabase, sql, values = [], userId = null, rol
     // não conteúdo discricionário, que é o que o cap diário foi desenhado pra
     // conter. As duas isenções são independentes: só rodamos a checagem de
     // limite diário quando NENHUMA das duas se aplica.
-    if (table === 'projects' && userId && role !== 'professor' && !data.assignment_id) {
+    if (table === 'projects' && userId && role !== 'professor' && role !== 'admin' && !data.assignment_id) {
       const todayStart = new Date();
       todayStart.setUTCHours(0, 0, 0, 0);
       const tomorrowStart = new Date(todayStart);
