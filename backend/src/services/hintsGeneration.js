@@ -1532,6 +1532,41 @@ function stripDashes(text) {
     return typeof text === 'string' ? text.replace(/\s*[\u2014\u2013]\s*/g, ', ') : text;
 }
 
+/**
+ * Rede de segurança - achado em teste real [2026-10]: a regra "PERSONAGEM
+ * CRIS É UM MENINO" no SYSTEM_PROMPT (ver lá) não é garantia nenhuma, mesma
+ * lição já aprendida com todas as outras redes de segurança deste arquivo
+ * (ensureFirstHintIsSceneMissing, fillMissingDefaultCharacterHints etc.) - a
+ * LLM continuava gerando "a Cris"/"essa Cris" mesmo com a instrução
+ * explícita no prompt. Corrige DETERMINISTICAMENTE, por regex, o artigo/
+ * pronome demonstrativo logo antes do nome "Cris" pra forma masculina -
+ * escopo bem estreito de propósito (só a combinação artigo+nome, nunca um
+ * pronome solto como "ela"/"dela" sem o nome ao lado, que exigiria resolver
+ * a quem o pronome se refere - risco de reescrever errado algo que já
+ * estava certo). Preserva a capitalização da primeira letra do artigo
+ * (inicio de frase vs. meio de frase).
+ */
+// (^|\s) em vez de \b antes do artigo - \b do JS não reconhece 'à'/'À' como
+// caractere de palavra, então \b nunca "fecha a fronteira" antes dele e o
+// padrão de "à Cris" nunca batia (achado testando os casos manualmente).
+const CRIS_GENDER_FIXES = [
+    [/(^|\s)([Aa])\s+Cris\b/g, (m, pre, art) => pre + (art === 'A' ? 'O' : 'o') + ' Cris'],
+    [/(^|\s)([Àà])\s+Cris\b/g, (m, pre, art) => pre + (art === 'À' ? 'Ao' : 'ao') + ' Cris'],
+    [/(^|\s)([Dd])a\s+Cris\b/g, (m, pre, art) => pre + art + 'o Cris'],
+    [/(^|\s)([Pp])ela\s+Cris\b/g, (m, pre, art) => pre + art + 'elo Cris'],
+    [/(^|\s)([Ee])ssa\s+Cris\b/g, (m, pre, art) => pre + art + 'sse Cris'],
+    [/(^|\s)([Aa])quela\s+Cris\b/g, (m, pre, art) => pre + art + 'quele Cris'],
+];
+
+function fixKnownCharacterGender(text) {
+    if (typeof text !== 'string') return text;
+    let result = text;
+    for (const [pattern, replacer] of CRIS_GENDER_FIXES) {
+        result = result.replace(pattern, replacer);
+    }
+    return result;
+}
+
 const INTRO_MAX_LENGTH = 200;
 const INTRO_FALLBACK_CONTEXT_MAX_LENGTH = 140;
 
@@ -1658,7 +1693,7 @@ async function generateHintsCore(projectJson, hintContext, projectName, provider
 
     const hints = withIntro.map((hint, idx) => ({
         id: `h${idx + 1}`,
-        text: stripDashes(hint.text),
+        text: fixKnownCharacterGender(stripDashes(hint.text)),
         when: hint.when,
     }));
 
