@@ -23,10 +23,19 @@
    imagem) - .aproject tem overflow:hidden (thumbs.css), e esse motor é
    WebKit/iPad de origem (ver "armadilhas" do CLAUDE.md), onde é comum
    overflow:hidden cortar o box-shadow do PRÓPRIO elemento que o declara.
-   .projectthumb não tem overflow, então o brilho nunca é cortado. */
+   .projectthumb não tem overflow, então o brilho nunca é cortado.
+   Anel com GAP (camada transparente antes do verde) em vez de encostado
+   na borda: projetos com mais de 1 página (.aproject.p2/p3/p4) têm um
+   recorte de folhas "em leque" no próprio PNG de fundo que passa um pouco
+   da caixa reta - um anel colado direto na borda cortava esse leque de
+   forma estranha. O gap de respiro resolve sem precisar saber a forma
+   exata do leque. */
 .projectthumb.missionCompleted {
-    box-shadow: 0 0 0 ${3 * scaleMultiplier}px #2ecc71, 0 0 ${18 * scaleMultiplier}px ${4 * scaleMultiplier}px rgba(46, 204, 113, 0.55);
-    border-radius: ${6 * scaleMultiplier}px;
+    box-shadow:
+        0 0 0 ${4 * scaleMultiplier}px transparent,
+        0 0 0 ${7 * scaleMultiplier}px #2ecc71,
+        0 0 ${16 * scaleMultiplier}px ${3 * scaleMultiplier}px rgba(46, 204, 113, 0.45);
+    border-radius: ${8 * scaleMultiplier}px;
 }
 
 /* Selo de check - no canto INFERIOR direito do .aproject (não o topo):
@@ -57,20 +66,23 @@
 }
 
 /* === 2a. Botão "Missões" (topbar) - texto, não ícone (pedido explícito -
-   nada de troféu). Pílula com texto, mesma cor/elevação do .bellnotice em
-   css/lobby.css, só com largura automática em vez de círculo fixo. right
-   mantido em 14vh: a borda direita da pílula fica aí, a esquerda da
-   .bellnotice (right:4vh + width:9vh = 13vh) - 1vh de folga - e a pílula só
-   cresce pra ESQUERDA (longe do sino), nunca sobrepondo. */
+   nada de troféu). Estilo "secondary"/outline moderno (pedido explícito,
+   com referência visual) - fundo branco, borda colorida, texto colorido,
+   cantos ~12px (retângulo arredondado, não pílula nem círculo), sombra
+   leve - em vez do preenchimento sólido anterior. right mantido em 14vh:
+   a borda direita do botão fica aí, a esquerda da .bellnotice (right:4vh +
+   width:9vh = 13vh) - 1vh de folga - e o botão só cresce pra ESQUERDA
+   (longe do sino), nunca sobrepondo. */
 #topbar .missionsTab {
     position: absolute;
     top: ${css_vh(1.5)};
     right: ${css_vh(14)};
     height: ${css_vh(9)};
-    padding: 0 ${14 * scaleMultiplier}px;
-    border-radius: ${css_vh(4.5)};
-    background: #01bebc;
-    box-shadow: 0 ${1 * scaleMultiplier}px ${3 * scaleMultiplier}px rgba(0, 0, 0, 0.3);
+    padding: 0 ${16 * scaleMultiplier}px;
+    border-radius: ${10 * scaleMultiplier}px;
+    background: #fff;
+    border: ${2 * scaleMultiplier}px solid #01bebc;
+    box-shadow: 0 ${2 * scaleMultiplier}px ${6 * scaleMultiplier}px rgba(0, 0, 0, 0.15);
     cursor: pointer;
     z-index: 200;
     align-items: center;
@@ -80,12 +92,12 @@
 
 #topbar .missionsTab.hidden {display: none;}
 #topbar .missionsTab:not(.hidden) {display: flex;}
-#topbar .missionsTab:hover {background: #019a98;}
+#topbar .missionsTab:hover {background: #e6f9f9;}
 
 #topbar .missionsTab-icon {
-    color: #fff;
+    color: #01bebc;
     font-weight: 700;
-    font-size: ${css_vh(3.2)};
+    font-size: ${css_vh(3)};
     line-height: 1;
 }
 
