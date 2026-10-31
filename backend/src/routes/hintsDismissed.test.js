@@ -104,7 +104,7 @@ function mockRes() {
 describe('hints_updated_at (dispensas versionadas)', () => {
     const ORIGINAL_ENV = { ...process.env };
 
-    function reset({ template = { id: 7, template_id: null, hints_updated_at: STAMP }, extra = [] } = {}) {
+    function reset({ template = { id: 7, template_id: null, teacher_id: 'prof-1', hints_updated_at: STAMP }, extra = [] } = {}) {
         mockDb.columnMissing = false;
         mockDb.updates = [];
         mockDb.tables = {
@@ -180,7 +180,7 @@ describe('hints_updated_at (dispensas versionadas)', () => {
     });
 
     test('POST /:id/hints salva as dicas e o banco carimba hints_updated_at', async () => {
-        reset({ template: { id: 7, template_id: null, hints_updated_at: null, hints: null } });
+        reset({ template: { id: 7, template_id: null, teacher_id: 'prof-1', hints_updated_at: null, hints: null } });
         const hints = [{ id: 'h1', text: 'Oi', when: { type: 'always' } }];
         const res = await postHints(hints);
         expect(res.statusCode).toBe(200);
@@ -194,7 +194,7 @@ describe('hints_updated_at (dispensas versionadas)', () => {
     });
 
     test('POST /:id/hints segue funcionando com a coluna ausente', async () => {
-        reset({ template: { id: 7, template_id: null, hints: null } });
+        reset({ template: { id: 7, template_id: null, teacher_id: 'prof-1', hints: null } });
         mockDb.columnMissing = true;
         const res = await postHints([{ id: 'h1', text: 'Oi', when: { type: 'always' } }]);
         expect(res.statusCode).toBe(200);

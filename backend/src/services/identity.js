@@ -67,10 +67,12 @@ function decodeJwtPayloadUnsafe(token) {
 }
 
 /**
- * Verificação local do token do PROFESSOR (HMAC, QUBITJR_JWT_SECRET).
- * Trade-off aceito conscientemente: com HMAC, quem verifica também consegue
- * assinar — se QUBITJR_JWT_SECRET vazar do nosso lado, dá pra forjar token
- * de professor. Guardar como segredo de verdade (nunca commitar, nunca logar).
+ * Verificação local do token do PROFESSOR OU ADMIN (HMAC, QUBITJR_JWT_SECRET)
+ * - mesmo formato/segredo pros dois, só o `role` nas claims muda. Trade-off
+ * aceito conscientemente: com HMAC, quem verifica também consegue assinar -
+ * se QUBITJR_JWT_SECRET vazar do nosso lado, dá pra forjar token de
+ * professor OU admin. Guardar como segredo de verdade (nunca commitar,
+ * nunca logar).
  */
 function verifyTeacherToken(token) {
     const secret = process.env.QUBITJR_JWT_SECRET;
@@ -108,12 +110,20 @@ function verifyTeacherToken(token) {
  * a HelloYotta sabe verificar — mesmo caminho remoto do aluno, ver
  * verifyStudentToken em services/helloyotta.js (aceita idToken Firebase cru
  * OU o authToken próprio deles, não só o formato "aluno").
+ *
+ * [2026-10] `role === 'admin'` entra na MESMA checagem de `role === 'professor'`
+ * acima - mesmo formato/segredo de token local, só o valor de `role` muda
+ * (ver GET /api/assignments/official e GET/PUT /:id/project em
+ * routes/assignments.js, que distinguem admin de professor-autor por esse
+ * campo). Sem isso, um token admin sem `iss` cairia no caminho remoto de
+ * verificação do aluno e seria rejeitado sempre - mesma classe do bug já
+ * documentado acima pro professor via Firebase, só que pro lado local.
  */
 async function verifyAndDecode(token) {
     const peek = decodeJwtPayloadUnsafe(token);
     if (!peek) return null;
 
-    if (peek.role === 'professor' && !peek.iss) {
+    if ((peek.role === 'professor' || peek.role === 'admin') && !peek.iss) {
         return verifyTeacherToken(token);
     }
 

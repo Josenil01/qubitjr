@@ -111,9 +111,9 @@ describe('rotas de dicas (assignments.js) com Supabase mockado', () => {
         mockDb.failOn = {};
         mockDb.tables = {
             assignments: [
-                { id: 7, template_id: null, hints: [{ id: 'h9', text: 'velha', when: { type: 'always' } }], hints_updated_at: null },
-                { id: 8, template_id: 7, hints: null, hints_updated_at: null },
-                { id: 20, template_id: null, hints: null, hints_updated_at: null }, // missão de outra pessoa/sem projeto do prof-1
+                { id: 7, template_id: null, teacher_id: 'prof-1', hints: [{ id: 'h9', text: 'velha', when: { type: 'always' } }], hints_updated_at: null },
+                { id: 8, template_id: 7, teacher_id: 'prof-1', hints: null, hints_updated_at: null },
+                { id: 20, template_id: null, teacher_id: 'prof-2', hints: null, hints_updated_at: null }, // missão de outra pessoa/sem projeto do prof-1
             ],
             projects: [
                 { assignment_id: 7, owner: 'prof-1', deleted: 'NO' },
@@ -369,16 +369,22 @@ describe('rotas de dicas (assignments.js) com Supabase mockado', () => {
             expect(mockDb.tables.assignments[0].hints).toEqual([]);
         });
 
-        test('professor que NÃO é dono do projeto-exemplo -> 404 e nada gravado', async () => {
+        test('professor que NÃO é dono (nem admin) -> 403 e nada gravado', async () => {
             const res = await postHints({ userId: 'prof-2', body: { hints: [H('h1')] } });
-            expect(res.statusCode).toBe(404);
+            expect(res.statusCode).toBe(403);
             expect(mockDb.updates).toEqual([]);
         });
 
-        test('aluno/usuário qualquer (sem projeto vinculado) -> 404 e nada gravado', async () => {
+        test('aluno/usuário qualquer (não é o professor-autor nem admin) -> 403 e nada gravado', async () => {
             const res = await postHints({ userId: 'stu-1', body: { hints: [H('h1')] } });
-            expect(res.statusCode).toBe(404);
+            expect(res.statusCode).toBe(403);
             expect(mockDb.updates).toEqual([]);
+        });
+
+        test('admin pode salvar dicas de uma missão que não é sua', async () => {
+            const res = await postHints({ userId: 'admin-1', role: 'admin', body: { hints: [H('h1')] } });
+            expect(res.statusCode).toBe(200);
+            expect(mockDb.tables.assignments.find((a) => a.id === 7).hints).toEqual([H('h1')]);
         });
 
         test('missão inexistente -> 404', async () => {

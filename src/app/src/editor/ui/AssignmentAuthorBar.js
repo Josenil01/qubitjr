@@ -89,10 +89,17 @@ const isLocal = window.location.hostname === 'localhost' || window.location.host
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
 
 const IDLE_LABEL = '📋 Cadastrar aula';
+const ADMIN_EDIT_IDLE_LABEL = '💾 Salvar missão (admin)';
 
 let barEl = null;
 let editHintsBtnEl = null;
 let busy = false;
+// Rótulo ocioso do botão flutuante - IDLE_LABEL no fluxo normal (criar/
+// reautorar via /register), ADMIN_EDIT_IDLE_LABEL em initAdminEdit() (editar
+// uma missão existente de QUALQUER dono, sem passar por /register). Decide
+// qual _onClick usar (ver barEl.onclick em cada init) e o texto pro qual
+// _finish()/_onAdminSaveClick voltam depois de salvar.
+let idleLabel = IDLE_LABEL;
 // Contexto livre (assignments.hint_context) da última vez que o professor
 // escreveu um pra esta missão - preenchido por _checkExistingMission() (ver
 // GET /assignments/by-project/:id) quando reabrindo um molde já existente;
@@ -179,7 +186,7 @@ export default class AssignmentAuthorBar {
             return;
         }
         var claims = decodeJwtPayloadUnsafe(window.__AUTH_TOKEN__);
-        if (!claims || claims.role !== 'professor') {
+        if (!claims || (claims.role !== 'professor' && claims.role !== 'admin')) {
             return;
         }
         apiFetch('/assignments/by-project/' + encodeURIComponent(ScratchJr.currentProject))
@@ -201,7 +208,7 @@ export default class AssignmentAuthorBar {
         if (!barEl) {
             barEl = newHTML('button', 'assignmentAuthorBtn', document.body);
             barEl.type = 'button';
-            barEl.textContent = IDLE_LABEL;
+            barEl.textContent = idleLabel;
             barEl.onclick = AssignmentAuthorBar._onClick;
         }
         // Só existe quando reabrindo um molde que JÁ tem pelo menos uma dica
@@ -243,6 +250,55 @@ export default class AssignmentAuthorBar {
                 cachedHints = approved;
             },
         });
+    }
+
+    /**
+     * Segundo contexto de chegada (ver docblock de topo do arquivo, item 2):
+     * admin (ou o próprio professor-autor) editando uma missão EXISTENTE de
+     * qualquer dono, via editor.html?token=...&editAssignmentId=<id>
+     * (entry/editor.js já aplicou o patch de IO antes de appinit() carregar
+     * o projeto - ver patchIOForAssignmentEdit lá). Diferente do fluxo normal
+     * (init/_show/_onClick/_register): nunca chama POST /assignments/register
+     * (a missão já existe, não há nada pra "cadastrar" de novo) - só salva o
+     * projeto (ScratchJr.saveProject, que cai no IO.saveProject já patchado,
+     * então bate em PUT /assignments/:id/project em vez do /api/db normal) e
+     * segue direto pro mesmo passo opcional de contexto + geração de dicas
+     * (_showContextPrompt/_runHintFlow) que o fluxo normal usa.
+     */
+    static initAdminEdit (assignmentId) {
+        if (barEl) {
+            return;
+        }
+        cachedAssignmentId = assignmentId;
+        idleLabel = ADMIN_EDIT_IDLE_LABEL;
+        barEl = newHTML('button', 'assignmentAuthorBtn', document.body);
+        barEl.type = 'button';
+        barEl.textContent = idleLabel;
+        barEl.onclick = AssignmentAuthorBar._onAdminSaveClick;
+    }
+
+    static _onAdminSaveClick () {
+        if (busy || !barEl) {
+            return;
+        }
+        busy = true;
+        barEl.disabled = true;
+        barEl.textContent = 'Salvando...';
+        ScratchJr.saveProject(null, function () {
+            busy = false;
+            if (!barEl) {
+                return;
+            }
+            barEl.disabled = false;
+            barEl.textContent = '✅ Salvo!';
+            Alert.open(frame, barEl, 'Missão salva!', '#01bebc');
+            window.setTimeout(function () {
+                Alert.close();
+                // Sem returnUrl/canReturn neste fluxo - admin não vem de um
+                // lançamento com retorno pra HelloYotta, fica no editor.
+                AssignmentAuthorBar._showContextPrompt(cachedAssignmentId, false, null);
+            }, 1500);
+        }, true);
     }
 
     static _onClick () {
@@ -430,7 +486,7 @@ export default class AssignmentAuthorBar {
                 finish();
                 return;
             }
-            barEl.textContent = IDLE_LABEL;
+            barEl.textContent = idleLabel;
             if (!result.ok) {
                 // 503 (IA não configurada no servidor), 404/400/500 - falha
                 // silenciosa e não alarmante: reaproveita o mesmo balão do
@@ -467,7 +523,7 @@ export default class AssignmentAuthorBar {
             return; // saindo da página - não precisa restaurar o texto do botão
         }
         if (barEl) {
-            barEl.textContent = IDLE_LABEL;
+            barEl.textContent = idleLabel;
         }
     }
 

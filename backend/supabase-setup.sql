@@ -533,6 +533,20 @@ EXECUTE FUNCTION stamp_assignment_hints_updated_at();
 -- do deploy não derruba nenhuma rota.
 ALTER TABLE assignments ADD COLUMN IF NOT EXISTS stage_placements JSONB;
 
+-- [2026-10] Missões "oficiais" (catálogo QubitJr, exposto por contrato à
+-- HelloYotta): algumas missões são curadas manualmente (fora do app, direto
+-- no banco ou via GET/POST abaixo) como referência de qualidade para QUALQUER
+-- professor/admin autenticado pela HelloYotta ver (id, nome, dono, datas,
+-- requirements) - sem passar pela checagem normal de turma/roster de
+-- routes/teacher.js, que é o que torna isto diferente de "missão ativa da
+-- minha turma" (routes/assignments.js GET /active). Só TEMPLATES
+-- (template_id IS NULL) guardam esta flag - uma referência não tem
+-- project_name/requirements próprios pra expor, então marcar uma referência
+-- não teria efeito (ver GET /api/assignments/official em routes/assignments.js,
+-- que já filtra por template_id IS NULL por segurança).
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS is_official BOOLEAN NOT NULL DEFAULT false;
+CREATE INDEX IF NOT EXISTS idx_assignments_official ON assignments(is_official) WHERE is_official = true;
+
 -- ============================================
 -- Cole o conteúdo acima no Supabase SQL Editor
 -- ============================================

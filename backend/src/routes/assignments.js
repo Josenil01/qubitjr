@@ -25,6 +25,9 @@
  * POST /api/assignments/register           — professor cadastra a missão ativa da turma
  * GET  /api/assignments/active              — qualquer usuário autenticado consulta a
  *                                              missão ativa da própria turma (se houver)
+ * GET  /api/assignments/official            — professor OU admin (qualquer turma) lista
+ *                                              o catálogo de missões marcadas is_official
+ *                                              (ver backend/supabase-setup.sql)
  * GET  /api/assignments/my-progress         — aluno consulta o próprio progresso na
  *                                              missão ativa (mesma lógica de
  *                                              GET /api/public/students/:id/assignment-score
@@ -58,6 +61,18 @@
  *                                              deixa o botão "Cadastrar aula" reaparecer
  *                                              ao reabrir pela lobby normal, não só no
  *                                              link de lançamento original da HelloYotta.
+ * GET  /api/assignments/:id/project         — admin (qualquer missão) ou professor-autor
+ *                                              (só a própria) busca o projeto-exemplo
+ *                                              vinculado à missão :id, pra carregar no
+ *                                              editor sem passar pelo filtro de owner do
+ *                                              /api/db - bypass estreito, mesmo padrão de
+ *                                              GET /api/teacher/session/:id/project
+ *                                              (routes/teacher.js), usado pelo mesmo patch
+ *                                              de IO em entry/editor.js (editAssignmentId).
+ * PUT  /api/assignments/:id/project         — mesma autorização, salva o json editado e
+ *                                              recalcula requirements/stage_placements -
+ *                                              mesmo bypass de PUT /api/teacher/session/
+ *                                              :id/project, mas sem exigir uma live_session.
  */
 
 const express = require('express');
@@ -531,6 +546,57 @@ router.get('/active', async (req, res) => {
 });
 
 /**
+ * GET /api/assignments/official
+ *
+ * Catálogo de missões "oficiais" (ver migração is_official em
+ * backend/supabase-setup.sql) - por contrato com a HelloYotta, QUALQUER
+ * professor ou admin autenticado (req.role, vindo das claims do JWT - ver
+ * index.js/identity.js) pode consultar, independente de turma/roster. Ao
+ * contrário de GET /active (que resolve a missão ATIVA da turma do próprio
+ * usuário via getClassroomRoster), esta rota não depende da HelloYotta nem
+ * do turma_id do token - lista todo o catálogo curado de uma vez.
+ *
+ * Só TEMPLATES (template_id IS NULL): uma linha de referência não guarda
+ * project_name/requirements próprios, então nunca é marcada is_official (ver
+ * docblock da coluna) - o filtro aqui é defensivo, pro caso de alguém marcar
+ * uma referência direto no banco por engano.
+ */
+router.get('/official', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+    if (req.role !== 'professor' && req.role !== 'admin') {
+        return res.status(403).json({ error: 'Só professores ou administradores podem consultar o catálogo oficial' });
+    }
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    try {
+        const { data: rows, error } = await supabase
+            .from('assignments')
+            .select('id, teacher_id, project_name, requirements, nivel, created_at')
+            .eq('is_official', true)
+            .is('template_id', null)
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        res.json({
+            missions: (rows || []).map((row) => ({
+                id: row.id,
+                name: row.project_name,
+                teacherId: row.teacher_id,
+                requirements: row.requirements,
+                nivel: row.nivel,
+                createdAt: row.created_at,
+            })),
+        });
+    } catch (err) {
+        console.error('[assignments] GET /official error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
  * GET /api/assignments/my-progress
  * Mesma lógica de GET /api/public/students/:studentId/assignment-score
  * (routes/share.js), só trocando o studentId de path param pelo req.userId
@@ -779,8 +845,11 @@ router.post('/:id/complete', async (req, res) => {
 // aluno errou sem mexer nas contagens de shown/dismissed que share.js já soma.
 // wrong_extra (Fase 3 - alinhamento): alerta de bloco A MAIS no script que
 // corresponde ao do professor (estado extra_block de shared/hintAlignment.mjs).
+// wrong_missing: alerta de bloco do combo que ainda FALTA no script que o
+// aluno já começou (ex.: colocou "andar" mas não "velocidade") - ver
+// alignmentInfo() kind 'missing' em HintEngine.js.
 // wrong_value/wrong_order também são gravados pelo caminho de alinhamento.
-const HINT_EVENT_TYPES = new Set(['shown', 'dismissed', 'wrong_value', 'wrong_trigger', 'wrong_order', 'wrong_confirm', 'wrong_fill', 'wrong_extra']);
+const HINT_EVENT_TYPES = new Set(['shown', 'dismissed', 'wrong_value', 'wrong_trigger', 'wrong_order', 'wrong_confirm', 'wrong_fill', 'wrong_extra', 'wrong_missing']);
 
 /**
  * POST /api/assignments/:id/hints/:hintId/event
@@ -997,23 +1066,40 @@ router.get('/by-project/:projectId', async (req, res) => {
 });
 
 /**
+ * Autorização comum a todas as rotas abaixo que tocam o projeto-exemplo de
+ * uma missão que já existe: admin edita QUALQUER missão, professor só a
+ * própria (assignment.teacher_id === req.userId) - decisão confirmada com o
+ * usuário. `role` vem das claims do JWT (index.js/identity.js) - mesmo
+ * campo já usado por GET /official e POST /generate-from-theme, nunca
+ * forjável sem o segredo compartilhado com a HelloYotta.
+ */
+function canEditAssignment(req, assignment) {
+    return req.role === 'admin' || assignment.teacher_id === req.userId;
+}
+
+/**
  * Busca a missão :id e valida as duas regras comuns às rotas de dicas
- * abaixo: (1) só se mexe em dicas no MOLDE (template_id IS NULL) — uma linha
- * de referência nunca guarda dicas próprias, elas vêm do template via
- * services/assignmentResolver.js, então "gerar"/"salvar" dicas numa
- * referência não faria sentido; (2) quem chama precisa ser o dono do
- * projeto-exemplo vinculado a essa missão (mesmo projeto que POST /register
- * usou pra computar requirements).
+ * abaixo e às de GET/PUT /:id/project: (1) só se mexe no projeto/dicas do
+ * MOLDE (template_id IS NULL) — uma linha de referência nunca guarda
+ * project_name/requirements/dicas próprios, eles vêm do template via
+ * services/assignmentResolver.js, então editar/gerar nela não faria
+ * sentido; (2) quem chama precisa poder editar esta missão (ver
+ * canEditAssignment acima - dono original OU admin).
+ *
+ * O projeto é sempre buscado pelo OWNER DA MISSÃO (assignment.teacher_id),
+ * nunca por req.userId - para o professor-autor os dois são o mesmo id; para
+ * o admin editando a missão de outra pessoa, são diferentes de propósito (o
+ * admin está editando o projeto do AUTOR, não criando uma cópia sua).
  *
  * Retorna `{ project }` em caso de sucesso, ou `{ httpError: { status, body } }`
  * pro chamador responder direto e parar. Nunca lança - erros do Supabase em
  * si (não "não encontrado") ainda são propagados via throw, pro try/catch da
  * rota tratar como 500 igual ao resto do arquivo.
  */
-async function findOwnedTemplateProject(supabase, assignmentId, userId) {
+async function findOwnedTemplateProject(supabase, assignmentId, req) {
     const { data: assignment, error: assignmentErr } = await supabase
         .from('assignments')
-        .select('id, template_id')
+        .select('id, template_id, teacher_id')
         .eq('id', assignmentId)
         .maybeSingle();
 
@@ -1031,11 +1117,15 @@ async function findOwnedTemplateProject(supabase, assignmentId, userId) {
         };
     }
 
+    if (!canEditAssignment(req, assignment)) {
+        return { httpError: { status: 403, body: { error: 'Você não tem permissão para editar esta missão.' } } };
+    }
+
     const { data: project, error: projectErr } = await supabase
         .from('projects')
         .select('*')
         .eq('assignment_id', assignmentId)
-        .eq('owner', userId)
+        .eq('owner', assignment.teacher_id)
         .eq('deleted', 'NO')
         .limit(1)
         .maybeSingle();
@@ -1052,6 +1142,92 @@ async function findOwnedTemplateProject(supabase, assignmentId, userId) {
 
     return { project };
 }
+
+/**
+ * GET /api/assignments/:id/project
+ * Devolve o projeto-exemplo vinculado à missão :id (id, name, json,
+ * thumbnail, owner) pro editor carregar - usado pelo patch de IO em
+ * entry/editor.js (editAssignmentId), nunca pelo /api/db normal (que
+ * filtraria por owner e bloquearia o admin). Mesma autorização de
+ * findOwnedTemplateProject acima.
+ */
+router.get('/:id/project', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+
+    const assignmentId = parseInt(req.params.id, 10);
+    if (!Number.isFinite(assignmentId)) return res.status(400).json({ error: 'Invalid assignment id' });
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    try {
+        const { project, httpError } = await findOwnedTemplateProject(supabase, assignmentId, req);
+        if (httpError) return res.status(httpError.status).json(httpError.body);
+
+        res.json({ id: project.id, name: project.name, json: project.json, thumbnail: project.thumbnail, owner: project.owner });
+    } catch (err) {
+        console.error('[assignments] GET /:id/project error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * PUT /api/assignments/:id/project
+ * Body: { json: <string> }
+ * Salva o json editado no MESMO projeto (nunca cria um novo/reatribui dono -
+ * diferente de POST /register) e recalcula requirements/stage_placements a
+ * partir do conteúdo salvo, pra GET /active e o selo de progresso do aluno
+ * continuarem refletindo o estado real do exemplo. Mesma autorização de
+ * findOwnedTemplateProject acima.
+ */
+router.put('/:id/project', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+
+    const assignmentId = parseInt(req.params.id, 10);
+    if (!Number.isFinite(assignmentId)) return res.status(400).json({ error: 'Invalid assignment id' });
+
+    const rawJson = req.body && req.body.json;
+    if (typeof rawJson !== 'string' || !rawJson) {
+        return res.status(400).json({ error: 'json (string) é obrigatório' });
+    }
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    try {
+        const { project, httpError } = await findOwnedTemplateProject(supabase, assignmentId, req);
+        if (httpError) return res.status(httpError.status).json(httpError.body);
+
+        let projectJson;
+        try {
+            projectJson = JSON.parse(rawJson);
+        } catch (parseErr) {
+            return res.status(400).json({ error: 'json inválido: ' + parseErr.message });
+        }
+
+        const { error: updateErr } = await supabase
+            .from('projects')
+            .update({ json: rawJson, mtime: new Date().toISOString() })
+            .eq('id', project.id);
+        if (updateErr) throw updateErr;
+
+        const requirements = computeProjectManifest(projectJson);
+        const stagePlacements = buildStagePlacements(projectJson);
+
+        const { error: assignmentUpdateErr } = await supabase
+            .from('assignments')
+            .update({ project_name: project.name, requirements })
+            .eq('id', assignmentId);
+        if (assignmentUpdateErr) throw assignmentUpdateErr;
+
+        await persistStagePlacements(supabase, assignmentId, stagePlacements);
+
+        res.json({ success: true, requirements });
+    } catch (err) {
+        console.error('[assignments] PUT /:id/project error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
 
 /**
  * POST /api/assignments/:id/generate-hints
@@ -1086,7 +1262,7 @@ router.post('/:id/generate-hints', async (req, res) => {
     const hintContext = typeof rawContext === 'string' ? rawContext.trim().slice(0, 1000) : '';
 
     try {
-        const { project, httpError } = await findOwnedTemplateProject(supabase, assignmentId, req.userId);
+        const { project, httpError } = await findOwnedTemplateProject(supabase, assignmentId, req);
         if (httpError) return res.status(httpError.status).json(httpError.body);
 
         if (hintContext) {
@@ -1150,7 +1326,7 @@ router.post('/:id/hints', async (req, res) => {
     try {
         // Só a checagem de posse/template importa aqui - o conteúdo do
         // projeto em si não é usado por esta rota (ver findOwnedTemplateProject).
-        const { httpError } = await findOwnedTemplateProject(supabase, assignmentId, req.userId);
+        const { httpError } = await findOwnedTemplateProject(supabase, assignmentId, req);
         if (httpError) return res.status(httpError.status).json(httpError.body);
 
         // NÃO envia hints_updated_at daqui de propósito: o carimbo é posto
