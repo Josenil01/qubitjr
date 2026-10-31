@@ -1,0 +1,196 @@
+/* src/app/css/missions.css
+ *
+ * UI da feature de missões na LOBBY (lado do aluno):
+ *  1. Sombra verde no card do projeto quando a missão vinculada já foi
+ *     concluída (ver lobby/Home.js#addProjectLink - marca .missionCompleted
+ *     a partir de data.assignment_completed_at, lido direto da coluna
+ *     homônima em `projects` via IO.query - mesma foto congelada de
+ *     backend/src/services/completionSnapshot.js usada no resto da feature).
+ *  2. Botão "Missões" no topbar + painel flutuante com o histórico de
+ *     missões da turma (ver lobby/MissionsMenu.js) - borda/selo verde + ✓
+ *     nas concluídas, cinza nas pendentes/não iniciadas.
+ *
+ * Arquivo isolado (como css/assignment.css) - não mexe nos CSS grandes
+ * compartilhados. Cores reaproveitadas de assignment.css: #2ecc71 (verde de
+ * conclusão), #01bebc (teal, accent padrão do rebrand).
+ *
+ * Template literals (${css_vh()}, ${scaleMultiplier}) processados em tempo
+ * de build/dev por vite.config.js - ver docblock lá.
+ */
+
+/* === 1. Sombra verde no card concluído (grid da lobby) === */
+
+.projectthumb.missionCompleted .aproject {
+    box-shadow: 0 0 0 ${3 * scaleMultiplier}px #2ecc71, 0 0 ${18 * scaleMultiplier}px ${4 * scaleMultiplier}px rgba(46, 204, 113, 0.55);
+    border-radius: ${6 * scaleMultiplier}px;
+}
+
+.projectthumb.missionCompleted::after {
+    content: '✓';
+    position: absolute;
+    top: ${6 * scaleMultiplier}px;
+    left: ${6 * scaleMultiplier}px;
+    width: ${css_vh(5)};
+    height: ${css_vh(5)};
+    min-width: 22px;
+    min-height: 22px;
+    border-radius: 50%;
+    background: #2ecc71;
+    color: #fff;
+    font-weight: 700;
+    font-size: ${css_vh(3)};
+    line-height: ${css_vh(5)};
+    text-align: center;
+    box-shadow: 0 ${1 * scaleMultiplier}px ${4 * scaleMultiplier}px rgba(0, 0, 0, 0.3);
+    z-index: 6;
+    pointer-events: none;
+}
+
+/* === 2a. Botão "Missões" (topbar) - mesmo padrão visual/posicional do
+   .bellnotice em css/lobby.css, só deslocado pra não sobrepor quando os
+   dois estão visíveis ao mesmo tempo. === */
+#topbar .missionsTab {
+    position: absolute;
+    top: ${css_vh(1.5)};
+    right: ${css_vh(14)};
+    width: ${css_vh(9)};
+    height: ${css_vh(9)};
+    border-radius: 50%;
+    background: #01bebc;
+    box-shadow: 0 ${1 * scaleMultiplier}px ${3 * scaleMultiplier}px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+}
+
+#topbar .missionsTab.hidden {display: none;}
+#topbar .missionsTab:not(.hidden) {display: flex;}
+#topbar .missionsTab:hover {background: #019a98;}
+
+#topbar .missionsTab-icon {
+    font-size: ${css_vh(5)};
+    line-height: 1;
+}
+
+/* === 2b. Painel flutuante com a lista de missões === */
+
+.missionsPanelBackdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9400;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.missionsPanel {
+    position: fixed;
+    top: ${css_vh(12)};
+    right: ${css_vh(4)};
+    z-index: 9401;
+    width: min(90vw, 340px);
+    max-height: 70vh;
+    overflow-y: auto;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    border: 2px solid #01bebc;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.missionsPanelTitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #01bebc;
+    border-bottom: 1px solid #eee;
+}
+
+.missionsPanelClose {
+    border: none;
+    background: transparent;
+    color: #999;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.missionsPanelClose:hover {
+    color: #333;
+}
+
+.missionsPanelList {
+    list-style: none;
+    margin: 0;
+    padding: 10px;
+}
+
+.missionItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    border: 2px solid #ccc;
+    cursor: pointer;
+    background: #fafafa;
+}
+
+.missionItem:last-child {
+    margin-bottom: 0;
+}
+
+.missionItem:hover {
+    background: #f0f0f0;
+}
+
+.missionItem.completed {
+    border-color: #2ecc71;
+    background: #eafaf1;
+}
+
+.missionItem-check {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    background: #bbb;
+}
+
+.missionItem.completed .missionItem-check {
+    background: #2ecc71;
+}
+
+.missionItem-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.missionItem-status {
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #999;
+}
+
+.missionItem.completed .missionItem-status {
+    color: #27ae60;
+}

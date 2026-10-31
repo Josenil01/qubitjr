@@ -32,6 +32,11 @@
  *                                              via sessão normal em vez da chave da
  *                                              HelloYotta - usada pelo badge flutuante
  *                                              no editor do aluno)
+ * GET  /api/assignments/mine                — aluno lista o HISTÓRICO inteiro de
+ *                                              missões da própria turma (não só a
+ *                                              ativa), cada uma com started/completed
+ *                                              - usada pelo menu "Missões" da lobby
+ *                                              (lobby/MissionsMenu.js)
  * POST /api/assignments/:id/generate-hints  — professor gera um RASCUNHO de dicas de
  *                                              coaching (LLM) a partir do seu próprio
  *                                              projeto-exemplo vinculado à missão -
@@ -62,7 +67,7 @@ const { notifyAssignmentRegistered } = require('../services/helloyotta');
 const { computeProjectManifest, compareManifests } = require('../services/assignmentScoring');
 const { resolveAssignmentFields, resolveHintsUpdatedAt } = require('../services/assignmentResolver');
 const { generateHints } = require('../services/hintsGeneration');
-const { readCompletionSnapshot, persistCompletion } = require('../services/completionSnapshot');
+const { readCompletionSnapshot, persistCompletion, readCompletionFlags } = require('../services/completionSnapshot');
 const { buildStagePlacements } = require('../services/detailedManifest');
 const { persistStagePlacements } = require('../services/stagePlacements');
 const { generateActivityPlan } = require('../services/activityGeneration');
@@ -598,6 +603,91 @@ router.get('/my-progress', async (req, res) => {
         });
     } catch (err) {
         console.error('[assignments] GET /my-progress error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * GET /api/assignments/mine
+ * Lista TODAS as missões já atribuídas à turma do aluno (histórico completo -
+ * template OU referência, ativa OU já substituída por outra mais recente,
+ * ver docblock do topo do arquivo sobre o modelo self-referencing), cada uma
+ * com o status de conclusão DESTE aluno especificamente - usado pelo menu
+ * "Missões" da lobby (lobby/MissionsMenu.js), que mostra a lista inteira (não
+ * só a ativa, ao contrário de GET /active) pra o aluno ver seu progresso
+ * através de todas as missões que já teve, mesmo as antigas.
+ *
+ * Por missão: `started` (o aluno já tem um projeto vinculado a ela) e
+ * `completed` (foto congelada de conclusão desse projeto - ver
+ * services/completionSnapshot.js#readCompletionFlags, mesma fonte da verdade
+ * usada por GET /active e pela tela de live do professor). `projectId`
+ * presente só quando started=true - o menu usa pra navegar direto pro
+ * projeto (pmd5=) em vez de arriscar criar um duplicado.
+ */
+router.get('/mine', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    try {
+        const { turmaId } = await getTurmaAndNivel(req);
+        if (!turmaId) {
+            return res.json({ missions: [] }); // mesmo no-op silencioso de GET /active
+        }
+
+        const { data: rows, error } = await supabase
+            .from('assignments')
+            .select('id, project_name, template_id, active, created_at')
+            .eq('turma_id', turmaId)
+            .order('created_at', { ascending: true });
+
+        if (error) throw error;
+        if (!rows || !rows.length) {
+            return res.json({ missions: [] });
+        }
+
+        const { data: myProjects, error: projErr } = await supabase
+            .from('projects')
+            .select('id, assignment_id')
+            .eq('owner', req.userId)
+            .eq('deleted', 'NO')
+            .in('assignment_id', rows.map((row) => row.id));
+
+        if (projErr) throw projErr;
+
+        // Um projeto por missão (o aluno não pode ter mais de um vinculado à
+        // mesma missão - dedup já garantido no lado da criação) - primeiro
+        // encontrado é o único esperado.
+        const projectByAssignment = new Map();
+        (myProjects || []).forEach((p) => {
+            if (!projectByAssignment.has(p.assignment_id)) {
+                projectByAssignment.set(p.assignment_id, p.id);
+            }
+        });
+
+        const completedProjectIds = await readCompletionFlags(
+            supabase,
+            Array.from(projectByAssignment.values())
+        );
+
+        const missions = await Promise.all(rows.map(async (row) => {
+            const resolved = (await resolveAssignmentFields(supabase, row)) ||
+                { projectName: row.project_name };
+            const projectId = projectByAssignment.get(row.id) || null;
+            return {
+                id: row.id,
+                projectName: resolved.projectName,
+                active: !!row.active,
+                started: !!projectId,
+                completed: !!(projectId && completedProjectIds.has(projectId)),
+                projectId: projectId,
+            };
+        }));
+
+        res.json({ missions });
+    } catch (err) {
+        console.error('[assignments] GET /mine error:', err);
         res.status(500).json({ error: err.message });
     }
 });

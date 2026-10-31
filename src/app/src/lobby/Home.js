@@ -10,6 +10,7 @@ import Localization from '../utils/Localization.js';
 import ScratchAudio from '../utils/ScratchAudio.js';
 import Vector from '../geom/Vector.js';
 import AssignmentNotice from './AssignmentNotice.js';
+import MissionsMenu from './MissionsMenu.js';
 import GenerateActivityModal from './GenerateActivityModal.js';
 import {gn, newHTML, isTablet} from '../utils/lib.js';
 
@@ -32,6 +33,10 @@ export default class Home {
         // Sino de missão pendente no topbar - no-op silencioso se não
         // houver missão ativa/não iniciada pro aluno (ver AssignmentNotice.js).
         AssignmentNotice.init();
+        // Botão "Missões" no topbar - lista o histórico inteiro da turma,
+        // no-op silencioso se a turma nunca teve nenhuma missão registrada
+        // (ver MissionsMenu.js).
+        MissionsMenu.init();
         // Botão flutuante "Gerar atividade com IA" - no-op silencioso pra
         // quem não é professor (ver GenerateActivityModal.js).
         GenerateActivityModal.init();
@@ -415,7 +420,11 @@ export default class Home {
             }
             var json = {};
             json.cond = 'deleted = ? AND version = ? AND gallery IS NULL';
-            json.items = ['name', 'thumbnail', 'id', 'isgift', 'created_at'];
+            // assignment_completed_at: foto congelada de conclusão da missão
+            // (ver backend/src/services/completionSnapshot.js) - não-null
+            // marca o card com a sombra verde de "missão concluída" (ver
+            // addProjectLink abaixo e .missionCompleted em css/missions.css).
+            json.items = ['name', 'thumbnail', 'id', 'isgift', 'created_at', 'assignment_completed_at'];
             json.values = ['NO', version];
             json.order = 'ctime desc';
             IO.query(iOS.database, json, Home.displayProjects);
@@ -502,6 +511,12 @@ export default class Home {
         tb.setAttribute('id', id);
         tb.type = 'projectthumb';
         tb.thumb = thumb.md5;
+        if (data.assignment_completed_at) {
+            // Missão concluída (foto congelada - ver query acima) - sombra
+            // verde no card, mesma cor de conclusão do selo no editor
+            // (.assignmentBadge.completed em css/assignment.css).
+            tb.classList.add('missionCompleted');
+        }
         var mt = newHTML('div', 'aproject p' + pc, tb);
         Home.insertThumbnail(mt, 192, 144, thumb);
         var label = newHTML('div', 'projecttitle', tb);
