@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 	 width="76px" height="66px" viewBox="0 0 76 66" enable-background="new 0 0 76 66" xml:space="preserve">
-<circle fill="#FFFFFF" stroke="#A8721B" stroke-width="3" cx="38" cy="33" r="20"/>
-<text x="38" y="42" font-family="Arial, sans-serif" font-size="26" font-weight="bold"
+<rect fill="#FFFFFF" stroke="#A8721B" stroke-width="1.5" x="19.5" y="14.5" width="37" height="37" rx="7" ry="7"/>
+<text x="38" y="39" font-family="Arial, sans-serif" font-size="22" font-weight="bold"
 	  fill="#A8721B" text-anchor="middle">3</text>
 </svg>
