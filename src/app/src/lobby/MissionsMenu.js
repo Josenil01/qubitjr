@@ -25,7 +25,6 @@
  */
 
 import {gn, newHTML} from '../utils/lib.js';
-import {decodeJwtPayloadUnsafe} from '../utils/jwtUnsafe.js';
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
@@ -45,19 +44,9 @@ function apiFetch (path, options) {
 
 let panelEl = null;
 let backdropEl = null;
-let isAdmin = false;
 
 export default class MissionsMenu {
     static async init () {
-        // Peek inseguro, mesmo padrão de AssignmentAuthorBar.js/
-        // GenerateActivityModal.js/OfficialCatalog.js - decide só se mostra
-        // o botão extra "🏅 Marcar como oficial" por item (ver
-        // _openPanel/_toggleOfficial abaixo); a fronteira de segurança de
-        // verdade é PATCH /api/assignments/:id/official no backend
-        // (admin-only), que rejeita qualquer outro role de qualquer forma.
-        const claims = decodeJwtPayloadUnsafe(window.__AUTH_TOKEN__);
-        isAdmin = !!claims && claims.role === 'admin';
-
         let res;
         try {
             res = await apiFetch('/assignments/mine');
@@ -120,46 +109,6 @@ export default class MissionsMenu {
 
             const status = newHTML('div', 'missionItem-status', item);
             status.textContent = mission.completed ? 'Concluída' : (mission.started ? 'Em andamento' : 'Não iniciada');
-
-            // Botão de curadoria (admin-only) - só em TEMPLATES (ver docblock
-            // de isTemplate em routes/assignments.js GET /mine), nunca numa
-            // referência (template_id setado), que PATCH /:id/official
-            // rejeitaria com 400 de qualquer forma. Já oficial -> selo fixo
-            // em vez de botão (evita um PATCH redundante sem efeito nenhum).
-            if (isAdmin && mission.isTemplate) {
-                const officialBtn = newHTML('button', 'missionItemOfficialBtn' + (mission.isOfficial ? ' is-official' : ''), item);
-                officialBtn.type = 'button';
-                officialBtn.disabled = !!mission.isOfficial;
-                officialBtn.textContent = mission.isOfficial ? '🏅 Oficial' : '🏅 Marcar oficial';
-                officialBtn.onclick = function (e) {
-                    e.stopPropagation(); // não navega pro editor (ver item.onclick acima)
-                    MissionsMenu._markOfficial(mission, officialBtn);
-                };
-            }
-        });
-    }
-
-    static _markOfficial (mission, btnEl) {
-        btnEl.disabled = true;
-        btnEl.textContent = 'Marcando...';
-        apiFetch('/assignments/' + encodeURIComponent(mission.id) + '/official', {
-            method: 'PATCH',
-            body: JSON.stringify({isOfficial: true}),
-        }).then(function (res) {
-            if (!res.ok) {
-                btnEl.disabled = false;
-                btnEl.textContent = '🏅 Marcar oficial';
-                window.alert('Não foi possível marcar esta missão como oficial agora.');
-                return;
-            }
-            mission.isOfficial = true;
-            btnEl.textContent = '🏅 Oficial';
-            btnEl.classList.add('is-official');
-            // btnEl.disabled já fica true (não precisa reatribuir).
-        }).catch(function () {
-            btnEl.disabled = false;
-            btnEl.textContent = '🏅 Marcar oficial';
-            window.alert('Não foi possível marcar esta missão como oficial agora.');
         });
     }
 

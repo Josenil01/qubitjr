@@ -93,6 +93,40 @@ export default class OfficialCatalog {
                 OfficialCatalog._openPanel(missions);
             }
         };
+        OfficialCatalog._keepClearOfMissionsTab(tab);
+    }
+
+    /**
+     * Achado em teste real: os dois botões (.missionsTab e .officialCatalogTab)
+     * ficavam colados/sobrepostos - os dois usam `right` fixo crescendo pra
+     * ESQUERDA (CSS, ver missions.css), e a largura de cada um depende do
+     * texto renderizado, que não dá pra prever em CSS puro sem arriscar
+     * estourar de novo com qualquer mudança de fonte/idioma/texto. Mede a
+     * posição REAL do .missionsTab (se/quando ele existir - MissionsMenu.js
+     * é assíncrono e pode terminar antes OU depois deste init) e empurra
+     * .officialCatalogTab pra a esquerda dele com um respiro fixo em px -
+     * nunca mais depende de adivinhar larguras.
+     */
+    static _keepClearOfMissionsTab (tab) {
+        var GAP_PX = 10;
+        function reposition () {
+            var missionsTab = gn('missionsTab');
+            if (!missionsTab || missionsTab.classList.contains('hidden')) {
+                tab.style.right = ''; // volta pro valor do CSS (missions.css)
+                return;
+            }
+            var rect = missionsTab.getBoundingClientRect();
+            tab.style.right = (window.innerWidth - rect.left + GAP_PX) + 'px';
+        }
+        reposition();
+        // .missionsTab pode sair de `hidden` DEPOIS deste momento (seu
+        // próprio fetch é assíncrono, independente deste) - observa a
+        // mudança de classe pra reposicionar assim que isso acontecer.
+        var missionsTab = gn('missionsTab');
+        if (missionsTab && window.MutationObserver) {
+            new MutationObserver(reposition).observe(missionsTab, {attributes: true, attributeFilter: ['class']});
+        }
+        window.addEventListener('resize', reposition);
     }
 
     static _canEdit (mission) {

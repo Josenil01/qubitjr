@@ -28,6 +28,9 @@
  * GET  /api/assignments/official            — professor OU admin (qualquer turma) lista
  *                                              o catálogo de missões marcadas is_official
  *                                              (ver backend/supabase-setup.sql)
+ * GET  /api/assignments/authored            — todas as missões próprias do usuário
+ *                                              (qualquer turma), com isOfficial/
+ *                                              generatedByAi - selo no card do projeto
  * PATCH /api/assignments/:id/official       — admin liga/desliga is_official e/ou
  *                                              generated_by_ai de QUALQUER missão
  * GET  /api/assignments/my-progress         — aluno consulta o próprio progresso na
@@ -608,6 +611,47 @@ router.get('/official', async (req, res) => {
         });
     } catch (err) {
         console.error('[assignments] GET /official error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * GET /api/assignments/authored
+ * TODAS as missões (template_id IS NULL) que o usuário autenticado autorou
+ * (teacher_id === req.userId), em QUALQUER turma - diferente de GET /mine
+ * (escopado só pela turma_id do próprio token) e de GET /official (só as
+ * marcadas is_official, de qualquer autor). Usada pelo selo/botão "🏅" no
+ * próprio card do projeto na lobby (ver lobby/Home.js#addProjectLink) -
+ * precisa saber, pra CADA projeto que o usuário já vê na própria lista,
+ * se a missão vinculada já está no catálogo oficial, sem depender de estar
+ * olhando a turma "certa" no token (um professor/admin pode ter missões em
+ * várias turmas diferentes).
+ */
+router.get('/authored', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    try {
+        const { data: rows, error } = await supabase
+            .from('assignments')
+            .select('id, project_name, is_official, generated_by_ai')
+            .eq('teacher_id', req.userId)
+            .is('template_id', null);
+
+        if (error) throw error;
+
+        res.json({
+            missions: (rows || []).map((row) => ({
+                id: row.id,
+                name: row.project_name,
+                isOfficial: !!row.is_official,
+                generatedByAi: !!row.generated_by_ai,
+            })),
+        });
+    } catch (err) {
+        console.error('[assignments] GET /authored error:', err);
         res.status(500).json({ error: err.message });
     }
 });

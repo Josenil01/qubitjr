@@ -13,12 +13,44 @@ import AssignmentNotice from './AssignmentNotice.js';
 import MissionsMenu from './MissionsMenu.js';
 import OfficialCatalog from './OfficialCatalog.js';
 import GenerateActivityModal from './GenerateActivityModal.js';
+import {decodeJwtPayloadUnsafe} from '../utils/jwtUnsafe.js';
 import {gn, newHTML, isTablet} from '../utils/lib.js';
 
 let frame;
 let scrollvalue;
 let version;
 let timeoutEvent;
+
+const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const HOME_API_BASE_URL = window.API_URL || (isLocalHost ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
+
+function homeApiFetch (path, options) {
+    options = options || {};
+    var token = window.__AUTH_TOKEN__;
+    var headers = {'Content-Type': 'application/json', ...(options.headers || {})};
+    if (token) {
+        headers.Authorization = 'Bearer ' + token;
+    }
+    return fetch(HOME_API_BASE_URL + path, {...options, headers: headers});
+}
+
+// id da missão (assignments.id) -> {isOfficial, generatedByAi} - TODAS as
+// missões que o PRÓPRIO usuário autorou, qualquer turma (ver GET
+// /assignments/authored). Preenchido em paralelo com a lista de projetos
+// (Home._loadOfficialBadges, chamado por Home.init) - pode ainda não estar
+// pronto quando os primeiros cards renderizam (addProjectLink), por isso
+// Home._applyOfficialBadge tolera authoredMap === null (sem selo nesse
+// primeiro passo) e Home._loadOfficialBadges reaplica em todo card já
+// desenhado assim que a resposta chega (ver seu próprio corpo).
+let authoredMap = null;
+// 'admin' | 'professor' | null - peek inseguro (mesmo padrão de
+// AssignmentAuthorBar.js/GenerateActivityModal.js/OfficialCatalog.js) - só
+// decide se o selo "🏅" de um projeto NÃO oficial ainda é clicável
+// (admin pode marcar na hora) ou se fica invisível (professor não-admin não
+// vê nada até a missão já estar oficial - marcar é decisão de curadoria,
+// não do próprio autor). A fronteira de segurança de verdade continua
+// sendo PATCH /api/assignments/:id/official (admin-only) no backend.
+let currentRole = null;
 
 export default class Home {
     static init () {
@@ -29,6 +61,13 @@ export default class Home {
         div.setAttribute('id', 'scrollarea');
         frame.onmousedown = Home.handleTouchStart;
         frame.onmouseup = Home.handleTouchEnd;
+        var claims = decodeJwtPayloadUnsafe(window.__AUTH_TOKEN__);
+        currentRole = claims && claims.role;
+        // Dispara em paralelo com displayYourProjects - não espera, nunca
+        // atrasa o carregamento normal da lobby (ver docblock de
+        // authoredMap acima pro porquê de tolerar chegar depois dos cards).
+        Home._loadOfficialBadges();
+
         Home.showLoading();
         Home.displayYourProjects();
         // Sino de missão pendente no topbar - no-op silencioso se não
@@ -429,7 +468,9 @@ export default class Home {
             // (ver backend/src/services/completionSnapshot.js) - não-null
             // marca o card com a sombra verde de "missão concluída" (ver
             // addProjectLink abaixo e .missionCompleted em css/missions.css).
-            json.items = ['name', 'thumbnail', 'id', 'isgift', 'created_at', 'assignment_completed_at'];
+            // assignment_id: pra cruzar com authoredMap (ver _loadOfficialBadges)
+            // e decidir se este card leva o selo "🏅 Oficial"/"🏅 Oficial · IA".
+            json.items = ['name', 'thumbnail', 'id', 'isgift', 'created_at', 'assignment_completed_at', 'assignment_id'];
             json.values = ['NO', version];
             json.order = 'ctime desc';
             IO.query(iOS.database, json, Home.displayProjects);
@@ -522,6 +563,13 @@ export default class Home {
             // (.assignmentBadge.completed em css/assignment.css).
             tb.classList.add('missionCompleted');
         }
+        // Guarda pra _loadOfficialBadges conseguir reaplicar o selo "🏅" em
+        // cards já desenhados quando GET /assignments/authored responder
+        // depois (ver docblock de authoredMap no topo do arquivo) - string
+        // vazia (não ausente) quando o projeto não tem missão vinculada,
+        // pra diferenciar de "ainda não processado" no seletor de _loadOfficialBadges.
+        tb.dataset.assignmentId = data.assignment_id || '';
+        Home._applyOfficialBadge(tb, data.assignment_id);
         var mt = newHTML('div', 'aproject p' + pc, tb);
         Home.insertThumbnail(mt, 192, 144, thumb);
         var label = newHTML('div', 'projecttitle', tb);
@@ -544,6 +592,103 @@ export default class Home {
         shareBtn.textContent = '📤';
 
         newHTML('div', 'closex', tb);
+    }
+
+    /**
+     * Busca TODAS as missões próprias (qualquer turma, GET /assignments/
+     * authored) e aplica o selo "🏅" em cada card já desenhado - chamada
+     * uma vez por Home.init(), em paralelo com displayYourProjects (nunca
+     * atrasa o carregamento normal). No-op silencioso pra quem não é
+     * professor/admin (currentRole, peek de Home.init()).
+     */
+    static _loadOfficialBadges () {
+        if (currentRole !== 'professor' && currentRole !== 'admin') {
+            return;
+        }
+        homeApiFetch('/assignments/authored').then(function (res) {
+            return res.ok ? res.json() : null;
+        }).then(function (data) {
+            var missions = Array.isArray(data && data.missions) ? data.missions : [];
+            authoredMap = {};
+            missions.forEach(function (m) {
+                authoredMap[m.id] = {isOfficial: m.isOfficial, generatedByAi: m.generatedByAi};
+            });
+            var cards = document.querySelectorAll('#scrollarea .projectthumb[data-assignment-id]');
+            cards.forEach(function (tb) {
+                var aid = tb.dataset.assignmentId;
+                if (aid) {
+                    Home._applyOfficialBadge(tb, aid);
+                }
+            });
+        }).catch(function (err) {
+            console.warn('[Home] /assignments/authored falhou:', err && err.message);
+        });
+    }
+
+    /**
+     * Desenha (ou redesenha) o selo "🏅" no card `tb`, se aplicável - no-op
+     * silencioso se authoredMap ainda não chegou, se este projeto não tem
+     * missão vinculada, ou se a missão nem é um template próprio (GET
+     * /assignments/authored já filtra isso no servidor). Professor não-admin
+     * só vê o selo quando a missão JÁ é oficial (read-only, sem onclick) -
+     * marcar/desmarcar é curadoria, exclusiva de admin (mesma regra de PATCH
+     * /api/assignments/:id/official no backend).
+     */
+    static _applyOfficialBadge (tb, assignmentId) {
+        var existing = tb.querySelector('.officialProjectBadge');
+        if (existing && existing.parentNode) {
+            existing.parentNode.removeChild(existing);
+        }
+        if (!assignmentId || !authoredMap) {
+            return;
+        }
+        var info = authoredMap[assignmentId];
+        if (!info || (!info.isOfficial && currentRole !== 'admin')) {
+            return;
+        }
+        var badge = newHTML('button', 'officialProjectBadge' + (info.isOfficial ? ' is-official' : ''), tb);
+        badge.type = 'button';
+        badge.textContent = info.isOfficial ? ('🏅 Oficial' + (info.generatedByAi ? ' · IA' : '')) : '🏅 Marcar oficial';
+        if (currentRole === 'admin') {
+            // O card inteiro abre pelo editor via mousedown/mouseup DELEGADOS
+            // em `frame` (ver Home.handleTouchStart/handleTouchEnd -
+            // mecanismo legado, não onclick nativo) - stopPropagation só no
+            // 'click' NÃO impede isso, porque mousedown/mouseup já disparam
+            // e borbulham ANTES do click existir. Precisa travar nos três.
+            badge.onmousedown = function (e) { e.stopPropagation(); };
+            badge.onmouseup = function (e) { e.stopPropagation(); };
+            badge.onclick = function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                Home._toggleOfficial(assignmentId, badge, info);
+            };
+        } else {
+            badge.disabled = true; // selo só-leitura pro professor-autor
+        }
+    }
+
+    static _toggleOfficial (assignmentId, badgeEl, info) {
+        var next = !info.isOfficial;
+        badgeEl.disabled = true;
+        homeApiFetch('/assignments/' + encodeURIComponent(assignmentId) + '/official', {
+            method: 'PATCH',
+            body: JSON.stringify({isOfficial: next}),
+        }).then(function (res) {
+            badgeEl.disabled = false;
+            if (!res.ok) {
+                window.alert('Não foi possível atualizar o selo oficial agora.');
+                return;
+            }
+            info.isOfficial = next;
+            if (authoredMap && authoredMap[assignmentId]) {
+                authoredMap[assignmentId].isOfficial = next;
+            }
+            badgeEl.textContent = next ? ('🏅 Oficial' + (info.generatedByAi ? ' · IA' : '')) : '🏅 Marcar oficial';
+            badgeEl.classList.toggle('is-official', next);
+        }).catch(function () {
+            badgeEl.disabled = false;
+            window.alert('Não foi possível atualizar o selo oficial agora.');
+        });
     }
 
     static insertThumbnail (p, w, h, data) {

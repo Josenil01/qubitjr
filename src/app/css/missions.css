@@ -231,35 +231,6 @@
     color: #27ae60;
 }
 
-/* Botão "🏅 Marcar oficial" por item (admin-only, ver MissionsMenu.js) -
-   mesmo dourado (#f5a623) do resto da feature de catálogo oficial. Vira
-   selo fixo (.is-official, disabled) depois de marcado - sem fundo/borda,
-   só o texto, pra não competir visualmente com o botão ainda clicável de
-   outros itens da lista. */
-.missionItemOfficialBtn {
-    flex-shrink: 0;
-    font-size: 11px;
-    font-weight: 700;
-    color: #b8720a;
-    background: #fff3de;
-    border: 1px solid #f5a623;
-    border-radius: 999px;
-    padding: 4px 10px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.missionItemOfficialBtn:hover:not(:disabled) {
-    background: #ffe8c2;
-}
-
-.missionItemOfficialBtn.is-official {
-    background: transparent;
-    border-color: transparent;
-    cursor: default;
-    opacity: 0.85;
-}
-
 /* === 3. Botão "🏅 Catálogo" (topbar, ao lado de .missionsTab) + painel do
    catálogo oficial === Ver lobby/OfficialCatalog.js - catálogo global (GET
    /api/assignments/official), diferente do histórico por turma de
@@ -378,4 +349,45 @@
 .officialItemAiBtn.active {
     opacity: 1;
     background: #e8f0ff;
+}
+
+/* === 4. Selo "🏅" no próprio card do projeto (lobby/Home.js#addProjectLink)
+   === Pedido explícito: canto direito, discreto. .projectthumb já é
+   position:relative (thumbs.css), mesmo elemento onde .sharex (canto
+   esquerdo, top: css_vh(-54.17)) já se ancora - espelha a mesma altura pro
+   lado direito, pra ficar visualmente em par com o botão de compartilhar.
+   z-index acima do .sharex (5) pra nunca ficar por baixo em telas estreitas
+   onde os dois poderiam quase se tocar. */
+.officialProjectBadge {
+    position: absolute;
+    top: ${css_vh(-54.17)};
+    right: ${css_vw(1.5)};
+    z-index: 6;
+    font-size: 10px;
+    font-weight: 700;
+    color: #b8720a;
+    background: #fff3de;
+    border: 1px solid #f5a623;
+    border-radius: 999px;
+    padding: 3px 9px;
+    white-space: nowrap;
+    max-width: ${css_vh(22)};
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.officialProjectBadge:disabled {
+    cursor: default;
+}
+
+.officialProjectBadge:not(:disabled) {
+    cursor: pointer;
+}
+
+.officialProjectBadge:not(:disabled):hover {
+    background: #ffe8c2;
+}
+
+.officialProjectBadge.is-official {
+    opacity: 0.95;
 }
