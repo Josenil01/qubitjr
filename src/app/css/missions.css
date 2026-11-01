@@ -231,45 +231,56 @@
     color: #27ae60;
 }
 
-/* === 3. Botão "🏅 Catálogo" (topbar) + painel do catálogo oficial ===
-   Ver lobby/OfficialCatalog.js - catálogo global (GET /api/assignments/
-   official), diferente do histórico por turma de MissionsMenu.js acima.
-   Empilhado NUMA SEGUNDA LINHA abaixo do .missionsTab (mesmo `right: 14vh`,
-   `top` começando onde o de cima termina + 1vh de respiro) em vez de ficar
-   ao lado - os dois botões têm largura variável (texto, não ícone fixo) e
-   ambos usam `right` fixo crescendo pra ESQUERDA (mesmo truque do
-   .missionsTab, ver comentário dele); colocar um ao lado do outro exigiria
-   calcular a largura renderizada de "Missões" em tempo real pra não
-   sobrepor. Empilhar verticalmente evita esse problema por completo,
-   funciona em qualquer largura de texto. Dourado (#f5a623) pra diferenciar
-   visualmente do teal (#01bebc) do botão de Missões - "selo"/destaque, não
-   "progresso". */
-#topbar .officialCatalogTab {
+/* === 3. Botão "🏅 Catálogo" (faixa laranja "Os Meus Projectos") + painel
+   do catálogo oficial === Ver lobby/OfficialCatalog.js - catálogo global
+   (GET /api/assignments/official), diferente do histórico por turma de
+   MissionsMenu.js acima.
+
+   NÃO fica na topbar (#topbar, height:10.42vh - achado em teste real: a
+   topbar já está lotada por .missionsTab, sobra menos de 1vh livre pra
+   empilhar outro botão, e `#topbar` fica atrás de `.topsection`
+   (z-index:11000, a própria faixa laranja) - um elemento posicionado DENTRO
+   da topbar além da altura dela fica coberto pela faixa laranja e nunca
+   aparece, mesmo com display:flex correto). Em vez disso, vive DENTRO de
+   `#tabtitle` (a faixa laranja em si, `.topsection.home > div.tabtitle`,
+   que já tem z-index alto por ser filha de `.topsection`) - o texto "Os Meus
+   Projectos" só ocupa a esquerda, sobra bastante espaço vazio à direita.
+   `#tabtitle` ganha `position:relative` aqui pra servir de âncora confiável
+   pro `position:absolute` do botão, independente de qualquer outra regra
+   herdada. Dourado (#f5a623) pra diferenciar visualmente do teal (#01bebc)
+   do botão de Missões - "selo"/destaque, não "progresso". */
+#tabtitle {
+    position: relative;
+}
+
+#tabtitle .officialCatalogTab {
     position: absolute;
-    top: ${css_vh(10.5)};
-    right: ${css_vh(14)};
-    height: ${css_vh(8)};
+    top: 50%;
+    right: ${css_vh(2)};
+    transform: translateY(-50%);
+    height: ${css_vh(5)};
     box-sizing: border-box;
-    padding: 0 ${16 * scaleMultiplier}px;
-    border-radius: ${10 * scaleMultiplier}px;
+    padding: 0 ${14 * scaleMultiplier}px;
+    border-radius: ${8 * scaleMultiplier}px;
     background: #fff;
     border: ${2 * scaleMultiplier}px solid #f5a623;
-    box-shadow: 0 ${2 * scaleMultiplier}px ${6 * scaleMultiplier}px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 ${2 * scaleMultiplier}px ${6 * scaleMultiplier}px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    z-index: 200;
+    z-index: 1;
     align-items: center;
     justify-content: center;
     white-space: nowrap;
+    font-family: inherit;
 }
 
-#topbar .officialCatalogTab.hidden {display: none;}
-#topbar .officialCatalogTab:not(.hidden) {display: flex;}
-#topbar .officialCatalogTab:hover {background: #fff7e9;}
+#tabtitle .officialCatalogTab.hidden {display: none;}
+#tabtitle .officialCatalogTab:not(.hidden) {display: flex;}
+#tabtitle .officialCatalogTab:hover {background: #fff7e9;}
 
-#topbar .officialCatalogTab-icon {
+#tabtitle .officialCatalogTab-icon {
     color: #f5a623;
     font-weight: 700;
-    font-size: ${css_vh(2.6)};
+    font-size: ${css_vh(2.2)};
     line-height: 1;
 }
 
