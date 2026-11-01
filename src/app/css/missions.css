@@ -352,17 +352,20 @@
 }
 
 /* === 4. Selo "🏅" no próprio card do projeto (lobby/Home.js#addProjectLink)
-   === Pedido explícito: canto direito, discreto. .projectthumb já é
-   position:relative (thumbs.css), mesmo elemento onde .sharex (canto
-   esquerdo, top: css_vh(-54.17)) já se ancora. [2026-10] Achado em teste
-   real: usar `top` com o mesmo valor do .sharex não posicionava certo pro
-   selo (ajuste pedido explicitamente) - `bottom` com o mesmo valor absoluto
-   funciona. z-index acima do .sharex (5) pra nunca ficar por baixo em telas
-   estreitas onde os dois poderiam quase se tocar. */
+   === Pedido explícito: canto direito, discreto. [2026-10] Duas tentativas
+   erradas, achadas em teste real na tela de verdade: `top`/`bottom` com o
+   mesmo valor em dvh de `.sharex` (css_vh(-54.17)) - esse valor só
+   "funciona" pro .sharex por causa de algum fator de zoom/escala global que
+   não vale a pena decifrar, e não é seguro reaproveitar num elemento novo
+   (bottom com o mesmo número jogava o selo pra BEM fora do card, pra baixo).
+   Posição final: porcentagem relativa ao PRÓPRIO `.projectthumb`
+   (position:relative, thumbs.css) - sempre previsível, não depende de
+   nenhum fator de escala externo. z-index acima do .sharex (5) pra nunca
+   ficar por baixo em telas estreitas onde os dois poderiam quase se tocar. */
 .officialProjectBadge {
     position: absolute;
-    bottom: ${css_vh(-54.17)};
-    right: ${css_vw(1.5)};
+    top: 4%;
+    right: 4%;
     z-index: 6;
     font-size: 10px;
     font-weight: 700;
