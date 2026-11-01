@@ -796,6 +796,12 @@ form.projectname {
   border-color: #ffa800 #ffa800 hsl(59, 79%, 60%);
 }
 
+*.menustyle.purple {
+  background-color: #d046d9;
+  border: 2px solid #9c2da3;
+  border-color: #d046d9 #d046d9 hsl(292, 60%, 40%);
+}
+
 *.ddchoice{
   width: 42px;
   height: 42px;
@@ -836,6 +842,20 @@ form.projectname {
 	background-color: #ffa800;
 	border: 2px solid #F7931E;
   border-color: #ffa800 #ffa800 hsl(35, 75%, 60%);
+}
+
+*.menustyle.purple > *.ddchoice{
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.4), 0 -1px 0px -1px rgba(0, 0, 0, 0.2);
+	background-color: #d046d9;
+	border: 2px solid #9c2da3;
+  border-color: #9c2da3 #9c2da3 hsl(292, 60%, 30%);
+}
+
+*.menustyle.purple > *.ddchoice:active{
+	box-shadow: inset 0 2px 0 #7a1f80;
+	background-color: #a62dad;
+	border: 2px solid #7a1f80;
+  border-color: #7a1f80 #7a1f80 hsl(292, 60%, 45%);
 }
 
 *.ddchoice > canvas{
