@@ -28,7 +28,16 @@
  *                                                               do latestProject acima,
  *                                                               em lista), com suporte a
  *                                                               sync incremental via
- *                                                               ?updatedSince=<ISO8601>
+ *                                                               ?updatedSince=<ISO8601>;
+ *                                                               cada item ganha `assignment`
+ *                                                               (activityId/scenes/
+ *                                                               characters/blocks/completed/
+ *                                                               completedAt) quando o
+ *                                                               projeto está/esteve
+ *                                                               vinculado a uma missão -
+ *                                                               sobrevive mesmo depois da
+ *                                                               missão ser substituída por
+ *                                                               outra mais nova da turma
  *   GET    /api/public/students/:studentId/assignment-score → progresso do aluno na
  *                                                               missão ativa da turma
  *                                                               (inclui id/share token/
@@ -463,6 +472,33 @@ publicRouter.get('/students/:studentId/time-spent', async (req, res) => {
  * desconhecido/sem projetos devolve projects: [] em vez de 404 - mesma
  * filosofia de não vazar existência via status code que os outros endpoints
  * pull já seguem.
+ *
+ * `assignment` (pedido HelloYotta, ver e-mail "Pedido de extensão — status
+ * de conclusão por projeto no histórico") - presente só quando o projeto
+ * ESTÁ ou ESTEVE vinculado a uma missão atribuída (projects.assignment_id,
+ * gravado uma vez em POST /assignments/register e NUNCA apagado depois -
+ * nem quando essa missão é substituída por outra mais nova da turma, ver
+ * routes/assignments.js). É exatamente isso que fecha a lacuna real que
+ * eles reportaram: GET /assignment-score só enxerga a missão ATIVA agora,
+ * então o sinal de conclusão de uma missão anterior (já substituída) sumia
+ * do histórico assim que o aluno começava a próxima - aqui não, porque lê
+ * o vínculo do PROJETO, não o estado atual da missão.
+ *   - Campos (scenes/characters/blocks/completed) em sub-objeto `assignment`,
+ *     não soltos no nível raiz: os campos `scenes`/`characters`/`blocks` já
+ *     existem no nível raiz (vêm do manifesto bruto de computeProjectManifest,
+ *     spread abaixo - {count, used, ...}) e são consumidos por quem já lê
+ *     este endpoint. Reaproveitar o MESMO nome pra um shape DIFERENTE
+ *     (compareManifests devolve {required, actual, met}) seria uma armadilha
+ *     silenciosa pra qualquer consumidor, novo ou antigo - o nome "scenes"
+ *     mudaria de forma dependendo se o projeto tem missão ou não. Pedimos
+ *     pra HelloYotta ler `project.assignment.scenes` em vez de
+ *     `project.scenes` nesse caso - ver resposta ao e-mail.
+ *   - "Uma vez concluída, fica concluída" (completionSnapshot.js) vale aqui
+ *     também: com foto congelada, devolve ela (sem reprocessar o projeto
+ *     atual); sem foto, compara o requisito da missão (resolvido via
+ *     assignmentResolver.js - cobre template E referência) contra o MESMO
+ *     manifesto já calculado pra este projeto (computeProjectManifest,
+ *     reaproveitado, sem round-trip extra).
  */
 publicRouter.get('/students/:studentId/projects', async (req, res) => {
     const expectedKey = process.env.HELLOYOTTA_INBOUND_API_KEY;
@@ -492,7 +528,7 @@ publicRouter.get('/students/:studentId/projects', async (req, res) => {
     try {
         let query = supabase
             .from('projects')
-            .select('id, name, json, ctime, mtime, share_token')
+            .select('id, name, json, ctime, mtime, share_token, assignment_id')
             .eq('owner', studentId)
             .eq('deleted', 'NO')
             .order('mtime', { ascending: false });
@@ -519,6 +555,55 @@ publicRouter.get('/students/:studentId/projects', async (req, res) => {
             });
         }
 
+        // Missões vinculadas (ver docblock acima) - um lote só pros ids
+        // distintos presentes nesta página, nunca 1 consulta por projeto.
+        // project_name não entra no select: HelloYotta já recebe o nome
+        // efetivo da missão por outras rotas (/active, /assignment-score);
+        // aqui só os requisitos, pra montar o comparativo.
+        const assignmentIds = [...new Set(rows.map((r) => r.assignment_id).filter((id) => id != null))];
+        const assignmentById = {};
+        if (assignmentIds.length > 0) {
+            try {
+                const { data: assignmentRows, error: assignmentErr } = await supabase
+                    .from('assignments')
+                    .select('id, template_id, requirements')
+                    .in('id', assignmentIds);
+                if (assignmentErr) throw assignmentErr;
+                await Promise.all((assignmentRows || []).map(async (row) => {
+                    const resolved = (await resolveAssignmentFields(supabase, row)) || { requirements: row.requirements };
+                    assignmentById[row.id] = resolved;
+                }));
+            } catch (err) {
+                // Best-effort - um erro aqui não deve derrubar a lista inteira de
+                // projetos, só degrada pra "sem dado de missão" nos afetados.
+                console.warn('[public] projects: falha ao resolver missões (não-fatal):', err.message);
+            }
+        }
+
+        // Fotos congeladas de conclusão (completionSnapshot.js) em lote, só
+        // pros projetos que têm missão vinculada. Tolerante a 42703 (coluna
+        // ainda não migrada) - igual aos outros usos deste padrão no projeto.
+        const projectIdsWithAssignment = rows.filter((r) => r.assignment_id != null).map((r) => r.id);
+        const completionByProject = {};
+        if (projectIdsWithAssignment.length > 0) {
+            const { data: completionRows, error: completionErr } = await supabase
+                .from('projects')
+                .select('id, assignment_completed_at, assignment_completion_snapshot')
+                .in('id', projectIdsWithAssignment);
+            if (completionErr && completionErr.code !== '42703') {
+                console.warn('[public] projects: falha ao ler fotos de conclusão (não-fatal):', completionErr.message);
+            } else {
+                (completionRows || []).forEach((row) => {
+                    if (row.assignment_completed_at) {
+                        completionByProject[row.id] = {
+                            completedAt: row.assignment_completed_at,
+                            snapshot: row.assignment_completion_snapshot,
+                        };
+                    }
+                });
+            }
+        }
+
         const projects = rows.map((row) => {
             let manifest;
             try {
@@ -527,7 +612,7 @@ publicRouter.get('/students/:studentId/projects', async (req, res) => {
                 console.error('[public] projects: projeto', row.id, 'de', studentId, 'com json inválido:', parseErr.message);
                 manifest = computeProjectManifest(null); // zerado - não derruba o endpoint inteiro por causa de 1 projeto
             }
-            return {
+            const item = {
                 projectId: row.id,
                 projectName: row.name,
                 createdAt: row.ctime,
@@ -536,6 +621,21 @@ publicRouter.get('/students/:studentId/projects', async (req, res) => {
                 reactionsCount: reactionsByProject[row.id] || 0,
                 ...manifest,
             };
+            if (row.assignment_id != null) {
+                const frozen = completionByProject[row.id];
+                const requirements = assignmentById[row.assignment_id] ?
+                    assignmentById[row.assignment_id].requirements : null;
+                // Com foto congelada usa ela direto (nunca recalcula - "uma vez
+                // concluída, fica concluída"); sem foto, compara ao vivo contra
+                // o manifesto já calculado acima pra este mesmo projeto.
+                const comparison = frozen ? frozen.snapshot : compareManifests(requirements, manifest);
+                item.assignment = {
+                    activityId: row.assignment_id,
+                    completedAt: frozen ? frozen.completedAt : null,
+                    ...comparison,
+                };
+            }
+            return item;
         });
 
         res.json({ projects });
