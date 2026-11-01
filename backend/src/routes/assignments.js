@@ -780,7 +780,7 @@ router.get('/mine', async (req, res) => {
 
         const { data: rows, error } = await supabase
             .from('assignments')
-            .select('id, project_name, template_id, active, created_at')
+            .select('id, project_name, template_id, active, created_at, teacher_id, is_official')
             .eq('turma_id', turmaId)
             .order('created_at', { ascending: true });
 
@@ -824,6 +824,16 @@ router.get('/mine', async (req, res) => {
                 started: !!projectId,
                 completed: !!(projectId && completedProjectIds.has(projectId)),
                 projectId: projectId,
+                // Pro admin decidir se mostra "🏅 Marcar como oficial"
+                // (MissionsMenu.js) - só TEMPLATES podem ser marcados (ver
+                // PATCH /:id/official, que rejeita referências com 400), e só
+                // faz sentido oferecer o botão se o admin for de fato o autor
+                // (teacherId) - admin pode editar qualquer missão, mas
+                // "oficial" é curadoria sobre um exemplo que existe de
+                // verdade, então o botão só aparece onde há template.
+                teacherId: row.teacher_id,
+                isTemplate: !row.template_id,
+                isOfficial: !!row.is_official,
             };
         }));
 
