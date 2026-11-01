@@ -121,7 +121,7 @@ export default class GenerateActivityModal {
         var looksLikeJwt = typeof token === 'string' && token.split('.').length >= 3;
         if (looksLikeJwt) {
             var claims = decodeJwtPayloadUnsafe(token);
-            if (!claims || claims.role !== 'professor') {
+            if (!claims || (claims.role !== 'professor' && claims.role !== 'admin')) {
                 return;
             }
         }

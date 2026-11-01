@@ -231,56 +231,52 @@
     color: #27ae60;
 }
 
-/* === 3. Botão "🏅 Catálogo" (faixa laranja "Os Meus Projectos") + painel
-   do catálogo oficial === Ver lobby/OfficialCatalog.js - catálogo global
-   (GET /api/assignments/official), diferente do histórico por turma de
+/* === 3. Botão "🏅 Catálogo" (topbar, ao lado de .missionsTab) + painel do
+   catálogo oficial === Ver lobby/OfficialCatalog.js - catálogo global (GET
+   /api/assignments/official), diferente do histórico por turma de
    MissionsMenu.js acima.
 
-   NÃO fica na topbar (#topbar, height:10.42vh - achado em teste real: a
-   topbar já está lotada por .missionsTab, sobra menos de 1vh livre pra
-   empilhar outro botão, e `#topbar` fica atrás de `.topsection`
-   (z-index:11000, a própria faixa laranja) - um elemento posicionado DENTRO
-   da topbar além da altura dela fica coberto pela faixa laranja e nunca
-   aparece, mesmo com display:flex correto). Em vez disso, vive DENTRO de
-   `#tabtitle` (a faixa laranja em si, `.topsection.home > div.tabtitle`,
-   que já tem z-index alto por ser filha de `.topsection`) - o texto "Os Meus
-   Projectos" só ocupa a esquerda, sobra bastante espaço vazio à direita.
-   `#tabtitle` ganha `position:relative` aqui pra servir de âncora confiável
-   pro `position:absolute` do botão, independente de qualquer outra regra
-   herdada. Dourado (#f5a623) pra diferenciar visualmente do teal (#01bebc)
-   do botão de Missões - "selo"/destaque, não "progresso". */
-#tabtitle {
-    position: relative;
-}
-
-#tabtitle .officialCatalogTab {
+   [2026-10] Tentativa 1 (achado em teste real): empilhado numa segunda
+   linha ABAIXO do .missionsTab, dentro da #topbar (height:10.42vh) - sem
+   espaço sobrando (missionsTab já ocupa quase toda a altura) e a faixa
+   laranja "Os Meus Projectos" (.topsection, z-index:11000) cobria qualquer
+   coisa posicionada além da topbar - o elemento existia no DOM
+   (display:flex correto) mas nunca aparecia na tela, escondido atrás da
+   faixa. Tentativa 2: mover pra dentro da própria faixa laranja - funcionou,
+   mas o usuário preferiu visualmente ao lado do "Missões" (pedido
+   explícito). Versão final: MESMA linha/altura do .missionsTab (top:1.5vh,
+   height:8vh - fica inteiramente DENTRO dos 10.42vh da topbar, nunca é
+   coberto pela faixa laranja) - só com um `right` bem maior (30vh, "Missões"
+   cresce pra esquerda a partir de 14vh) pra garantir um respiro entre os
+   dois sem precisar calcular a largura renderizada do texto "Missões" em
+   tempo real. Dourado (#f5a623) pra diferenciar visualmente do teal
+   (#01bebc) do botão de Missões - "selo"/destaque, não "progresso". */
+#topbar .officialCatalogTab {
     position: absolute;
-    top: 50%;
-    right: ${css_vh(2)};
-    transform: translateY(-50%);
-    height: ${css_vh(5)};
+    top: ${css_vh(1.5)};
+    right: ${css_vh(30)};
+    height: ${css_vh(8)};
     box-sizing: border-box;
-    padding: 0 ${14 * scaleMultiplier}px;
-    border-radius: ${8 * scaleMultiplier}px;
+    padding: 0 ${16 * scaleMultiplier}px;
+    border-radius: ${10 * scaleMultiplier}px;
     background: #fff;
     border: ${2 * scaleMultiplier}px solid #f5a623;
-    box-shadow: 0 ${2 * scaleMultiplier}px ${6 * scaleMultiplier}px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 ${2 * scaleMultiplier}px ${6 * scaleMultiplier}px rgba(0, 0, 0, 0.15);
     cursor: pointer;
-    z-index: 1;
+    z-index: 200;
     align-items: center;
     justify-content: center;
     white-space: nowrap;
-    font-family: inherit;
 }
 
-#tabtitle .officialCatalogTab.hidden {display: none;}
-#tabtitle .officialCatalogTab:not(.hidden) {display: flex;}
-#tabtitle .officialCatalogTab:hover {background: #fff7e9;}
+#topbar .officialCatalogTab.hidden {display: none;}
+#topbar .officialCatalogTab:not(.hidden) {display: flex;}
+#topbar .officialCatalogTab:hover {background: #fff7e9;}
 
-#tabtitle .officialCatalogTab-icon {
+#topbar .officialCatalogTab-icon {
     color: #f5a623;
     font-weight: 700;
-    font-size: ${css_vh(2.2)};
+    font-size: ${css_vh(2.4)};
     line-height: 1;
 }
 

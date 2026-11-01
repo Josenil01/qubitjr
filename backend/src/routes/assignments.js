@@ -161,7 +161,7 @@ async function getTurmaAndNivel(req) {
  */
 router.post('/generate-from-theme', async (req, res) => {
     if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
-    if (req.role !== 'professor') return res.status(403).json({ error: 'Só professores podem gerar atividades por IA' });
+    if (req.role !== 'professor' && req.role !== 'admin') return res.status(403).json({ error: 'Só professores ou administradores podem gerar atividades por IA' });
 
     const supabase = getSupabase();
     if (!supabase) return res.status(503).json({ error: 'Database not configured' });
