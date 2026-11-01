@@ -4,7 +4,7 @@ const { computeDetailedManifest } = require('./detailedManifest');
 
 const FAKE_LIBRARY = {
     backgroundMd5s: new Set(['Woods.svg', 'Farm.svg', 'Lake.svg']),
-    characterMd5s: new Set(['HY-Bruxa.svg', 'HY-Cachorro.svg', 'HY-Yara.svg']),
+    characterMd5s: new Set(['HY-Bruxa.svg', 'HY-Cachorro.svg', 'HY-Yara.svg', 'HY-SaciPerere1.svg']),
 };
 
 describe('validatePlan', () => {
@@ -115,9 +115,105 @@ describe('validatePlan', () => {
         expect(validatePlan(null, FAKE_LIBRARY).plan.scenes).toEqual([]);
         expect(validatePlan({}, FAKE_LIBRARY).plan.scenes).toEqual([]);
     });
+
+    test('aceita setcostume num personagem com variante cadastrada (COSTUME_VARIANTS)', () => {
+        const rawPlan = {
+            scenes: [{
+                backgroundMd5: 'Woods.svg',
+                characters: [{
+                    md5: 'HY-SaciPerere1.svg',
+                    name: 'Saci',
+                    scripts: [[['onflag', null], ['setcostume', 1]]],
+                }],
+            }],
+        };
+        const { plan } = validatePlan(rawPlan, FAKE_LIBRARY);
+        const script = plan.scenes[0].characters[0].scripts[0];
+        expect(script).toEqual([
+            { blockType: 'onflag', arg: 'null' },
+            { blockType: 'setcostume', arg: 1 },
+        ]);
+    });
+
+    test('rejeita setcostume num personagem SEM variante cadastrada', () => {
+        const rawPlan = {
+            scenes: [{
+                backgroundMd5: 'Woods.svg',
+                characters: [{
+                    md5: 'HY-Bruxa.svg',
+                    name: 'Bruxa',
+                    scripts: [[['onflag', null], ['setcostume', 0], ['say', 'Oi!']]],
+                }],
+            }],
+        };
+        const { plan } = validatePlan(rawPlan, FAKE_LIBRARY);
+        const script = plan.scenes[0].characters[0].scripts[0];
+        expect(script.map((b) => b.blockType)).toEqual(['onflag', 'say']);
+    });
+
+    test('rejeita setcostume com índice fora do número de variantes do personagem', () => {
+        const rawPlan = {
+            scenes: [{
+                backgroundMd5: 'Woods.svg',
+                characters: [{
+                    md5: 'HY-SaciPerere1.svg',
+                    name: 'Saci',
+                    scripts: [[['onflag', null], ['setcostume', 5]]], // Saci só tem índices 0 e 1
+                }],
+            }],
+        };
+        const { plan } = validatePlan(rawPlan, FAKE_LIBRARY);
+        // 'setcostume' cai fora (índice inválido); o 'onflag' sozinho sobrevive
+        // como script válido (ele mesmo já é um gatilho, não precisa de mais nada).
+        expect(plan.scenes[0].characters[0].scripts).toEqual([[{ blockType: 'onflag', arg: 'null' }]]);
+    });
+
+    test('aceita playsnd com "pop.mp3" e rejeita qualquer outro valor', () => {
+        const rawPlan = {
+            scenes: [{
+                backgroundMd5: 'Woods.svg',
+                characters: [{
+                    md5: 'HY-Bruxa.svg',
+                    name: 'Bruxa',
+                    scripts: [
+                        [['onflag', null], ['playsnd', 'pop.mp3']],
+                        [['onclick', null], ['playsnd', 'explosion.mp3']],
+                    ],
+                }],
+            }],
+        };
+        const { plan } = validatePlan(rawPlan, FAKE_LIBRARY);
+        const scripts = plan.scenes[0].characters[0].scripts;
+        expect(scripts[0]).toEqual([{ blockType: 'onflag', arg: 'null' }, { blockType: 'playsnd', arg: 'pop.mp3' }]);
+        // 'explosion.mp3' não existe - vira [onclick] sozinho (ainda válido, só sem o playsnd).
+        expect(scripts[1]).toEqual([{ blockType: 'onclick', arg: 'null' }]);
+    });
 });
 
 describe('buildProjectFromPlan', () => {
+    test('personagem com variante cadastrada nasce com sprite.costumes preenchido', () => {
+        const rawPlan = {
+            scenes: [{
+                backgroundMd5: 'Woods.svg',
+                characters: [
+                    { md5: 'HY-SaciPerere1.svg', name: 'Saci', scripts: [[['onflag', null], ['setcostume', 1]]] },
+                    { md5: 'HY-Bruxa.svg', name: 'Bruxa', scripts: [[['onflag', null], ['say', 'Oi!']]] },
+                ],
+            }],
+        };
+        const { plan } = validatePlan(rawPlan, FAKE_LIBRARY);
+        const { projectJson } = buildProjectFromPlan(plan);
+        const pageId = projectJson.pages[0];
+        const page = projectJson[pageId];
+        const saci = page[page.sprites[0]];
+        const bruxa = page[page.sprites[1]];
+        // Mesmo mapeamento do editor real (Page.js#costumeVariants) - sem isso
+        // o bloco setcostume gerado carregaria mas não faria nada (ver
+        // Prims.SetCostume no frontend: no-op sem s.costumes).
+        expect(saci.costumes).toEqual(['HY-SaciPerere1.svg', 'HY-SaciPerere2.svg']);
+        expect(bruxa.costumes).toEqual([]); // sem variante cadastrada - lista vazia, não undefined
+    });
+
     test('produz um projeto carregável pelo pipeline real de manifesto/dicas', () => {
         const rawPlan = {
             scenes: [{
@@ -190,9 +286,9 @@ describe('validatePlan com levelProfile (perfis de nível 1/2/3)', () => {
         };
     }
 
-    test('corta cenas excedentes pro nível 1 (só 1 cena permitida)', () => {
+    test('corta cenas excedentes pro nível 1 (2 cenas permitidas, igual ao nível 2)', () => {
         const { plan, warnings } = validatePlan(scenePlan(3), FAKE_LIBRARY, LEVEL_PROFILES[1]);
-        expect(plan.scenes).toHaveLength(1);
+        expect(plan.scenes).toHaveLength(2);
         expect(warnings.some((w) => w.includes('mais cenas'))).toBe(true);
     });
 
@@ -213,7 +309,7 @@ describe('validatePlan com levelProfile (perfis de nível 1/2/3)', () => {
         expect(warnings.some((w) => w.includes('mais personagens'))).toBe(true);
     });
 
-    test('nível 1 rejeita onmessage como gatilho (só onflag/onclick permitidos)', () => {
+    test('nível 1 aceita onmessage como gatilho (igualado ao nível 2 - ver LEVEL_PROFILES)', () => {
         const rawPlan = {
             scenes: [{
                 backgroundMd5: 'Woods.svg',
@@ -225,7 +321,7 @@ describe('validatePlan com levelProfile (perfis de nível 1/2/3)', () => {
             }],
         };
         const { plan } = validatePlan(rawPlan, FAKE_LIBRARY, LEVEL_PROFILES[1]);
-        expect(plan.scenes[0].characters[0].scripts).toEqual([]);
+        expect(plan.scenes[0].characters[0].scripts).toHaveLength(1);
     });
 
     test('nível 2 aceita onmessage como gatilho', () => {
@@ -243,7 +339,7 @@ describe('validatePlan com levelProfile (perfis de nível 1/2/3)', () => {
         expect(plan.scenes[0].characters[0].scripts).toHaveLength(1);
     });
 
-    test('nível 1 remove qualquer bloco repeat (loop: none)', () => {
+    test('nível 1 aceita bloco repeat (loop: optional, igualado ao nível 2)', () => {
         const rawPlan = {
             scenes: [{
                 backgroundMd5: 'Woods.svg',
@@ -256,10 +352,10 @@ describe('validatePlan com levelProfile (perfis de nível 1/2/3)', () => {
         };
         const { plan } = validatePlan(rawPlan, FAKE_LIBRARY, LEVEL_PROFILES[1]);
         const script = plan.scenes[0].characters[0].scripts[0];
-        expect(script.map((b) => b.blockType)).toEqual(['onflag', 'forward']);
+        expect(script.map((b) => b.blockType)).toEqual(['onflag', 'repeat', 'forward']);
     });
 
-    test('nível 1 remove blocos message (messages: none)', () => {
+    test('nível 1 aceita blocos message (messages: optional, igualado ao nível 2)', () => {
         const rawPlan = {
             scenes: [{
                 backgroundMd5: 'Woods.svg',
@@ -272,7 +368,7 @@ describe('validatePlan com levelProfile (perfis de nível 1/2/3)', () => {
         };
         const { plan } = validatePlan(rawPlan, FAKE_LIBRARY, LEVEL_PROFILES[1]);
         const script = plan.scenes[0].characters[0].scripts[0];
-        expect(script.map((b) => b.blockType)).toEqual(['onflag', 'say']);
+        expect(script.map((b) => b.blockType)).toEqual(['onflag', 'message', 'say']);
     });
 
     test('corta o script no tamanho máximo do nível (blocksPerScript.max)', () => {
@@ -282,15 +378,15 @@ describe('validatePlan com levelProfile (perfis de nível 1/2/3)', () => {
                 characters: [{
                     md5: 'HY-Bruxa.svg',
                     name: 'Bruxa',
-                    // nível 1: max 3 blocos - manda 5, espera cortar pros 3 primeiros.
-                    scripts: [[['onflag', null], ['say', 'a'], ['say', 'b'], ['say', 'c'], ['say', 'd']]],
+                    // nível 1: max 5 blocos (igualado ao nível 2) - manda 7, espera cortar pros 5 primeiros.
+                    scripts: [[['onflag', null], ['say', 'a'], ['say', 'b'], ['say', 'c'], ['say', 'd'], ['say', 'e'], ['say', 'f']]],
                 }],
             }],
         };
         const { plan } = validatePlan(rawPlan, FAKE_LIBRARY, LEVEL_PROFILES[1]);
         const script = plan.scenes[0].characters[0].scripts[0];
-        expect(script).toHaveLength(3);
-        expect(script.map((b) => b.arg)).toEqual(['null', 'a', 'b']);
+        expect(script).toHaveLength(5);
+        expect(script.map((b) => b.arg)).toEqual(['null', 'a', 'b', 'c', 'd']);
     });
 
     test('não corta o conteúdo interno de um repeat pelo limite de blocksPerScript', () => {

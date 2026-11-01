@@ -48,8 +48,23 @@ const TRIGGER_BLOCK_TYPES = new Set(['onflag', 'onclick', 'onmessage']);
 const NUMERIC_BLOCK_TYPES = new Set(['forward', 'back', 'up', 'down', 'left', 'right', 'hop', 'wait', 'repeat', 'grow', 'shrink']);
 const SETSPEED_VALUES = new Set([0, 1, 2]);
 const STRING_ARG_BLOCK_TYPES = new Set(['say', 'message', 'onmessage']);
+// playsnd: todo personagem montado por buildSprite() nasce com sounds:['pop.mp3']
+// (ver buildSprite abaixo) - então 'pop.mp3' é sempre um som válido, não
+// precisa de checagem por personagem, diferente de setcostume logo abaixo.
+const SOUND_BLOCK_TYPES = new Set(['playsnd']);
+const VALID_SOUND_NAMES = new Set(['pop.mp3']);
+// setcostume: só existe visual alternativo pra personagens cadastrados aqui
+// (mesmo mapeamento usado pelo editor real em
+// src/app/src/editor/engine/Page.js#costumeVariants - duplicado de propósito
+// porque um é ESM de frontend e o outro CommonJS de backend, sem um jeito
+// limpo de compartilhar sem criar um módulo novo em shared/ só pra isso).
+// Mantenha os dois em sincronia ao adicionar um personagem com variantes.
+const COSTUME_VARIANTS = {
+    'HY-SaciPerere1.svg': ['HY-SaciPerere1.svg', 'HY-SaciPerere2.svg'],
+    'HY-SaciPerere2.svg': ['HY-SaciPerere1.svg', 'HY-SaciPerere2.svg'],
+};
 const ALL_BLOCK_TYPES = new Set([
-    ...TRIGGER_BLOCK_TYPES, ...NUMERIC_BLOCK_TYPES, 'setspeed', 'say', 'message',
+    ...TRIGGER_BLOCK_TYPES, ...NUMERIC_BLOCK_TYPES, ...SOUND_BLOCK_TYPES, 'setspeed', 'setcostume', 'say', 'message',
 ]);
 
 /**
@@ -65,17 +80,27 @@ const ALL_BLOCK_TYPES = new Set([
  * pode usar, sem mínimo exigido em código) | 'expected' (só orienta o
  * prompt a usar - não há como EXIGIR um mínimo em código sem arriscar
  * travar a geração inteira por um detalhe estilístico).
+ *
+ * [2026-11] Nível 1 igualado ao Nível 2 (decisão do usuário: os projetos
+ * gerados por IA que o professor editou e aprovou - usados como referência
+ * de qualidade - foram todos gerados sob o perfil do Nível 2; a versão
+ * antiga do Nível 1 (1 cena, 1 personagem, sem mensagem/loop) travava
+ * estruturalmente esse nível de atividade pra turmas de 1º ano, mesmo
+ * quando apropriado pro tema/aluno). Mantido como entrada própria (não só
+ * um alias de LEVEL_PROFILES[2]) para preservar o rótulo "1º ano" exibido
+ * ao professor e deixar margem pra divergir de novo no futuro, se for o
+ * caso - mas hoje os números são os mesmos de propósito.
  */
 const LEVEL_PROFILES = {
     1: {
         level: 1,
         label: 'Nível 1 (1º ano)',
-        scenes: 1,
-        charactersPerScene: 1,
-        blocksPerScript: { min: 2, max: 3 },
-        allowedTriggers: ['onflag', 'onclick'],
-        loop: 'none',
-        messages: 'none',
+        scenes: 2,
+        charactersPerScene: 2,
+        blocksPerScript: { min: 4, max: 5 },
+        allowedTriggers: ['onflag', 'onclick', 'onmessage'],
+        loop: 'optional',
+        messages: 'optional',
     },
     2: {
         level: 2,
@@ -122,8 +147,14 @@ function nextId(prefix) {
  * `repeat` quando levelProfile.loop === 'none', ou `message` quando
  * levelProfile.messages === 'none' são todos REJEITADOS aqui - nunca chegam
  * a virar bloco no projeto final, mesmo que a LLM os tenha sugerido.
+ *
+ * `characterMd5` identifica de quem é este script - necessário só pra
+ * `setcostume` (ver COSTUME_VARIANTS acima): o índice que a LLM escolhe
+ * (0, 1, 2...) só faz sentido pra um personagem que de fato tem essa
+ * variante cadastrada, então rejeitamos aqui em vez de deixar o editor
+ * carregar um bloco que não faz nada pra esse personagem.
  */
-function validateBlockTuple(tuple, { isFirstInScript, levelProfile }) {
+function validateBlockTuple(tuple, { isFirstInScript, levelProfile, characterMd5 }) {
     if (!Array.isArray(tuple) || tuple.length < 2) return null;
     const [blockType, arg, nested] = tuple;
     if (typeof blockType !== 'string' || !ALL_BLOCK_TYPES.has(blockType)) return null;
@@ -141,7 +172,7 @@ function validateBlockTuple(tuple, { isFirstInScript, levelProfile }) {
         // blocksPerScript já limita o TOPO do script (o "repeat" em si conta
         // como 1 bloco ali); o conteúdo interno não tem um limite próprio
         // pedido pelo usuário, então não inventamos um.
-        const validNested = validateScript(nested, { allowTrigger: false, levelProfile: null });
+        const validNested = validateScript(nested, { allowTrigger: false, levelProfile: null, characterMd5 });
         if (!validNested) return null;
         return { blockType, arg: count, nested: validNested };
     }
@@ -160,6 +191,19 @@ function validateBlockTuple(tuple, { isFirstInScript, levelProfile }) {
         const num = Number(arg);
         if (!SETSPEED_VALUES.has(num)) return null;
         return { blockType, arg: num };
+    }
+
+    if (blockType === 'setcostume') {
+        const variants = characterMd5 ? COSTUME_VARIANTS[characterMd5] : null;
+        if (!variants || variants.length < 2) return null; // personagem sem variante cadastrada - bloco não faria nada
+        const idx = Number(arg);
+        if (!Number.isInteger(idx) || idx < 0 || idx >= variants.length) return null;
+        return { blockType, arg: idx };
+    }
+
+    if (SOUND_BLOCK_TYPES.has(blockType)) {
+        if (typeof arg !== 'string' || !VALID_SOUND_NAMES.has(arg)) return null;
+        return { blockType, arg };
     }
 
     if (blockType === 'onflag' || blockType === 'onclick') {
@@ -192,12 +236,12 @@ function validateBlockTuple(tuple, { isFirstInScript, levelProfile }) {
  * - sempre cortando do FIM, nunca do meio, pra preservar o gatilho inicial e
  * a ordem que a LLM escolheu.
  */
-function validateScript(script, { allowTrigger = true, levelProfile = null } = {}) {
+function validateScript(script, { allowTrigger = true, levelProfile = null, characterMd5 = null } = {}) {
     if (!Array.isArray(script) || script.length === 0) return null;
     const result = [];
     script.forEach((tuple, idx) => {
         const isFirstInScript = allowTrigger && idx === 0;
-        const validated = validateBlockTuple(tuple, { isFirstInScript, levelProfile });
+        const validated = validateBlockTuple(tuple, { isFirstInScript, levelProfile, characterMd5 });
         if (validated) result.push(validated);
     });
     if (result.length === 0) return null;
@@ -256,6 +300,10 @@ function buildSprite({ md5, name, scripts }, isFirstSprite) {
             dirx: 1,
             diry: 1,
             sounds: ['pop.mp3'],
+            // Mesma convenção do editor real (ver Page.js#addSprite/costumeVariants) -
+            // sem isso o bloco setcostume carregaria no projeto gerado mas
+            // não faria nada (Prims.SetCostume vira no-op sem s.costumes).
+            costumes: COSTUME_VARIANTS[md5] || [],
             // Espalha os personagens horizontalmente pra não nascerem todos
             // exatamente empilhados no centro do palco (480x360) - só
             // cosmético, o professor reposiciona à vontade no editor.
@@ -348,7 +396,7 @@ function validatePlan(rawPlan, library, levelProfile) {
 
             const scripts = [];
             for (const rawScript of Array.isArray(rawCharacter.scripts) ? rawCharacter.scripts : []) {
-                const validated = validateScript(rawScript, { levelProfile });
+                const validated = validateScript(rawScript, { levelProfile, characterMd5: rawCharacter.md5 });
                 if (validated) scripts.push(validated);
             }
 
@@ -371,4 +419,6 @@ function validatePlan(rawPlan, library, levelProfile) {
     return { plan: { scenes: trimmedScenes }, warnings };
 }
 
-module.exports = { buildProjectFromPlan, validatePlan, LEVEL_PROFILES, DEFAULT_LEVEL, resolveLevelProfile };
+module.exports = {
+    buildProjectFromPlan, validatePlan, LEVEL_PROFILES, DEFAULT_LEVEL, resolveLevelProfile, COSTUME_VARIANTS,
+};

@@ -36,7 +36,7 @@
  */
 
 const { loadLibrary } = require('./activityAssetLibrary');
-const { validatePlan, resolveLevelProfile } = require('./activityProjectBuilder');
+const { validatePlan, resolveLevelProfile, COSTUME_VARIANTS } = require('./activityProjectBuilder');
 const { callLLM, getProviderConfig } = require('./llmProvider');
 const { stripDashes } = require('./hintsGeneration');
 
@@ -50,6 +50,8 @@ const BLOCK_DSL_DOC = `Cada script de personagem é uma lista de blocos, cada bl
 - ["wait", N] - espera N (inteiro, unidade arbitrária do ScratchJr, use valores entre 10 e 60).
 - ["setspeed", N] - N é 0 (lenta), 1 (normal) ou 2 (rápida).
 - ["grow", N] / ["shrink", N] - N inteiro pequeno (1 a 5).
+- ["playsnd", "pop.mp3"] - toca um som curto. Único valor aceito hoje é "pop.mp3" (todo personagem já nasce com esse som disponível).
+- ["setcostume", N] - troca o visual do personagem pra variante N (0, 1, 2...). SÓ use este bloco em personagens listados na seção "PERSONAGENS COM VISUAL ALTERNATIVO" abaixo - qualquer outro personagem não tem variante nenhuma, o bloco não faria nada.
 - ["repeat", N, [<blocos internos>]] - repete N vezes (inteiro de 2 a 6) os blocos da lista interna (mesma sintaxe de tupla, sem onflag/onclick/onmessage lá dentro).
 Nenhum outro tipo de bloco existe. Nunca invente um tipo, nem um valor de md5 que não esteja nas listas abaixo.`;
 
@@ -67,7 +69,9 @@ function describeLevelRules(levelProfile) {
     }[levelProfile.loop];
     const messagesText = {
         none: 'NÃO use "message"/"onmessage" neste nível - cada personagem age sozinho, sem se comunicar com os outros.',
-        optional: 'Pode usar "message"/"onmessage" pra um personagem reagir a outro, se fizer sentido - não é obrigatório.',
+        optional: levelProfile.charactersPerScene > 1
+            ? 'PREFIRA que pelo menos um personagem reaja a uma ação de outro via "message"/"onmessage" (um manda, outro reage) - cenas em que cada personagem só roda um "onflag" próprio, sem nenhuma relação entre eles, são monólogos paralelos e devem ser evitadas sempre que o tema permitir uma reação natural.'
+            : 'Pode usar "message"/"onmessage" se fizer sentido - não é obrigatório.',
         expected: 'Use "message"/"onmessage" pra pelo menos 2 personagens se comunicarem (um manda, outro reage) - é o conceito principal deste nível.',
     }[levelProfile.messages];
 
@@ -85,6 +89,9 @@ function buildSystemPrompt(library, levelProfile) {
     const characterList = library.characters
         .map((c) => `- "${c.md5}" (${c.displayName})`)
         .join('\n');
+    const costumeCharacters = Object.keys(COSTUME_VARIANTS)
+        .map((md5) => `- "${md5}" tem ${COSTUME_VARIANTS[md5].length} visuais (use "setcostume" com índice de 0 a ${COSTUME_VARIANTS[md5].length - 1})`)
+        .join('\n');
 
     return `Você ajuda professores a criar atividades de programação em bloco no ScratchJr pra crianças do ${levelProfile.label}, a partir de um TEMA (ex.: uma lenda, um livro, um assunto de aula).
 
@@ -96,21 +103,34 @@ ${backgroundList}
 PERSONAGENS DISPONÍVEIS (use o valor entre aspas, exatamente como está, no campo "md5" de cada personagem):
 ${characterList}
 
+PERSONAGENS COM VISUAL ALTERNATIVO (só estes podem usar o bloco "setcostume" - ver DSL abaixo):
+${costumeCharacters || '(nenhum nesta biblioteca no momento)'}
+
 ${BLOCK_DSL_DOC}
 
 Regras de complexidade do ${levelProfile.label} (OBRIGATÓRIAS - a atividade é pra esse nível específico, nem mais simples nem mais complexa):
 ${describeLevelRules(levelProfile)}
 
 Outras regras de conteúdo:
-- Cada personagem precisa de pelo menos 1 script.
+- Cada personagem precisa de pelo menos 1 script, EXCETO se "decorative": true (ver formato de personagem abaixo) - um personagem decorativo é só cenário (ex.: a Lua ao fundo de uma cena sobre foguete) e não precisa de script nenhum; prefira isso a inventar um script sem sentido só pra "cumprir a regra".
 - Frases de "say" curtas, alegres, sem violência/susto pesado - é pra criança pequena.
 - Se o tema pedir um personagem/cenário ICÔNICO que NÃO existe nas listas acima (ex.: um Saci Pererê de verdade, que não está na lista de personagens), escolha o personagem mais parecido/aproximado disponível e preencha "assetGapNote" explicando isso pro professor (qual seria o ideal, qual você usou no lugar). Se tudo que o tema precisa já existe nas listas, deixe "assetGapNote" como null.
 - "teacherDescription": 2 a 4 frases, em português, explicando pro PROFESSOR o que a atividade ensina e como está estruturada (não é o texto que a criança lê).
 - "projectName": nome curto da atividade (até 40 caracteres).
 - PROIBIDO usar travessão (— ou –) em QUALQUER texto que você escrever (nome, descrição, falas, nota). Use ponto final, vírgula ou duas frases curtas no lugar.
 
+Formato de cada personagem no JSON de resposta: {"md5": "...", "name": "...", "scripts": [...], "decorative": true ou false}. Omitir "decorative" equivale a false (precisa de script).
+
+EXEMPLO de uma cena boa (não copie o tema nem os personagens - é só pra mostrar o NÍVEL de qualidade esperado: interação de verdade entre personagens via mensagem, não só um "onflag" solto em cada um; um personagem pode ser puramente decorativo):
+{"backgroundMd5": "Farm.svg", "characters": [
+  {"md5": "HY-Vaca.svg", "name": "Vaca", "scripts": [[["onflag", null], ["say", "Bom dia, fazenda!"], ["message", "sol_nasceu"]]]},
+  {"md5": "HY-Bode.svg", "name": "Bode", "scripts": [[["onmessage", "sol_nasceu"], ["say", "Bom dia, Vaca!"], ["hop", 3]]]},
+  {"md5": "HY-Porco.svg", "name": "Porco", "scripts": [], "decorative": true}
+]}
+Aqui a Vaca inicia a cena e avisa o Bode (que REAGE à mensagem dela, não roda sozinho); o Porco é só paisagem, sem script, e isso está certo. Monte a sua atividade de verdade seguindo esse padrão de interação sempre que o tema permitir.
+
 Responda APENAS com um JSON estrito, sem crases/markdown, exatamente neste formato:
-{"projectName": "...", "teacherDescription": "...", "assetGapNote": "..." ou null, "scenes": [{"backgroundMd5": "...", "characters": [{"md5": "...", "name": "...", "scripts": [[["onflag", null], ["say", "..."]]]}]}]}`;
+{"projectName": "...", "teacherDescription": "...", "assetGapNote": "..." ou null, "scenes": [{"backgroundMd5": "...", "characters": [{"md5": "...", "name": "...", "scripts": [[["onflag", null], ["say", "..."]]], "decorative": false}]}]}`;
 }
 
 function stripCodeFences(text) {
