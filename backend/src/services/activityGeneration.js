@@ -75,7 +75,8 @@ function describeLevelRules(levelProfile) {
         expected: 'Use "message"/"onmessage" pra pelo menos 2 personagens se comunicarem (um manda, outro reage) - é o conceito principal deste nível.',
     }[levelProfile.messages];
 
-    return `- Exatamente ${levelProfile.scenes} cena(s). Cada cena tem exatamente ${levelProfile.charactersPerScene} personagem(ns).
+    return `- NO MÁXIMO ${levelProfile.scenes} cena(s) - nunca mais que isso, mas use MENOS (inclusive 1 só) sempre que a história contada no tema couber numa cena. NÃO adicione uma segunda cena só para preencher o limite; cada cena extra precisa ter um motivo de história de verdade (ex.: a ação se move pra outro lugar), nunca ser decoração repetida.
+- Cada cena tem exatamente ${levelProfile.charactersPerScene} personagem(ns).
 - Gatilhos permitidos nos scripts deste nível: ${levelProfile.allowedTriggers.map((t) => `"${t}"`).join(', ')} - nenhum outro tipo de gatilho.
 - Cada script de personagem deve ter entre ${levelProfile.blocksPerScript.min} e ${levelProfile.blocksPerScript.max} blocos (contando o gatilho inicial).
 - ${loopText}
@@ -113,6 +114,7 @@ ${describeLevelRules(levelProfile)}
 
 Outras regras de conteúdo:
 - Cada personagem precisa de pelo menos 1 script, EXCETO se "decorative": true (ver formato de personagem abaixo) - um personagem decorativo é só cenário (ex.: a Lua ao fundo de uma cena sobre foguete) e não precisa de script nenhum; prefira isso a inventar um script sem sentido só pra "cumprir a regra".
+- TODO personagem é uma IMAGEM PARADA, sem animação própria nenhuma - ela não gira, não pisca, não brilha, não se transforma sozinha. A ÚNICA coisa que aparece na tela de verdade é o que os blocos fazem: falar (say), mover a posição (forward/back/up/down/left/right/hop), crescer/encolher (grow/shrink), trocar de visual só se tiver variante (setcostume) e tocar som (playsnd) - nada além disso é visível. NUNCA escreva uma fala ou descrição que diga que o personagem está girando, rodando, brilhando, pulsando ou mudando de aparência sozinho, a menos que ele realmente use "setcostume" pra isso. Errado: um moinho dizer "o vento me faz girar" (a imagem do moinho nunca gira). Certo: o moinho dizer que SENTE o vento, ou avisar que a energia foi gerada, sem alegar um movimento que a tela não mostra.
 - Frases de "say" curtas, alegres, sem violência/susto pesado - é pra criança pequena.
 - Se o tema pedir um personagem/cenário ICÔNICO que NÃO existe nas listas acima (ex.: um Saci Pererê de verdade, que não está na lista de personagens), escolha o personagem mais parecido/aproximado disponível e preencha "assetGapNote" explicando isso pro professor (qual seria o ideal, qual você usou no lugar). Se tudo que o tema precisa já existe nas listas, deixe "assetGapNote" como null.
 - "teacherDescription": 2 a 4 frases, em português, explicando pro PROFESSOR o que a atividade ensina e como está estruturada (não é o texto que a criança lê).
