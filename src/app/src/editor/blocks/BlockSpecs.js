@@ -28,6 +28,8 @@ let sendshapes = ['LetterSend_Orange', 'LetterSend_Red', 'LetterSend_Yellow', 'L
 
 let speeds = ['speed0', 'speed1', 'speed2'];
 
+let costumes = ['costume1', 'costume2', 'costume3'];
+
 export default class BlockSpecs {
     static get loadCount () {
         return loadCount;
@@ -47,6 +49,10 @@ export default class BlockSpecs {
 
     static get speeds () {
         return speeds;
+    }
+
+    static get costumes () {
+        return costumes;
     }
 
     static initBlocks () {
@@ -185,7 +191,7 @@ export default class BlockSpecs {
     static setupPalettesDef () {
         return [['onflag', 'onclick', 'ontouch', 'onmessage', 'message'],
             ['forward', 'back', 'up', 'down', 'right', 'left', 'hop', 'home'],
-            ['say', 'space', 'grow', 'shrink', 'same', 'space', 'hide', 'show'],
+            ['say', 'space', 'grow', 'shrink', 'same', 'space', 'hide', 'show', 'space', 'setcostume'],
             [],
             ['wait', 'stopmine', 'setspeed', 'repeat'],
             ['endstack', 'forever']];
@@ -262,6 +268,8 @@ export default class BlockSpecs {
                 BlockSpecs.pinkCmd, 'n', 2, BlockSpecs.pinkCmdH, -10, 10, BlockSpecs.cmdS],
             'same': ['same', BlockSpecs.getImageFrom('assets/blockicons/Reset', 'svg'),
                 BlockSpecs.pinkCmd, null, null, BlockSpecs.pinkCmdH, null, null, BlockSpecs.cmdS],
+            'setcostume': ['setcostume', costumes, BlockSpecs.pinkCmd, 'd', 0,
+                BlockSpecs.pinkCmdH, null, null, BlockSpecs.cmdS],
 
             'playsnd': ['playsnd', BlockSpecs.getImageFrom('assets/blockicons/Speaker', 'svg'),
                 BlockSpecs.limeCmd, 's', 'pop.mp3', BlockSpecs.limeCmdH, null, null, BlockSpecs.cmdS],
@@ -319,6 +327,7 @@ export default class BlockSpecs {
             'grow': Localization.localize('BLOCK_DESC_GROW'),
             'shrink': Localization.localize('BLOCK_DESC_SHRINK'),
             'same': Localization.localize('BLOCK_DESC_RESET_SIZE'),
+            'setcostume': Localization.localize('BLOCK_DESC_SET_COSTUME'),
             'playsnd': Localization.localize('BLOCK_DESC_PLAY_SOUND', {
                 SOUND_NAME: Localization.localize('BLOCK_DESC_PLAY_SOUND_POP')
             }),

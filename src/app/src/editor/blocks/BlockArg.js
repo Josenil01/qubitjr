@@ -46,10 +46,15 @@ export default class BlockArg {
             this.argValue = block.spec[4];
             this.list = JSON.stringify(block.spec[1]);
             this.numperrow = 3;
-            // 3 = velocidade "ainda não escolhida" (paleta zerada de missão) - fora
-            // do menu, só como ponto de partida; ver Palette.newScaledBlock.
-            this.icon = BlockSpecs.speeds[this.argValue] || 'speednone';
-            this.div = this.addImageMenu(this.menuCloseSpeeds);
+            if (block.blocktype == 'setcostume') {
+                this.icon = BlockSpecs.costumes[this.argValue] || BlockSpecs.costumes[0];
+                this.div = this.addImageMenu(this.menuCloseCostumes);
+            } else {
+                // 3 = velocidade "ainda não escolhida" (paleta zerada de missão) - fora
+                // do menu, só como ponto de partida; ver Palette.newScaledBlock.
+                this.icon = BlockSpecs.speeds[this.argValue] || 'speednone';
+                this.div = this.addImageMenu(this.menuCloseSpeeds);
+            }
             break;
         case 'p':
             this.argValue = block.spec[4];
@@ -392,6 +397,46 @@ export default class BlockArg {
             };
             Undo.record(action);
             ScratchJr.storyStart('BlockArg.prototype.menuCloseSpeeds');
+        }
+        Menu.openMenu = undefined;
+    }
+
+    menuCloseCostumes (e, mu, b, c) {
+        e.preventDefault();
+        b.owner.arg.unconfirmed = false;
+        var value = b.owner.arg.argValue;
+        b.owner.arg.argValue = BlockSpecs.costumes.indexOf(c);
+        var ctx = b.owner.blockicon.getContext('2d');
+        b.icon = BlockSpecs.getImageFrom('assets/blockicons/' + c, 'svg');
+        ctx.clearRect(0, 0, 64 * scaleMultiplier * window.devicePixelRatio,
+            64 * scaleMultiplier * window.devicePixelRatio);
+        b.owner.blockicon.style.display = 'none';
+        b.owner.blockicon.style.display = 'inherit';
+        if (!b.icon.complete) {
+            b.icon.onload = function () {
+                var w = b.icon.width;
+                var h = b.icon.height;
+                ctx.drawImage(b.icon, 0, 0, w, h, 0, 0,
+                    w * scaleMultiplier * window.devicePixelRatio, h * scaleMultiplier * window.devicePixelRatio);
+            };
+        } else {
+            var w = b.icon.width;
+            var h = b.icon.height;
+            ctx.drawImage(b.icon, 0, 0, w, h, 0, 0,
+                w * scaleMultiplier * window.devicePixelRatio, h * scaleMultiplier * window.devicePixelRatio);
+        }
+        if (Menu.openMenu) {
+            Menu.openMenu.parentNode.removeChild(Menu.openMenu);
+        }
+        if (b.owner.arg.argValue != value) {
+            var spr = b.parentNode.owner.spr;
+            var action = {
+                action: 'scripts',
+                where: spr.div.parentNode.owner.id,
+                who: spr.id
+            };
+            Undo.record(action);
+            ScratchJr.storyStart('BlockArg.prototype.menuCloseCostumes');
         }
         Menu.openMenu = undefined;
     }

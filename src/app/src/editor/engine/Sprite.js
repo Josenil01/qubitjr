@@ -113,6 +113,11 @@ export default class Sprite {
     setCostume (dataurl, fcn) {
         var img = document.createElement('img');
         img.src = dataurl;
+        if (this.img && this.img.parentNode == this.div) {
+            // troca de visual em sprite já vivo (ex.: bloco setcostume) deixava
+            // o <img> antigo acumulado no div, empilhado atrás do novo
+            this.div.removeChild(this.img);
+        }
         this.img = img;
         // Make a copy that is not affected by zoom transformation
         this.originalImg = img.cloneNode(false);
@@ -1179,6 +1184,7 @@ export default class Sprite {
         data.speed = this.speed;
         data.defaultScale = this.defaultScale;
         data.sounds = this.sounds;
+        data.costumes = this.costumes || [];
         data.xcoor = this.xcoor;
         data.ycoor = this.ycoor;
         data.cx = this.cx;

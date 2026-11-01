@@ -15,6 +15,14 @@ import {newHTML, newDiv, gn,
     setCanvasSizeScaledToWindowDocumentHeight,
     DEGTOR, getIdFor, setProps} from '../../utils/lib.js';
 
+// Personagens da biblioteca com mais de um visual (bloco "setcostume").
+// Chave = md5 de qualquer um dos visuais; valor = lista completa, na ordem
+// usada pelos índices do bloco (ver Prims.SetCostume).
+const costumeVariants = {
+    'HY-SaciPerere1.svg': ['HY-SaciPerere1.svg', 'HY-SaciPerere2.svg'],
+    'HY-SaciPerere2.svg': ['HY-SaciPerere1.svg', 'HY-SaciPerere2.svg']
+};
+
 export default class Page {
     constructor (id, data, fcn) {
         var container = ScratchJr.stage.pagesdiv;
@@ -514,6 +522,7 @@ export default class Page {
         sprAttr.id = getIdFor(cname);
         sprAttr.name = cname;
         sprAttr.md5 = md5;
+        sprAttr.costumes = costumeVariants[md5] || [];
         return new Sprite(sprAttr, this.spriteAdded);
     }
 
@@ -528,6 +537,7 @@ export default class Page {
         }
         sprite.md5 = md5;
         sprite.name = cid;
+        sprite.costumes = costumeVariants[md5] || [];
         var me = this;
         sprite.getAsset(gotImage);
         function gotImage (dataurl) {

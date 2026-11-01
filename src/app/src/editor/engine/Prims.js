@@ -53,6 +53,7 @@ export default class Prims {
         Prims.table.shrink = Prims.Shrink;
         Prims.table.same = Prims.Same;
         Prims.table.say = Prims.Say;
+        Prims.table.setcostume = Prims.SetCostume;
     }
 
     static Done (strip) {
@@ -563,6 +564,32 @@ export default class Prims {
             strip.waitTimer = tinterval * 2;
             strip.count = strip.count - 1;
         }
+    }
+
+    static SetCostume (strip) {
+        var s = strip.spr;
+        var list = s.costumes || [];
+        if (!strip.costumePending) {
+            var idx = Number(strip.thisblock.getArgValue());
+            var md5 = list[idx];
+            if (!md5 || (md5 == s.md5)) {
+                // sem variante configurada pro ator (ou já é a atual) - no-op
+                strip.thisblock = strip.thisblock.next;
+                return;
+            }
+            strip.costumePending = true;
+            s.md5 = md5;
+            s.getAsset(function (dataurl) {
+                s.setCostume(dataurl, function () {
+                    strip.costumePending = false;
+                    strip.costumeReady = true;
+                });
+            });
+        } else if (strip.costumeReady) {
+            strip.costumeReady = false;
+            strip.thisblock = strip.thisblock.next;
+        }
+        strip.waitTimer = tinterval * 2;
     }
 
     static OnTouch (strip) {
