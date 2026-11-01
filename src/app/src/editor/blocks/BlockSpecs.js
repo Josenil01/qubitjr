@@ -28,7 +28,7 @@ let sendshapes = ['LetterSend_Orange', 'LetterSend_Red', 'LetterSend_Yellow', 'L
 
 let speeds = ['speed0', 'speed1', 'speed2'];
 
-let costumes = ['costume1', 'costume2', 'costume3'];
+let costumes = ['costume1b', 'costume2b', 'costume3'];
 
 export default class BlockSpecs {
     static get loadCount () {
