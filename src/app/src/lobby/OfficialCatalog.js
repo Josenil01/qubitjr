@@ -28,6 +28,14 @@
  * generatedByAi; "✕" remove a missão do catálogo (isOfficial=false) - os
  * dois via PATCH /api/assignments/:id/official. Nenhum dos dois aparece pra
  * quem não é admin.
+ *
+ * [2026-10] Achado em teste real: o clique no botão abria o painel com a
+ * lista que foi buscada UMA VEZ, em init() (carregamento da página) - uma
+ * missão marcada oficial DEPOIS disso (ex.: pelo selo "🏅" direto no card do
+ * projeto, ver lobby/Home.js) nunca aparecia até recarregar a página
+ * inteira. Agora init() só decide se MOSTRA o botão (usa a 1ª busca pra
+ * isso, sem round-trip extra no carregamento); cada clique busca a lista de
+ * novo (_fetchMissions), então o painel sempre reflete o estado atual.
  */
 
 import {gn, newHTML} from '../utils/lib.js';
@@ -63,20 +71,10 @@ export default class OfficialCatalog {
         currentRole = claims.role;
         currentUserId = claims.user_id || claims.sub || claims.id_usuario || null;
 
-        let res;
-        try {
-            res = await apiFetch('/assignments/official');
-        } catch (err) {
-            console.warn('[OfficialCatalog] /assignments/official falhou:', err && err.message);
-            return;
-        }
-        if (!res.ok) {
+        const missions = await OfficialCatalog._fetchMissions();
+        if (missions === null) {
             return; // endpoint indisponível, ou token rejeitado - no-op silencioso
         }
-        const data = await res.json().catch(function () {
-            return {};
-        });
-        const missions = Array.isArray(data && data.missions) ? data.missions : [];
         if (!missions.length) {
             return; // catálogo vazio - botão fica escondido, mesmo espírito de MissionsMenu.js
         }
@@ -89,11 +87,36 @@ export default class OfficialCatalog {
         tab.onclick = function () {
             if (panelEl) {
                 OfficialCatalog._closePanel();
-            } else {
-                OfficialCatalog._openPanel(missions);
+                return;
             }
+            // Busca de novo a cada clique (nunca reusa a lista de init()) -
+            // ver docblock do topo do arquivo pro porquê.
+            OfficialCatalog._fetchMissions().then(function (fresh) {
+                OfficialCatalog._openPanel(fresh || []);
+            });
         };
         OfficialCatalog._keepClearOfMissionsTab(tab);
+    }
+
+    /**
+     * Devolve o array de missões oficiais (fresco, sempre busca de novo) ou
+     * `null` se a chamada falhou/foi rejeitada - nunca lança.
+     */
+    static async _fetchMissions () {
+        let res;
+        try {
+            res = await apiFetch('/assignments/official');
+        } catch (err) {
+            console.warn('[OfficialCatalog] /assignments/official falhou:', err && err.message);
+            return null;
+        }
+        if (!res.ok) {
+            return null;
+        }
+        const data = await res.json().catch(function () {
+            return {};
+        });
+        return Array.isArray(data && data.missions) ? data.missions : [];
     }
 
     /**
