@@ -177,9 +177,22 @@ export default class AssignmentAuthorBar {
      * acima pra authorId) - evita uma chamada de rede desperdiçada pro caso
      * de longe mais comum (aluno abrindo o próprio projeto de missão, que
      * também tem assignment_id setado mas não é dele autorar). A checagem
-     * de verdade (teacher_id da missão bate com quem está chamando) continua
-     * sendo feita no servidor (GET /assignments/by-project/:id) - este
-     * filtro client-side é só uma otimização, nunca uma fronteira de segurança.
+     * de verdade (dono do projeto/autor da missão bate com quem está
+     * chamando) continua sendo feita no servidor, tanto aqui (GET
+     * /assignments/by-project/:id) quanto no clique de verdade (POST
+     * /assignments/register) - este filtro client-side é só uma otimização,
+     * nunca uma fronteira de segurança.
+     *
+     * O botão aparece sempre que a chamada for bem-sucedida (res.ok),
+     * mesmo quando `data.assignment` vier nulo (projeto ainda não é uma
+     * missão) - professor ou admin abrindo um projeto qualquer fora do
+     * fluxo teacherMode=author (ex.: link direto ?pmd5=...&token=..., sem
+     * esse parâmetro) ainda pode querer cadastrá-lo como missão pela
+     * primeira vez; quem decide create-vs-update de verdade é o /register
+     * no backend (via project.assignment_id), nunca esta checagem. Se
+     * `data` vier nulo (resposta não-ok: 401, projeto de outro dono via
+     * algum fluxo futuro, etc.) o botão não aparece - aí sim o professor
+     * não tem nada a fazer aqui.
      */
     static _checkExistingMission () {
         if (barEl || !ScratchJr.currentProject) {
@@ -194,12 +207,15 @@ export default class AssignmentAuthorBar {
                 return res.ok ? res.json() : null;
             })
             .then(function (data) {
-                if (data && data.assignment) {
+                if (!data) {
+                    return;
+                }
+                if (data.assignment) {
                     cachedHintContext = data.assignment.hintContext || '';
                     cachedHints = Array.isArray(data.assignment.hints) ? data.assignment.hints : [];
                     cachedAssignmentId = data.assignment.id;
-                    AssignmentAuthorBar._show();
                 }
+                AssignmentAuthorBar._show();
             })
             .catch(function () {}); // best-effort - nunca quebra o boot do editor
     }
