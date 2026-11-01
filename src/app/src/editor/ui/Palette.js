@@ -370,7 +370,12 @@ export default class Palette {
         }
         var list = (BlockSpecs.palettes[n]).concat();
         var dx = dxblocks;
+        var spr = ScratchJr.getSprite();
         for (var k = 0; k < list.length; k++) {
+            if (list[k] == 'setcostume' && (!spr.costumes || spr.costumes.length < 2)) {
+                // sem pelo menos 2 visuais cadastrados pro ator, o bloco nao faz sentido (ex.: Ruby)
+                continue;
+            }
             if (list[k] == 'space') {
                 dx += 30 * blockscale;
             } else {
@@ -395,6 +400,11 @@ export default class Palette {
         }
         if (numcat == 3) {
             Palette.selectCategory(3);
+        }
+        if (numcat == 2) {
+            // paleta de Aparencia agora depende do ator (bloco setcostume so aparece
+            // se o ator tiver visuais cadastrados) - precisa recalcular ao trocar de ator
+            Palette.selectCategory(2);
         }
     }
 
