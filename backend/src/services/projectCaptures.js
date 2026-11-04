@@ -1,6 +1,7 @@
 const { createHash } = require('crypto');
 
 const CAPTURE_BUCKET = 'project-captures';
+const CAPTURE_RENDERER_VERSION = 2;
 const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
 
 function canonical(value) {
@@ -24,7 +25,7 @@ function projectSnapshot(value) {
     return snapshot;
 }
 
-function captureManifest(snapshot) {
+function captureManifest(snapshot, rendererVersion = CAPTURE_RENDERER_VERSION) {
     const items = [];
     snapshot.pages.forEach((sceneId, sceneIndex) => {
         const scene = snapshot[sceneId];
@@ -42,7 +43,12 @@ function captureManifest(snapshot) {
         });
     });
     if (items.length > 300) throw Object.assign(new Error('Projeto excede o limite de 300 imagens.'), { status: 400 });
-    return items;
+    return items.map((item) => ({ ...item, rendererVersion }));
+}
+
+function isCurrentCapture(capture) {
+    return !!(capture && Array.isArray(capture.expected) && capture.expected.length &&
+        capture.expected.every((item) => item.rendererVersion === CAPTURE_RENDERER_VERSION));
 }
 
 function decodePNG(image) {
@@ -70,4 +76,4 @@ function imagePath(capture, item) {
         `${base}/atores/${item.actor_index + 1}/${item.kind === 'actor' ? 'personagem' : 'programacao'}.png`;
 }
 
-module.exports = { CAPTURE_BUCKET, fingerprint, projectSnapshot, captureManifest, decodePNG, imagePath };
+module.exports = { CAPTURE_RENDERER_VERSION, isCurrentCapture, CAPTURE_BUCKET, fingerprint, projectSnapshot, captureManifest, decodePNG, imagePath };

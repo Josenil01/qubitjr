@@ -13,7 +13,7 @@ vi.mock('./Project.js', () => ({ default: {
     get loadedProjectId() { return mocks.loadedProjectId; },
     getProject: () => structuredClone(mocks.snapshot), getThumbnailPNG: (...args) => mocks.thumbnail(...args),
 } }));
-vi.mock('./CaptureRenderer.js', () => ({ captureActor: mocks.actor, captureScripts: mocks.scripts, waitForScene: vi.fn() }));
+vi.mock('./CaptureRenderer.js', () => ({ CAPTURE_RENDERER_VERSION: 2, captureActor: mocks.actor, captureScripts: mocks.scripts, waitForScene: vi.fn() }));
 import {saveAssignmentCaptures, ensureAssignmentCaptures} from './AssignmentCapture.js';
 
 const manifest = [{key: '0-scene', kind: 'scene', scene_id: 'p'},

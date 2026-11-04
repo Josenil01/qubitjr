@@ -7,18 +7,18 @@ const snapshot = { pages: ['p'], p: { sprites: ['a'], a: { type: 'sprite', name:
 let server, base, state;
 
 function query(table) {
-    let mode = 'read', values, single = false;
+    let mode = 'read', values, single = false, sort = null, count = Infinity;
     const filters = [];
     const q = {
         select: () => q, eq: (key, value) => { filters.push([key, value]); return q; },
-        order: () => q, limit: () => q,
+        order: (key, options) => { sort = [key, !options || options.ascending !== false]; return q; }, limit: (n) => { count = n; return q; },
         insert: (value) => { mode = 'insert'; values = value; return q; },
         upsert: (value) => { mode = 'upsert'; values = value; return q; },
         update: (value) => { mode = 'update'; values = value; return q; },
         single: () => { single = true; return q; }, maybeSingle: () => { single = true; return q; },
         then: (resolve, reject) => Promise.resolve().then(() => {
             let rows = state[table];
-            if (mode === 'insert') { const row = { id: randomUUID(), ...values }; rows.push(row); return { data: row, error: null }; }
+            if (mode === 'insert') { const row = { id: randomUUID(), created_at: new Date(1700000000000 + rows.length).toISOString(), ...values }; rows.push(row); return { data: row, error: null }; }
             if (mode === 'upsert') {
                 const index = rows.findIndex((r) => r.capture_id === values.capture_id && r.image_key === values.image_key);
                 if (index < 0) rows.push(values); else rows[index] = values;
@@ -26,6 +26,8 @@ function query(table) {
             }
             rows = rows.filter((row) => filters.every(([key, value]) => row[key] === value));
             if (mode === 'update') rows.forEach((row) => Object.assign(row, values));
+            if (sort) rows.sort((a, b) => (a[sort[0]] < b[sort[0]] ? -1 : a[sort[0]] > b[sort[0]] ? 1 : 0) * (sort[1] ? 1 : -1));
+            rows = rows.slice(0, count);
             return { data: single ? rows[0] || null : rows, error: null };
         }).then(resolve, reject),
     };
@@ -56,7 +58,7 @@ async function api(path, method = 'GET', body, user = 'teacher') {
     return { status: response.status, body: await response.json() };
 }
 async function start() {
-    const result = await api('/7/captures', 'POST', { projectId: 42, snapshot, hints: [{ id: 'h1' }] });
+    const result = await api('/7/captures', 'POST', { projectId: 42, snapshot, hints: [{ id: 'h1' }], rendererVersion: 2 });
     expect(result.status).toBe(201);
     return result.body.capture;
 }
@@ -131,4 +133,20 @@ test('onlyIfMissing does not create another batch after an existing capture comp
 test('capture status remains private even though image consultation is public', async () => {
     expect((await api('/7/captures/status', 'GET', null, null)).status).toBe(401);
     expect((await api('/7/captures/status', 'GET', null, 'other')).status).toBe(403);
+});
+
+
+test('old renderers are refreshed automatically without deleting previous images', async () => {
+    const old = await start();
+    state.project_captures[0].expected.forEach((item) => { delete item.rendererVersion; });
+    for (const item of old.expected) await api(`/7/captures/${old.id}/images/${item.key}`, 'PUT', {data: png});
+    await api(`/7/captures/${old.id}/complete`, 'POST', {});
+    expect((await api('/7/captures/status')).body.hasCompletedCapture).toBe(false);
+    const created = await api('/7/captures', 'POST', {projectId: 42, snapshot, hints: [{id: 'h1'}], rendererVersion: 2, onlyIfMissing: true});
+    expect(created.status).toBe(201);
+    for (const item of created.body.capture.expected) await api(`/7/captures/${created.body.capture.id}/images/${item.key}`, 'PUT', {data: png});
+    await api(`/7/captures/${created.body.capture.id}/complete`, 'POST', {});
+    expect((await api('/7/captures/status')).body.captureId).toBe(created.body.capture.id);
+    expect(state.project_captures).toHaveLength(2);
+    expect(state.project_captures[0].status).toBe('completed');
 });

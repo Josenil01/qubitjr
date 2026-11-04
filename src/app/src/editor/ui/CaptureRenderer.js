@@ -1,3 +1,5 @@
+export const CAPTURE_RENDERER_VERSION = 2;
+
 function canvas(width, height) {
     var result = document.createElement('canvas');
     result.width = width;
@@ -69,6 +71,13 @@ async function resourceDataURL(url) {
     });
 }
 
+export function skipCaptureElement(node, source) {
+    if (node === source) return false;
+    if (node.hidden || (node.style && ['hidden', 'collapse'].includes(node.style.visibility))) return true;
+    var block = node.parentElement && node.parentElement.owner;
+    return !!(block && node === block.shine);
+}
+
 export async function captureScripts(source) {
     if (!source) throw new Error('Programação do ator não encontrada.');
     if (document.fonts) await document.fonts.ready;
@@ -76,6 +85,7 @@ export async function captureScripts(source) {
     async function cloneNode(node) {
         if (node.nodeType === Node.TEXT_NODE) return node.cloneNode();
         if (node.nodeType !== Node.ELEMENT_NODE || (node.owner && node.owner.isCaret)) return null;
+        if (skipCaptureElement(node, source)) return null;
         var style = getComputedStyle(node);
         if (style.display === 'none' && node !== source) return null;
         var clone;

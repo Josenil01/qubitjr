@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {scriptBounds} from './CaptureRenderer.js';
+import {scriptBounds, skipCaptureElement} from './CaptureRenderer.js';
 
 describe('full program image bounds', () => {
     it('includes blocks beyond both viewport edges and negative positions', () => {
@@ -18,5 +18,22 @@ describe('full program image bounds', () => {
     });
     it('provides an explicit image for actors without blocks', () => {
         expect(scriptBounds([])).toMatchObject({width: 480, height: 120, scale: 1});
+    });
+});
+
+
+describe('preserving the current block appearance', () => {
+    it('excludes explicitly hidden legacy highlight layers', () => {
+        expect(skipCaptureElement({style: {visibility: 'hidden'}}, {})).toBe(true);
+    });
+    it('excludes transient block highlights even if active during capture', () => {
+        const highlight = {style: {visibility: 'visible'}};
+        highlight.parentElement = {owner: {shine: highlight}};
+        expect(skipCaptureElement(highlight, {})).toBe(true);
+    });
+    it('still captures an inactive actor pane and children that inherit its visibility', () => {
+        const pane = {style: {visibility: 'hidden'}};
+        expect(skipCaptureElement(pane, pane)).toBe(false);
+        expect(skipCaptureElement({style: {visibility: ''}, parentElement: pane}, pane)).toBe(false);
     });
 });

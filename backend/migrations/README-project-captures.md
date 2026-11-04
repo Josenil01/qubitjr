@@ -39,3 +39,7 @@ Quando faltam imagens, o editor mostra o progresso, gera as cenas/atores/program
 Chamadas repetidas na mesma sessão compartilham a verificação. O POST de criação aceita `onlyIfMissing: true` e também verifica se outro conjunto já foi concluído nesse intervalo. O fluxo normal de salvar dicas continua gerando uma versão nova.
 
 A consulta pública retorna `404` com `code: "CAPTURES_NOT_FOUND"` quando o projeto existe, mas ainda não tem capturas completas. Nenhuma migração adicional é necessária.
+
+## Visual atual dos blocos
+
+O renderizador 2 preserva as camadas ocultas dos blocos, excluindo os destaques transitórios que usam a arte antiga. A versão fica registrada em cada item do manifesto `expected`, sem nova migração SQL. Ao abrir um projeto, capturas antigas são reconhecidas como desatualizadas e geradas novamente. O conjunto anterior continua disponível até o novo terminar. O cliente envia `rendererVersion: 2`; clientes antigos continuam identificados como renderizador 1.

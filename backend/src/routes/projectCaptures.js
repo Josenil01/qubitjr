@@ -1,5 +1,5 @@
 const express = require('express');
-const { CAPTURE_BUCKET, fingerprint, projectSnapshot, captureManifest, decodePNG, imagePath } =
+const { CAPTURE_RENDERER_VERSION, isCurrentCapture, CAPTURE_BUCKET, fingerprint, projectSnapshot, captureManifest, decodePNG, imagePath } =
     require('../services/projectCaptures');
 
 module.exports = function projectCaptureRoutes({ getSupabase, findOwnedTemplateProject }) {
@@ -45,10 +45,10 @@ module.exports = function projectCaptureRoutes({ getSupabase, findOwnedTemplateP
         }
         if (req.body.onlyIfMissing === true) {
             const { data: existing, error: existingError } = await db.from('project_captures')
-                .select('id').eq('project_id', project.id).eq('assignment_id', assignmentId)
-                .eq('status', 'completed').limit(1).maybeSingle();
+                .select('id, expected').eq('project_id', project.id).eq('assignment_id', assignmentId)
+                .eq('status', 'completed').order('created_at', { ascending: false }).limit(1).maybeSingle();
             if (existingError) throw existingError;
-            if (existing) return res.json({ skipped: true, capture: existing });
+            if (isCurrentCapture(existing)) return res.json({ skipped: true, capture: {id: existing.id} });
         }
         const snapshot = projectSnapshot(project.json);
         if (fingerprint(projectSnapshot(req.body.snapshot)) !== fingerprint(snapshot)) {
@@ -60,7 +60,8 @@ module.exports = function projectCaptureRoutes({ getSupabase, findOwnedTemplateP
         if (fingerprint(assignment.hints || []) !== fingerprint(req.body.hints || [])) {
             throw Object.assign(new Error('As dicas mudaram durante o salvamento. Reabra a revisão.'), { status: 409 });
         }
-        const expected = captureManifest(snapshot);
+        const rendererVersion = req.body.rendererVersion === CAPTURE_RENDERER_VERSION ? CAPTURE_RENDERER_VERSION : 1;
+        const expected = captureManifest(snapshot, rendererVersion);
         const { data: capture, error } = await db.from('project_captures').insert({
             project_id: project.id, assignment_id: assignmentId, created_by: req.userId,
             project_version: fingerprint(snapshot), project_snapshot: snapshot,
@@ -120,11 +121,11 @@ module.exports = function projectCaptureRoutes({ getSupabase, findOwnedTemplateP
 
     router.get('/status', endpoint(async (req, res, { db, project, assignmentId }) => {
         res.set('Cache-Control', 'no-store');
-        const { data: capture, error } = await db.from('project_captures').select('id')
+        const { data: capture, error } = await db.from('project_captures').select('id, expected')
             .eq('project_id', project.id).eq('assignment_id', assignmentId)
-            .eq('status', 'completed').limit(1).maybeSingle();
+            .eq('status', 'completed').order('created_at', { ascending: false }).limit(1).maybeSingle();
         if (error) throw error;
-        if (capture) return res.json({ projectId: project.id, hasCompletedCapture: true, captureId: capture.id });
+        if (isCurrentCapture(capture)) return res.json({ projectId: project.id, hasCompletedCapture: true, captureId: capture.id });
         const { data: assignment, error: assignmentError } = await db.from('assignments')
             .select('hints').eq('id', assignmentId).single();
         if (assignmentError) throw assignmentError;

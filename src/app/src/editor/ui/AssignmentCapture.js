@@ -1,6 +1,6 @@
 import ScratchJr from '../ScratchJr.js';
 import Project from './Project.js';
-import {captureActor, captureScripts, waitForScene} from './CaptureRenderer.js';
+import {CAPTURE_RENDERER_VERSION, captureActor, captureScripts, waitForScene} from './CaptureRenderer.js';
 
 export async function saveAssignmentCaptures(assignmentId, hints, request, progress, options = {}) {
     var stage = ScratchJr.stage;
@@ -24,7 +24,7 @@ export async function saveAssignmentCaptures(assignmentId, hints, request, progr
         if (!response.ok) throw new Error(result.error || 'Falha ao salvar as imagens.');
         return result;
     }
-    var result = await api(base, {method: 'POST', body: JSON.stringify({projectId, snapshot, hints, onlyIfMissing: options.onlyIfMissing === true})});
+    var result = await api(base, {method: 'POST', body: JSON.stringify({projectId, snapshot, hints, rendererVersion: CAPTURE_RENDERER_VERSION, onlyIfMissing: options.onlyIfMissing === true})});
     var capture = result.capture;
     if (result.skipped) return capture.id;
     var index = 0;
