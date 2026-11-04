@@ -627,7 +627,7 @@ export default class Project {
     // Project PNG Thumbnail
     /////////////////////////////
 
-    static getThumbnailPNG (page, w, h, fcn) {
+    static getThumbnailPNG (page, w, h, fcn, unmasked) {
         var scale = w / 480;
         var data = {};
         data.pagecount = ScratchJr.stage.pages.length;
@@ -638,7 +638,7 @@ export default class Project {
         ctx.fillStyle = window.Settings.stageColor;
         ctx.fillRect(0, 0, w, h);
         if (!md5) {
-            Project.drawSprites(page, scale, c, w, h, fcn);
+            Project.drawSprites(page, scale, c, w, h, fcn, unmasked);
         } else {
             var pcnv;
             if (md5.substr(md5.length - 3) == 'png') {
@@ -655,7 +655,7 @@ export default class Project {
                 }
             }
             ctx.drawImage(pcnv, 0, 0, 480, 360, 0, 0, w, h);
-            Project.drawSprites(page, scale, c, w, h, fcn);
+            Project.drawSprites(page, scale, c, w, h, fcn, unmasked);
         }
     }
     static drawPNGInCanvas (png, w, h) {
@@ -685,12 +685,12 @@ export default class Project {
         ctx.restore();
     }
 
-    static drawSprites (page, scale, c, w, h, fcn) {
+    static drawSprites (page, scale, c, w, h, fcn, unmasked) {
         var ctx = c.getContext('2d');
         doNext(1);
         function doNext (n) {
             if (!(n < page.div.childElementCount)) {
-                Project.maskBorders(c.getContext('2d'), w, h);
+                if (!unmasked) Project.maskBorders(c.getContext('2d'), w, h);
                 fcn(c.toDataURL('image/png'));
             } else {
                 var spr = page.div.childNodes[n].owner;

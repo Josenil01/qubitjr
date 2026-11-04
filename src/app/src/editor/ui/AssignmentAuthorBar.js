@@ -778,13 +778,29 @@ export default class AssignmentAuthorBar {
                 return;
             }
             saveBtn.disabled = true;
-            saveBtn.textContent = 'Salvando...';
+            skipBtn.disabled = true;
+            saveBtn.textContent = 'Salvando dicas...';
             var saveSucceeded = false;
             apiFetch('/assignments/' + encodeURIComponent(assignmentId) + '/hints', {
                 method: 'POST',
                 body: JSON.stringify({hints: approved}),
-            }).then(function (res) {
-                saveSucceeded = res.ok;
+            }).then(async function (res) {
+                if (!res.ok) throw new Error('Falha ao salvar dicas.');
+                saveSucceeded = true;
+                var retry = true;
+                while (retry) {
+                    try {
+                        var captureModule = await import('./AssignmentCapture.js');
+                        await captureModule.saveAssignmentCaptures(assignmentId, approved, apiFetch, function (label) {
+                            saveBtn.textContent = label;
+                        });
+                        retry = false;
+                    } catch (captureError) {
+                        console.error('[AssignmentAuthorBar] capture error:', captureError);
+                        retry = window.confirm('As dicas foram salvas, mas as imagens ficaram pendentes. ' +
+                            captureError.message + '\n\nTentar gerar as imagens novamente?');
+                    }
+                }
             }).catch(function (err) {
                 // Best-effort: salvar dicas é um extra sobre um cadastro que
                 // já teve sucesso - uma falha aqui não pode travar o professor
