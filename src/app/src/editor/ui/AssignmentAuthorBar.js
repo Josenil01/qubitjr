@@ -166,6 +166,7 @@ export default class AssignmentAuthorBar {
     static init () {
         if (getUrlVars().teacherMode === 'author') {
             AssignmentAuthorBar._show();
+            AssignmentAuthorBar._checkExistingMission();
             return;
         }
         AssignmentAuthorBar._checkExistingMission();
@@ -195,7 +196,7 @@ export default class AssignmentAuthorBar {
      * não tem nada a fazer aqui.
      */
     static _checkExistingMission () {
-        if (barEl || !ScratchJr.currentProject) {
+        if (!ScratchJr.currentProject) {
             return;
         }
         var claims = decodeJwtPayloadUnsafe(window.__AUTH_TOKEN__);
@@ -216,6 +217,7 @@ export default class AssignmentAuthorBar {
                     cachedAssignmentId = data.assignment.id;
                 }
                 AssignmentAuthorBar._show();
+                if (data.assignment) AssignmentAuthorBar._captureMissingImages(data.assignment.id);
             })
             .catch(function () {}); // best-effort - nunca quebra o boot do editor
     }
@@ -291,6 +293,45 @@ export default class AssignmentAuthorBar {
         barEl.type = 'button';
         barEl.textContent = idleLabel;
         barEl.onclick = AssignmentAuthorBar._onAdminSaveClick;
+        AssignmentAuthorBar._captureMissingImages(assignmentId);
+    }
+
+    static _captureMissingImages (assignmentId) {
+        var overlay;
+        var label;
+        var previousHold;
+        import('./AssignmentCapture.js').then(function (captureModule) {
+            return captureModule.ensureAssignmentCaptures(assignmentId, apiFetch, {
+                canStart: function () { return !busy && !document.querySelector('.assignmentHintsOverlay'); },
+                onStart: function () {
+                    busy = true;
+                    previousHold = ScratchJr.onHold;
+                    ScratchJr.onHold = true;
+                    if (barEl) barEl.disabled = true;
+                    if (editHintsBtnEl) editHintsBtnEl.disabled = true;
+                    overlay = newHTML('div', 'assignmentHintsOverlay', document.body);
+                    var card = newHTML('div', 'assignmentHintsCard', overlay);
+                    var title = newHTML('div', 'assignmentHintsTitle', card);
+                    title.textContent = 'Preparando imagens do projeto';
+                    label = newHTML('div', 'assignmentHintsSubtitle', card);
+                    label.setAttribute('role', 'status');
+                    label.setAttribute('aria-live', 'polite');
+                    label.textContent = 'Mantenha esta página aberta até terminar.';
+                },
+                onProgress: function (message) { if (label) label.textContent = message; },
+                onFinish: function () {
+                    if (overlay) overlay.remove();
+                    ScratchJr.onHold = previousHold;
+                    busy = false;
+                    if (barEl) barEl.disabled = false;
+                    if (editHintsBtnEl) editHintsBtnEl.disabled = false;
+                },
+            });
+        }).catch(function (err) {
+            console.error('[AssignmentAuthorBar] automatic capture error:', err);
+            window.alert('Não foi possível gerar automaticamente as imagens. ' + err.message +
+                '\nAs dicas foram preservadas. Feche e reabra o projeto para tentar novamente.');
+        });
     }
 
     static _onAdminSaveClick () {

@@ -14,6 +14,7 @@ import {frame, gn, newHTML, scaleMultiplier, getIdFor,
     isAndroid, setProps, setCanvasSize} from '../../utils/lib.js';
 
 let metadata = undefined;
+let loadedProjectId = null;
 let mediaCount = -1;
 let saving = false;
 let interval = undefined;
@@ -31,6 +32,10 @@ let mediaCountBase = 1;
 let maskUnconfirmed = false;
 
 export default class Project {
+    static get loadedProjectId () {
+        return loadedProjectId;
+    }
+
     static get metadata () {
         return metadata;
     }
@@ -61,11 +66,13 @@ export default class Project {
 
 
     static clear () {
+        loadedProjectId = null;
         ScratchJr.stage.clear();
         UI.clear();
     }
 
     static load () {
+        loadedProjectId = null;
         mediaCountBase = 1;
         ScratchJr.log('Project load status', ScratchJr.getTime(), 'sec', BlockSpecs.loadCount);
         if (BlockSpecs.loadCount > 0) {
@@ -190,6 +197,7 @@ export default class Project {
             ScratchJr.storyStarted = false;
             UI.needsScroll();
             ScratchJr.log('all thumbnails updated', ScratchJr.getTime(), 'sec');
+            loadedProjectId = String(ScratchJr.currentProject);
             if (isAndroid) {
                 AndroidInterface.notifyEditorDoneLoading();
             }
