@@ -16,6 +16,16 @@ Rotas autenticadas (dono da missão ou admin):
 
 O Storage usa `projetos/{projectId}/capturas/{captureId}/cenas/{numero}/`, com `cena.png` e `atores/{numero}/personagem.png` e `programacao.png`. Os números de pasta vêm do servidor; os IDs originais permanecem nas colunas do banco.
 
-As imagens são enviadas individualmente e limitadas a 3 MB. Cenas: 960 ? 720. Programações extensas são reduzidas proporcionalmente, incluindo todos os blocos. Não executar animações durante a captura: o fluxo interrompe a execução antes de salvar, sem resetar as posições.
+As imagens são enviadas individualmente e limitadas a 3 MB. Cenas: 960 × 720. Programações extensas são reduzidas proporcionalmente, incluindo todos os blocos. Não executar animações durante a captura: o fluxo interrompe a execução antes de salvar, sem resetar as posições.
 
 Verificação: executar os testes `projectCaptures.test.js` do backend e `CaptureRenderer.test.js` / `AssignmentCapture.test.js` do frontend. Validar no navegador um projeto com várias cenas, atores ocultos e blocos fora da área visível.
+
+## Consulta pública por projeto
+
+`GET /api/public/projects/:projectId/captures` não requer Authorization, token ou share_token. Retorna as imagens da captura completa mais recente do projeto, com URLs assinadas válidas por 600 segundos. O bucket permanece privado. Para renovar URLs expiradas, consulte a API novamente.
+
+Exemplo: `GET https://qubitjr.helloyotta.com/api/public/projects/1686/captures`.
+
+A resposta contém `projectId`, `captureId`, `projectVersion`, `capturedAt`, `completedAt`, `expiresIn` e `images`. Cada imagem possui `type` (`scene`, `actor` ou `scripts`), `sceneId`, `sceneIndex` (começa em zero), `actorId`, `actorName`, dimensões e `url`. Imagens de cena têm `actorId: null`.
+
+Não retorna snapshots, dicas, identidade do autor ou caminhos internos de armazenamento. Projetos excluídos e projetos sem capturas completas retornam 404; IDs inválidos retornam 400. A resposta usa `Cache-Control: no-store` para não guardar URLs vencidas.

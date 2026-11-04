@@ -189,6 +189,7 @@ async function identityMiddleware(req, res, next) {
 }
 
 // Rotas públicas registradas ANTES do identity middleware (sem auth)
+app.use('/api/public', require('./routes/publicProjectCaptures')());
 app.use('/api/public', publicRouter);
 
 app.use(identityMiddleware);
