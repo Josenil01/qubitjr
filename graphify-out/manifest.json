@@ -595,13 +595,13 @@
     "semantic_hash": ""
   },
   "backend/src/routes/projectCaptures.js": {
-    "mtime": 1793800597.442546,
-    "ast_hash": "4b79d62b8b919ca4ca434d3c402cba48",
+    "mtime": 1793803983.0507762,
+    "ast_hash": "d432ddb4b8d5050dec8abba8eb900799",
     "semantic_hash": ""
   },
   "backend/src/routes/projectCaptures.test.js": {
-    "mtime": 1793800597.4455583,
-    "ast_hash": "e836164eafa5dbd69cbbcad6618f4c60",
+    "mtime": 1793803983.0545294,
+    "ast_hash": "c014b43d5e8e7d1cc2f20f83c0b35535",
     "semantic_hash": ""
   },
   "backend/src/routes/realtime.js": {
@@ -765,8 +765,8 @@
     "semantic_hash": ""
   },
   "backend/src/services/projectCaptures.js": {
-    "mtime": 1793793108.7535255,
-    "ast_hash": "e86fabe8907abb7c68b2267f98840495",
+    "mtime": 1793803983.0492673,
+    "ast_hash": "5ae5c4328b6b25a7844d9ffde0255aac",
     "semantic_hash": ""
   },
   "backend/src/services/projectCaptures.test.js": {
@@ -1165,23 +1165,23 @@
     "semantic_hash": ""
   },
   "src/app/src/editor/ui/AssignmentCapture.js": {
-    "mtime": 1793800496.1415265,
-    "ast_hash": "94be624eb4ed21463ce4c2bb0354500f",
+    "mtime": 1793803983.0481775,
+    "ast_hash": "65f911a4c2cb1b52229bec6089bb2971",
     "semantic_hash": ""
   },
   "src/app/src/editor/ui/AssignmentCapture.test.js": {
-    "mtime": 1793800597.4436097,
-    "ast_hash": "ad158424bc95f53aad9f473526aa6897",
+    "mtime": 1793803983.0525355,
+    "ast_hash": "0cbcb9f3394f6dbfab39b02fdf223267",
     "semantic_hash": ""
   },
   "src/app/src/editor/ui/CaptureRenderer.js": {
-    "mtime": 1793793108.7595286,
-    "ast_hash": "a0e881edf8069a18c6896313ab7f2818",
+    "mtime": 1793803983.046227,
+    "ast_hash": "e01a03bc8bff1a1b9bdf9f898c42ad90",
     "semantic_hash": ""
   },
   "src/app/src/editor/ui/CaptureRenderer.test.js": {
-    "mtime": 1793792594.2542617,
-    "ast_hash": "9269e525f3a4e0e3016af366d826ad95",
+    "mtime": 1793803983.05353,
+    "ast_hash": "b2b02da295305a55ebf5af381a41bf98",
     "semantic_hash": ""
   },
   "src/app/src/lobby/OfficialCatalog.js": {
@@ -1280,13 +1280,13 @@
     "semantic_hash": ""
   },
   "backend/migrations/README-project-captures.md": {
-    "mtime": 1793800597.4460683,
-    "ast_hash": "de29b0da9533cbe935c0027a763a3b41",
+    "mtime": 1793803983.055529,
+    "ast_hash": "fd6ccfb169c046fad4c492454f67a8ad",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/AGENTS.md": {
-    "mtime": 1793702750.0161762,
-    "ast_hash": "55a5ecf1ba6c6b62006c25501580a5a1",
+    "mtime": 1793801524.7383475,
+    "ast_hash": "67a5caec95bf7cf2e1a314fc3e7abb64",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_1_1/Apresentacao_professor.html": {
@@ -1500,8 +1500,8 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/modulo_aulas/LEIA_ME.md": {
-    "mtime": 1793731766.165376,
-    "ast_hash": "63279c624ba44ec2e8dd5a3a0dc3b7ae",
+    "mtime": 1793801524.7383475,
+    "ast_hash": "4b71af663239ba90f07897b9fbaa5f74",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/modulo_aulas/layouts/capa.html": {
@@ -7347,6 +7347,26 @@
   "src/app/src/editor/ui/AssignmentAuthorBar.autocapture.test.js": {
     "mtime": 1793800922.4753585,
     "ast_hash": "ad17d28bd07e1b9f8ed2b5e687cd9fbd",
+    "semantic_hash": ""
+  },
+  ".local/capture-viewer/index.html": {
+    "mtime": 1793802180.65365,
+    "ast_hash": "3b8ce3e4ecad9ff55249af0e1ef8dae2",
+    "semantic_hash": ""
+  },
+  ".local/capture-viewer/current-program.png": {
+    "mtime": 1793802450.043135,
+    "ast_hash": "a1dcfeab34ea31e118f7ff101c605e32",
+    "semantic_hash": ""
+  },
+  ".local/capture-viewer/fixed-block.png": {
+    "mtime": 1793804025.703325,
+    "ast_hash": "a25edae367db33190f72a1fc3a0e0085",
+    "semantic_hash": ""
+  },
+  ".local/capture-viewer/preview.png": {
+    "mtime": 1793802246.9343443,
+    "ast_hash": "10b16b6582ff9eca25dad4c1dc58dbb7",
     "semantic_hash": ""
   }
 }

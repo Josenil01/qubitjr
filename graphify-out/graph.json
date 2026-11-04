@@ -6,6 +6,96 @@
     {
       "label": "projectCaptures.js",
       "file_type": "code",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "services_projectcaptures",
+      "community": 66,
+      "norm_label": "projectcaptures.js"
+    },
+    {
+      "label": "{ createHash }",
+      "file_type": "code",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "services_projectcaptures_createhash",
+      "community": 66,
+      "norm_label": "{ createhash }"
+    },
+    {
+      "label": "canonical()",
+      "file_type": "code",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "services_projectcaptures_canonical",
+      "community": 66,
+      "norm_label": "canonical()"
+    },
+    {
+      "label": "fingerprint()",
+      "file_type": "code",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "services_projectcaptures_fingerprint",
+      "community": 66,
+      "norm_label": "fingerprint()"
+    },
+    {
+      "label": "projectSnapshot()",
+      "file_type": "code",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "services_projectcaptures_projectsnapshot",
+      "community": 66,
+      "norm_label": "projectsnapshot()"
+    },
+    {
+      "label": "captureManifest()",
+      "file_type": "code",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "services_projectcaptures_capturemanifest",
+      "community": 66,
+      "norm_label": "capturemanifest()"
+    },
+    {
+      "label": "isCurrentCapture()",
+      "file_type": "code",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L49",
+      "_origin": "ast",
+      "id": "services_projectcaptures_iscurrentcapture",
+      "community": 66,
+      "norm_label": "iscurrentcapture()"
+    },
+    {
+      "label": "decodePNG()",
+      "file_type": "code",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L54",
+      "_origin": "ast",
+      "id": "services_projectcaptures_decodepng",
+      "community": 66,
+      "norm_label": "decodepng()"
+    },
+    {
+      "label": "imagePath()",
+      "file_type": "code",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L73",
+      "_origin": "ast",
+      "id": "services_projectcaptures_imagepath",
+      "community": 66,
+      "norm_label": "imagepath()"
+    },
+    {
+      "label": "projectCaptures.js",
+      "file_type": "code",
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L1",
       "_origin": "ast",
@@ -24,14 +114,14 @@
       "norm_label": "express"
     },
     {
-      "label": "{ CAPTURE_BUCKET, fingerprint, projectSnapshot, captureManifest, decodePNG, imagePath }",
+      "label": "{ CAPTURE_RENDERER_VERSION, isCurrentCapture, CAPTURE_BUCKET, fingerprint, projectSnapshot, captureManifest, decodePNG, imagePath }",
       "file_type": "code",
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L2",
       "_origin": "ast",
-      "id": "routes_projectcaptures_capture_bucket_fingerprint_projectsnapshot_capturemanifest_decodepng_imagepath",
+      "id": "routes_projectcaptures_capture_renderer_version_iscurrentcapture_capture_bucket_fingerprint_projectsnapshot_capturemanifest_decodepng_imagepath",
       "community": 66,
-      "norm_label": "{ capture_bucket, fingerprint, projectsnapshot, capturemanifest, decodepng, imagepath }"
+      "norm_label": "{ capture_renderer_version, iscurrentcapture, capture_bucket, fingerprint, projectsnapshot, capturemanifest, decodepng, imagepath }"
     },
     {
       "label": "authorize()",
@@ -127,7 +217,7 @@
       "label": "api()",
       "file_type": "code",
       "source_file": "backend/src/routes/projectCaptures.test.js",
-      "source_location": "L53",
+      "source_location": "L55",
       "_origin": "ast",
       "id": "routes_projectcaptures_test_api",
       "community": 66,
@@ -137,771 +227,111 @@
       "label": "start()",
       "file_type": "code",
       "source_file": "backend/src/routes/projectCaptures.test.js",
-      "source_location": "L58",
+      "source_location": "L60",
       "_origin": "ast",
       "id": "routes_projectcaptures_test_start",
       "community": 66,
       "norm_label": "start()"
     },
     {
-      "label": "publicProjectCaptures.js",
+      "label": "CaptureRenderer.js",
       "file_type": "code",
-      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "routes_publicprojectcaptures",
-      "community": 55,
-      "norm_label": "publicprojectcaptures.js"
+      "id": "ui_capturerenderer",
+      "community": 20,
+      "norm_label": "capturerenderer.js"
     },
     {
-      "label": "express",
+      "label": "canvas()",
       "file_type": "code",
-      "source_file": "backend/src/routes/publicProjectCaptures.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "routes_publicprojectcaptures_express",
-      "community": 55,
-      "norm_label": "express"
-    },
-    {
-      "label": "{ createClient }",
-      "file_type": "code",
-      "source_file": "backend/src/routes/publicProjectCaptures.js",
-      "source_location": "L2",
-      "_origin": "ast",
-      "id": "routes_publicprojectcaptures_createclient",
-      "community": 55,
-      "norm_label": "{ createclient }"
-    },
-    {
-      "label": "{ CAPTURE_BUCKET }",
-      "file_type": "code",
-      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "routes_publicprojectcaptures_capture_bucket",
-      "community": 55,
-      "norm_label": "{ capture_bucket }"
+      "id": "ui_capturerenderer_canvas",
+      "community": 20,
+      "norm_label": "canvas()"
     },
     {
-      "label": "defaultClient()",
+      "label": "readyImage()",
       "file_type": "code",
-      "source_file": "backend/src/routes/publicProjectCaptures.js",
-      "source_location": "L7",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L10",
       "_origin": "ast",
-      "id": "routes_publicprojectcaptures_defaultclient",
-      "community": 55,
-      "norm_label": "defaultclient()"
+      "id": "ui_capturerenderer_readyimage",
+      "community": 20,
+      "norm_label": "readyimage()"
     },
     {
-      "label": "publicProjectCaptures.test.js",
+      "label": "captureActor()",
       "file_type": "code",
-      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
-      "source_location": "L1",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L31",
       "_origin": "ast",
-      "id": "routes_publicprojectcaptures_test",
-      "community": 55,
-      "norm_label": "publicprojectcaptures.test.js"
+      "id": "ui_capturerenderer_captureactor",
+      "community": 20,
+      "norm_label": "captureactor()"
     },
     {
-      "label": "express",
+      "label": "waitForScene()",
       "file_type": "code",
-      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
-      "source_location": "L1",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L41",
       "_origin": "ast",
-      "id": "routes_publicprojectcaptures_test_express",
-      "community": 55,
-      "norm_label": "express"
+      "id": "ui_capturerenderer_waitforscene",
+      "community": 20,
+      "norm_label": "waitforscene()"
     },
     {
-      "label": "routes",
+      "label": "scriptBounds()",
       "file_type": "code",
-      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
-      "source_location": "L2",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L50",
       "_origin": "ast",
-      "id": "routes_publicprojectcaptures_test_routes",
-      "community": 55,
-      "norm_label": "routes"
+      "id": "ui_capturerenderer_scriptbounds",
+      "community": 20,
+      "norm_label": "scriptbounds()"
     },
     {
-      "label": "query()",
+      "label": "resourceDataURL()",
       "file_type": "code",
-      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
-      "source_location": "L5",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L61",
       "_origin": "ast",
-      "id": "routes_publicprojectcaptures_test_query",
-      "community": 55,
-      "norm_label": "query()"
+      "id": "ui_capturerenderer_resourcedataurl",
+      "community": 20,
+      "norm_label": "resourcedataurl()"
     },
     {
-      "label": "get()",
+      "label": "skipCaptureElement()",
       "file_type": "code",
-      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
-      "source_location": "L56",
-      "_origin": "ast",
-      "id": "routes_publicprojectcaptures_test_get",
-      "community": 55,
-      "norm_label": "get()"
-    },
-    {
-      "label": "Project.js",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "ui_project",
-      "community": 8,
-      "norm_label": "project.js"
-    },
-    {
-      "label": "Project",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L34",
-      "_origin": "ast",
-      "id": "ui_project_project",
-      "community": 10,
-      "norm_label": "project"
-    },
-    {
-      "label": ".loadedProjectId()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L35",
-      "_origin": "ast",
-      "id": "ui_project_project_loadedprojectid",
-      "community": 10,
-      "norm_label": ".loadedprojectid()"
-    },
-    {
-      "label": ".metadata()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L39",
-      "_origin": "ast",
-      "id": "ui_project_project_metadata",
-      "community": 10,
-      "norm_label": ".metadata()"
-    },
-    {
-      "label": ".mediaCount()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L47",
-      "_origin": "ast",
-      "id": "ui_project_project_mediacount",
-      "community": 10,
-      "norm_label": ".mediacount()"
-    },
-    {
-      "label": ".loadIcon()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L55",
-      "_origin": "ast",
-      "id": "ui_project_project_loadicon",
-      "community": 10,
-      "norm_label": ".loadicon()"
-    },
-    {
-      "label": ".error()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L63",
-      "_origin": "ast",
-      "id": "ui_project_project_error",
-      "community": 10,
-      "norm_label": ".error()"
-    },
-    {
-      "label": ".clear()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L68",
-      "_origin": "ast",
-      "id": "ui_project_project_clear",
-      "community": 10,
-      "norm_label": ".clear()"
-    },
-    {
-      "label": ".load()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L74",
       "_origin": "ast",
-      "id": "ui_project_project_load",
-      "community": 10,
-      "norm_label": ".load()"
+      "id": "ui_capturerenderer_skipcaptureelement",
+      "community": 20,
+      "norm_label": "skipcaptureelement()"
     },
     {
-      "label": ".delayLoad()",
+      "label": "captureScripts()",
       "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L87",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L81",
       "_origin": "ast",
-      "id": "ui_project_project_delayload",
-      "community": 10,
-      "norm_label": ".delayload()"
+      "id": "ui_capturerenderer_capturescripts",
+      "community": 20,
+      "norm_label": "capturescripts()"
     },
     {
-      "label": ".startLoad()",
+      "label": "CaptureRenderer.test.js",
       "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L97",
-      "_origin": "ast",
-      "id": "ui_project_project_startload",
-      "community": 10,
-      "norm_label": ".startload()"
-    },
-    {
-      "label": ".createNewProject()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L115",
-      "_origin": "ast",
-      "id": "ui_project_project_createnewproject",
-      "community": 10,
-      "norm_label": ".createnewproject()"
-    },
-    {
-      "label": ".dataRecieved()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L152",
-      "_origin": "ast",
-      "id": "ui_project_project_datarecieved",
-      "community": 10,
-      "norm_label": ".datarecieved()"
-    },
-    {
-      "label": ".init()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L208",
-      "_origin": "ast",
-      "id": "ui_project_project_init",
-      "community": 10,
-      "norm_label": ".init()"
-    },
-    {
-      "label": ".addFeedback()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L235",
-      "_origin": "ast",
-      "id": "ui_project_project_addfeedback",
-      "community": 10,
-      "norm_label": ".addfeedback()"
-    },
-    {
-      "label": ".setProgress()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L249",
-      "_origin": "ast",
-      "id": "ui_project_project_setprogress",
-      "community": 10,
-      "norm_label": ".setprogress()"
-    },
-    {
-      "label": ".drawBlind()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L263",
-      "_origin": "ast",
-      "id": "ui_project_project_drawblind",
-      "community": 10,
-      "norm_label": ".drawblind()"
-    },
-    {
-      "label": ".loadwait()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L274",
-      "_origin": "ast",
-      "id": "ui_project_project_loadwait",
-      "community": 10,
-      "norm_label": ".loadwait()"
-    },
-    {
-      "label": ".loadTask()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L288",
-      "_origin": "ast",
-      "id": "ui_project_project_loadtask",
-      "community": 10,
-      "norm_label": ".loadtask()"
-    },
-    {
-      "label": ".getMediaLoadRatio()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L296",
-      "_origin": "ast",
-      "id": "ui_project_project_getmedialoadratio",
-      "community": 10,
-      "norm_label": ".getmedialoadratio()"
-    },
-    {
-      "label": ".getStarted()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L303",
-      "_origin": "ast",
-      "id": "ui_project_project_getstarted",
-      "community": 10,
-      "norm_label": ".getstarted()"
-    },
-    {
-      "label": ".liftCurtain()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L316",
-      "_origin": "ast",
-      "id": "ui_project_project_liftcurtain",
-      "community": 10,
-      "norm_label": ".liftcurtain()"
-    },
-    {
-      "label": ".setLoadPage()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L327",
-      "_origin": "ast",
-      "id": "ui_project_project_setloadpage",
-      "community": 10,
-      "norm_label": ".setloadpage()"
-    },
-    {
-      "label": ".loadData()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L349",
-      "_origin": "ast",
-      "id": "ui_project_project_loaddata",
-      "community": 10,
-      "norm_label": ".loaddata()"
-    },
-    {
-      "label": ".loadme()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L379",
-      "_origin": "ast",
-      "id": "ui_project_project_loadme",
-      "community": 10,
-      "norm_label": ".loadme()"
-    },
-    {
-      "label": ".getLoadType()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L384",
-      "_origin": "ast",
-      "id": "ui_project_project_getloadtype",
-      "community": 10,
-      "norm_label": ".getloadtype()"
-    },
-    {
-      "label": ".recreate()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L401",
-      "_origin": "ast",
-      "id": "ui_project_project_recreate",
-      "community": 10,
-      "norm_label": ".recreate()"
-    },
-    {
-      "label": ".recreatePage()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L413",
-      "_origin": "ast",
-      "id": "ui_project_project_recreatepage",
-      "community": 10,
-      "norm_label": ".recreatepage()"
-    },
-    {
-      "label": ".substractCount()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L418",
-      "_origin": "ast",
-      "id": "ui_project_project_substractcount",
-      "community": 10,
-      "norm_label": ".substractcount()"
-    },
-    {
-      "label": ".recreateObject()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L426",
-      "_origin": "ast",
-      "id": "ui_project_project_recreateobject",
-      "community": 10,
-      "norm_label": ".recreateobject()"
-    },
-    {
-      "label": ".prepareToSave()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L469",
-      "_origin": "ast",
-      "id": "ui_project_project_preparetosave",
-      "community": 10,
-      "norm_label": ".preparetosave()"
-    },
-    {
-      "label": ".waitUntilSaved()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L479",
-      "_origin": "ast",
-      "id": "ui_project_project_waituntilsaved",
-      "community": 10,
-      "norm_label": ".waituntilsaved()"
-    },
-    {
-      "label": ".thumbnailUnique()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L491",
-      "_origin": "ast",
-      "id": "ui_project_project_thumbnailunique",
-      "community": 10,
-      "norm_label": ".thumbnailunique()"
-    },
-    {
-      "label": ".save()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L515",
-      "_origin": "ast",
-      "id": "ui_project_project_save",
-      "community": 10,
-      "norm_label": ".save()"
-    },
-    {
-      "label": ".setMaskUnconfirmed()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L576",
-      "_origin": "ast",
-      "id": "ui_project_project_setmaskunconfirmed",
-      "community": 10,
-      "norm_label": ".setmaskunconfirmed()"
-    },
-    {
-      "label": ".getProject()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L580",
-      "_origin": "ast",
-      "id": "ui_project_project_getproject",
-      "community": 10,
-      "norm_label": ".getproject()"
-    },
-    {
-      "label": ".getUndo()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L590",
-      "_origin": "ast",
-      "id": "ui_project_project_getundo",
-      "community": 10,
-      "norm_label": ".getundo()"
-    },
-    {
-      "label": ".encodeSprite()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L594",
-      "_origin": "ast",
-      "id": "ui_project_project_encodesprite",
-      "community": 10,
-      "norm_label": ".encodesprite()"
-    },
-    {
-      "label": ".encodeStrip()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L598",
-      "_origin": "ast",
-      "id": "ui_project_project_encodestrip",
-      "community": 10,
-      "norm_label": ".encodestrip()"
-    },
-    {
-      "label": ".getThumbnailPNG()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L638",
-      "_origin": "ast",
-      "id": "ui_project_project_getthumbnailpng",
-      "community": 10,
-      "norm_label": ".getthumbnailpng()"
-    },
-    {
-      "label": ".drawPNGInCanvas()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L669",
-      "_origin": "ast",
-      "id": "ui_project_project_drawpngincanvas",
-      "community": 10,
-      "norm_label": ".drawpngincanvas()"
-    },
-    {
-      "label": ".drawSVGinCanvas()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L677",
-      "_origin": "ast",
-      "id": "ui_project_project_drawsvgincanvas",
-      "community": 10,
-      "norm_label": ".drawsvgincanvas()"
-    },
-    {
-      "label": ".maskBorders()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L687",
-      "_origin": "ast",
-      "id": "ui_project_project_maskborders",
-      "community": 10,
-      "norm_label": ".maskborders()"
-    },
-    {
-      "label": ".drawSprites()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/Project.js",
-      "source_location": "L696",
-      "_origin": "ast",
-      "id": "ui_project_project_drawsprites",
-      "community": 10,
-      "norm_label": ".drawsprites()"
-    },
-    {
-      "label": "AssignmentAuthorBar.js",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.test.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar",
+      "id": "ui_capturerenderer_test",
       "community": 20,
-      "norm_label": "assignmentauthorbar.js"
-    },
-    {
-      "label": "isAllowedReturnUrl()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L57",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_isallowedreturnurl",
-      "community": 20,
-      "norm_label": "isallowedreturnurl()"
-    },
-    {
-      "label": "getAuthorId()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L80",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_getauthorid",
-      "community": 20,
-      "norm_label": "getauthorid()"
-    },
-    {
-      "label": "cachedHints",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L116",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_cachedhints",
-      "community": 20,
-      "norm_label": "cachedhints"
-    },
-    {
-      "label": "authHeader()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L119",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_authheader",
-      "community": 20,
-      "norm_label": "authheader()"
-    },
-    {
-      "label": "apiFetch()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L124",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_apifetch",
-      "community": 20,
-      "norm_label": "apifetch()"
-    },
-    {
-      "label": "HINT_WHEN_LABELS",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L139",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_hint_when_labels",
-      "community": 20,
-      "norm_label": "hint_when_labels"
-    },
-    {
-      "label": "hintWhenLabel()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L150",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_hintwhenlabel",
-      "community": 20,
-      "norm_label": "hintwhenlabel()"
-    },
-    {
-      "label": "AssignmentAuthorBar",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L155",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar",
-      "community": 20,
-      "norm_label": "assignmentauthorbar"
-    },
-    {
-      "label": ".init()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L166",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_init",
-      "community": 20,
-      "norm_label": ".init()"
-    },
-    {
-      "label": "._checkExistingMission()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L198",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
-      "community": 20,
-      "norm_label": "._checkexistingmission()"
-    },
-    {
-      "label": "._show()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L225",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_show",
-      "community": 20,
-      "norm_label": "._show()"
-    },
-    {
-      "label": "._openHintsEditor()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L258",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_openhintseditor",
-      "community": 20,
-      "norm_label": "._openhintseditor()"
-    },
-    {
-      "label": ".initAdminEdit()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L286",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_initadminedit",
-      "community": 20,
-      "norm_label": ".initadminedit()"
-    },
-    {
-      "label": "._captureMissingImages()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L299",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_capturemissingimages",
-      "community": 20,
-      "norm_label": "._capturemissingimages()"
-    },
-    {
-      "label": "._onAdminSaveClick()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L337",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_onadminsaveclick",
-      "community": 20,
-      "norm_label": "._onadminsaveclick()"
-    },
-    {
-      "label": "._onClick()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L361",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_onclick",
-      "community": 20,
-      "norm_label": "._onclick()"
-    },
-    {
-      "label": "._register()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L373",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_register",
-      "community": 20,
-      "norm_label": "._register()"
-    },
-    {
-      "label": "._showContextPrompt()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L452",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt",
-      "community": 20,
-      "norm_label": "._showcontextprompt()"
-    },
-    {
-      "label": "._runHintFlow()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L521",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
-      "community": 20,
-      "norm_label": "._runhintflow()"
-    },
-    {
-      "label": "._finish()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L577",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_finish",
-      "community": 20,
-      "norm_label": "._finish()"
-    },
-    {
-      "label": "._showHintReview()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L626",
-      "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
-      "community": 20,
-      "norm_label": "._showhintreview()"
+      "norm_label": "capturerenderer.test.js"
     },
     {
       "label": "AssignmentCapture.js",
@@ -1004,14 +434,774 @@
       "norm_label": "automaticrequest()"
     },
     {
+      "label": "publicProjectCaptures.js",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 55,
+      "norm_label": "publicprojectcaptures.js",
+      "id": "routes_publicprojectcaptures"
+    },
+    {
+      "label": "express",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 55,
+      "norm_label": "express",
+      "id": "routes_publicprojectcaptures_express"
+    },
+    {
+      "label": "{ createClient }",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_location": "L2",
+      "_origin": "ast",
+      "community": 55,
+      "norm_label": "{ createclient }",
+      "id": "routes_publicprojectcaptures_createclient"
+    },
+    {
+      "label": "{ CAPTURE_BUCKET }",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_location": "L3",
+      "_origin": "ast",
+      "community": 55,
+      "norm_label": "{ capture_bucket }",
+      "id": "routes_publicprojectcaptures_capture_bucket"
+    },
+    {
+      "label": "defaultClient()",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_location": "L7",
+      "_origin": "ast",
+      "community": 55,
+      "norm_label": "defaultclient()",
+      "id": "routes_publicprojectcaptures_defaultclient"
+    },
+    {
+      "label": "publicProjectCaptures.test.js",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 55,
+      "norm_label": "publicprojectcaptures.test.js",
+      "id": "routes_publicprojectcaptures_test"
+    },
+    {
+      "label": "express",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 55,
+      "norm_label": "express",
+      "id": "routes_publicprojectcaptures_test_express"
+    },
+    {
+      "label": "routes",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L2",
+      "_origin": "ast",
+      "community": 55,
+      "norm_label": "routes",
+      "id": "routes_publicprojectcaptures_test_routes"
+    },
+    {
+      "label": "query()",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L5",
+      "_origin": "ast",
+      "community": 55,
+      "norm_label": "query()",
+      "id": "routes_publicprojectcaptures_test_query"
+    },
+    {
+      "label": "get()",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L56",
+      "_origin": "ast",
+      "community": 55,
+      "norm_label": "get()",
+      "id": "routes_publicprojectcaptures_test_get"
+    },
+    {
+      "label": "Project.js",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 8,
+      "norm_label": "project.js",
+      "id": "ui_project"
+    },
+    {
+      "label": "Project",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L34",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": "project",
+      "id": "ui_project_project"
+    },
+    {
+      "label": ".loadedProjectId()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L35",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".loadedprojectid()",
+      "id": "ui_project_project_loadedprojectid"
+    },
+    {
+      "label": ".metadata()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L39",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".metadata()",
+      "id": "ui_project_project_metadata"
+    },
+    {
+      "label": ".mediaCount()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L47",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".mediacount()",
+      "id": "ui_project_project_mediacount"
+    },
+    {
+      "label": ".loadIcon()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L55",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".loadicon()",
+      "id": "ui_project_project_loadicon"
+    },
+    {
+      "label": ".error()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L63",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".error()",
+      "id": "ui_project_project_error"
+    },
+    {
+      "label": ".clear()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L68",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".clear()",
+      "id": "ui_project_project_clear"
+    },
+    {
+      "label": ".load()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L74",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".load()",
+      "id": "ui_project_project_load"
+    },
+    {
+      "label": ".delayLoad()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L87",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".delayload()",
+      "id": "ui_project_project_delayload"
+    },
+    {
+      "label": ".startLoad()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L97",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".startload()",
+      "id": "ui_project_project_startload"
+    },
+    {
+      "label": ".createNewProject()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L115",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".createnewproject()",
+      "id": "ui_project_project_createnewproject"
+    },
+    {
+      "label": ".dataRecieved()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L152",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".datarecieved()",
+      "id": "ui_project_project_datarecieved"
+    },
+    {
+      "label": ".init()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L208",
+      "_origin": "ast",
+      "community": 44,
+      "norm_label": ".init()",
+      "id": "ui_project_project_init"
+    },
+    {
+      "label": ".addFeedback()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L235",
+      "_origin": "ast",
+      "community": 44,
+      "norm_label": ".addfeedback()",
+      "id": "ui_project_project_addfeedback"
+    },
+    {
+      "label": ".setProgress()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L249",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".setprogress()",
+      "id": "ui_project_project_setprogress"
+    },
+    {
+      "label": ".drawBlind()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L263",
+      "_origin": "ast",
+      "community": 44,
+      "norm_label": ".drawblind()",
+      "id": "ui_project_project_drawblind"
+    },
+    {
+      "label": ".loadwait()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L274",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".loadwait()",
+      "id": "ui_project_project_loadwait"
+    },
+    {
+      "label": ".loadTask()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L288",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".loadtask()",
+      "id": "ui_project_project_loadtask"
+    },
+    {
+      "label": ".getMediaLoadRatio()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L296",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".getmedialoadratio()",
+      "id": "ui_project_project_getmedialoadratio"
+    },
+    {
+      "label": ".getStarted()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L303",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".getstarted()",
+      "id": "ui_project_project_getstarted"
+    },
+    {
+      "label": ".liftCurtain()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L316",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".liftcurtain()",
+      "id": "ui_project_project_liftcurtain"
+    },
+    {
+      "label": ".setLoadPage()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L327",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".setloadpage()",
+      "id": "ui_project_project_setloadpage"
+    },
+    {
+      "label": ".loadData()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L349",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".loaddata()",
+      "id": "ui_project_project_loaddata"
+    },
+    {
+      "label": ".loadme()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L379",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".loadme()",
+      "id": "ui_project_project_loadme"
+    },
+    {
+      "label": ".getLoadType()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L384",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".getloadtype()",
+      "id": "ui_project_project_getloadtype"
+    },
+    {
+      "label": ".recreate()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L401",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".recreate()",
+      "id": "ui_project_project_recreate"
+    },
+    {
+      "label": ".recreatePage()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L413",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".recreatepage()",
+      "id": "ui_project_project_recreatepage"
+    },
+    {
+      "label": ".substractCount()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L418",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".substractcount()",
+      "id": "ui_project_project_substractcount"
+    },
+    {
+      "label": ".recreateObject()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L426",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".recreateobject()",
+      "id": "ui_project_project_recreateobject"
+    },
+    {
+      "label": ".prepareToSave()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L469",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".preparetosave()",
+      "id": "ui_project_project_preparetosave"
+    },
+    {
+      "label": ".waitUntilSaved()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L479",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".waituntilsaved()",
+      "id": "ui_project_project_waituntilsaved"
+    },
+    {
+      "label": ".thumbnailUnique()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L491",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".thumbnailunique()",
+      "id": "ui_project_project_thumbnailunique"
+    },
+    {
+      "label": ".save()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L515",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".save()",
+      "id": "ui_project_project_save"
+    },
+    {
+      "label": ".setMaskUnconfirmed()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L576",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".setmaskunconfirmed()",
+      "id": "ui_project_project_setmaskunconfirmed"
+    },
+    {
+      "label": ".getProject()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L580",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".getproject()",
+      "id": "ui_project_project_getproject"
+    },
+    {
+      "label": ".getUndo()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L590",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".getundo()",
+      "id": "ui_project_project_getundo"
+    },
+    {
+      "label": ".encodeSprite()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L594",
+      "_origin": "ast",
+      "community": 34,
+      "norm_label": ".encodesprite()",
+      "id": "ui_project_project_encodesprite"
+    },
+    {
+      "label": ".encodeStrip()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L598",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".encodestrip()",
+      "id": "ui_project_project_encodestrip"
+    },
+    {
+      "label": ".getThumbnailPNG()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L638",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".getthumbnailpng()",
+      "id": "ui_project_project_getthumbnailpng"
+    },
+    {
+      "label": ".drawPNGInCanvas()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L669",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".drawpngincanvas()",
+      "id": "ui_project_project_drawpngincanvas"
+    },
+    {
+      "label": ".drawSVGinCanvas()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L677",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".drawsvgincanvas()",
+      "id": "ui_project_project_drawsvgincanvas"
+    },
+    {
+      "label": ".maskBorders()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L687",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".maskborders()",
+      "id": "ui_project_project_maskborders"
+    },
+    {
+      "label": ".drawSprites()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/Project.js",
+      "source_location": "L696",
+      "_origin": "ast",
+      "community": 10,
+      "norm_label": ".drawsprites()",
+      "id": "ui_project_project_drawsprites"
+    },
+    {
+      "label": "AssignmentAuthorBar.js",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "assignmentauthorbar.js",
+      "id": "ui_assignmentauthorbar"
+    },
+    {
+      "label": "isAllowedReturnUrl()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L57",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "isallowedreturnurl()",
+      "id": "ui_assignmentauthorbar_isallowedreturnurl"
+    },
+    {
+      "label": "getAuthorId()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L80",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "getauthorid()",
+      "id": "ui_assignmentauthorbar_getauthorid"
+    },
+    {
+      "label": "cachedHints",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L116",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "cachedhints",
+      "id": "ui_assignmentauthorbar_cachedhints"
+    },
+    {
+      "label": "authHeader()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L119",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "authheader()",
+      "id": "ui_assignmentauthorbar_authheader"
+    },
+    {
+      "label": "apiFetch()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L124",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "apifetch()",
+      "id": "ui_assignmentauthorbar_apifetch"
+    },
+    {
+      "label": "HINT_WHEN_LABELS",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L139",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "hint_when_labels",
+      "id": "ui_assignmentauthorbar_hint_when_labels"
+    },
+    {
+      "label": "hintWhenLabel()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L150",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "hintwhenlabel()",
+      "id": "ui_assignmentauthorbar_hintwhenlabel"
+    },
+    {
+      "label": "AssignmentAuthorBar",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L155",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "assignmentauthorbar",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar"
+    },
+    {
+      "label": ".init()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L166",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": ".init()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_init"
+    },
+    {
+      "label": "._checkExistingMission()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L198",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "._checkexistingmission()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission"
+    },
+    {
+      "label": "._show()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L225",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "._show()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_show"
+    },
+    {
+      "label": "._openHintsEditor()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L258",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "._openhintseditor()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_openhintseditor"
+    },
+    {
+      "label": ".initAdminEdit()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L286",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": ".initadminedit()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_initadminedit"
+    },
+    {
+      "label": "._captureMissingImages()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L299",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "._capturemissingimages()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_capturemissingimages"
+    },
+    {
+      "label": "._onAdminSaveClick()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L337",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "._onadminsaveclick()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_onadminsaveclick"
+    },
+    {
+      "label": "._onClick()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L361",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "._onclick()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_onclick"
+    },
+    {
+      "label": "._register()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L373",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "._register()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_register"
+    },
+    {
+      "label": "._showContextPrompt()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L452",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "._showcontextprompt()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt"
+    },
+    {
+      "label": "._runHintFlow()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L521",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "._runhintflow()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow"
+    },
+    {
+      "label": "._finish()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L577",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "._finish()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_finish"
+    },
+    {
+      "label": "._showHintReview()",
+      "file_type": "code",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L626",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "._showhintreview()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview"
+    },
+    {
       "label": "AssignmentAuthorBar.autocapture.test.js",
       "file_type": "code",
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.autocapture.test.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_autocapture_test",
       "community": 96,
-      "norm_label": "assignmentauthorbar.autocapture.test.js"
+      "norm_label": "assignmentauthorbar.autocapture.test.js",
+      "id": "ui_assignmentauthorbar_autocapture_test"
     },
     {
       "label": "mocks",
@@ -1019,9 +1209,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.autocapture.test.js",
       "source_location": "L4",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_autocapture_test_mocks",
       "community": 96,
-      "norm_label": "mocks"
+      "norm_label": "mocks",
+      "id": "ui_assignmentauthorbar_autocapture_test_mocks"
     },
     {
       "label": "token()",
@@ -1029,9 +1219,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.autocapture.test.js",
       "source_location": "L9",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_autocapture_test_token",
       "community": 96,
-      "norm_label": "token()"
+      "norm_label": "token()",
+      "id": "ui_assignmentauthorbar_autocapture_test_token"
     },
     {
       "label": "index.js",
@@ -1274,96 +1464,6 @@
       "id": "src_index_identitymiddleware"
     },
     {
-      "label": "CaptureRenderer.js",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 20,
-      "norm_label": "capturerenderer.js",
-      "id": "ui_capturerenderer"
-    },
-    {
-      "label": "canvas()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 20,
-      "norm_label": "canvas()",
-      "id": "ui_capturerenderer_canvas"
-    },
-    {
-      "label": "readyImage()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L8",
-      "_origin": "ast",
-      "community": 20,
-      "norm_label": "readyimage()",
-      "id": "ui_capturerenderer_readyimage"
-    },
-    {
-      "label": "captureActor()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L29",
-      "_origin": "ast",
-      "community": 20,
-      "norm_label": "captureactor()",
-      "id": "ui_capturerenderer_captureactor"
-    },
-    {
-      "label": "waitForScene()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L39",
-      "_origin": "ast",
-      "community": 20,
-      "norm_label": "waitforscene()",
-      "id": "ui_capturerenderer_waitforscene"
-    },
-    {
-      "label": "scriptBounds()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L48",
-      "_origin": "ast",
-      "community": 20,
-      "norm_label": "scriptbounds()",
-      "id": "ui_capturerenderer_scriptbounds"
-    },
-    {
-      "label": "resourceDataURL()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L59",
-      "_origin": "ast",
-      "community": 20,
-      "norm_label": "resourcedataurl()",
-      "id": "ui_capturerenderer_resourcedataurl"
-    },
-    {
-      "label": "captureScripts()",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L72",
-      "_origin": "ast",
-      "community": 20,
-      "norm_label": "capturescripts()",
-      "id": "ui_capturerenderer_capturescripts"
-    },
-    {
-      "label": "CaptureRenderer.test.js",
-      "file_type": "code",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.test.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 20,
-      "norm_label": "capturerenderer.test.js",
-      "id": "ui_capturerenderer_test"
-    },
-    {
       "label": "assignments.js",
       "file_type": "code",
       "source_file": "backend/src/routes/assignments.js",
@@ -1562,86 +1662,6 @@
       "community": 66,
       "norm_label": "findownedtemplateproject()",
       "id": "routes_assignments_findownedtemplateproject"
-    },
-    {
-      "label": "projectCaptures.js",
-      "file_type": "code",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 66,
-      "norm_label": "projectcaptures.js",
-      "id": "services_projectcaptures"
-    },
-    {
-      "label": "{ createHash }",
-      "file_type": "code",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 66,
-      "norm_label": "{ createhash }",
-      "id": "services_projectcaptures_createhash"
-    },
-    {
-      "label": "canonical()",
-      "file_type": "code",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L6",
-      "_origin": "ast",
-      "community": 66,
-      "norm_label": "canonical()",
-      "id": "services_projectcaptures_canonical"
-    },
-    {
-      "label": "fingerprint()",
-      "file_type": "code",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L12",
-      "_origin": "ast",
-      "community": 66,
-      "norm_label": "fingerprint()",
-      "id": "services_projectcaptures_fingerprint"
-    },
-    {
-      "label": "projectSnapshot()",
-      "file_type": "code",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L16",
-      "_origin": "ast",
-      "community": 66,
-      "norm_label": "projectsnapshot()",
-      "id": "services_projectcaptures_projectsnapshot"
-    },
-    {
-      "label": "captureManifest()",
-      "file_type": "code",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L27",
-      "_origin": "ast",
-      "community": 66,
-      "norm_label": "capturemanifest()",
-      "id": "services_projectcaptures_capturemanifest"
-    },
-    {
-      "label": "decodePNG()",
-      "file_type": "code",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L48",
-      "_origin": "ast",
-      "community": 66,
-      "norm_label": "decodepng()",
-      "id": "services_projectcaptures_decodepng"
-    },
-    {
-      "label": "imagePath()",
-      "file_type": "code",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L67",
-      "_origin": "ast",
-      "community": 66,
-      "norm_label": "imagepath()",
-      "id": "services_projectcaptures_imagepath"
     },
     {
       "label": "projectCaptures.test.js",
@@ -2239,7 +2259,7 @@
       "source_file": "src/app/src/editor/ScratchJr.js",
       "source_location": "L284",
       "_origin": "ast",
-      "community": 61,
+      "community": 45,
       "norm_label": ".blur()",
       "id": "editor_scratchjr_scratchjr_blur"
     },
@@ -2399,7 +2419,7 @@
       "source_file": "src/app/src/editor/ScratchJr.js",
       "source_location": "L463",
       "_origin": "ast",
-      "community": 84,
+      "community": 61,
       "norm_label": ".runstrips()",
       "id": "editor_scratchjr_scratchjr_runstrips"
     },
@@ -2589,7 +2609,7 @@
       "source_file": "src/app/src/editor/ScratchJr.js",
       "source_location": "L716",
       "_origin": "ast",
-      "community": 95,
+      "community": 12,
       "norm_label": ".isnumberpadkeycode()",
       "id": "editor_scratchjr_scratchjr_isnumberpadkeycode"
     },
@@ -2599,7 +2619,7 @@
       "source_file": "src/app/src/editor/ScratchJr.js",
       "source_location": "L719",
       "_origin": "ast",
-      "community": 95,
+      "community": 12,
       "norm_label": ".onnumberkeydown()",
       "id": "editor_scratchjr_scratchjr_onnumberkeydown"
     },
@@ -2649,7 +2669,7 @@
       "source_file": "src/app/src/editor/ScratchJr.js",
       "source_location": "L819",
       "_origin": "ast",
-      "community": 95,
+      "community": 12,
       "norm_label": ".numeditkey()",
       "id": "editor_scratchjr_scratchjr_numeditkey"
     },
@@ -2699,7 +2719,7 @@
       "source_file": "src/app/src/editor/ScratchJr.js",
       "source_location": "L879",
       "_origin": "ast",
-      "community": 95,
+      "community": 12,
       "norm_label": ".numeditdelete()",
       "id": "editor_scratchjr_scratchjr_numeditdelete"
     },
@@ -2829,7 +2849,7 @@
       "source_file": "src/app/src/editor/blocks/Block.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 71,
+      "community": 8,
       "norm_label": "block.js",
       "id": "blocks_block"
     },
@@ -2849,7 +2869,7 @@
       "source_file": "src/app/src/editor/blocks/Block.js",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 26,
+      "community": 44,
       "norm_label": ".constructor()",
       "id": "blocks_block_block_constructor"
     },
@@ -2889,7 +2909,7 @@
       "source_file": "src/app/src/editor/blocks/Block.js",
       "source_location": "L95",
       "_origin": "ast",
-      "community": 26,
+      "community": 44,
       "norm_label": ".addshadow()",
       "id": "blocks_block_block_addshadow"
     },
@@ -2919,7 +2939,7 @@
       "source_file": "src/app/src/editor/blocks/Block.js",
       "source_location": "L136",
       "_origin": "ast",
-      "community": 26,
+      "community": 44,
       "norm_label": ".addhighlight()",
       "id": "blocks_block_block_addhighlight"
     },
@@ -2929,7 +2949,7 @@
       "source_file": "src/app/src/editor/blocks/Block.js",
       "source_location": "L168",
       "_origin": "ast",
-      "community": 26,
+      "community": 44,
       "norm_label": ".drawblock()",
       "id": "blocks_block_block_drawblock"
     },
@@ -2939,7 +2959,7 @@
       "source_file": "src/app/src/editor/blocks/Block.js",
       "source_location": "L182",
       "_origin": "ast",
-      "community": 26,
+      "community": 44,
       "norm_label": ".drawblocktype()",
       "id": "blocks_block_block_drawblocktype"
     },
@@ -2979,7 +2999,7 @@
       "source_file": "src/app/src/editor/blocks/Block.js",
       "source_location": "L239",
       "_origin": "ast",
-      "community": 26,
+      "community": 44,
       "norm_label": ".drawicon()",
       "id": "blocks_block_block_drawicon"
     },
@@ -3199,7 +3219,7 @@
       "source_file": "src/app/src/editor/blocks/BlockArg.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 23,
+      "community": 40,
       "norm_label": "blockarg.js",
       "id": "blocks_blockarg"
     },
@@ -3239,7 +3259,7 @@
       "source_file": "src/app/src/editor/blocks/BlockArg.js",
       "source_location": "L95",
       "_origin": "ast",
-      "community": 23,
+      "community": 36,
       "norm_label": ".getscreenpt()",
       "id": "blocks_blockarg_blockarg_getscreenpt"
     },
@@ -3269,7 +3289,7 @@
       "source_file": "src/app/src/editor/blocks/BlockArg.js",
       "source_location": "L120",
       "_origin": "ast",
-      "community": 44,
+      "community": 40,
       "norm_label": ".addlabel()",
       "id": "blocks_blockarg_blockarg_addlabel"
     },
@@ -3619,7 +3639,7 @@
       "source_file": "src/app/src/editor/blocks/Menu.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 23,
+      "community": 36,
       "norm_label": "menu.js",
       "id": "blocks_menu"
     },
@@ -3629,7 +3649,7 @@
       "source_file": "src/app/src/editor/blocks/Menu.js",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 23,
+      "community": 36,
       "norm_label": "menu",
       "id": "blocks_menu_menu"
     },
@@ -3639,7 +3659,7 @@
       "source_file": "src/app/src/editor/blocks/Menu.js",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 23,
+      "community": 36,
       "norm_label": ".openmenu()",
       "id": "blocks_menu_menu_openmenu"
     },
@@ -3649,7 +3669,7 @@
       "source_file": "src/app/src/editor/blocks/Menu.js",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 23,
+      "community": 36,
       "norm_label": ".opendropdown()",
       "id": "blocks_menu_menu_opendropdown"
     },
@@ -3659,7 +3679,7 @@
       "source_file": "src/app/src/editor/blocks/Menu.js",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 23,
+      "community": 36,
       "norm_label": ".addimagetodropdown()",
       "id": "blocks_menu_menu_addimagetodropdown"
     },
@@ -3669,7 +3689,7 @@
       "source_file": "src/app/src/editor/blocks/Menu.js",
       "source_location": "L97",
       "_origin": "ast",
-      "community": 23,
+      "community": 36,
       "norm_label": ".closemyopenmenu()",
       "id": "blocks_menu_menu_closemyopenmenu"
     },
@@ -3699,7 +3719,7 @@
       "source_file": "src/app/src/editor/engine/Page.js",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 30,
+      "community": 44,
       "norm_label": ".constructor()",
       "id": "engine_page_page_constructor"
     },
@@ -3879,7 +3899,7 @@
       "source_file": "src/app/src/editor/engine/Page.js",
       "source_location": "L402",
       "_origin": "ast",
-      "community": 81,
+      "community": 30,
       "norm_label": ".createtext()",
       "id": "engine_page_page_createtext"
     },
@@ -3939,7 +3959,7 @@
       "source_file": "src/app/src/editor/engine/Page.js",
       "source_location": "L493",
       "_origin": "ast",
-      "community": 81,
+      "community": 30,
       "norm_label": ".addsprite()",
       "id": "engine_page_page_addsprite"
     },
@@ -4149,7 +4169,7 @@
       "source_file": "src/app/src/editor/engine/Prims.js",
       "source_location": "L166",
       "_origin": "ast",
-      "community": 10,
+      "community": 32,
       "norm_label": ".repeat()",
       "id": "engine_prims_prims_repeat"
     },
@@ -4919,7 +4939,7 @@
       "source_file": "src/app/src/editor/engine/Sprite.js",
       "source_location": "L723",
       "_origin": "ast",
-      "community": 3,
+      "community": 44,
       "norm_label": ".createtext()",
       "id": "engine_sprite_sprite_createtext"
     },
@@ -4929,7 +4949,7 @@
       "source_file": "src/app/src/editor/engine/Sprite.js",
       "source_location": "L761",
       "_origin": "ast",
-      "community": 3,
+      "community": 36,
       "norm_label": ".settextbox()",
       "id": "engine_sprite_sprite_settextbox"
     },
@@ -5069,7 +5089,7 @@
       "source_file": "src/app/src/editor/engine/Sprite.js",
       "source_location": "L1033",
       "_origin": "ast",
-      "community": 3,
+      "community": 44,
       "norm_label": ".recalculatetext()",
       "id": "engine_sprite_sprite_recalculatetext"
     },
@@ -5159,7 +5179,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 43,
+      "community": 8,
       "norm_label": "stage.js",
       "id": "engine_stage"
     },
@@ -5179,7 +5199,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 9,
+      "community": 44,
       "norm_label": ".constructor()",
       "id": "engine_stage_stage_constructor"
     },
@@ -5189,7 +5209,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L55",
       "_origin": "ast",
-      "community": 9,
+      "community": 44,
       "norm_label": ".setstagescaleandposition()",
       "id": "engine_stage_stage_setstagescaleandposition"
     },
@@ -5269,7 +5289,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L165",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".copysprite()",
       "id": "engine_stage_stage_copysprite"
     },
@@ -5319,7 +5339,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L353",
       "_origin": "ast",
-      "community": 23,
+      "community": 9,
       "norm_label": ".checkshaking()",
       "id": "engine_stage_stage_checkshaking"
     },
@@ -5719,7 +5739,7 @@
       "source_file": "src/app/src/editor/ui/Alert.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 82,
+      "community": 40,
       "norm_label": "alert.js",
       "id": "ui_alert"
     },
@@ -5729,7 +5749,7 @@
       "source_file": "src/app/src/editor/ui/Alert.js",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 82,
+      "community": 40,
       "norm_label": "alert",
       "id": "ui_alert_alert"
     },
@@ -5739,7 +5759,7 @@
       "source_file": "src/app/src/editor/ui/Alert.js",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 82,
+      "community": 40,
       "norm_label": ".balloon()",
       "id": "ui_alert_alert_balloon"
     },
@@ -5749,7 +5769,7 @@
       "source_file": "src/app/src/editor/ui/Alert.js",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 82,
+      "community": 40,
       "norm_label": ".close()",
       "id": "ui_alert_alert_close"
     },
@@ -5759,7 +5779,7 @@
       "source_file": "src/app/src/editor/ui/Alert.js",
       "source_location": "L20",
       "_origin": "ast",
-      "community": 82,
+      "community": 40,
       "norm_label": ".open()",
       "id": "ui_alert_alert_open"
     },
@@ -5769,7 +5789,7 @@
       "source_file": "src/app/src/editor/ui/Alert.js",
       "source_location": "L61",
       "_origin": "ast",
-      "community": 82,
+      "community": 40,
       "norm_label": ".draw()",
       "id": "ui_alert_alert_draw"
     },
@@ -5799,7 +5819,7 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 68,
+      "community": 43,
       "norm_label": "assignmentbadge.js",
       "id": "ui_assignmentbadge"
     },
@@ -5819,7 +5839,7 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L161",
       "_origin": "ast",
-      "community": 68,
+      "community": 43,
       "norm_label": "dismissedhintids",
       "id": "ui_assignmentbadge_dismissedhintids"
     },
@@ -5829,7 +5849,7 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L163",
       "_origin": "ast",
-      "community": 68,
+      "community": 43,
       "norm_label": "blockblinkels",
       "id": "ui_assignmentbadge_blockblinkels"
     },
@@ -5839,7 +5859,7 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L165",
       "_origin": "ast",
-      "community": 68,
+      "community": 43,
       "norm_label": "wrongvaluealerted",
       "id": "ui_assignmentbadge_wrongvaluealerted"
     },
@@ -5849,7 +5869,7 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L183",
       "_origin": "ast",
-      "community": 13,
+      "community": 43,
       "norm_label": "authheader()",
       "id": "ui_assignmentbadge_authheader"
     },
@@ -5859,7 +5879,7 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L188",
       "_origin": "ast",
-      "community": 13,
+      "community": 43,
       "norm_label": "apifetch()",
       "id": "ui_assignmentbadge_apifetch"
     },
@@ -5869,7 +5889,7 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L204",
       "_origin": "ast",
-      "community": 13,
+      "community": 43,
       "norm_label": "recordhintevent()",
       "id": "ui_assignmentbadge_recordhintevent"
     },
@@ -6049,7 +6069,7 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L751",
       "_origin": "ast",
-      "community": 13,
+      "community": 43,
       "norm_label": "._lockcompletion()",
       "id": "ui_assignmentbadge_assignmentbadge_lockcompletion"
     },
@@ -6459,7 +6479,7 @@
       "source_file": "src/app/src/editor/ui/HintEngine.js",
       "source_location": "L123",
       "_origin": "ast",
-      "community": 78,
+      "community": 27,
       "norm_label": "blocklabel()",
       "id": "ui_hintengine_blocklabel"
     },
@@ -6569,7 +6589,7 @@
       "source_file": "src/app/src/editor/ui/HintEngine.js",
       "source_location": "L699",
       "_origin": "ast",
-      "community": 27,
+      "community": 22,
       "norm_label": "sameactorloose()",
       "id": "ui_hintengine_sameactorloose"
     },
@@ -6579,7 +6599,7 @@
       "source_file": "src/app/src/editor/ui/HintEngine.js",
       "source_location": "L718",
       "_origin": "ast",
-      "community": 27,
+      "community": 22,
       "norm_label": "legacyshadowedbyexpected()",
       "id": "ui_hintengine_legacyshadowedbyexpected"
     },
@@ -6609,7 +6629,7 @@
       "source_file": "src/app/src/editor/ui/HintEngine.js",
       "source_location": "L766",
       "_origin": "ast",
-      "community": 78,
+      "community": 27,
       "norm_label": "nthencodedblock()",
       "id": "ui_hintengine_nthencodedblock"
     },
@@ -6619,7 +6639,7 @@
       "source_file": "src/app/src/editor/ui/HintEngine.js",
       "source_location": "L801",
       "_origin": "ast",
-      "community": 78,
+      "community": 27,
       "norm_label": "resolveliveblock()",
       "id": "ui_hintengine_resolveliveblock"
     },
@@ -6629,7 +6649,7 @@
       "source_file": "src/app/src/editor/ui/HintEngine.js",
       "source_location": "L818",
       "_origin": "ast",
-      "community": 78,
+      "community": 27,
       "norm_label": "spokenvalue()",
       "id": "ui_hintengine_spokenvalue"
     },
@@ -6649,7 +6669,7 @@
       "source_file": "src/app/src/editor/ui/HintEngine.js",
       "source_location": "L847",
       "_origin": "ast",
-      "community": 78,
+      "community": 27,
       "norm_label": "alerttext()",
       "id": "ui_hintengine_alerttext"
     },
@@ -6729,7 +6749,7 @@
       "source_file": "src/app/src/editor/ui/HintEngine.test.js",
       "source_location": "L42",
       "_origin": "ast",
-      "community": 10,
+      "community": 32,
       "norm_label": "script()",
       "id": "ui_hintengine_test_script"
     },
@@ -6739,7 +6759,7 @@
       "source_file": "src/app/src/editor/ui/Library.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 43,
+      "community": 8,
       "norm_label": "library.js",
       "id": "ui_library"
     },
@@ -6779,7 +6799,7 @@
       "source_file": "src/app/src/editor/ui/Library.js",
       "source_location": "L45",
       "_origin": "ast",
-      "community": 17,
+      "community": 44,
       "norm_label": ".init()",
       "id": "ui_library_library_init"
     },
@@ -6829,7 +6849,7 @@
       "source_file": "src/app/src/editor/ui/Library.js",
       "source_location": "L123",
       "_origin": "ast",
-      "community": 17,
+      "community": 44,
       "norm_label": ".layoutheader()",
       "id": "ui_library_library_layoutheader"
     },
@@ -7069,7 +7089,7 @@
       "source_file": "src/app/src/editor/ui/Library.js",
       "source_location": "L589",
       "_origin": "ast",
-      "community": 43,
+      "community": 17,
       "norm_label": ".resizescroll()",
       "id": "ui_library_library_resizescroll"
     },
@@ -7139,7 +7159,7 @@
       "source_file": "src/app/src/editor/ui/Palette.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 71,
+      "community": 8,
       "norm_label": "palette.js",
       "id": "ui_palette"
     },
@@ -7319,7 +7339,7 @@
       "source_file": "src/app/src/editor/ui/Palette.js",
       "source_location": "L266",
       "_origin": "ast",
-      "community": 25,
+      "community": 71,
       "norm_label": ".preparefordrag()",
       "id": "ui_palette_palette_preparefordrag"
     },
@@ -7329,7 +7349,7 @@
       "source_file": "src/app/src/editor/ui/Palette.js",
       "source_location": "L294",
       "_origin": "ast",
-      "community": 25,
+      "community": 71,
       "norm_label": ".getblocknamed()",
       "id": "ui_palette_palette_getblocknamed"
     },
@@ -7459,7 +7479,7 @@
       "source_file": "src/app/src/editor/ui/Palette.js",
       "source_location": "L497",
       "_origin": "ast",
-      "community": 23,
+      "community": 36,
       "norm_label": ".getlandingplace()",
       "id": "ui_palette_palette_getlandingplace"
     },
@@ -7469,7 +7489,7 @@
       "source_file": "src/app/src/editor/ui/Palette.js",
       "source_location": "L532",
       "_origin": "ast",
-      "community": 23,
+      "community": 36,
       "norm_label": ".overlapswith()",
       "id": "ui_palette_palette_overlapswith"
     },
@@ -7499,7 +7519,7 @@
       "source_file": "src/app/src/editor/ui/Palette.js",
       "source_location": "L553",
       "_origin": "ast",
-      "community": 23,
+      "community": 36,
       "norm_label": ".gethittedthumb()",
       "id": "ui_palette_palette_gethittedthumb"
     },
@@ -7939,7 +7959,7 @@
       "source_file": "src/app/src/editor/ui/Scripts.js",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 18,
+      "community": 44,
       "norm_label": ".constructor()",
       "id": "ui_scripts_scripts_constructor"
     },
@@ -8279,7 +8299,7 @@
       "source_file": "src/app/src/editor/ui/Scripts.js",
       "source_location": "L603",
       "_origin": "ast",
-      "community": 71,
+      "community": 18,
       "norm_label": ".insertcaret()",
       "id": "ui_scripts_scripts_insertcaret"
     },
@@ -8319,7 +8339,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 71,
+      "community": 8,
       "norm_label": "scriptspane.js",
       "id": "ui_scriptspane"
     },
@@ -8359,7 +8379,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L26",
       "_origin": "ast",
-      "community": 43,
+      "community": 44,
       "norm_label": ".createscripts()",
       "id": "ui_scriptspane_scriptspane_createscripts"
     },
@@ -8519,7 +8539,7 @@
       "source_file": "src/app/src/editor/ui/Scroll.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 71,
+      "community": 44,
       "norm_label": "scroll.js",
       "id": "ui_scroll"
     },
@@ -8679,7 +8699,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 43,
+      "community": 8,
       "norm_label": "ui.js",
       "id": "ui_ui"
     },
@@ -8719,7 +8739,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L73",
       "_origin": "ast",
-      "community": 43,
+      "community": 2,
       "norm_label": ".aspectratioadjustment()",
       "id": "ui_ui_ui_aspectratioadjustment"
     },
@@ -8729,7 +8749,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L82",
       "_origin": "ast",
-      "community": 46,
+      "community": 2,
       "norm_label": ".topsection()",
       "id": "ui_ui_ui_topsection"
     },
@@ -8739,7 +8759,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L121",
       "_origin": "ast",
-      "community": 46,
+      "community": 2,
       "norm_label": ".leftpanel()",
       "id": "ui_ui_ui_leftpanel"
     },
@@ -8769,7 +8789,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L138",
       "_origin": "ast",
-      "community": 46,
+      "community": 2,
       "norm_label": ".addprojectinfo()",
       "id": "ui_ui_ui_addprojectinfo"
     },
@@ -8779,7 +8799,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L196",
       "_origin": "ast",
-      "community": 46,
+      "community": 2,
       "norm_label": ".parentalgate()",
       "id": "ui_ui_ui_parentalgate"
     },
@@ -8789,7 +8809,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L264",
       "_origin": "ast",
-      "community": 46,
+      "community": 2,
       "norm_label": ".infodoshare()",
       "id": "ui_ui_ui_infodoshare"
     },
@@ -8799,7 +8819,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L300",
       "_origin": "ast",
-      "community": 46,
+      "community": 2,
       "norm_label": ".addeditablename()",
       "id": "ui_ui_ui_addeditablename"
     },
@@ -8859,7 +8879,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L476",
       "_origin": "ast",
-      "community": 46,
+      "community": 2,
       "norm_label": ".layoutlibrary()",
       "id": "ui_ui_ui_layoutlibrary"
     },
@@ -8869,7 +8889,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L502",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".mascotdata()",
       "id": "ui_ui_ui_mascotdata"
     },
@@ -9009,7 +9029,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L727",
       "_origin": "ast",
-      "community": 46,
+      "community": 2,
       "norm_label": ".stagearea()",
       "id": "ui_ui_ui_stagearea"
     },
@@ -9059,7 +9079,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L785",
       "_origin": "ast",
-      "community": 46,
+      "community": 2,
       "norm_label": ".creattopbarclicky()",
       "id": "ui_ui_ui_creattopbarclicky"
     },
@@ -9109,7 +9129,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L841",
       "_origin": "ast",
-      "community": 43,
+      "community": 17,
       "norm_label": ".enterfullscreen()",
       "id": "ui_ui_ui_enterfullscreen"
     },
@@ -9129,7 +9149,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L898",
       "_origin": "ast",
-      "community": 36,
+      "community": 2,
       "norm_label": ".refreshlayoutafterfullscreen()",
       "id": "ui_ui_ui_refreshlayoutafterfullscreen"
     },
@@ -9139,7 +9159,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L945",
       "_origin": "ast",
-      "community": 46,
+      "community": 2,
       "norm_label": ".rightpanel()",
       "id": "ui_ui_ui_rightpanel"
     },
@@ -9149,7 +9169,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L957",
       "_origin": "ast",
-      "community": 46,
+      "community": 44,
       "norm_label": ".layouttoolbar()",
       "id": "ui_ui_ui_layouttoolbar"
     },
@@ -9159,7 +9179,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L970",
       "_origin": "ast",
-      "community": 43,
+      "community": 36,
       "norm_label": ".addsprite()",
       "id": "ui_ui_ui_addsprite"
     },
@@ -9599,7 +9619,7 @@
       "source_file": "src/app/src/editor/ui/hintAlignment.test.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 10,
+      "community": 32,
       "norm_label": "hintalignment.test.js",
       "id": "ui_hintalignment_test"
     },
@@ -9609,7 +9629,7 @@
       "source_file": "src/app/src/editor/ui/hintAlignment.test.js",
       "source_location": "L21",
       "_origin": "ast",
-      "community": 10,
+      "community": 32,
       "norm_label": "proj()",
       "id": "ui_hintalignment_test_proj"
     },
@@ -9619,7 +9639,7 @@
       "source_file": "src/app/src/editor/ui/hintAlignment.test.js",
       "source_location": "L31",
       "_origin": "ast",
-      "community": 10,
+      "community": 32,
       "norm_label": "hintsfrom()",
       "id": "ui_hintalignment_test_hintsfrom"
     },
@@ -9629,7 +9649,7 @@
       "source_file": "src/app/src/editor/ui/hintAlignment.test.js",
       "source_location": "L74",
       "_origin": "ast",
-      "community": 10,
+      "community": 32,
       "norm_label": "evaluate()",
       "id": "ui_hintalignment_test_evaluate"
     },
@@ -9639,7 +9659,7 @@
       "source_file": "src/app/src/editor/ui/hintAlignment.test.js",
       "source_location": "L78",
       "_origin": "ast",
-      "community": 10,
+      "community": 32,
       "norm_label": "states()",
       "id": "ui_hintalignment_test_states"
     },
@@ -9649,7 +9669,7 @@
       "source_file": "src/app/src/editor/ui/hintAlignment.test.js",
       "source_location": "L82",
       "_origin": "ast",
-      "community": 10,
+      "community": 32,
       "norm_label": "only()",
       "id": "ui_hintalignment_test_only"
     },
@@ -9659,7 +9679,7 @@
       "source_file": "src/app/src/editor/ui/hintAlignment.test.js",
       "source_location": "L188",
       "_origin": "ast",
-      "community": 10,
+      "community": 32,
       "norm_label": "teacherproject()",
       "id": "ui_hintalignment_test_teacherproject"
     },
@@ -9669,7 +9689,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 78,
+      "community": 22,
       "norm_label": "hintexpected.test.js",
       "id": "ui_hintexpected_test"
     },
@@ -9679,7 +9699,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L42",
       "_origin": "ast",
-      "community": 78,
+      "community": 22,
       "norm_label": "triggers",
       "id": "ui_hintexpected_test_triggers"
     },
@@ -9689,7 +9709,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L43",
       "_origin": "ast",
-      "community": 78,
+      "community": 22,
       "norm_label": "carets",
       "id": "ui_hintexpected_test_carets"
     },
@@ -9699,7 +9719,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L45",
       "_origin": "ast",
-      "community": 78,
+      "community": 22,
       "norm_label": "clone()",
       "id": "ui_hintexpected_test_clone"
     },
@@ -9709,7 +9729,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L47",
       "_origin": "ast",
-      "community": 78,
+      "community": 22,
       "norm_label": "headof()",
       "id": "ui_hintexpected_test_headof"
     },
@@ -9719,7 +9739,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L58",
       "_origin": "ast",
-      "community": 78,
+      "community": 22,
       "norm_label": "expectedhintsfor()",
       "id": "ui_hintexpected_test_expectedhintsfor"
     },
@@ -9749,7 +9769,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L127",
       "_origin": "ast",
-      "community": 78,
+      "community": 22,
       "norm_label": "tupleat()",
       "id": "ui_hintexpected_test_tupleat"
     },
@@ -9759,7 +9779,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L138",
       "_origin": "ast",
-      "community": 78,
+      "community": 22,
       "norm_label": "allscripts()",
       "id": "ui_hintexpected_test_allscripts"
     },
@@ -9769,7 +9789,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L156",
       "_origin": "ast",
-      "community": 78,
+      "community": 22,
       "norm_label": "fixture_dir",
       "id": "ui_hintexpected_test_fixture_dir"
     },
@@ -9779,7 +9799,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L157",
       "_origin": "ast",
-      "community": 78,
+      "community": 22,
       "norm_label": "fixtures",
       "id": "ui_hintexpected_test_fixtures"
     },
@@ -9789,7 +9809,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L161",
       "_origin": "ast",
-      "community": 78,
+      "community": 22,
       "norm_label": "synthetic",
       "id": "ui_hintexpected_test_synthetic"
     },
@@ -9799,7 +9819,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L175",
       "_origin": "ast",
-      "community": 78,
+      "community": 22,
       "norm_label": "all_projects",
       "id": "ui_hintexpected_test_all_projects"
     },
@@ -9809,7 +9829,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L560",
       "_origin": "ast",
-      "community": 78,
+      "community": 22,
       "norm_label": "chain()",
       "id": "ui_hintexpected_test_chain"
     },
@@ -9989,7 +10009,7 @@
       "source_file": "src/app/src/entry/gettingstarted.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 34,
+      "community": 20,
       "norm_label": "gettingstarted.js",
       "id": "entry_gettingstarted"
     },
@@ -9999,7 +10019,7 @@
       "source_file": "src/app/src/entry/gettingstarted.js",
       "source_location": "L5",
       "_origin": "ast",
-      "community": 34,
+      "community": 20,
       "norm_label": "gettingstartedmain()",
       "id": "entry_gettingstarted_gettingstartedmain"
     },
@@ -10009,7 +10029,7 @@
       "source_file": "src/app/src/entry/gettingstarted.js",
       "source_location": "L32",
       "_origin": "ast",
-      "community": 34,
+      "community": 20,
       "norm_label": "gettingstartedcloseme()",
       "id": "entry_gettingstarted_gettingstartedcloseme"
     },
@@ -10359,7 +10379,7 @@
       "source_file": "src/app/src/entry/teacher.js",
       "source_location": "L295",
       "_origin": "ast",
-      "community": 46,
+      "community": 0,
       "norm_label": "_warnstudentcameonline()",
       "id": "entry_teacher_warnstudentcameonline"
     },
@@ -10629,7 +10649,7 @@
       "source_file": "src/app/src/geom/Rectangle.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 48,
+      "community": 7,
       "norm_label": "rectangle.js",
       "id": "geom_rectangle"
     },
@@ -10799,7 +10819,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 38,
       "norm_label": "vector",
       "id": "geom_vector_vector"
     },
@@ -10809,7 +10829,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L2",
       "_origin": "ast",
-      "community": 7,
+      "community": 38,
       "norm_label": ".sum()",
       "id": "geom_vector_vector_sum"
     },
@@ -10819,7 +10839,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L9",
       "_origin": "ast",
-      "community": 7,
+      "community": 38,
       "norm_label": ".diff()",
       "id": "geom_vector_vector_diff"
     },
@@ -10829,7 +10849,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 7,
+      "community": 38,
       "norm_label": ".equal()",
       "id": "geom_vector_vector_equal"
     },
@@ -10839,7 +10859,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L20",
       "_origin": "ast",
-      "community": 7,
+      "community": 38,
       "norm_label": ".floor()",
       "id": "geom_vector_vector_floor"
     },
@@ -10849,7 +10869,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 7,
+      "community": 38,
       "norm_label": ".neg()",
       "id": "geom_vector_vector_neg"
     },
@@ -10859,7 +10879,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L34",
       "_origin": "ast",
-      "community": 7,
+      "community": 38,
       "norm_label": ".len()",
       "id": "geom_vector_vector_len"
     },
@@ -10869,7 +10889,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L38",
       "_origin": "ast",
-      "community": 7,
+      "community": 38,
       "norm_label": ".norm()",
       "id": "geom_vector_vector_norm"
     },
@@ -10879,7 +10899,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L49",
       "_origin": "ast",
-      "community": 7,
+      "community": 38,
       "norm_label": ".perp()",
       "id": "geom_vector_vector_perp"
     },
@@ -10889,7 +10909,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L56",
       "_origin": "ast",
-      "community": 7,
+      "community": 38,
       "norm_label": ".scale()",
       "id": "geom_vector_vector_scale"
     },
@@ -10899,7 +10919,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L63",
       "_origin": "ast",
-      "community": 7,
+      "community": 38,
       "norm_label": ".dot()",
       "id": "geom_vector_vector_dot"
     },
@@ -10909,7 +10929,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L67",
       "_origin": "ast",
-      "community": 7,
+      "community": 38,
       "norm_label": ".mid()",
       "id": "geom_vector_vector_mid"
     },
@@ -10919,7 +10939,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L74",
       "_origin": "ast",
-      "community": 7,
+      "community": 38,
       "norm_label": ".lineintersect()",
       "id": "geom_vector_vector_lineintersect"
     },
@@ -10989,7 +11009,7 @@
       "source_file": "src/app/src/iPad/IO.js",
       "source_location": "L52",
       "_origin": "ast",
-      "community": 23,
+      "community": 16,
       "norm_label": ".getthumbnail()",
       "id": "ipad_io_io_getthumbnail"
     },
@@ -12259,7 +12279,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 48,
+      "community": 7,
       "norm_label": "camera.js",
       "id": "painteditor_camera"
     },
@@ -12289,7 +12309,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 63,
+      "community": 36,
       "norm_label": ".startfeed()",
       "id": "painteditor_camera_camera_startfeed"
     },
@@ -12789,7 +12809,7 @@
       "source_file": "src/app/src/painteditor/Layer.js",
       "source_location": "L39",
       "_origin": "ast",
-      "community": 34,
+      "community": 37,
       "norm_label": ".bringelementstofront()",
       "id": "painteditor_layer_layer_bringelementstofront"
     },
@@ -12999,7 +13019,7 @@
       "source_file": "src/app/src/painteditor/Layer.js",
       "source_location": "L448",
       "_origin": "ast",
-      "community": 34,
+      "community": 37,
       "norm_label": ".on()",
       "id": "painteditor_layer_layer_on"
     },
@@ -13009,7 +13029,7 @@
       "source_file": "src/app/src/painteditor/Layer.js",
       "source_location": "L452",
       "_origin": "ast",
-      "community": 34,
+      "community": 37,
       "norm_label": ".off()",
       "id": "painteditor_layer_layer_off"
     },
@@ -13339,7 +13359,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L215",
       "_origin": "ast",
-      "community": 72,
+      "community": 81,
       "norm_label": ".detectgesture()",
       "id": "painteditor_paint_paint_detectgesture"
     },
@@ -13349,7 +13369,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L230",
       "_origin": "ast",
-      "community": 49,
+      "community": 81,
       "norm_label": ".clearevents()",
       "id": "painteditor_paint_paint_clearevents"
     },
@@ -13379,7 +13399,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L263",
       "_origin": "ast",
-      "community": 49,
+      "community": 81,
       "norm_label": ".pinchstart()",
       "id": "painteditor_paint_paint_pinchstart"
     },
@@ -13389,7 +13409,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L274",
       "_origin": "ast",
-      "community": 49,
+      "community": 81,
       "norm_label": ".gesturestart()",
       "id": "painteditor_paint_paint_gesturestart"
     },
@@ -13429,7 +13449,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L331",
       "_origin": "ast",
-      "community": 72,
+      "community": 81,
       "norm_label": ".mousedown()",
       "id": "painteditor_paint_paint_mousedown"
     },
@@ -13469,7 +13489,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L405",
       "_origin": "ast",
-      "community": 28,
+      "community": 23,
       "norm_label": ".setmode()",
       "id": "painteditor_paint_paint_setmode"
     },
@@ -13479,7 +13499,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L431",
       "_origin": "ast",
-      "community": 28,
+      "community": 23,
       "norm_label": ".selectbutton()",
       "id": "painteditor_paint_paint_selectbutton"
     },
@@ -13489,7 +13509,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L443",
       "_origin": "ast",
-      "community": 28,
+      "community": 23,
       "norm_label": ".selectbuttonfromdiv()",
       "id": "painteditor_paint_paint_selectbuttonfromdiv"
     },
@@ -13499,7 +13519,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L460",
       "_origin": "ast",
-      "community": 28,
+      "community": 23,
       "norm_label": ".getclass()",
       "id": "painteditor_paint_paint_getclass"
     },
@@ -13579,7 +13599,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L543",
       "_origin": "ast",
-      "community": 28,
+      "community": 23,
       "norm_label": ".scaletofit()",
       "id": "painteditor_paint_paint_scaletofit"
     },
@@ -13639,7 +13659,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L619",
       "_origin": "ast",
-      "community": 46,
+      "community": 2,
       "norm_label": ".submitnamechange()",
       "id": "painteditor_paint_paint_submitnamechange"
     },
@@ -13669,7 +13689,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L651",
       "_origin": "ast",
-      "community": 46,
+      "community": 2,
       "norm_label": ".handlenamepress()",
       "id": "painteditor_paint_paint_handlenamepress"
     },
@@ -13689,7 +13709,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L683",
       "_origin": "ast",
-      "community": 46,
+      "community": 59,
       "norm_label": ".leftpalette()",
       "id": "painteditor_paint_paint_leftpalette"
     },
@@ -13699,7 +13719,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L691",
       "_origin": "ast",
-      "community": 46,
+      "community": 59,
       "norm_label": ".setupeditpalette()",
       "id": "painteditor_paint_paint_setupeditpalette"
     },
@@ -13709,7 +13729,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L708",
       "_origin": "ast",
-      "community": 28,
+      "community": 59,
       "norm_label": ".createsizeselector()",
       "id": "painteditor_paint_paint_createsizeselector"
     },
@@ -13719,7 +13739,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L733",
       "_origin": "ast",
-      "community": 28,
+      "community": 59,
       "norm_label": ".drawpensizeincolor()",
       "id": "painteditor_paint_paint_drawpensizeincolor"
     },
@@ -13729,7 +13749,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L737",
       "_origin": "ast",
-      "community": 28,
+      "community": 59,
       "norm_label": ".updatestrokes()",
       "id": "painteditor_paint_paint_updatestrokes"
     },
@@ -13739,7 +13759,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L748",
       "_origin": "ast",
-      "community": 28,
+      "community": 59,
       "norm_label": ".selectpensize()",
       "id": "painteditor_paint_paint_selectpensize"
     },
@@ -13769,7 +13789,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L783",
       "_origin": "ast",
-      "community": 46,
+      "community": 44,
       "norm_label": ".cameratoolson()",
       "id": "painteditor_paint_paint_cameratoolson"
     },
@@ -13779,7 +13799,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L811",
       "_origin": "ast",
-      "community": 72,
+      "community": 23,
       "norm_label": ".closecameramode()",
       "id": "painteditor_paint_paint_closecameramode"
     },
@@ -13809,7 +13829,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L867",
       "_origin": "ast",
-      "community": 28,
+      "community": 59,
       "norm_label": ".colorpalette()",
       "id": "painteditor_paint_paint_colorpalette"
     },
@@ -13819,7 +13839,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L890",
       "_origin": "ast",
-      "community": 28,
+      "community": 59,
       "norm_label": ".setsplashcolor()",
       "id": "painteditor_paint_paint_setsplashcolor"
     },
@@ -13829,7 +13849,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L895",
       "_origin": "ast",
-      "community": 28,
+      "community": 59,
       "norm_label": ".addimageurl()",
       "id": "painteditor_paint_paint_addimageurl"
     },
@@ -13839,7 +13859,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L902",
       "_origin": "ast",
-      "community": 28,
+      "community": 59,
       "norm_label": ".selectswatch()",
       "id": "painteditor_paint_paint_selectswatch"
     },
@@ -13849,7 +13869,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L929",
       "_origin": "ast",
-      "community": 28,
+      "community": 59,
       "norm_label": ".setswatchcolor()",
       "id": "painteditor_paint_paint_setswatchcolor"
     },
@@ -13859,7 +13879,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L953",
       "_origin": "ast",
-      "community": 28,
+      "community": 59,
       "norm_label": ".initswatchlist()",
       "id": "painteditor_paint_paint_initswatchlist"
     },
@@ -13919,7 +13939,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1083",
       "_origin": "ast",
-      "community": 28,
+      "community": 49,
       "norm_label": ".loadbackground()",
       "id": "painteditor_paint_paint_loadbackground"
     },
@@ -13929,7 +13949,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1102",
       "_origin": "ast",
-      "community": 28,
+      "community": 49,
       "norm_label": ".getbkg()",
       "id": "painteditor_paint_paint_getbkg"
     },
@@ -13939,7 +13959,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1113",
       "_origin": "ast",
-      "community": 28,
+      "community": 23,
       "norm_label": ".loadbkg()",
       "id": "painteditor_paint_paint_loadbkg"
     },
@@ -13949,7 +13969,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1117",
       "_origin": "ast",
-      "community": 28,
+      "community": 23,
       "norm_label": ".createbkgfromxml()",
       "id": "painteditor_paint_paint_createbkgfromxml"
     },
@@ -13979,7 +13999,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1189",
       "_origin": "ast",
-      "community": 28,
+      "community": 23,
       "norm_label": ".loadsprite()",
       "id": "painteditor_paint_paint_loadsprite"
     },
@@ -13989,7 +14009,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1193",
       "_origin": "ast",
-      "community": 28,
+      "community": 49,
       "norm_label": ".loadchar()",
       "id": "painteditor_paint_paint_loadchar"
     },
@@ -13999,7 +14019,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1204",
       "_origin": "ast",
-      "community": 28,
+      "community": 23,
       "norm_label": ".adjustshapeposition()",
       "id": "painteditor_paint_paint_adjustshapeposition"
     },
@@ -14019,7 +14039,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1230",
       "_origin": "ast",
-      "community": 72,
+      "community": 28,
       "norm_label": ".changebackground()",
       "id": "painteditor_paint_paint_changebackground"
     },
@@ -14029,7 +14049,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1242",
       "_origin": "ast",
-      "community": 72,
+      "community": 28,
       "norm_label": ".checkduplicatebkg()",
       "id": "painteditor_paint_paint_checkduplicatebkg"
     },
@@ -14039,7 +14059,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1265",
       "_origin": "ast",
-      "community": 72,
+      "community": 28,
       "norm_label": ".addtobkglib()",
       "id": "painteditor_paint_paint_addtobkglib"
     },
@@ -14119,7 +14139,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1397",
       "_origin": "ast",
-      "community": 28,
+      "community": 23,
       "norm_label": ".skipunwantedelements()",
       "id": "painteditor_paint_paint_skipunwantedelements"
     },
@@ -14129,7 +14149,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1424",
       "_origin": "ast",
-      "community": 28,
+      "community": 23,
       "norm_label": ".reassingids()",
       "id": "painteditor_paint_paint_reassingids"
     },
@@ -14139,7 +14159,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1440",
       "_origin": "ast",
-      "community": 28,
+      "community": 23,
       "norm_label": ".createcharfromxml()",
       "id": "painteditor_paint_paint_createcharfromxml"
     },
@@ -14149,7 +14169,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1477",
       "_origin": "ast",
-      "community": 28,
+      "community": 23,
       "norm_label": ".doabsolute()",
       "id": "painteditor_paint_paint_doabsolute"
     },
@@ -15299,7 +15319,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L366",
       "_origin": "ast",
-      "community": 51,
+      "community": 93,
       "norm_label": ".getcommands()",
       "id": "painteditor_path_path_getcommands"
     },
@@ -15319,7 +15339,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L405",
       "_origin": "ast",
-      "community": 51,
+      "community": 93,
       "norm_label": ".getdattribute()",
       "id": "painteditor_path_path_getdattribute"
     },
@@ -15409,7 +15429,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L723",
       "_origin": "ast",
-      "community": 29,
+      "community": 51,
       "norm_label": ".getdotcolor()",
       "id": "painteditor_path_path_getdotcolor"
     },
@@ -15419,7 +15439,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L737",
       "_origin": "ast",
-      "community": 29,
+      "community": 51,
       "norm_label": ".getdotpos()",
       "id": "painteditor_path_path_getdotpos"
     },
@@ -15439,7 +15459,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L756",
       "_origin": "ast",
-      "community": 29,
+      "community": 51,
       "norm_label": ".istip()",
       "id": "painteditor_path_path_istip"
     },
@@ -15479,7 +15499,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L803",
       "_origin": "ast",
-      "community": 29,
+      "community": 51,
       "norm_label": ".hidedots()",
       "id": "painteditor_path_path_hidedots"
     },
@@ -15499,7 +15519,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L826",
       "_origin": "ast",
-      "community": 34,
+      "community": 29,
       "norm_label": ".getdots()",
       "id": "painteditor_path_path_getdots"
     },
@@ -15509,7 +15529,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L834",
       "_origin": "ast",
-      "community": 94,
+      "community": 29,
       "norm_label": ".adddot()",
       "id": "painteditor_path_path_adddot"
     },
@@ -15519,7 +15539,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L857",
       "_origin": "ast",
-      "community": 94,
+      "community": 29,
       "norm_label": ".gethitindex()",
       "id": "painteditor_path_path_gethitindex"
     },
@@ -15539,7 +15559,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L883",
       "_origin": "ast",
-      "community": 94,
+      "community": 29,
       "norm_label": ".addpoint()",
       "id": "painteditor_path_path_addpoint"
     },
@@ -15549,7 +15569,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L906",
       "_origin": "ast",
-      "community": 94,
+      "community": 29,
       "norm_label": ".inline()",
       "id": "painteditor_path_path_inline"
     },
@@ -15579,7 +15599,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L986",
       "_origin": "ast",
-      "community": 29,
+      "community": 51,
       "norm_label": ".quiteditmode()",
       "id": "painteditor_path_path_quiteditmode"
     },
@@ -15589,7 +15609,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L991",
       "_origin": "ast",
-      "community": 29,
+      "community": 51,
       "norm_label": ".hitdot()",
       "id": "painteditor_path_path_hitdot"
     },
@@ -15599,7 +15619,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1004",
       "_origin": "ast",
-      "community": 29,
+      "community": 51,
       "norm_label": ".getclosestdotto()",
       "id": "painteditor_path_path_getclosestdotto"
     },
@@ -15609,7 +15629,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1022",
       "_origin": "ast",
-      "community": 94,
+      "community": 29,
       "norm_label": ".hitline()",
       "id": "painteditor_path_path_hitline"
     },
@@ -15619,7 +15639,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1026",
       "_origin": "ast",
-      "community": 94,
+      "community": 29,
       "norm_label": ".getpointindex()",
       "id": "painteditor_path_path_getpointindex"
     },
@@ -15659,7 +15679,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1075",
       "_origin": "ast",
-      "community": 51,
+      "community": 93,
       "norm_label": ".join()",
       "id": "painteditor_path_path_join"
     },
@@ -15849,7 +15869,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1537",
       "_origin": "ast",
-      "community": 51,
+      "community": 93,
       "norm_label": ".getfrompoints()",
       "id": "painteditor_path_path_getfrompoints"
     },
@@ -15959,7 +15979,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1742",
       "_origin": "ast",
-      "community": 51,
+      "community": 93,
       "norm_label": ".reverse()",
       "id": "painteditor_path_path_reverse"
     },
@@ -16039,7 +16059,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1887",
       "_origin": "ast",
-      "community": 29,
+      "community": 60,
       "norm_label": ".anycrossing()",
       "id": "painteditor_path_path_anycrossing"
     },
@@ -16049,7 +16069,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1903",
       "_origin": "ast",
-      "community": 29,
+      "community": 60,
       "norm_label": ".getpathcrossing()",
       "id": "painteditor_path_path_getpathcrossing"
     },
@@ -16059,7 +16079,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1922",
       "_origin": "ast",
-      "community": 29,
+      "community": 60,
       "norm_label": ".getallpoints()",
       "id": "painteditor_path_path_getallpoints"
     },
@@ -16069,7 +16089,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1972",
       "_origin": "ast",
-      "community": 29,
+      "community": 60,
       "norm_label": ".getbezierpoints()",
       "id": "painteditor_path_path_getbezierpoints"
     },
@@ -16089,7 +16109,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L2043",
       "_origin": "ast",
-      "community": 29,
+      "community": 60,
       "norm_label": ".cleanbezier()",
       "id": "painteditor_path_path_cleanbezier"
     },
@@ -16109,7 +16129,7 @@
       "source_file": "src/app/src/painteditor/SVGImage.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 48,
+      "community": 7,
       "norm_label": "svgimage.js",
       "id": "painteditor_svgimage"
     },
@@ -16249,7 +16269,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 48,
+      "community": 7,
       "norm_label": "svgtools.js",
       "id": "painteditor_svgtools"
     },
@@ -16259,7 +16279,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 48,
+      "community": 7,
       "norm_label": "attributetable",
       "id": "painteditor_svgtools_attributetable"
     },
@@ -16329,7 +16349,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L66",
       "_origin": "ast",
-      "community": 93,
+      "community": 5,
       "norm_label": ".creategroup()",
       "id": "painteditor_svgtools_svgtools_creategroup"
     },
@@ -16349,7 +16369,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L92",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".addpath()",
       "id": "painteditor_svgtools_svgtools_addpath"
     },
@@ -16359,7 +16379,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L111",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".addpolyline()",
       "id": "painteditor_svgtools_svgtools_addpolyline"
     },
@@ -16369,7 +16389,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L130",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".addellipse()",
       "id": "painteditor_svgtools_svgtools_addellipse"
     },
@@ -16379,7 +16399,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L151",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".addtriangle()",
       "id": "painteditor_svgtools_svgtools_addtriangle"
     },
@@ -16389,7 +16409,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L170",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".addrect()",
       "id": "painteditor_svgtools_svgtools_addrect"
     },
@@ -16399,7 +16419,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L191",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".getpolyattr()",
       "id": "painteditor_svgtools_svgtools_getpolyattr"
     },
@@ -16409,7 +16429,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L202",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".getpenattr()",
       "id": "painteditor_svgtools_svgtools_getpenattr"
     },
@@ -16449,7 +16469,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L236",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".rename()",
       "id": "painteditor_svgtools_svgtools_rename"
     },
@@ -16649,7 +16669,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L679",
       "_origin": "ast",
-      "community": 93,
+      "community": 5,
       "norm_label": ".getcount()",
       "id": "painteditor_svgtools_svgtools_getcount"
     },
@@ -16659,7 +16679,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L693",
       "_origin": "ast",
-      "community": 93,
+      "community": 5,
       "norm_label": ".clonesvgelement()",
       "id": "painteditor_svgtools_svgtools_clonesvgelement"
     },
@@ -16669,7 +16689,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L736",
       "_origin": "ast",
-      "community": 93,
+      "community": 5,
       "norm_label": ".removeduplicates()",
       "id": "painteditor_svgtools_svgtools_removeduplicates"
     },
@@ -16679,7 +16699,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L773",
       "_origin": "ast",
-      "community": 93,
+      "community": 5,
       "norm_label": ".getflatten()",
       "id": "painteditor_svgtools_svgtools_getflatten"
     },
@@ -16689,7 +16709,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L790",
       "_origin": "ast",
-      "community": 93,
+      "community": 5,
       "norm_label": ".getclonedelement()",
       "id": "painteditor_svgtools_svgtools_getclonedelement"
     },
@@ -16699,7 +16719,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L826",
       "_origin": "ast",
-      "community": 93,
+      "community": 5,
       "norm_label": ".getclone()",
       "id": "painteditor_svgtools_svgtools_getclone"
     },
@@ -18279,7 +18299,7 @@
       "source_file": "src/app/src/utils/AppUsage.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 78,
       "norm_label": "appusage.js",
       "id": "utils_appusage"
     },
@@ -18289,7 +18309,7 @@
       "source_file": "src/app/src/utils/AppUsage.js",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 8,
+      "community": 78,
       "norm_label": "appusage",
       "id": "utils_appusage_appusage"
     },
@@ -18299,7 +18319,7 @@
       "source_file": "src/app/src/utils/AppUsage.js",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 8,
+      "community": 78,
       "norm_label": ".currentusage()",
       "id": "utils_appusage_appusage_currentusage"
     },
@@ -18309,7 +18329,7 @@
       "source_file": "src/app/src/utils/AppUsage.js",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 8,
+      "community": 78,
       "norm_label": ".initusage()",
       "id": "utils_appusage_appusage_initusage"
     },
@@ -18319,7 +18339,7 @@
       "source_file": "src/app/src/utils/AppUsage.js",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 8,
+      "community": 78,
       "norm_label": ".askforusage()",
       "id": "utils_appusage_appusage_askforusage"
     },
@@ -18329,7 +18349,7 @@
       "source_file": "src/app/src/utils/AppUsage.js",
       "source_location": "L33",
       "_origin": "ast",
-      "community": 8,
+      "community": 78,
       "norm_label": ".setusage()",
       "id": "utils_appusage_appusage_setusage"
     },
@@ -18379,7 +18399,7 @@
       "source_file": "src/app/src/utils/DrawPath.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 82,
+      "community": 40,
       "norm_label": "drawpath.js",
       "id": "utils_drawpath"
     },
@@ -18439,7 +18459,7 @@
       "source_file": "src/app/src/utils/Events.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 71,
+      "community": 8,
       "norm_label": "events.js",
       "id": "utils_events"
     },
@@ -18449,7 +18469,7 @@
       "source_file": "src/app/src/utils/Events.js",
       "source_location": "L20",
       "_origin": "ast",
-      "community": 71,
+      "community": 8,
       "norm_label": "pinchcenter",
       "id": "utils_events_pinchcenter"
     },
@@ -19619,7 +19639,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 59,
+      "community": 8,
       "norm_label": "scratchaudio",
       "id": "utils_scratchaudio_scratchaudio"
     },
@@ -19629,7 +19649,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 59,
+      "community": 8,
       "norm_label": ".uisounds()",
       "id": "utils_scratchaudio_scratchaudio_uisounds"
     },
@@ -19639,7 +19659,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 59,
+      "community": 8,
       "norm_label": ".projectsounds()",
       "id": "utils_scratchaudio_scratchaudio_projectsounds"
     },
@@ -19649,7 +19669,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 59,
+      "community": 8,
       "norm_label": ".sndfx()",
       "id": "utils_scratchaudio_scratchaudio_sndfx"
     },
@@ -19659,7 +19679,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 59,
+      "community": 8,
       "norm_label": ".sndfxwithvolume()",
       "id": "utils_scratchaudio_scratchaudio_sndfxwithvolume"
     },
@@ -19669,7 +19689,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L38",
       "_origin": "ast",
-      "community": 59,
+      "community": 8,
       "norm_label": ".init()",
       "id": "utils_scratchaudio_scratchaudio_init"
     },
@@ -19679,7 +19699,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 59,
+      "community": 8,
       "norm_label": ".addsound()",
       "id": "utils_scratchaudio_scratchaudio_addsound"
     },
@@ -19689,7 +19709,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L77",
       "_origin": "ast",
-      "community": 59,
+      "community": 8,
       "norm_label": ".sounddone()",
       "id": "utils_scratchaudio_scratchaudio_sounddone"
     },
@@ -19699,7 +19719,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L82",
       "_origin": "ast",
-      "community": 59,
+      "community": 8,
       "norm_label": ".loadprojectsound()",
       "id": "utils_scratchaudio_scratchaudio_loadprojectsound"
     },
@@ -19709,7 +19729,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L94",
       "_origin": "ast",
-      "community": 59,
+      "community": 8,
       "norm_label": ".loadfromlocal()",
       "id": "utils_scratchaudio_scratchaudio_loadfromlocal"
     },
@@ -19949,7 +19969,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L62",
       "_origin": "ast",
-      "community": 36,
+      "community": 34,
       "norm_label": "preprocess()",
       "id": "utils_lib_preprocess"
     },
@@ -19959,7 +19979,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L100",
       "_origin": "ast",
-      "community": 36,
+      "community": 34,
       "norm_label": "preprocessandload()",
       "id": "utils_lib_preprocessandload"
     },
@@ -19969,7 +19989,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L119",
       "_origin": "ast",
-      "community": 36,
+      "community": 34,
       "norm_label": "preprocessandloadcss()",
       "id": "utils_lib_preprocessandloadcss"
     },
@@ -19999,7 +20019,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L165",
       "_origin": "ast",
-      "community": 43,
+      "community": 44,
       "norm_label": "newimage()",
       "id": "utils_lib_newimage"
     },
@@ -20019,7 +20039,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L186",
       "_origin": "ast",
-      "community": 46,
+      "community": 44,
       "norm_label": "newhtml()",
       "id": "utils_lib_newhtml"
     },
@@ -20069,7 +20089,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L291",
       "_origin": "ast",
-      "community": 71,
+      "community": 44,
       "norm_label": "setcanvassize()",
       "id": "utils_lib_setcanvassize"
     },
@@ -20099,7 +20119,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L319",
       "_origin": "ast",
-      "community": 23,
+      "community": 36,
       "norm_label": "globalx()",
       "id": "utils_lib_globalx"
     },
@@ -20119,7 +20139,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L342",
       "_origin": "ast",
-      "community": 23,
+      "community": 36,
       "norm_label": "globaly()",
       "id": "utils_lib_globaly"
     },
@@ -20129,7 +20149,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L356",
       "_origin": "ast",
-      "community": 43,
+      "community": 44,
       "norm_label": "setprops()",
       "id": "utils_lib_setprops"
     },
@@ -20139,7 +20159,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L363",
       "_origin": "ast",
-      "community": 43,
+      "community": 44,
       "norm_label": "csstransition()",
       "id": "utils_lib_csstransition"
     },
@@ -20159,7 +20179,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L431",
       "_origin": "ast",
-      "community": 23,
+      "community": 36,
       "norm_label": "drawthumbnail()",
       "id": "utils_lib_drawthumbnail"
     },
@@ -20199,7 +20219,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L523",
       "_origin": "ast",
-      "community": 43,
+      "community": 36,
       "norm_label": "getdocumentheight()",
       "id": "utils_lib_getdocumentheight"
     },
@@ -20209,7 +20229,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L527",
       "_origin": "ast",
-      "community": 43,
+      "community": 17,
       "norm_label": "getdocumentwidth()",
       "id": "utils_lib_getdocumentwidth"
     },
@@ -20219,7 +20239,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L531",
       "_origin": "ast",
-      "community": 25,
+      "community": 40,
       "norm_label": "getstringsize()",
       "id": "utils_lib_getstringsize"
     },
@@ -20229,7 +20249,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L536",
       "_origin": "ast",
-      "community": 44,
+      "community": 40,
       "norm_label": "writetext()",
       "id": "utils_lib_writetext"
     },
@@ -20249,7 +20269,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L549",
       "_origin": "ast",
-      "community": 43,
+      "community": 44,
       "norm_label": "newform()",
       "id": "utils_lib_newform"
     },
@@ -20259,7 +20279,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L566",
       "_origin": "ast",
-      "community": 43,
+      "community": 44,
       "norm_label": "newtextinput()",
       "id": "utils_lib_newtextinput"
     },
@@ -20269,7 +20289,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L575",
       "_origin": "ast",
-      "community": 8,
+      "community": 20,
       "norm_label": "geturlvars()",
       "id": "utils_lib_geturlvars"
     },
@@ -20279,7 +20299,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L590",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": "getidfor()",
       "id": "utils_lib_getidfor"
     },
@@ -20299,7 +20319,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L611",
       "_origin": "ast",
-      "community": 36,
+      "community": 7,
       "norm_label": "rgb2hsb()",
       "id": "utils_lib_rgb2hsb"
     },
@@ -20339,7 +20359,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L675",
       "_origin": "ast",
-      "community": 36,
+      "community": 7,
       "norm_label": "getrgb()",
       "id": "utils_lib_getrgb"
     },
@@ -20379,7 +20399,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L723",
       "_origin": "ast",
-      "community": 36,
+      "community": 2,
       "norm_label": "getviewportheight()",
       "id": "utils_lib_getviewportheight"
     },
@@ -20399,7 +20419,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L731",
       "_origin": "ast",
-      "community": 36,
+      "community": 2,
       "norm_label": "css_vh()",
       "id": "utils_lib_css_vh"
     },
@@ -20629,7 +20649,7 @@
       "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
       "source_location": "L39",
       "_origin": "ast",
-      "community": 68,
+      "community": 43,
       "norm_label": "registergalleryrestrictionprovider()",
       "id": "ui_galleryrestriction_registergalleryrestrictionprovider"
     },
@@ -20639,7 +20659,7 @@
       "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
       "source_location": "L52",
       "_origin": "ast",
-      "community": 68,
+      "community": 43,
       "norm_label": "registerzeroblockdefaultsprovider()",
       "id": "ui_galleryrestriction_registerzeroblockdefaultsprovider"
     },
@@ -20659,7 +20679,7 @@
       "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
       "source_location": "L60",
       "_origin": "ast",
-      "community": 43,
+      "community": 8,
       "norm_label": "getgalleryrestriction()",
       "id": "ui_galleryrestriction_getgalleryrestriction"
     },
@@ -20669,7 +20689,7 @@
       "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
       "source_location": "L74",
       "_origin": "ast",
-      "community": 68,
+      "community": 43,
       "norm_label": "registermissionpendingprovider()",
       "id": "ui_galleryrestriction_registermissionpendingprovider"
     },
@@ -20689,7 +20709,7 @@
       "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
       "source_location": "L94",
       "_origin": "ast",
-      "community": 68,
+      "community": 43,
       "norm_label": "registerstageplacementsprovider()",
       "id": "ui_galleryrestriction_registerstageplacementsprovider"
     },
@@ -20709,7 +20729,7 @@
       "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
       "source_location": "L113",
       "_origin": "ast",
-      "community": 54,
+      "community": 43,
       "norm_label": "registerstageplacementghostrenderer()",
       "id": "ui_galleryrestriction_registerstageplacementghostrenderer"
     },
@@ -20749,7 +20769,7 @@
       "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
       "source_location": "L165",
       "_origin": "ast",
-      "community": 43,
+      "community": 11,
       "norm_label": "showassignmenttoast()",
       "id": "ui_galleryrestriction_showassignmenttoast"
     },
@@ -20889,7 +20909,7 @@
       "source_file": "src/app/src/editor/ui/Thumbs.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 43,
+      "community": 8,
       "norm_label": "thumbs.js",
       "id": "ui_thumbs"
     },
@@ -21129,7 +21149,7 @@
       "source_file": "src/app/src/editor/ui/Thumbs.js",
       "source_location": "L393",
       "_origin": "ast",
-      "community": 43,
+      "community": 11,
       "norm_label": ".clickonemptypage()",
       "id": "ui_thumbs_thumbs_clickonemptypage"
     },
@@ -21339,7 +21359,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 38,
+      "community": 20,
       "norm_label": "index.js",
       "id": "entry_index"
     },
@@ -21349,7 +21369,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 38,
+      "community": 20,
       "norm_label": "indexmain()",
       "id": "entry_index_indexmain"
     },
@@ -21359,7 +21379,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L52",
       "_origin": "ast",
-      "community": 38,
+      "community": 20,
       "norm_label": "indexfirsttime()",
       "id": "entry_index_indexfirsttime"
     },
@@ -21369,7 +21389,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L91",
       "_origin": "ast",
-      "community": 38,
+      "community": 20,
       "norm_label": "indexloadoptions()",
       "id": "entry_index_indexloadoptions"
     },
@@ -21379,7 +21399,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L95",
       "_origin": "ast",
-      "community": 38,
+      "community": 20,
       "norm_label": "indexloadstart()",
       "id": "entry_index_indexloadstart"
     },
@@ -21389,7 +21409,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L139",
       "_origin": "ast",
-      "community": 38,
+      "community": 20,
       "norm_label": "setclassofelementbyid()",
       "id": "entry_index_setclassofelementbyid"
     },
@@ -21399,7 +21419,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L150",
       "_origin": "ast",
-      "community": 38,
+      "community": 20,
       "norm_label": "indexgohome()",
       "id": "entry_index_indexgohome"
     },
@@ -21409,7 +21429,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L160",
       "_origin": "ast",
-      "community": 38,
+      "community": 20,
       "norm_label": "indexgosettings()",
       "id": "entry_index_indexgosettings"
     },
@@ -21419,7 +21439,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L169",
       "_origin": "ast",
-      "community": 38,
+      "community": 20,
       "norm_label": "indexgettingstarted()",
       "id": "entry_index_indexgettingstarted"
     },
@@ -21429,7 +21449,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L176",
       "_origin": "ast",
-      "community": 38,
+      "community": 20,
       "norm_label": "indexinfo()",
       "id": "entry_index_indexinfo"
     },
@@ -21439,7 +21459,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L183",
       "_origin": "ast",
-      "community": 38,
+      "community": 20,
       "norm_label": "indexmoreapps()",
       "id": "entry_index_indexmoreapps"
     },
@@ -21846,6 +21866,240 @@
   ],
   "links": [
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/projectCaptures.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routes_projectcaptures",
+      "target": "services_projectcaptures"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_projectcaptures",
+      "target": "services_projectcaptures_canonical"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L27",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_projectcaptures",
+      "target": "services_projectcaptures_capturemanifest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_projectcaptures",
+      "target": "services_projectcaptures_createhash"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L48",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_projectcaptures",
+      "target": "services_projectcaptures_decodepng"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L12",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_projectcaptures",
+      "target": "services_projectcaptures_fingerprint"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L67",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_projectcaptures",
+      "target": "services_projectcaptures_imagepath"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "services_projectcaptures",
+      "target": "services_projectcaptures_iscurrentcapture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_projectcaptures",
+      "target": "services_projectcaptures_projectsnapshot"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.test.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_projectcaptures_test",
+      "target": "services_projectcaptures"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.js",
+      "source_location": "L13",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_projectcaptures_fingerprint",
+      "target": "services_projectcaptures_canonical"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/projectCaptures.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routes_projectcaptures",
+      "target": "services_projectcaptures_fingerprint"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.test.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_projectcaptures_test",
+      "target": "services_projectcaptures_fingerprint"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/projectCaptures.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routes_projectcaptures",
+      "target": "services_projectcaptures_projectsnapshot"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.test.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_projectcaptures_test",
+      "target": "services_projectcaptures_projectsnapshot"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/projectCaptures.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routes_projectcaptures",
+      "target": "services_projectcaptures_capturemanifest"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.test.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_projectcaptures_test",
+      "target": "services_projectcaptures_capturemanifest"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/projectCaptures.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "routes_projectcaptures",
+      "target": "services_projectcaptures_iscurrentcapture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/projectCaptures.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routes_projectcaptures",
+      "target": "services_projectcaptures_decodepng"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.test.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_projectcaptures_test",
+      "target": "services_projectcaptures_decodepng"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/projectCaptures.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routes_projectcaptures",
+      "target": "services_projectcaptures_imagepath"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/projectCaptures.test.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_projectcaptures_test",
+      "target": "services_projectcaptures_imagepath"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/routes/projectCaptures.js",
@@ -21871,9 +22125,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "routes_projectcaptures",
-      "target": "routes_projectcaptures_capture_bucket_fingerprint_projectsnapshot_capturemanifest_decodepng_imagepath"
+      "target": "routes_projectcaptures_capture_renderer_version_iscurrentcapture_capture_bucket_fingerprint_projectsnapshot_capturemanifest_decodepng_imagepath",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -21894,72 +22148,6 @@
       "confidence_score": 1.0,
       "source": "routes_projectcaptures",
       "target": "routes_projectcaptures_express"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/projectCaptures.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "routes_projectcaptures",
-      "target": "services_projectcaptures"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/projectCaptures.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "routes_projectcaptures",
-      "target": "services_projectcaptures_capturemanifest"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/projectCaptures.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "routes_projectcaptures",
-      "target": "services_projectcaptures_decodepng"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/projectCaptures.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "routes_projectcaptures",
-      "target": "services_projectcaptures_fingerprint"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/projectCaptures.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "routes_projectcaptures",
-      "target": "services_projectcaptures_imagepath"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/projectCaptures.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "routes_projectcaptures",
-      "target": "services_projectcaptures_projectsnapshot"
     },
     {
       "relation": "imports_from",
@@ -22085,6 +22273,441 @@
       "weight": 1.0,
       "source": "ui_assignmentcapture_saveassignmentcaptures",
       "target": "routes_projectcaptures_test_api"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture",
+      "target": "ui_capturerenderer"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer",
+      "target": "ui_capturerenderer_canvas"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L29",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer",
+      "target": "ui_capturerenderer_captureactor"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L72",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer",
+      "target": "ui_capturerenderer_capturescripts"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer",
+      "target": "ui_capturerenderer_readyimage"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L59",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer",
+      "target": "ui_capturerenderer_resourcedataurl"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L48",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer",
+      "target": "ui_capturerenderer_scriptbounds"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "ui_capturerenderer",
+      "target": "ui_capturerenderer_skipcaptureelement",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L39",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer",
+      "target": "ui_capturerenderer_waitforscene"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.test.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer_test",
+      "target": "ui_capturerenderer"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L33",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer_captureactor",
+      "target": "ui_capturerenderer_canvas"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L142",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer_capturescripts",
+      "target": "ui_capturerenderer_canvas"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L31",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer_captureactor",
+      "target": "ui_capturerenderer_readyimage"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L135",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer_capturescripts",
+      "target": "ui_capturerenderer_readyimage"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L40",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer_waitforscene",
+      "target": "ui_capturerenderer_readyimage"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture",
+      "target": "ui_capturerenderer_captureactor"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "ui_assignmentcapture_saveassignmentcaptures",
+      "target": "ui_capturerenderer_captureactor"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture",
+      "target": "ui_capturerenderer_waitforscene"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "ui_assignmentcapture_saveassignmentcaptures",
+      "target": "ui_capturerenderer_waitforscene"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
+      "source_location": "L141",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer_capturescripts",
+      "target": "ui_capturerenderer_scriptbounds"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.test.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_capturerenderer_test",
+      "target": "ui_capturerenderer_scriptbounds"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/CaptureRenderer.test.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "ui_capturerenderer_test",
+      "target": "ui_capturerenderer_skipcaptureelement",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture",
+      "target": "ui_capturerenderer_capturescripts"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "ui_assignmentcapture_saveassignmentcaptures",
+      "target": "ui_capturerenderer_capturescripts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L303",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_capturemissingimages",
+      "target": "ui_assignmentcapture"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
+      "source_location": "L793",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
+      "target": "ui_assignmentcapture"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
+      "source_location": "L64",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture",
+      "target": "ui_assignmentcapture_automaticchecks"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
+      "source_location": "L66",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture",
+      "target": "ui_assignmentcapture_ensureassignmentcaptures"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture",
+      "target": "ui_assignmentcapture_saveassignmentcaptures"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture",
+      "target": "ui_project"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture",
+      "target": "ui_project_project"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture_test",
+      "target": "ui_assignmentcapture"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
+      "source_location": "L88",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture_ensureassignmentcaptures",
+      "target": "ui_assignmentcapture_saveassignmentcaptures"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture_test",
+      "target": "ui_assignmentcapture_saveassignmentcaptures"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "ui_assignmentcapture_ensureassignmentcaptures",
+      "target": "ui_assignmentcapture_test_request"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture_test",
+      "target": "ui_assignmentcapture_ensureassignmentcaptures"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
+      "source_location": "L65",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture_test",
+      "target": "ui_assignmentcapture_test_automaticrequest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
+      "source_location": "L13",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture_test",
+      "target": "ui_assignmentcapture_test_loadedprojectid"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture_test",
+      "target": "ui_assignmentcapture_test_manifest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture_test",
+      "target": "ui_assignmentcapture_test_mocks"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ui_assignmentcapture_test",
+      "target": "ui_assignmentcapture_test_request"
     },
     {
       "relation": "contains",
@@ -22263,17 +22886,6 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "ui_assignmentbadge",
-      "target": "ui_project"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentcapture",
       "target": "ui_project"
     },
     {
@@ -22694,17 +23306,6 @@
       "target": "ui_project_project"
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentcapture",
-      "target": "ui_project_project"
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "INFERRED",
@@ -22974,9 +23575,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_project_project",
-      "target": "ui_project_project_loadedprojectid",
-      "confidence_score": 1.0
+      "target": "ui_project_project_loadedprojectid"
     },
     {
       "relation": "method",
@@ -24156,9 +24757,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L299",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_capturemissingimages",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_capturemissingimages"
     },
     {
       "relation": "method",
@@ -24320,9 +24921,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L220",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_capturemissingimages",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_capturemissingimages"
     },
     {
       "relation": "calls",
@@ -24375,20 +24976,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L296",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_initadminedit",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_capturemissingimages",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L303",
-      "weight": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_capturemissingimages",
-      "target": "ui_assignmentcapture",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_capturemissingimages"
     },
     {
       "relation": "calls",
@@ -24501,17 +25091,6 @@
       "target": "lobby_generateactivitymodal_closeoverlay"
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
-      "source_location": "L793",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
-      "target": "ui_assignmentcapture"
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -24525,224 +25104,12 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
-      "source_location": "L64",
-      "weight": 1.0,
-      "source": "ui_assignmentcapture",
-      "target": "ui_assignmentcapture_automaticchecks",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
-      "source_location": "L66",
-      "weight": 1.0,
-      "source": "ui_assignmentcapture",
-      "target": "ui_assignmentcapture_ensureassignmentcaptures",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentcapture",
-      "target": "ui_assignmentcapture_saveassignmentcaptures"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentcapture",
-      "target": "ui_capturerenderer"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentcapture",
-      "target": "ui_capturerenderer_captureactor"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentcapture",
-      "target": "ui_capturerenderer_capturescripts"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentcapture",
-      "target": "ui_capturerenderer_waitforscene"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
-      "source_location": "L16",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentcapture_test",
-      "target": "ui_assignmentcapture"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
-      "source_location": "L88",
-      "weight": 1.0,
-      "source": "ui_assignmentcapture_ensureassignmentcaptures",
-      "target": "ui_assignmentcapture_saveassignmentcaptures",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
-      "source_location": "L44",
-      "weight": 1.0,
-      "source": "ui_assignmentcapture_saveassignmentcaptures",
-      "target": "ui_capturerenderer_captureactor"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
-      "source_location": "L45",
-      "weight": 1.0,
-      "source": "ui_assignmentcapture_saveassignmentcaptures",
-      "target": "ui_capturerenderer_capturescripts"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
-      "source_location": "L36",
-      "weight": 1.0,
-      "source": "ui_assignmentcapture_saveassignmentcaptures",
-      "target": "ui_capturerenderer_waitforscene"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
-      "source_location": "L16",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentcapture_test",
-      "target": "ui_assignmentcapture_saveassignmentcaptures"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
-      "source_location": "L78",
-      "weight": 1.0,
-      "source": "ui_assignmentcapture_ensureassignmentcaptures",
-      "target": "ui_assignmentcapture_test_request"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
-      "source_location": "L17",
-      "weight": 1.0,
-      "source": "ui_assignmentcapture_test",
-      "target": "ui_assignmentcapture_ensureassignmentcaptures",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
-      "source_location": "L65",
-      "weight": 1.0,
-      "source": "ui_assignmentcapture_test",
-      "target": "ui_assignmentcapture_test_automaticrequest",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
-      "source_location": "L13",
-      "weight": 1.0,
-      "source": "ui_assignmentcapture_test",
-      "target": "ui_assignmentcapture_test_loadedprojectid",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
-      "source_location": "L18",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentcapture_test",
-      "target": "ui_assignmentcapture_test_manifest"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentcapture_test",
-      "target": "ui_assignmentcapture_test_mocks"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_assignmentcapture_test",
-      "target": "ui_assignmentcapture_test_request"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.autocapture.test.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_autocapture_test",
-      "target": "ui_assignmentauthorbar_autocapture_test_mocks",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_autocapture_test_mocks"
     },
     {
       "relation": "contains",
@@ -24750,9 +25117,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.autocapture.test.js",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_autocapture_test",
-      "target": "ui_assignmentauthorbar_autocapture_test_token",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_autocapture_test_token"
     },
     {
       "relation": "contains",
@@ -24987,164 +25354,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer",
-      "target": "ui_capturerenderer_canvas"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L29",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer",
-      "target": "ui_capturerenderer_captureactor"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L72",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer",
-      "target": "ui_capturerenderer_capturescripts"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer",
-      "target": "ui_capturerenderer_readyimage"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L59",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer",
-      "target": "ui_capturerenderer_resourcedataurl"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L48",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer",
-      "target": "ui_capturerenderer_scriptbounds"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L39",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer",
-      "target": "ui_capturerenderer_waitforscene"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.test.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer_test",
-      "target": "ui_capturerenderer"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L33",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer_captureactor",
-      "target": "ui_capturerenderer_canvas"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L142",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer_capturescripts",
-      "target": "ui_capturerenderer_canvas"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L31",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer_captureactor",
-      "target": "ui_capturerenderer_readyimage"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L135",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer_capturescripts",
-      "target": "ui_capturerenderer_readyimage"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L40",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer_waitforscene",
-      "target": "ui_capturerenderer_readyimage"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
-      "source_location": "L141",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer_capturescripts",
-      "target": "ui_capturerenderer_scriptbounds"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/src/editor/ui/CaptureRenderer.test.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ui_capturerenderer_test",
-      "target": "ui_capturerenderer_scriptbounds"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L94",
       "weight": 1.0,
@@ -25342,153 +25551,6 @@
       "confidence_score": 1.0,
       "source": "routes_assignments_findownedtemplateproject",
       "target": "routes_assignments_caneditassignment"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_projectcaptures",
-      "target": "services_projectcaptures_canonical"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L27",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_projectcaptures",
-      "target": "services_projectcaptures_capturemanifest"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_projectcaptures",
-      "target": "services_projectcaptures_createhash"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L48",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_projectcaptures",
-      "target": "services_projectcaptures_decodepng"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L12",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_projectcaptures",
-      "target": "services_projectcaptures_fingerprint"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L67",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_projectcaptures",
-      "target": "services_projectcaptures_imagepath"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L16",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_projectcaptures",
-      "target": "services_projectcaptures_projectsnapshot"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/projectCaptures.test.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_projectcaptures_test",
-      "target": "services_projectcaptures"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/projectCaptures.js",
-      "source_location": "L13",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_projectcaptures_fingerprint",
-      "target": "services_projectcaptures_canonical"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/projectCaptures.test.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_projectcaptures_test",
-      "target": "services_projectcaptures_fingerprint"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/projectCaptures.test.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_projectcaptures_test",
-      "target": "services_projectcaptures_projectsnapshot"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/projectCaptures.test.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_projectcaptures_test",
-      "target": "services_projectcaptures_capturemanifest"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/projectCaptures.test.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_projectcaptures_test",
-      "target": "services_projectcaptures_decodepng"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/projectCaptures.test.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_projectcaptures_test",
-      "target": "services_projectcaptures_imagepath"
     },
     {
       "relation": "contains",
@@ -77973,5 +78035,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "37346f4958d0b7394ff7d0848d316c13c3681d6c"
+  "built_at_commit": "aa55ad4a29b84255c037c93c22004548dcb7758d"
 }
