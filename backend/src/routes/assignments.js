@@ -1478,4 +1478,6 @@ router.post('/:id/hints', async (req, res) => {
     }
 });
 
+router.use('/:id/captures', require('./projectCaptures')({ getSupabase, findOwnedTemplateProject }));
+
 module.exports = router;
