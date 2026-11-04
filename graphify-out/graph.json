@@ -4,14 +4,354 @@
   "graph": {},
   "nodes": [
     {
+      "label": "index.js",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_index",
+      "community": 19,
+      "norm_label": "index.js"
+    },
+    {
+      "label": "express",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "src_index_express",
+      "community": 19,
+      "norm_label": "express"
+    },
+    {
+      "label": "cors",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "src_index_cors",
+      "community": 19,
+      "norm_label": "cors"
+    },
+    {
+      "label": "helmet",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "src_index_helmet",
+      "community": 19,
+      "norm_label": "helmet"
+    },
+    {
+      "label": "morgan",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "src_index_morgan",
+      "community": 19,
+      "norm_label": "morgan"
+    },
+    {
+      "label": "path",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "src_index_path",
+      "community": 19,
+      "norm_label": "path"
+    },
+    {
+      "label": "dbRoutes",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "src_index_dbroutes",
+      "community": 19,
+      "norm_label": "dbroutes"
+    },
+    {
+      "label": "mediaRoutes",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "src_index_mediaroutes",
+      "community": 19,
+      "norm_label": "mediaroutes"
+    },
+    {
+      "label": "{ shareRouter, publicRouter }",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "src_index_sharerouter_publicrouter",
+      "community": 19,
+      "norm_label": "{ sharerouter, publicrouter }"
+    },
+    {
+      "label": "teacherRoutes",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "src_index_teacherroutes",
+      "community": 19,
+      "norm_label": "teacherroutes"
+    },
+    {
+      "label": "realtimeRoutes",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "src_index_realtimeroutes",
+      "community": 19,
+      "norm_label": "realtimeroutes"
+    },
+    {
+      "label": "assignmentsRoutes",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "src_index_assignmentsroutes",
+      "community": 19,
+      "norm_label": "assignmentsroutes"
+    },
+    {
+      "label": "{\n  verifyAndDecode,\n  getUserIdFromClaims,\n  getTurmaIdFromClaims,\n  getPresenceStatusFromClaims,\n}",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "src_index_verifyanddecode_getuseridfromclaims_getturmaidfromclaims_getpresencestatusfromclaims",
+      "community": 19,
+      "norm_label": "{\n  verifyanddecode,\n  getuseridfromclaims,\n  getturmaidfromclaims,\n  getpresencestatusfromclaims,\n}"
+    },
+    {
+      "label": "app",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "src_index_app",
+      "community": 19,
+      "norm_label": "app"
+    },
+    {
+      "label": "parseOriginList()",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "src_index_parseoriginlist",
+      "community": 19,
+      "norm_label": "parseoriginlist()"
+    },
+    {
+      "label": "normalizeOrigin()",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "src_index_normalizeorigin",
+      "community": 19,
+      "norm_label": "normalizeorigin()"
+    },
+    {
+      "label": "localDevOrigins",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "src_index_localdevorigins",
+      "community": 19,
+      "norm_label": "localdevorigins"
+    },
+    {
+      "label": "envOrigins",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L66",
+      "_origin": "ast",
+      "id": "src_index_envorigins",
+      "community": 19,
+      "norm_label": "envorigins"
+    },
+    {
+      "label": "allowedOrigins",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L70",
+      "_origin": "ast",
+      "id": "src_index_allowedorigins",
+      "community": 19,
+      "norm_label": "allowedorigins"
+    },
+    {
+      "label": "corsOptions",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L75",
+      "_origin": "ast",
+      "id": "src_index_corsoptions",
+      "community": 19,
+      "norm_label": "corsoptions"
+    },
+    {
+      "label": "JWT_USER_HEADER",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L102",
+      "_origin": "ast",
+      "id": "src_index_jwt_user_header",
+      "community": 19,
+      "norm_label": "jwt_user_header"
+    },
+    {
+      "label": "MOCK_TOKENS",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L105",
+      "_origin": "ast",
+      "id": "src_index_mock_tokens",
+      "community": 19,
+      "norm_label": "mock_tokens"
+    },
+    {
+      "label": "MOCK_CONTEXT",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L114",
+      "_origin": "ast",
+      "id": "src_index_mock_context",
+      "community": 19,
+      "norm_label": "mock_context"
+    },
+    {
+      "label": "identityMiddleware()",
+      "file_type": "code",
+      "source_file": "backend/src/index.js",
+      "source_location": "L120",
+      "_origin": "ast",
+      "id": "src_index_identitymiddleware",
+      "community": 19,
+      "norm_label": "identitymiddleware()"
+    },
+    {
+      "label": "publicProjectCaptures.js",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "routes_publicprojectcaptures",
+      "community": 55,
+      "norm_label": "publicprojectcaptures.js"
+    },
+    {
+      "label": "express",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "routes_publicprojectcaptures_express",
+      "community": 55,
+      "norm_label": "express"
+    },
+    {
+      "label": "{ createClient }",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "routes_publicprojectcaptures_createclient",
+      "community": 55,
+      "norm_label": "{ createclient }"
+    },
+    {
+      "label": "{ CAPTURE_BUCKET }",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "routes_publicprojectcaptures_capture_bucket",
+      "community": 55,
+      "norm_label": "{ capture_bucket }"
+    },
+    {
+      "label": "defaultClient()",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "routes_publicprojectcaptures_defaultclient",
+      "community": 55,
+      "norm_label": "defaultclient()"
+    },
+    {
+      "label": "publicProjectCaptures.test.js",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "routes_publicprojectcaptures_test",
+      "community": 55,
+      "norm_label": "publicprojectcaptures.test.js"
+    },
+    {
+      "label": "express",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "routes_publicprojectcaptures_test_express",
+      "community": 55,
+      "norm_label": "express"
+    },
+    {
+      "label": "routes",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "routes_publicprojectcaptures_test_routes",
+      "community": 55,
+      "norm_label": "routes"
+    },
+    {
+      "label": "query()",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "routes_publicprojectcaptures_test_query",
+      "community": 55,
+      "norm_label": "query()"
+    },
+    {
+      "label": "get()",
+      "file_type": "code",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L56",
+      "_origin": "ast",
+      "id": "routes_publicprojectcaptures_test_get",
+      "community": 55,
+      "norm_label": "get()"
+    },
+    {
       "label": "AssignmentAuthorBar.js",
       "file_type": "code",
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar",
       "community": 20,
-      "norm_label": "assignmentauthorbar.js"
+      "norm_label": "assignmentauthorbar.js",
+      "id": "ui_assignmentauthorbar"
     },
     {
       "label": "isAllowedReturnUrl()",
@@ -19,9 +359,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L57",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_isallowedreturnurl",
       "community": 20,
-      "norm_label": "isallowedreturnurl()"
+      "norm_label": "isallowedreturnurl()",
+      "id": "ui_assignmentauthorbar_isallowedreturnurl"
     },
     {
       "label": "getAuthorId()",
@@ -29,9 +369,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L80",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_getauthorid",
       "community": 20,
-      "norm_label": "getauthorid()"
+      "norm_label": "getauthorid()",
+      "id": "ui_assignmentauthorbar_getauthorid"
     },
     {
       "label": "cachedHints",
@@ -39,9 +379,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L116",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_cachedhints",
       "community": 20,
-      "norm_label": "cachedhints"
+      "norm_label": "cachedhints",
+      "id": "ui_assignmentauthorbar_cachedhints"
     },
     {
       "label": "authHeader()",
@@ -49,9 +389,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L119",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_authheader",
       "community": 20,
-      "norm_label": "authheader()"
+      "norm_label": "authheader()",
+      "id": "ui_assignmentauthorbar_authheader"
     },
     {
       "label": "apiFetch()",
@@ -59,9 +399,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L124",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_apifetch",
       "community": 20,
-      "norm_label": "apifetch()"
+      "norm_label": "apifetch()",
+      "id": "ui_assignmentauthorbar_apifetch"
     },
     {
       "label": "HINT_WHEN_LABELS",
@@ -69,9 +409,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L139",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_hint_when_labels",
       "community": 20,
-      "norm_label": "hint_when_labels"
+      "norm_label": "hint_when_labels",
+      "id": "ui_assignmentauthorbar_hint_when_labels"
     },
     {
       "label": "hintWhenLabel()",
@@ -79,9 +419,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L150",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_hintwhenlabel",
       "community": 20,
-      "norm_label": "hintwhenlabel()"
+      "norm_label": "hintwhenlabel()",
+      "id": "ui_assignmentauthorbar_hintwhenlabel"
     },
     {
       "label": "AssignmentAuthorBar",
@@ -89,9 +429,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L155",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar",
       "community": 20,
-      "norm_label": "assignmentauthorbar"
+      "norm_label": "assignmentauthorbar",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar"
     },
     {
       "label": ".init()",
@@ -99,9 +439,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L166",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_init",
       "community": 20,
-      "norm_label": ".init()"
+      "norm_label": ".init()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_init"
     },
     {
       "label": "._checkExistingMission()",
@@ -109,9 +449,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L197",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission",
       "community": 20,
-      "norm_label": "._checkexistingmission()"
+      "norm_label": "._checkexistingmission()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_checkexistingmission"
     },
     {
       "label": "._show()",
@@ -119,9 +459,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L223",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_show",
       "community": 20,
-      "norm_label": "._show()"
+      "norm_label": "._show()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_show"
     },
     {
       "label": "._openHintsEditor()",
@@ -129,9 +469,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L256",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_openhintseditor",
       "community": 20,
-      "norm_label": "._openhintseditor()"
+      "norm_label": "._openhintseditor()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_openhintseditor"
     },
     {
       "label": ".initAdminEdit()",
@@ -139,9 +479,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L284",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_initadminedit",
       "community": 20,
-      "norm_label": ".initadminedit()"
+      "norm_label": ".initadminedit()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_initadminedit"
     },
     {
       "label": "._onAdminSaveClick()",
@@ -149,9 +489,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L296",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_onadminsaveclick",
       "community": 20,
-      "norm_label": "._onadminsaveclick()"
+      "norm_label": "._onadminsaveclick()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_onadminsaveclick"
     },
     {
       "label": "._onClick()",
@@ -159,9 +499,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L320",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_onclick",
       "community": 20,
-      "norm_label": "._onclick()"
+      "norm_label": "._onclick()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_onclick"
     },
     {
       "label": "._register()",
@@ -169,9 +509,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L332",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_register",
       "community": 20,
-      "norm_label": "._register()"
+      "norm_label": "._register()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_register"
     },
     {
       "label": "._showContextPrompt()",
@@ -179,9 +519,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L411",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt",
       "community": 20,
-      "norm_label": "._showcontextprompt()"
+      "norm_label": "._showcontextprompt()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt"
     },
     {
       "label": "._runHintFlow()",
@@ -189,9 +529,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L480",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow",
       "community": 20,
-      "norm_label": "._runhintflow()"
+      "norm_label": "._runhintflow()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_runhintflow"
     },
     {
       "label": "._finish()",
@@ -199,9 +539,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L536",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_finish",
       "community": 20,
-      "norm_label": "._finish()"
+      "norm_label": "._finish()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_finish"
     },
     {
       "label": "._showHintReview()",
@@ -209,9 +549,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L585",
       "_origin": "ast",
-      "id": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
       "community": 20,
-      "norm_label": "._showhintreview()"
+      "norm_label": "._showhintreview()",
+      "id": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview"
     },
     {
       "label": "Project.js",
@@ -219,9 +559,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "ui_project",
-      "community": 8,
-      "norm_label": "project.js"
+      "community": 23,
+      "norm_label": "project.js",
+      "id": "ui_project"
     },
     {
       "label": "Project",
@@ -229,9 +569,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L33",
       "_origin": "ast",
-      "id": "ui_project_project",
       "community": 10,
-      "norm_label": "project"
+      "norm_label": "project",
+      "id": "ui_project_project"
     },
     {
       "label": ".metadata()",
@@ -239,9 +579,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L34",
       "_origin": "ast",
-      "id": "ui_project_project_metadata",
       "community": 10,
-      "norm_label": ".metadata()"
+      "norm_label": ".metadata()",
+      "id": "ui_project_project_metadata"
     },
     {
       "label": ".mediaCount()",
@@ -249,9 +589,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L42",
       "_origin": "ast",
-      "id": "ui_project_project_mediacount",
       "community": 10,
-      "norm_label": ".mediacount()"
+      "norm_label": ".mediacount()",
+      "id": "ui_project_project_mediacount"
     },
     {
       "label": ".loadIcon()",
@@ -259,9 +599,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L50",
       "_origin": "ast",
-      "id": "ui_project_project_loadicon",
       "community": 10,
-      "norm_label": ".loadicon()"
+      "norm_label": ".loadicon()",
+      "id": "ui_project_project_loadicon"
     },
     {
       "label": ".error()",
@@ -269,9 +609,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L58",
       "_origin": "ast",
-      "id": "ui_project_project_error",
       "community": 10,
-      "norm_label": ".error()"
+      "norm_label": ".error()",
+      "id": "ui_project_project_error"
     },
     {
       "label": ".clear()",
@@ -279,9 +619,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L63",
       "_origin": "ast",
-      "id": "ui_project_project_clear",
       "community": 10,
-      "norm_label": ".clear()"
+      "norm_label": ".clear()",
+      "id": "ui_project_project_clear"
     },
     {
       "label": ".load()",
@@ -289,9 +629,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L68",
       "_origin": "ast",
-      "id": "ui_project_project_load",
       "community": 10,
-      "norm_label": ".load()"
+      "norm_label": ".load()",
+      "id": "ui_project_project_load"
     },
     {
       "label": ".delayLoad()",
@@ -299,9 +639,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L80",
       "_origin": "ast",
-      "id": "ui_project_project_delayload",
       "community": 10,
-      "norm_label": ".delayload()"
+      "norm_label": ".delayload()",
+      "id": "ui_project_project_delayload"
     },
     {
       "label": ".startLoad()",
@@ -309,9 +649,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L90",
       "_origin": "ast",
-      "id": "ui_project_project_startload",
       "community": 10,
-      "norm_label": ".startload()"
+      "norm_label": ".startload()",
+      "id": "ui_project_project_startload"
     },
     {
       "label": ".createNewProject()",
@@ -319,9 +659,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L108",
       "_origin": "ast",
-      "id": "ui_project_project_createnewproject",
       "community": 10,
-      "norm_label": ".createnewproject()"
+      "norm_label": ".createnewproject()",
+      "id": "ui_project_project_createnewproject"
     },
     {
       "label": ".dataRecieved()",
@@ -329,9 +669,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L145",
       "_origin": "ast",
-      "id": "ui_project_project_datarecieved",
       "community": 10,
-      "norm_label": ".datarecieved()"
+      "norm_label": ".datarecieved()",
+      "id": "ui_project_project_datarecieved"
     },
     {
       "label": ".init()",
@@ -339,9 +679,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L200",
       "_origin": "ast",
-      "id": "ui_project_project_init",
       "community": 10,
-      "norm_label": ".init()"
+      "norm_label": ".init()",
+      "id": "ui_project_project_init"
     },
     {
       "label": ".addFeedback()",
@@ -349,9 +689,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L227",
       "_origin": "ast",
-      "id": "ui_project_project_addfeedback",
       "community": 10,
-      "norm_label": ".addfeedback()"
+      "norm_label": ".addfeedback()",
+      "id": "ui_project_project_addfeedback"
     },
     {
       "label": ".setProgress()",
@@ -359,9 +699,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L241",
       "_origin": "ast",
-      "id": "ui_project_project_setprogress",
       "community": 10,
-      "norm_label": ".setprogress()"
+      "norm_label": ".setprogress()",
+      "id": "ui_project_project_setprogress"
     },
     {
       "label": ".drawBlind()",
@@ -369,9 +709,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L255",
       "_origin": "ast",
-      "id": "ui_project_project_drawblind",
       "community": 10,
-      "norm_label": ".drawblind()"
+      "norm_label": ".drawblind()",
+      "id": "ui_project_project_drawblind"
     },
     {
       "label": ".loadwait()",
@@ -379,9 +719,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L266",
       "_origin": "ast",
-      "id": "ui_project_project_loadwait",
       "community": 10,
-      "norm_label": ".loadwait()"
+      "norm_label": ".loadwait()",
+      "id": "ui_project_project_loadwait"
     },
     {
       "label": ".loadTask()",
@@ -389,9 +729,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L280",
       "_origin": "ast",
-      "id": "ui_project_project_loadtask",
       "community": 10,
-      "norm_label": ".loadtask()"
+      "norm_label": ".loadtask()",
+      "id": "ui_project_project_loadtask"
     },
     {
       "label": ".getMediaLoadRatio()",
@@ -399,9 +739,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L288",
       "_origin": "ast",
-      "id": "ui_project_project_getmedialoadratio",
       "community": 10,
-      "norm_label": ".getmedialoadratio()"
+      "norm_label": ".getmedialoadratio()",
+      "id": "ui_project_project_getmedialoadratio"
     },
     {
       "label": ".getStarted()",
@@ -409,9 +749,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L295",
       "_origin": "ast",
-      "id": "ui_project_project_getstarted",
       "community": 10,
-      "norm_label": ".getstarted()"
+      "norm_label": ".getstarted()",
+      "id": "ui_project_project_getstarted"
     },
     {
       "label": ".liftCurtain()",
@@ -419,9 +759,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L308",
       "_origin": "ast",
-      "id": "ui_project_project_liftcurtain",
       "community": 10,
-      "norm_label": ".liftcurtain()"
+      "norm_label": ".liftcurtain()",
+      "id": "ui_project_project_liftcurtain"
     },
     {
       "label": ".setLoadPage()",
@@ -429,9 +769,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L319",
       "_origin": "ast",
-      "id": "ui_project_project_setloadpage",
       "community": 10,
-      "norm_label": ".setloadpage()"
+      "norm_label": ".setloadpage()",
+      "id": "ui_project_project_setloadpage"
     },
     {
       "label": ".loadData()",
@@ -439,9 +779,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L341",
       "_origin": "ast",
-      "id": "ui_project_project_loaddata",
       "community": 10,
-      "norm_label": ".loaddata()"
+      "norm_label": ".loaddata()",
+      "id": "ui_project_project_loaddata"
     },
     {
       "label": ".loadme()",
@@ -449,9 +789,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L371",
       "_origin": "ast",
-      "id": "ui_project_project_loadme",
       "community": 10,
-      "norm_label": ".loadme()"
+      "norm_label": ".loadme()",
+      "id": "ui_project_project_loadme"
     },
     {
       "label": ".getLoadType()",
@@ -459,9 +799,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L376",
       "_origin": "ast",
-      "id": "ui_project_project_getloadtype",
       "community": 10,
-      "norm_label": ".getloadtype()"
+      "norm_label": ".getloadtype()",
+      "id": "ui_project_project_getloadtype"
     },
     {
       "label": ".recreate()",
@@ -469,9 +809,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L393",
       "_origin": "ast",
-      "id": "ui_project_project_recreate",
       "community": 10,
-      "norm_label": ".recreate()"
+      "norm_label": ".recreate()",
+      "id": "ui_project_project_recreate"
     },
     {
       "label": ".recreatePage()",
@@ -479,9 +819,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L405",
       "_origin": "ast",
-      "id": "ui_project_project_recreatepage",
       "community": 10,
-      "norm_label": ".recreatepage()"
+      "norm_label": ".recreatepage()",
+      "id": "ui_project_project_recreatepage"
     },
     {
       "label": ".substractCount()",
@@ -489,9 +829,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L410",
       "_origin": "ast",
-      "id": "ui_project_project_substractcount",
       "community": 10,
-      "norm_label": ".substractcount()"
+      "norm_label": ".substractcount()",
+      "id": "ui_project_project_substractcount"
     },
     {
       "label": ".recreateObject()",
@@ -499,9 +839,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L418",
       "_origin": "ast",
-      "id": "ui_project_project_recreateobject",
       "community": 10,
-      "norm_label": ".recreateobject()"
+      "norm_label": ".recreateobject()",
+      "id": "ui_project_project_recreateobject"
     },
     {
       "label": ".prepareToSave()",
@@ -509,9 +849,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L461",
       "_origin": "ast",
-      "id": "ui_project_project_preparetosave",
       "community": 10,
-      "norm_label": ".preparetosave()"
+      "norm_label": ".preparetosave()",
+      "id": "ui_project_project_preparetosave"
     },
     {
       "label": ".waitUntilSaved()",
@@ -519,9 +859,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L471",
       "_origin": "ast",
-      "id": "ui_project_project_waituntilsaved",
       "community": 10,
-      "norm_label": ".waituntilsaved()"
+      "norm_label": ".waituntilsaved()",
+      "id": "ui_project_project_waituntilsaved"
     },
     {
       "label": ".thumbnailUnique()",
@@ -529,9 +869,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L483",
       "_origin": "ast",
-      "id": "ui_project_project_thumbnailunique",
       "community": 10,
-      "norm_label": ".thumbnailunique()"
+      "norm_label": ".thumbnailunique()",
+      "id": "ui_project_project_thumbnailunique"
     },
     {
       "label": ".save()",
@@ -539,9 +879,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L507",
       "_origin": "ast",
-      "id": "ui_project_project_save",
       "community": 10,
-      "norm_label": ".save()"
+      "norm_label": ".save()",
+      "id": "ui_project_project_save"
     },
     {
       "label": ".setMaskUnconfirmed()",
@@ -549,9 +889,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L568",
       "_origin": "ast",
-      "id": "ui_project_project_setmaskunconfirmed",
       "community": 10,
-      "norm_label": ".setmaskunconfirmed()"
+      "norm_label": ".setmaskunconfirmed()",
+      "id": "ui_project_project_setmaskunconfirmed"
     },
     {
       "label": ".getProject()",
@@ -559,9 +899,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L572",
       "_origin": "ast",
-      "id": "ui_project_project_getproject",
       "community": 10,
-      "norm_label": ".getproject()"
+      "norm_label": ".getproject()",
+      "id": "ui_project_project_getproject"
     },
     {
       "label": ".getUndo()",
@@ -569,9 +909,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L582",
       "_origin": "ast",
-      "id": "ui_project_project_getundo",
       "community": 10,
-      "norm_label": ".getundo()"
+      "norm_label": ".getundo()",
+      "id": "ui_project_project_getundo"
     },
     {
       "label": ".encodeSprite()",
@@ -579,9 +919,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L586",
       "_origin": "ast",
-      "id": "ui_project_project_encodesprite",
       "community": 10,
-      "norm_label": ".encodesprite()"
+      "norm_label": ".encodesprite()",
+      "id": "ui_project_project_encodesprite"
     },
     {
       "label": ".encodeStrip()",
@@ -589,9 +929,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L590",
       "_origin": "ast",
-      "id": "ui_project_project_encodestrip",
       "community": 10,
-      "norm_label": ".encodestrip()"
+      "norm_label": ".encodestrip()",
+      "id": "ui_project_project_encodestrip"
     },
     {
       "label": ".getThumbnailPNG()",
@@ -599,9 +939,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L630",
       "_origin": "ast",
-      "id": "ui_project_project_getthumbnailpng",
       "community": 10,
-      "norm_label": ".getthumbnailpng()"
+      "norm_label": ".getthumbnailpng()",
+      "id": "ui_project_project_getthumbnailpng"
     },
     {
       "label": ".drawPNGInCanvas()",
@@ -609,9 +949,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L661",
       "_origin": "ast",
-      "id": "ui_project_project_drawpngincanvas",
       "community": 10,
-      "norm_label": ".drawpngincanvas()"
+      "norm_label": ".drawpngincanvas()",
+      "id": "ui_project_project_drawpngincanvas"
     },
     {
       "label": ".drawSVGinCanvas()",
@@ -619,9 +959,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L669",
       "_origin": "ast",
-      "id": "ui_project_project_drawsvgincanvas",
       "community": 10,
-      "norm_label": ".drawsvgincanvas()"
+      "norm_label": ".drawsvgincanvas()",
+      "id": "ui_project_project_drawsvgincanvas"
     },
     {
       "label": ".maskBorders()",
@@ -629,9 +969,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L679",
       "_origin": "ast",
-      "id": "ui_project_project_maskborders",
       "community": 10,
-      "norm_label": ".maskborders()"
+      "norm_label": ".maskborders()",
+      "id": "ui_project_project_maskborders"
     },
     {
       "label": ".drawSprites()",
@@ -639,9 +979,9 @@
       "source_file": "src/app/src/editor/ui/Project.js",
       "source_location": "L688",
       "_origin": "ast",
-      "id": "ui_project_project_drawsprites",
       "community": 10,
-      "norm_label": ".drawsprites()"
+      "norm_label": ".drawsprites()",
+      "id": "ui_project_project_drawsprites"
     },
     {
       "label": "AssignmentCapture.js",
@@ -649,9 +989,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "ui_assignmentcapture",
-      "community": 94,
-      "norm_label": "assignmentcapture.js"
+      "community": 20,
+      "norm_label": "assignmentcapture.js",
+      "id": "ui_assignmentcapture"
     },
     {
       "label": "saveAssignmentCaptures()",
@@ -659,9 +999,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
       "source_location": "L5",
       "_origin": "ast",
-      "id": "ui_assignmentcapture_saveassignmentcaptures",
-      "community": 94,
-      "norm_label": "saveassignmentcaptures()"
+      "community": 20,
+      "norm_label": "saveassignmentcaptures()",
+      "id": "ui_assignmentcapture_saveassignmentcaptures"
     },
     {
       "label": "CaptureRenderer.js",
@@ -669,9 +1009,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "ui_capturerenderer",
-      "community": 94,
-      "norm_label": "capturerenderer.js"
+      "community": 20,
+      "norm_label": "capturerenderer.js",
+      "id": "ui_capturerenderer"
     },
     {
       "label": "canvas()",
@@ -679,9 +1019,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "ui_capturerenderer_canvas",
-      "community": 94,
-      "norm_label": "canvas()"
+      "community": 20,
+      "norm_label": "canvas()",
+      "id": "ui_capturerenderer_canvas"
     },
     {
       "label": "readyImage()",
@@ -689,9 +1029,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L8",
       "_origin": "ast",
-      "id": "ui_capturerenderer_readyimage",
-      "community": 94,
-      "norm_label": "readyimage()"
+      "community": 20,
+      "norm_label": "readyimage()",
+      "id": "ui_capturerenderer_readyimage"
     },
     {
       "label": "captureActor()",
@@ -699,9 +1039,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L29",
       "_origin": "ast",
-      "id": "ui_capturerenderer_captureactor",
-      "community": 94,
-      "norm_label": "captureactor()"
+      "community": 20,
+      "norm_label": "captureactor()",
+      "id": "ui_capturerenderer_captureactor"
     },
     {
       "label": "waitForScene()",
@@ -709,9 +1049,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L39",
       "_origin": "ast",
-      "id": "ui_capturerenderer_waitforscene",
-      "community": 94,
-      "norm_label": "waitforscene()"
+      "community": 20,
+      "norm_label": "waitforscene()",
+      "id": "ui_capturerenderer_waitforscene"
     },
     {
       "label": "scriptBounds()",
@@ -719,9 +1059,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L48",
       "_origin": "ast",
-      "id": "ui_capturerenderer_scriptbounds",
-      "community": 94,
-      "norm_label": "scriptbounds()"
+      "community": 20,
+      "norm_label": "scriptbounds()",
+      "id": "ui_capturerenderer_scriptbounds"
     },
     {
       "label": "resourceDataURL()",
@@ -729,9 +1069,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L59",
       "_origin": "ast",
-      "id": "ui_capturerenderer_resourcedataurl",
-      "community": 94,
-      "norm_label": "resourcedataurl()"
+      "community": 20,
+      "norm_label": "resourcedataurl()",
+      "id": "ui_capturerenderer_resourcedataurl"
     },
     {
       "label": "captureScripts()",
@@ -739,9 +1079,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L72",
       "_origin": "ast",
-      "id": "ui_capturerenderer_capturescripts",
-      "community": 94,
-      "norm_label": "capturescripts()"
+      "community": 20,
+      "norm_label": "capturescripts()",
+      "id": "ui_capturerenderer_capturescripts"
     },
     {
       "label": "AssignmentCapture.test.js",
@@ -749,9 +1089,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "ui_assignmentcapture_test",
-      "community": 94,
-      "norm_label": "assignmentcapture.test.js"
+      "community": 20,
+      "norm_label": "assignmentcapture.test.js",
+      "id": "ui_assignmentcapture_test"
     },
     {
       "label": "mocks",
@@ -759,9 +1099,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
       "source_location": "L4",
       "_origin": "ast",
-      "id": "ui_assignmentcapture_test_mocks",
-      "community": 94,
-      "norm_label": "mocks"
+      "community": 20,
+      "norm_label": "mocks",
+      "id": "ui_assignmentcapture_test_mocks"
     },
     {
       "label": "manifest",
@@ -769,9 +1109,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
       "source_location": "L18",
       "_origin": "ast",
-      "id": "ui_assignmentcapture_test_manifest",
-      "community": 94,
-      "norm_label": "manifest"
+      "community": 20,
+      "norm_label": "manifest",
+      "id": "ui_assignmentcapture_test_manifest"
     },
     {
       "label": "request()",
@@ -779,9 +1119,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
       "source_location": "L21",
       "_origin": "ast",
-      "id": "ui_assignmentcapture_test_request",
-      "community": 94,
-      "norm_label": "request()"
+      "community": 20,
+      "norm_label": "request()",
+      "id": "ui_assignmentcapture_test_request"
     },
     {
       "label": "CaptureRenderer.test.js",
@@ -789,9 +1129,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.test.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "ui_capturerenderer_test",
-      "community": 94,
-      "norm_label": "capturerenderer.test.js"
+      "community": 20,
+      "norm_label": "capturerenderer.test.js",
+      "id": "ui_capturerenderer_test"
     },
     {
       "label": "assignments.js",
@@ -799,9 +1139,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "routes_assignments",
       "community": 66,
-      "norm_label": "assignments.js"
+      "norm_label": "assignments.js",
+      "id": "routes_assignments"
     },
     {
       "label": "express",
@@ -809,9 +1149,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L83",
       "_origin": "ast",
-      "id": "routes_assignments_express",
       "community": 66,
-      "norm_label": "express"
+      "norm_label": "express",
+      "id": "routes_assignments_express"
     },
     {
       "label": "{ createClient }",
@@ -819,9 +1159,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L84",
       "_origin": "ast",
-      "id": "routes_assignments_createclient",
       "community": 66,
-      "norm_label": "{ createclient }"
+      "norm_label": "{ createclient }",
+      "id": "routes_assignments_createclient"
     },
     {
       "label": "{ getTurmaIdFromClaims, getNivelFromClaims, verifyAndDecode }",
@@ -829,9 +1169,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L85",
       "_origin": "ast",
-      "id": "routes_assignments_getturmaidfromclaims_getnivelfromclaims_verifyanddecode",
       "community": 66,
-      "norm_label": "{ getturmaidfromclaims, getnivelfromclaims, verifyanddecode }"
+      "norm_label": "{ getturmaidfromclaims, getnivelfromclaims, verifyanddecode }",
+      "id": "routes_assignments_getturmaidfromclaims_getnivelfromclaims_verifyanddecode"
     },
     {
       "label": "{ notifyAssignmentRegistered }",
@@ -839,9 +1179,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L86",
       "_origin": "ast",
-      "id": "routes_assignments_notifyassignmentregistered",
       "community": 66,
-      "norm_label": "{ notifyassignmentregistered }"
+      "norm_label": "{ notifyassignmentregistered }",
+      "id": "routes_assignments_notifyassignmentregistered"
     },
     {
       "label": "{ computeProjectManifest, compareManifests }",
@@ -849,9 +1189,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L87",
       "_origin": "ast",
-      "id": "routes_assignments_computeprojectmanifest_comparemanifests",
       "community": 66,
-      "norm_label": "{ computeprojectmanifest, comparemanifests }"
+      "norm_label": "{ computeprojectmanifest, comparemanifests }",
+      "id": "routes_assignments_computeprojectmanifest_comparemanifests"
     },
     {
       "label": "{ resolveAssignmentFields, resolveHintsUpdatedAt }",
@@ -859,9 +1199,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L88",
       "_origin": "ast",
-      "id": "routes_assignments_resolveassignmentfields_resolvehintsupdatedat",
       "community": 66,
-      "norm_label": "{ resolveassignmentfields, resolvehintsupdatedat }"
+      "norm_label": "{ resolveassignmentfields, resolvehintsupdatedat }",
+      "id": "routes_assignments_resolveassignmentfields_resolvehintsupdatedat"
     },
     {
       "label": "{ generateHints }",
@@ -869,9 +1209,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L89",
       "_origin": "ast",
-      "id": "routes_assignments_generatehints",
       "community": 66,
-      "norm_label": "{ generatehints }"
+      "norm_label": "{ generatehints }",
+      "id": "routes_assignments_generatehints"
     },
     {
       "label": "{ readCompletionSnapshot, persistCompletion, readCompletionFlags }",
@@ -879,9 +1219,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L90",
       "_origin": "ast",
-      "id": "routes_assignments_readcompletionsnapshot_persistcompletion_readcompletionflags",
       "community": 66,
-      "norm_label": "{ readcompletionsnapshot, persistcompletion, readcompletionflags }"
+      "norm_label": "{ readcompletionsnapshot, persistcompletion, readcompletionflags }",
+      "id": "routes_assignments_readcompletionsnapshot_persistcompletion_readcompletionflags"
     },
     {
       "label": "{ buildStagePlacements }",
@@ -889,9 +1229,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L91",
       "_origin": "ast",
-      "id": "routes_assignments_buildstageplacements",
       "community": 66,
-      "norm_label": "{ buildstageplacements }"
+      "norm_label": "{ buildstageplacements }",
+      "id": "routes_assignments_buildstageplacements"
     },
     {
       "label": "{ persistStagePlacements }",
@@ -899,9 +1239,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L92",
       "_origin": "ast",
-      "id": "routes_assignments_persiststageplacements",
       "community": 66,
-      "norm_label": "{ persiststageplacements }"
+      "norm_label": "{ persiststageplacements }",
+      "id": "routes_assignments_persiststageplacements"
     },
     {
       "label": "{ generateActivityPlan }",
@@ -909,9 +1249,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L93",
       "_origin": "ast",
-      "id": "routes_assignments_generateactivityplan",
       "community": 66,
-      "norm_label": "{ generateactivityplan }"
+      "norm_label": "{ generateactivityplan }",
+      "id": "routes_assignments_generateactivityplan"
     },
     {
       "label": "{ buildProjectFromPlan }",
@@ -919,9 +1259,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L94",
       "_origin": "ast",
-      "id": "routes_assignments_buildprojectfromplan",
       "community": 66,
-      "norm_label": "{ buildprojectfromplan }"
+      "norm_label": "{ buildprojectfromplan }",
+      "id": "routes_assignments_buildprojectfromplan"
     },
     {
       "label": "router",
@@ -929,9 +1269,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L96",
       "_origin": "ast",
-      "id": "routes_assignments_router",
       "community": 66,
-      "norm_label": "router"
+      "norm_label": "router",
+      "id": "routes_assignments_router"
     },
     {
       "label": "getSupabase()",
@@ -939,9 +1279,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L99",
       "_origin": "ast",
-      "id": "routes_assignments_getsupabase",
       "community": 66,
-      "norm_label": "getsupabase()"
+      "norm_label": "getsupabase()",
+      "id": "routes_assignments_getsupabase"
     },
     {
       "label": "getTurmaAndNivel()",
@@ -949,9 +1289,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L116",
       "_origin": "ast",
-      "id": "routes_assignments_getturmaandnivel",
       "community": 66,
-      "norm_label": "getturmaandnivel()"
+      "norm_label": "getturmaandnivel()",
+      "id": "routes_assignments_getturmaandnivel"
     },
     {
       "label": "HINT_EVENT_TYPES",
@@ -959,9 +1299,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L982",
       "_origin": "ast",
-      "id": "routes_assignments_hint_event_types",
       "community": 66,
-      "norm_label": "hint_event_types"
+      "norm_label": "hint_event_types",
+      "id": "routes_assignments_hint_event_types"
     },
     {
       "label": "selectAssignmentTolerantOfMissingHintContext()",
@@ -969,9 +1309,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L1126",
       "_origin": "ast",
-      "id": "routes_assignments_selectassignmenttolerantofmissinghintcontext",
       "community": 66,
-      "norm_label": "selectassignmenttolerantofmissinghintcontext()"
+      "norm_label": "selectassignmenttolerantofmissinghintcontext()",
+      "id": "routes_assignments_selectassignmenttolerantofmissinghintcontext"
     },
     {
       "label": "canEditAssignment()",
@@ -979,9 +1319,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L1206",
       "_origin": "ast",
-      "id": "routes_assignments_caneditassignment",
       "community": 66,
-      "norm_label": "caneditassignment()"
+      "norm_label": "caneditassignment()",
+      "id": "routes_assignments_caneditassignment"
     },
     {
       "label": "findOwnedTemplateProject()",
@@ -989,9 +1329,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L1229",
       "_origin": "ast",
-      "id": "routes_assignments_findownedtemplateproject",
       "community": 66,
-      "norm_label": "findownedtemplateproject()"
+      "norm_label": "findownedtemplateproject()",
+      "id": "routes_assignments_findownedtemplateproject"
     },
     {
       "label": "projectCaptures.js",
@@ -999,9 +1339,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "routes_projectcaptures",
-      "community": 92,
-      "norm_label": "projectcaptures.js"
+      "community": 66,
+      "norm_label": "projectcaptures.js",
+      "id": "routes_projectcaptures"
     },
     {
       "label": "express",
@@ -1009,9 +1349,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "routes_projectcaptures_express",
-      "community": 92,
-      "norm_label": "express"
+      "community": 66,
+      "norm_label": "express",
+      "id": "routes_projectcaptures_express"
     },
     {
       "label": "{ CAPTURE_BUCKET, fingerprint, projectSnapshot, captureManifest, decodePNG, imagePath }",
@@ -1019,9 +1359,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L2",
       "_origin": "ast",
-      "id": "routes_projectcaptures_capture_bucket_fingerprint_projectsnapshot_capturemanifest_decodepng_imagepath",
-      "community": 92,
-      "norm_label": "{ capture_bucket, fingerprint, projectsnapshot, capturemanifest, decodepng, imagepath }"
+      "community": 66,
+      "norm_label": "{ capture_bucket, fingerprint, projectsnapshot, capturemanifest, decodepng, imagepath }",
+      "id": "routes_projectcaptures_capture_bucket_fingerprint_projectsnapshot_capturemanifest_decodepng_imagepath"
     },
     {
       "label": "authorize()",
@@ -1029,9 +1369,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L8",
       "_origin": "ast",
-      "id": "routes_projectcaptures_authorize",
       "community": 66,
-      "norm_label": "authorize()"
+      "norm_label": "authorize()",
+      "id": "routes_projectcaptures_authorize"
     },
     {
       "label": "endpoint()",
@@ -1039,9 +1379,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L19",
       "_origin": "ast",
-      "id": "routes_projectcaptures_endpoint",
-      "community": 92,
-      "norm_label": "endpoint()"
+      "community": 66,
+      "norm_label": "endpoint()",
+      "id": "routes_projectcaptures_endpoint"
     },
     {
       "label": "batchFor()",
@@ -1049,9 +1389,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L30",
       "_origin": "ast",
-      "id": "routes_projectcaptures_batchfor",
-      "community": 92,
-      "norm_label": "batchfor()"
+      "community": 66,
+      "norm_label": "batchfor()",
+      "id": "routes_projectcaptures_batchfor"
     },
     {
       "label": "projectCaptures.js",
@@ -1059,9 +1399,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "services_projectcaptures",
-      "community": 92,
-      "norm_label": "projectcaptures.js"
+      "community": 66,
+      "norm_label": "projectcaptures.js",
+      "id": "services_projectcaptures"
     },
     {
       "label": "{ createHash }",
@@ -1069,9 +1409,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "services_projectcaptures_createhash",
-      "community": 92,
-      "norm_label": "{ createhash }"
+      "community": 66,
+      "norm_label": "{ createhash }",
+      "id": "services_projectcaptures_createhash"
     },
     {
       "label": "canonical()",
@@ -1079,9 +1419,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L6",
       "_origin": "ast",
-      "id": "services_projectcaptures_canonical",
-      "community": 92,
-      "norm_label": "canonical()"
+      "community": 66,
+      "norm_label": "canonical()",
+      "id": "services_projectcaptures_canonical"
     },
     {
       "label": "fingerprint()",
@@ -1089,9 +1429,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L12",
       "_origin": "ast",
-      "id": "services_projectcaptures_fingerprint",
-      "community": 92,
-      "norm_label": "fingerprint()"
+      "community": 66,
+      "norm_label": "fingerprint()",
+      "id": "services_projectcaptures_fingerprint"
     },
     {
       "label": "projectSnapshot()",
@@ -1099,9 +1439,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L16",
       "_origin": "ast",
-      "id": "services_projectcaptures_projectsnapshot",
-      "community": 92,
-      "norm_label": "projectsnapshot()"
+      "community": 66,
+      "norm_label": "projectsnapshot()",
+      "id": "services_projectcaptures_projectsnapshot"
     },
     {
       "label": "captureManifest()",
@@ -1109,9 +1449,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L27",
       "_origin": "ast",
-      "id": "services_projectcaptures_capturemanifest",
-      "community": 92,
-      "norm_label": "capturemanifest()"
+      "community": 66,
+      "norm_label": "capturemanifest()",
+      "id": "services_projectcaptures_capturemanifest"
     },
     {
       "label": "decodePNG()",
@@ -1119,9 +1459,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L48",
       "_origin": "ast",
-      "id": "services_projectcaptures_decodepng",
-      "community": 92,
-      "norm_label": "decodepng()"
+      "community": 66,
+      "norm_label": "decodepng()",
+      "id": "services_projectcaptures_decodepng"
     },
     {
       "label": "imagePath()",
@@ -1129,9 +1469,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L67",
       "_origin": "ast",
-      "id": "services_projectcaptures_imagepath",
-      "community": 92,
-      "norm_label": "imagepath()"
+      "community": 66,
+      "norm_label": "imagepath()",
+      "id": "services_projectcaptures_imagepath"
     },
     {
       "label": "projectCaptures.test.js",
@@ -1139,9 +1479,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "routes_projectcaptures_test",
-      "community": 97,
-      "norm_label": "projectcaptures.test.js"
+      "community": 66,
+      "norm_label": "projectcaptures.test.js",
+      "id": "routes_projectcaptures_test"
     },
     {
       "label": "express",
@@ -1149,9 +1489,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "routes_projectcaptures_test_express",
-      "community": 97,
-      "norm_label": "express"
+      "community": 66,
+      "norm_label": "express",
+      "id": "routes_projectcaptures_test_express"
     },
     {
       "label": "createRoutes",
@@ -1159,9 +1499,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L2",
       "_origin": "ast",
-      "id": "routes_projectcaptures_test_createroutes",
-      "community": 97,
-      "norm_label": "createroutes"
+      "community": 66,
+      "norm_label": "createroutes",
+      "id": "routes_projectcaptures_test_createroutes"
     },
     {
       "label": "{ randomUUID }",
@@ -1169,9 +1509,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "routes_projectcaptures_test_randomuuid",
-      "community": 97,
-      "norm_label": "{ randomuuid }"
+      "community": 66,
+      "norm_label": "{ randomuuid }",
+      "id": "routes_projectcaptures_test_randomuuid"
     },
     {
       "label": "snapshot",
@@ -1179,9 +1519,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L6",
       "_origin": "ast",
-      "id": "routes_projectcaptures_test_snapshot",
-      "community": 97,
-      "norm_label": "snapshot"
+      "community": 66,
+      "norm_label": "snapshot",
+      "id": "routes_projectcaptures_test_snapshot"
     },
     {
       "label": "query()",
@@ -1189,9 +1529,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L9",
       "_origin": "ast",
-      "id": "routes_projectcaptures_test_query",
-      "community": 97,
-      "norm_label": "query()"
+      "community": 66,
+      "norm_label": "query()",
+      "id": "routes_projectcaptures_test_query"
     },
     {
       "label": "api()",
@@ -1199,9 +1539,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L53",
       "_origin": "ast",
-      "id": "routes_projectcaptures_test_api",
-      "community": 97,
-      "norm_label": "api()"
+      "community": 66,
+      "norm_label": "api()",
+      "id": "routes_projectcaptures_test_api"
     },
     {
       "label": "start()",
@@ -1209,9 +1549,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L58",
       "_origin": "ast",
-      "id": "routes_projectcaptures_test_start",
-      "community": 97,
-      "norm_label": "start()"
+      "community": 66,
+      "norm_label": "start()",
+      "id": "routes_projectcaptures_test_start"
     },
     {
       "label": "projectCaptures.test.js",
@@ -1219,9 +1559,9 @@
       "source_file": "backend/src/services/projectCaptures.test.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "services_projectcaptures_test",
-      "community": 92,
-      "norm_label": "projectcaptures.test.js"
+      "community": 66,
+      "norm_label": "projectcaptures.test.js",
+      "id": "services_projectcaptures_test"
     },
     {
       "label": "{ fingerprint, projectSnapshot, captureManifest, decodePNG, imagePath }",
@@ -1229,9 +1569,9 @@
       "source_file": "backend/src/services/projectCaptures.test.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "services_projectcaptures_test_fingerprint_projectsnapshot_capturemanifest_decodepng_imagepath",
-      "community": 92,
-      "norm_label": "{ fingerprint, projectsnapshot, capturemanifest, decodepng, imagepath }"
+      "community": 66,
+      "norm_label": "{ fingerprint, projectsnapshot, capturemanifest, decodepng, imagepath }",
+      "id": "services_projectcaptures_test_fingerprint_projectsnapshot_capturemanifest_decodepng_imagepath"
     },
     {
       "label": "snapshot",
@@ -1239,9 +1579,9 @@
       "source_file": "backend/src/services/projectCaptures.test.js",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "services_projectcaptures_test_snapshot",
-      "community": 92,
-      "norm_label": "snapshot"
+      "community": 66,
+      "norm_label": "snapshot",
+      "id": "services_projectcaptures_test_snapshot"
     },
     {
       "label": "LiveWatch.js",
@@ -1489,7 +1829,7 @@
       "source_file": "src/app/src/editor/ScratchJr.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 40,
       "norm_label": "scratchjr.js",
       "id": "editor_scratchjr"
     },
@@ -1499,7 +1839,7 @@
       "source_file": "src/app/src/editor/ScratchJr.js",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 8,
+      "community": 40,
       "norm_label": "workingcanvas",
       "id": "editor_scratchjr_workingcanvas"
     },
@@ -1509,7 +1849,7 @@
       "source_file": "src/app/src/editor/ScratchJr.js",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 8,
+      "community": 40,
       "norm_label": "workingcanvas2",
       "id": "editor_scratchjr_workingcanvas2"
     },
@@ -1519,7 +1859,7 @@
       "source_file": "src/app/src/editor/ScratchJr.js",
       "source_location": "L63",
       "_origin": "ast",
-      "community": 8,
+      "community": 40,
       "norm_label": "onbackbuttoncallback",
       "id": "editor_scratchjr_onbackbuttoncallback"
     },
@@ -2379,7 +2719,7 @@
       "source_file": "src/app/src/editor/ScratchJr_player.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "scratchjr_player.js",
       "id": "editor_scratchjr_player"
     },
@@ -2389,7 +2729,7 @@
       "source_file": "src/app/src/editor/ScratchJr_player.js",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "applyscratchjrplayerpatches()",
       "id": "editor_scratchjr_player_applyscratchjrplayerpatches"
     },
@@ -2419,7 +2759,7 @@
       "source_file": "src/app/src/editor/blocks/Block.js",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 44,
+      "community": 26,
       "norm_label": ".constructor()",
       "id": "blocks_block_block_constructor"
     },
@@ -2459,7 +2799,7 @@
       "source_file": "src/app/src/editor/blocks/Block.js",
       "source_location": "L95",
       "_origin": "ast",
-      "community": 44,
+      "community": 26,
       "norm_label": ".addshadow()",
       "id": "blocks_block_block_addshadow"
     },
@@ -2489,7 +2829,7 @@
       "source_file": "src/app/src/editor/blocks/Block.js",
       "source_location": "L136",
       "_origin": "ast",
-      "community": 44,
+      "community": 26,
       "norm_label": ".addhighlight()",
       "id": "blocks_block_block_addhighlight"
     },
@@ -2499,7 +2839,7 @@
       "source_file": "src/app/src/editor/blocks/Block.js",
       "source_location": "L168",
       "_origin": "ast",
-      "community": 44,
+      "community": 26,
       "norm_label": ".drawblock()",
       "id": "blocks_block_block_drawblock"
     },
@@ -2509,7 +2849,7 @@
       "source_file": "src/app/src/editor/blocks/Block.js",
       "source_location": "L182",
       "_origin": "ast",
-      "community": 44,
+      "community": 26,
       "norm_label": ".drawblocktype()",
       "id": "blocks_block_block_drawblocktype"
     },
@@ -2549,7 +2889,7 @@
       "source_file": "src/app/src/editor/blocks/Block.js",
       "source_location": "L239",
       "_origin": "ast",
-      "community": 44,
+      "community": 26,
       "norm_label": ".drawicon()",
       "id": "blocks_block_block_drawicon"
     },
@@ -3229,7 +3569,7 @@
       "source_file": "src/app/src/editor/blocks/Menu.js",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 44,
+      "community": 23,
       "norm_label": ".addimagetodropdown()",
       "id": "blocks_menu_menu_addimagetodropdown"
     },
@@ -3249,7 +3589,7 @@
       "source_file": "src/app/src/editor/engine/Page.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 23,
       "norm_label": "page.js",
       "id": "engine_page"
     },
@@ -3269,7 +3609,7 @@
       "source_file": "src/app/src/editor/engine/Page.js",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 19,
+      "community": 30,
       "norm_label": ".constructor()",
       "id": "engine_page_page_constructor"
     },
@@ -3449,7 +3789,7 @@
       "source_file": "src/app/src/editor/engine/Page.js",
       "source_location": "L402",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".createtext()",
       "id": "engine_page_page_createtext"
     },
@@ -3509,7 +3849,7 @@
       "source_file": "src/app/src/editor/engine/Page.js",
       "source_location": "L493",
       "_origin": "ast",
-      "community": 81,
+      "community": 30,
       "norm_label": ".addsprite()",
       "id": "engine_page_page_addsprite"
     },
@@ -3549,7 +3889,7 @@
       "source_file": "src/app/src/editor/engine/Page_player.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "page_player.js",
       "id": "engine_page_player"
     },
@@ -3559,7 +3899,7 @@
       "source_file": "src/app/src/editor/engine/Page_player.js",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "applypageplayerpatches()",
       "id": "engine_page_player_applypageplayerpatches"
     },
@@ -3569,7 +3909,7 @@
       "source_file": "src/app/src/editor/engine/Prims.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 21,
+      "community": 40,
       "norm_label": "prims.js",
       "id": "engine_prims"
     },
@@ -3579,7 +3919,7 @@
       "source_file": "src/app/src/editor/engine/Prims.js",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 21,
+      "community": 40,
       "norm_label": "hoplist",
       "id": "engine_prims_hoplist"
     },
@@ -3949,7 +4289,7 @@
       "source_file": "src/app/src/editor/engine/Runtime.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 21,
+      "community": 40,
       "norm_label": "runtime.js",
       "id": "engine_runtime"
     },
@@ -4099,7 +4439,7 @@
       "source_file": "src/app/src/editor/engine/Sprite.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 23,
       "norm_label": "sprite.js",
       "id": "engine_sprite"
     },
@@ -4499,7 +4839,7 @@
       "source_file": "src/app/src/editor/engine/Sprite.js",
       "source_location": "L761",
       "_origin": "ast",
-      "community": 23,
+      "community": 3,
       "norm_label": ".settextbox()",
       "id": "engine_sprite_sprite_settextbox"
     },
@@ -4709,7 +5049,7 @@
       "source_file": "src/app/src/editor/engine/Sprite_player.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "sprite_player.js",
       "id": "engine_sprite_player"
     },
@@ -4719,7 +5059,7 @@
       "source_file": "src/app/src/editor/engine/Sprite_player.js",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "applyspriteplayerpatches()",
       "id": "engine_sprite_player_applyspriteplayerpatches"
     },
@@ -4729,7 +5069,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 23,
       "norm_label": "stage.js",
       "id": "engine_stage"
     },
@@ -4749,7 +5089,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 19,
+      "community": 9,
       "norm_label": ".constructor()",
       "id": "engine_stage_stage_constructor"
     },
@@ -4759,7 +5099,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L55",
       "_origin": "ast",
-      "community": 19,
+      "community": 9,
       "norm_label": ".setstagescaleandposition()",
       "id": "engine_stage_stage_setstagescaleandposition"
     },
@@ -4839,7 +5179,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L165",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".copysprite()",
       "id": "engine_stage_stage_copysprite"
     },
@@ -4889,7 +5229,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L353",
       "_origin": "ast",
-      "community": 9,
+      "community": 23,
       "norm_label": ".checkshaking()",
       "id": "engine_stage_stage_checkshaking"
     },
@@ -5119,7 +5459,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L718",
       "_origin": "ast",
-      "community": 9,
+      "community": 34,
       "norm_label": ".sd()",
       "id": "engine_stage_stage_sd"
     },
@@ -5139,7 +5479,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L734",
       "_origin": "ast",
-      "community": 9,
+      "community": 34,
       "norm_label": ".off()",
       "id": "engine_stage_stage_off"
     },
@@ -5149,7 +5489,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L738",
       "_origin": "ast",
-      "community": 9,
+      "community": 34,
       "norm_label": ".sm()",
       "id": "engine_stage_stage_sm"
     },
@@ -5159,7 +5499,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L752",
       "_origin": "ast",
-      "community": 9,
+      "community": 34,
       "norm_label": ".son()",
       "id": "engine_stage_stage_son"
     },
@@ -5169,7 +5509,7 @@
       "source_file": "src/app/src/editor/engine/Stage.js",
       "source_location": "L756",
       "_origin": "ast",
-      "community": 9,
+      "community": 34,
       "norm_label": ".soff()",
       "id": "engine_stage_stage_soff"
     },
@@ -5179,7 +5519,7 @@
       "source_file": "src/app/src/editor/engine/Stage_player.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "stage_player.js",
       "id": "engine_stage_player"
     },
@@ -5189,7 +5529,7 @@
       "source_file": "src/app/src/editor/engine/Stage_player.js",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "applystageplayerpatches()",
       "id": "engine_stage_player_applystageplayerpatches"
     },
@@ -5199,7 +5539,7 @@
       "source_file": "src/app/src/editor/engine/Thread.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 21,
+      "community": 40,
       "norm_label": "thread.js",
       "id": "engine_thread"
     },
@@ -5289,7 +5629,7 @@
       "source_file": "src/app/src/editor/ui/Alert.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 44,
+      "community": 23,
       "norm_label": "alert.js",
       "id": "ui_alert"
     },
@@ -5299,7 +5639,7 @@
       "source_file": "src/app/src/editor/ui/Alert.js",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 44,
+      "community": 23,
       "norm_label": "alert",
       "id": "ui_alert_alert"
     },
@@ -5309,7 +5649,7 @@
       "source_file": "src/app/src/editor/ui/Alert.js",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 44,
+      "community": 23,
       "norm_label": ".balloon()",
       "id": "ui_alert_alert_balloon"
     },
@@ -5319,7 +5659,7 @@
       "source_file": "src/app/src/editor/ui/Alert.js",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 44,
+      "community": 23,
       "norm_label": ".close()",
       "id": "ui_alert_alert_close"
     },
@@ -5329,7 +5669,7 @@
       "source_file": "src/app/src/editor/ui/Alert.js",
       "source_location": "L20",
       "_origin": "ast",
-      "community": 44,
+      "community": 23,
       "norm_label": ".open()",
       "id": "ui_alert_alert_open"
     },
@@ -5339,7 +5679,7 @@
       "source_file": "src/app/src/editor/ui/Alert.js",
       "source_location": "L61",
       "_origin": "ast",
-      "community": 44,
+      "community": 23,
       "norm_label": ".draw()",
       "id": "ui_alert_alert_draw"
     },
@@ -5419,7 +5759,7 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L183",
       "_origin": "ast",
-      "community": 13,
+      "community": 43,
       "norm_label": "authheader()",
       "id": "ui_assignmentbadge_authheader"
     },
@@ -5429,7 +5769,7 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L188",
       "_origin": "ast",
-      "community": 13,
+      "community": 43,
       "norm_label": "apifetch()",
       "id": "ui_assignmentbadge_apifetch"
     },
@@ -5439,7 +5779,7 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L204",
       "_origin": "ast",
-      "community": 13,
+      "community": 43,
       "norm_label": "recordhintevent()",
       "id": "ui_assignmentbadge_recordhintevent"
     },
@@ -5619,7 +5959,7 @@
       "source_file": "src/app/src/editor/ui/AssignmentBadge.js",
       "source_location": "L751",
       "_origin": "ast",
-      "community": 13,
+      "community": 43,
       "norm_label": "._lockcompletion()",
       "id": "ui_assignmentbadge_assignmentbadge_lockcompletion"
     },
@@ -5829,7 +6169,7 @@
       "source_file": "src/app/src/editor/ui/Grid.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 40,
       "norm_label": "grid.js",
       "id": "ui_grid"
     },
@@ -5909,7 +6249,7 @@
       "source_file": "src/app/src/editor/ui/Grid.js",
       "source_location": "L123",
       "_origin": "ast",
-      "community": 19,
+      "community": 40,
       "norm_label": ".createycursor()",
       "id": "ui_grid_grid_createycursor"
     },
@@ -5919,7 +6259,7 @@
       "source_file": "src/app/src/editor/ui/Grid.js",
       "source_location": "L135",
       "_origin": "ast",
-      "community": 19,
+      "community": 40,
       "norm_label": ".createxcursor()",
       "id": "ui_grid_grid_createxcursor"
     },
@@ -5949,7 +6289,7 @@
       "source_file": "src/app/src/editor/ui/Grid.js",
       "source_location": "L196",
       "_origin": "ast",
-      "community": 34,
+      "community": 40,
       "norm_label": ".updatecursor()",
       "id": "ui_grid_grid_updatecursor"
     },
@@ -5959,7 +6299,7 @@
       "source_file": "src/app/src/editor/ui/Grid.js",
       "source_location": "L229",
       "_origin": "ast",
-      "community": 34,
+      "community": 40,
       "norm_label": ".setcursorsvalues()",
       "id": "ui_grid_grid_setcursorsvalues"
     },
@@ -6029,7 +6369,7 @@
       "source_file": "src/app/src/editor/ui/HintEngine.js",
       "source_location": "L123",
       "_origin": "ast",
-      "community": 93,
+      "community": 27,
       "norm_label": "blocklabel()",
       "id": "ui_hintengine_blocklabel"
     },
@@ -6139,7 +6479,7 @@
       "source_file": "src/app/src/editor/ui/HintEngine.js",
       "source_location": "L699",
       "_origin": "ast",
-      "community": 27,
+      "community": 22,
       "norm_label": "sameactorloose()",
       "id": "ui_hintengine_sameactorloose"
     },
@@ -6149,7 +6489,7 @@
       "source_file": "src/app/src/editor/ui/HintEngine.js",
       "source_location": "L718",
       "_origin": "ast",
-      "community": 27,
+      "community": 22,
       "norm_label": "legacyshadowedbyexpected()",
       "id": "ui_hintengine_legacyshadowedbyexpected"
     },
@@ -6159,7 +6499,7 @@
       "source_file": "src/app/src/editor/ui/HintEngine.js",
       "source_location": "L748",
       "_origin": "ast",
-      "community": 13,
+      "community": 22,
       "norm_label": "freshalignmenttarget()",
       "id": "ui_hintengine_freshalignmenttarget"
     },
@@ -6199,7 +6539,7 @@
       "source_file": "src/app/src/editor/ui/HintEngine.js",
       "source_location": "L818",
       "_origin": "ast",
-      "community": 93,
+      "community": 27,
       "norm_label": "spokenvalue()",
       "id": "ui_hintengine_spokenvalue"
     },
@@ -6219,7 +6559,7 @@
       "source_file": "src/app/src/editor/ui/HintEngine.js",
       "source_location": "L847",
       "_origin": "ast",
-      "community": 93,
+      "community": 27,
       "norm_label": "alerttext()",
       "id": "ui_hintengine_alerttext"
     },
@@ -6349,7 +6689,7 @@
       "source_file": "src/app/src/editor/ui/Library.js",
       "source_location": "L45",
       "_origin": "ast",
-      "community": 19,
+      "community": 17,
       "norm_label": ".init()",
       "id": "ui_library_library_init"
     },
@@ -6359,7 +6699,7 @@
       "source_file": "src/app/src/editor/ui/Library.js",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 19,
+      "community": 17,
       "norm_label": ".createscrollpanel()",
       "id": "ui_library_library_createscrollpanel"
     },
@@ -6399,7 +6739,7 @@
       "source_file": "src/app/src/editor/ui/Library.js",
       "source_location": "L123",
       "_origin": "ast",
-      "community": 19,
+      "community": 17,
       "norm_label": ".layoutheader()",
       "id": "ui_library_library_layoutheader"
     },
@@ -6439,7 +6779,7 @@
       "source_file": "src/app/src/editor/ui/Library.js",
       "source_location": "L182",
       "_origin": "ast",
-      "community": 2,
+      "community": 17,
       "norm_label": ".getpadding()",
       "id": "ui_library_library_getpadding"
     },
@@ -6639,7 +6979,7 @@
       "source_file": "src/app/src/editor/ui/Library.js",
       "source_location": "L589",
       "_origin": "ast",
-      "community": 19,
+      "community": 36,
       "norm_label": ".resizescroll()",
       "id": "ui_library_library_resizescroll"
     },
@@ -6709,7 +7049,7 @@
       "source_file": "src/app/src/editor/ui/Palette.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 23,
       "norm_label": "palette.js",
       "id": "ui_palette"
     },
@@ -6839,7 +7179,7 @@
       "source_file": "src/app/src/editor/ui/Palette.js",
       "source_location": "L195",
       "_origin": "ast",
-      "community": 44,
+      "community": 23,
       "norm_label": ".openpaletteballoon()",
       "id": "ui_palette_palette_openpaletteballoon"
     },
@@ -6869,7 +7209,7 @@
       "source_file": "src/app/src/editor/ui/Palette.js",
       "source_location": "L237",
       "_origin": "ast",
-      "community": 44,
+      "community": 25,
       "norm_label": ".closehelpballoon()",
       "id": "ui_palette_palette_closehelpballoon"
     },
@@ -6879,7 +7219,7 @@
       "source_file": "src/app/src/editor/ui/Palette.js",
       "source_location": "L248",
       "_origin": "ast",
-      "community": 44,
+      "community": 25,
       "norm_label": ".drawballoon()",
       "id": "ui_palette_palette_drawballoon"
     },
@@ -6999,7 +7339,7 @@
       "source_file": "src/app/src/editor/ui/Palette.js",
       "source_location": "L454",
       "_origin": "ast",
-      "community": 25,
+      "community": 23,
       "norm_label": ".drawrecordsound()",
       "id": "ui_palette_palette_drawrecordsound"
     },
@@ -7209,7 +7549,7 @@
       "source_file": "src/app/src/editor/ui/Record.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 23,
       "norm_label": "record.js",
       "id": "ui_record"
     },
@@ -7489,7 +7829,7 @@
       "source_file": "src/app/src/editor/ui/Scripts.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 23,
       "norm_label": "scripts.js",
       "id": "ui_scripts"
     },
@@ -7509,7 +7849,7 @@
       "source_file": "src/app/src/editor/ui/Scripts.js",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 19,
+      "community": 18,
       "norm_label": ".constructor()",
       "id": "ui_scripts_scripts_constructor"
     },
@@ -7889,7 +8229,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 23,
       "norm_label": "scriptspane.js",
       "id": "ui_scriptspane"
     },
@@ -7899,7 +8239,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": "scriptspane",
       "id": "ui_scriptspane_scriptspane"
     },
@@ -7909,7 +8249,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".scroll()",
       "id": "ui_scriptspane_scriptspane_scroll"
     },
@@ -7919,7 +8259,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L22",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".watermark()",
       "id": "ui_scriptspane_scriptspane_watermark"
     },
@@ -7929,7 +8269,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L26",
       "_origin": "ast",
-      "community": 19,
+      "community": 36,
       "norm_label": ".createscripts()",
       "id": "ui_scriptspane_scriptspane_createscripts"
     },
@@ -7939,7 +8279,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L36",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".setactivescript()",
       "id": "ui_scriptspane_scriptspane_setactivescript"
     },
@@ -7949,7 +8289,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L59",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".runblock()",
       "id": "ui_scriptspane_scriptspane_runblock"
     },
@@ -7959,7 +8299,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L72",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".preparetodrag()",
       "id": "ui_scriptspane_scriptspane_preparetodrag"
     },
@@ -7969,7 +8309,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L78",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".pickblock()",
       "id": "ui_scriptspane_scriptspane_pickblock"
     },
@@ -7979,7 +8319,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L132",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".draggingblock()",
       "id": "ui_scriptspane_scriptspane_draggingblock"
     },
@@ -7989,7 +8329,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L141",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".blockfeedback()",
       "id": "ui_scriptspane_scriptspane_blockfeedback"
     },
@@ -8009,7 +8349,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L227",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".blockdropped()",
       "id": "ui_scriptspane_scriptspane_blockdropped"
     },
@@ -8019,7 +8359,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L240",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".cleancarets()",
       "id": "ui_scriptspane_scriptspane_cleancarets"
     },
@@ -8029,7 +8369,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L245",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".removelibcaret()",
       "id": "ui_scriptspane_scriptspane_removelibcaret"
     },
@@ -8039,7 +8379,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L259",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".dragbackground()",
       "id": "ui_scriptspane_scriptspane_dragbackground"
     },
@@ -8049,7 +8389,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L278",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".setdragbackgroundevents()",
       "id": "ui_scriptspane_scriptspane_setdragbackgroundevents"
     },
@@ -8059,7 +8399,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L296",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".dragmove()",
       "id": "ui_scriptspane_scriptspane_dragmove"
     },
@@ -8069,7 +8409,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L311",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".dragend()",
       "id": "ui_scriptspane_scriptspane_dragend"
     },
@@ -8079,7 +8419,7 @@
       "source_file": "src/app/src/editor/ui/ScriptsPane.js",
       "source_location": "L322",
       "_origin": "ast",
-      "community": 38,
+      "community": 25,
       "norm_label": ".updatescriptspageblocks()",
       "id": "ui_scriptspane_scriptspane_updatescriptspageblocks"
     },
@@ -8089,7 +8429,7 @@
       "source_file": "src/app/src/editor/ui/Scroll.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 19,
+      "community": 23,
       "norm_label": "scroll.js",
       "id": "ui_scroll"
     },
@@ -8249,7 +8589,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 23,
       "norm_label": "ui.js",
       "id": "ui_ui"
     },
@@ -8289,7 +8629,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L73",
       "_origin": "ast",
-      "community": 2,
+      "community": 36,
       "norm_label": ".aspectratioadjustment()",
       "id": "ui_ui_ui_aspectratioadjustment"
     },
@@ -8299,7 +8639,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L82",
       "_origin": "ast",
-      "community": 2,
+      "community": 46,
       "norm_label": ".topsection()",
       "id": "ui_ui_ui_topsection"
     },
@@ -8309,7 +8649,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L121",
       "_origin": "ast",
-      "community": 2,
+      "community": 46,
       "norm_label": ".leftpanel()",
       "id": "ui_ui_ui_leftpanel"
     },
@@ -8339,7 +8679,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L138",
       "_origin": "ast",
-      "community": 2,
+      "community": 46,
       "norm_label": ".addprojectinfo()",
       "id": "ui_ui_ui_addprojectinfo"
     },
@@ -8349,7 +8689,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L196",
       "_origin": "ast",
-      "community": 2,
+      "community": 46,
       "norm_label": ".parentalgate()",
       "id": "ui_ui_ui_parentalgate"
     },
@@ -8359,7 +8699,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L264",
       "_origin": "ast",
-      "community": 2,
+      "community": 46,
       "norm_label": ".infodoshare()",
       "id": "ui_ui_ui_infodoshare"
     },
@@ -8369,7 +8709,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L300",
       "_origin": "ast",
-      "community": 2,
+      "community": 46,
       "norm_label": ".addeditablename()",
       "id": "ui_ui_ui_addeditablename"
     },
@@ -8429,7 +8769,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L476",
       "_origin": "ast",
-      "community": 2,
+      "community": 46,
       "norm_label": ".layoutlibrary()",
       "id": "ui_ui_ui_layoutlibrary"
     },
@@ -8439,7 +8779,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L502",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".mascotdata()",
       "id": "ui_ui_ui_mascotdata"
     },
@@ -8579,7 +8919,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L727",
       "_origin": "ast",
-      "community": 2,
+      "community": 46,
       "norm_label": ".stagearea()",
       "id": "ui_ui_ui_stagearea"
     },
@@ -8629,7 +8969,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L785",
       "_origin": "ast",
-      "community": 2,
+      "community": 46,
       "norm_label": ".creattopbarclicky()",
       "id": "ui_ui_ui_creattopbarclicky"
     },
@@ -8679,7 +9019,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L841",
       "_origin": "ast",
-      "community": 2,
+      "community": 36,
       "norm_label": ".enterfullscreen()",
       "id": "ui_ui_ui_enterfullscreen"
     },
@@ -8709,7 +9049,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L945",
       "_origin": "ast",
-      "community": 2,
+      "community": 46,
       "norm_label": ".rightpanel()",
       "id": "ui_ui_ui_rightpanel"
     },
@@ -8719,7 +9059,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L957",
       "_origin": "ast",
-      "community": 19,
+      "community": 46,
       "norm_label": ".layouttoolbar()",
       "id": "ui_ui_ui_layouttoolbar"
     },
@@ -8729,7 +9069,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L970",
       "_origin": "ast",
-      "community": 43,
+      "community": 11,
       "norm_label": ".addsprite()",
       "id": "ui_ui_ui_addsprite"
     },
@@ -8759,7 +9099,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L1032",
       "_origin": "ast",
-      "community": 19,
+      "community": 2,
       "norm_label": ".createformfortext()",
       "id": "ui_ui_ui_createformfortext"
     },
@@ -8769,7 +9109,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L1065",
       "_origin": "ast",
-      "community": 19,
+      "community": 2,
       "norm_label": ".createcolormenu()",
       "id": "ui_ui_ui_createcolormenu"
     },
@@ -8779,7 +9119,7 @@
       "source_file": "src/app/src/editor/ui/UI.js",
       "source_location": "L1084",
       "_origin": "ast",
-      "community": 19,
+      "community": 2,
       "norm_label": ".createtextsizemenu()",
       "id": "ui_ui_ui_createtextsizemenu"
     },
@@ -8859,7 +9199,7 @@
       "source_file": "src/app/src/editor/ui/Undo.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 23,
       "norm_label": "undo.js",
       "id": "ui_undo"
     },
@@ -8869,7 +9209,7 @@
       "source_file": "src/app/src/editor/ui/Undo.js",
       "source_location": "L13",
       "_origin": "ast",
-      "community": 8,
+      "community": 23,
       "norm_label": "buffer",
       "id": "ui_undo_buffer"
     },
@@ -9199,7 +9539,7 @@
       "source_file": "src/app/src/editor/ui/hintAlignment.test.js",
       "source_location": "L74",
       "_origin": "ast",
-      "community": 27,
+      "community": 10,
       "norm_label": "evaluate()",
       "id": "ui_hintalignment_test_evaluate"
     },
@@ -9239,7 +9579,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 93,
+      "community": 22,
       "norm_label": "hintexpected.test.js",
       "id": "ui_hintexpected_test"
     },
@@ -9249,7 +9589,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L42",
       "_origin": "ast",
-      "community": 93,
+      "community": 22,
       "norm_label": "triggers",
       "id": "ui_hintexpected_test_triggers"
     },
@@ -9259,7 +9599,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L43",
       "_origin": "ast",
-      "community": 93,
+      "community": 22,
       "norm_label": "carets",
       "id": "ui_hintexpected_test_carets"
     },
@@ -9269,7 +9609,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L45",
       "_origin": "ast",
-      "community": 93,
+      "community": 22,
       "norm_label": "clone()",
       "id": "ui_hintexpected_test_clone"
     },
@@ -9279,7 +9619,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L47",
       "_origin": "ast",
-      "community": 93,
+      "community": 22,
       "norm_label": "headof()",
       "id": "ui_hintexpected_test_headof"
     },
@@ -9289,7 +9629,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L58",
       "_origin": "ast",
-      "community": 93,
+      "community": 22,
       "norm_label": "expectedhintsfor()",
       "id": "ui_hintexpected_test_expectedhintsfor"
     },
@@ -9319,7 +9659,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L127",
       "_origin": "ast",
-      "community": 93,
+      "community": 22,
       "norm_label": "tupleat()",
       "id": "ui_hintexpected_test_tupleat"
     },
@@ -9329,7 +9669,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L138",
       "_origin": "ast",
-      "community": 93,
+      "community": 22,
       "norm_label": "allscripts()",
       "id": "ui_hintexpected_test_allscripts"
     },
@@ -9339,7 +9679,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L156",
       "_origin": "ast",
-      "community": 93,
+      "community": 22,
       "norm_label": "fixture_dir",
       "id": "ui_hintexpected_test_fixture_dir"
     },
@@ -9349,7 +9689,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L157",
       "_origin": "ast",
-      "community": 93,
+      "community": 22,
       "norm_label": "fixtures",
       "id": "ui_hintexpected_test_fixtures"
     },
@@ -9359,7 +9699,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L161",
       "_origin": "ast",
-      "community": 93,
+      "community": 22,
       "norm_label": "synthetic",
       "id": "ui_hintexpected_test_synthetic"
     },
@@ -9369,7 +9709,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L175",
       "_origin": "ast",
-      "community": 93,
+      "community": 22,
       "norm_label": "all_projects",
       "id": "ui_hintexpected_test_all_projects"
     },
@@ -9379,7 +9719,7 @@
       "source_file": "src/app/src/editor/ui/hintExpected.test.js",
       "source_location": "L560",
       "_origin": "ast",
-      "community": 93,
+      "community": 22,
       "norm_label": "chain()",
       "id": "ui_hintexpected_test_chain"
     },
@@ -9539,7 +9879,7 @@
       "source_file": "src/app/src/entry/editor.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 40,
       "norm_label": "editor.js",
       "id": "entry_editor"
     },
@@ -9549,7 +9889,7 @@
       "source_file": "src/app/src/entry/editor.js",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 8,
+      "community": 40,
       "norm_label": "editormain()",
       "id": "entry_editor_editormain"
     },
@@ -9559,7 +9899,7 @@
       "source_file": "src/app/src/entry/gettingstarted.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 20,
+      "community": 34,
       "norm_label": "gettingstarted.js",
       "id": "entry_gettingstarted"
     },
@@ -9569,7 +9909,7 @@
       "source_file": "src/app/src/entry/gettingstarted.js",
       "source_location": "L5",
       "_origin": "ast",
-      "community": 20,
+      "community": 34,
       "norm_label": "gettingstartedmain()",
       "id": "entry_gettingstarted_gettingstartedmain"
     },
@@ -9579,7 +9919,7 @@
       "source_file": "src/app/src/entry/gettingstarted.js",
       "source_location": "L32",
       "_origin": "ast",
-      "community": 20,
+      "community": 34,
       "norm_label": "gettingstartedcloseme()",
       "id": "entry_gettingstarted_gettingstartedcloseme"
     },
@@ -9589,7 +9929,7 @@
       "source_file": "src/app/src/entry/home.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 34,
+      "community": 8,
       "norm_label": "home.js",
       "id": "entry_home"
     },
@@ -9609,7 +9949,7 @@
       "source_file": "src/app/src/entry/home.js",
       "source_location": "L21",
       "_origin": "ast",
-      "community": 34,
+      "community": 8,
       "norm_label": "homegoback()",
       "id": "entry_home_homegoback"
     },
@@ -9689,7 +10029,7 @@
       "source_file": "src/app/src/entry/player.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "player.js",
       "id": "entry_player"
     },
@@ -9699,7 +10039,7 @@
       "source_file": "src/app/src/entry/player.js",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "emojis",
       "id": "entry_player_emojis"
     },
@@ -9709,7 +10049,7 @@
       "source_file": "src/app/src/entry/player.js",
       "source_location": "L28",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "labels",
       "id": "entry_player_labels"
     },
@@ -9719,7 +10059,7 @@
       "source_file": "src/app/src/entry/player.js",
       "source_location": "L30",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "playermain()",
       "id": "entry_player_playermain"
     },
@@ -9729,7 +10069,7 @@
       "source_file": "src/app/src/entry/player.js",
       "source_location": "L205",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "_waitandplay()",
       "id": "entry_player_waitandplay"
     },
@@ -9739,7 +10079,7 @@
       "source_file": "src/app/src/entry/player.js",
       "source_location": "L293",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "_prefetchmedia()",
       "id": "entry_player_prefetchmedia"
     },
@@ -9749,7 +10089,7 @@
       "source_file": "src/app/src/entry/player.js",
       "source_location": "L330",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "_showfatalerror()",
       "id": "entry_player_showfatalerror"
     },
@@ -9759,7 +10099,7 @@
       "source_file": "src/app/src/entry/player.js",
       "source_location": "L336",
       "_origin": "ast",
-      "community": 16,
+      "community": 30,
       "norm_label": "_renderreactions()",
       "id": "entry_player_renderreactions"
     },
@@ -9929,7 +10269,7 @@
       "source_file": "src/app/src/entry/teacher.js",
       "source_location": "L295",
       "_origin": "ast",
-      "community": 0,
+      "community": 46,
       "norm_label": "_warnstudentcameonline()",
       "id": "entry_teacher_warnstudentcameonline"
     },
@@ -10369,7 +10709,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 95,
+      "community": 7,
       "norm_label": "vector",
       "id": "geom_vector_vector"
     },
@@ -10379,7 +10719,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L2",
       "_origin": "ast",
-      "community": 95,
+      "community": 7,
       "norm_label": ".sum()",
       "id": "geom_vector_vector_sum"
     },
@@ -10389,7 +10729,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L9",
       "_origin": "ast",
-      "community": 95,
+      "community": 7,
       "norm_label": ".diff()",
       "id": "geom_vector_vector_diff"
     },
@@ -10399,7 +10739,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 95,
+      "community": 7,
       "norm_label": ".equal()",
       "id": "geom_vector_vector_equal"
     },
@@ -10409,7 +10749,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L20",
       "_origin": "ast",
-      "community": 95,
+      "community": 7,
       "norm_label": ".floor()",
       "id": "geom_vector_vector_floor"
     },
@@ -10419,7 +10759,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 95,
+      "community": 7,
       "norm_label": ".neg()",
       "id": "geom_vector_vector_neg"
     },
@@ -10429,7 +10769,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L34",
       "_origin": "ast",
-      "community": 95,
+      "community": 7,
       "norm_label": ".len()",
       "id": "geom_vector_vector_len"
     },
@@ -10439,7 +10779,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L38",
       "_origin": "ast",
-      "community": 95,
+      "community": 7,
       "norm_label": ".norm()",
       "id": "geom_vector_vector_norm"
     },
@@ -10449,7 +10789,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L49",
       "_origin": "ast",
-      "community": 95,
+      "community": 7,
       "norm_label": ".perp()",
       "id": "geom_vector_vector_perp"
     },
@@ -10459,7 +10799,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L56",
       "_origin": "ast",
-      "community": 95,
+      "community": 7,
       "norm_label": ".scale()",
       "id": "geom_vector_vector_scale"
     },
@@ -10469,7 +10809,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L63",
       "_origin": "ast",
-      "community": 95,
+      "community": 7,
       "norm_label": ".dot()",
       "id": "geom_vector_vector_dot"
     },
@@ -10479,7 +10819,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L67",
       "_origin": "ast",
-      "community": 95,
+      "community": 7,
       "norm_label": ".mid()",
       "id": "geom_vector_vector_mid"
     },
@@ -10489,7 +10829,7 @@
       "source_file": "src/app/src/geom/Vector.js",
       "source_location": "L74",
       "_origin": "ast",
-      "community": 95,
+      "community": 7,
       "norm_label": ".lineintersect()",
       "id": "geom_vector_vector_lineintersect"
     },
@@ -11859,7 +12199,7 @@
       "source_file": "src/app/src/painteditor/Camera.js",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 23,
+      "community": 63,
       "norm_label": ".startfeed()",
       "id": "painteditor_camera_camera_startfeed"
     },
@@ -12859,7 +13199,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L144",
       "_origin": "ast",
-      "community": 59,
+      "community": 72,
       "norm_label": ".init()",
       "id": "painteditor_paint_paint_init"
     },
@@ -12889,7 +13229,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L168",
       "_origin": "ast",
-      "community": 59,
+      "community": 72,
       "norm_label": ".open()",
       "id": "painteditor_paint_paint_open"
     },
@@ -12909,7 +13249,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L215",
       "_origin": "ast",
-      "community": 80,
+      "community": 72,
       "norm_label": ".detectgesture()",
       "id": "painteditor_paint_paint_detectgesture"
     },
@@ -12919,7 +13259,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L230",
       "_origin": "ast",
-      "community": 80,
+      "community": 58,
       "norm_label": ".clearevents()",
       "id": "painteditor_paint_paint_clearevents"
     },
@@ -12949,7 +13289,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L263",
       "_origin": "ast",
-      "community": 80,
+      "community": 58,
       "norm_label": ".pinchstart()",
       "id": "painteditor_paint_paint_pinchstart"
     },
@@ -12959,7 +13299,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L274",
       "_origin": "ast",
-      "community": 80,
+      "community": 58,
       "norm_label": ".gesturestart()",
       "id": "painteditor_paint_paint_gesturestart"
     },
@@ -12999,7 +13339,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L331",
       "_origin": "ast",
-      "community": 80,
+      "community": 72,
       "norm_label": ".mousedown()",
       "id": "painteditor_paint_paint_mousedown"
     },
@@ -13039,7 +13379,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L405",
       "_origin": "ast",
-      "community": 49,
+      "community": 28,
       "norm_label": ".setmode()",
       "id": "painteditor_paint_paint_setmode"
     },
@@ -13049,7 +13389,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L431",
       "_origin": "ast",
-      "community": 49,
+      "community": 28,
       "norm_label": ".selectbutton()",
       "id": "painteditor_paint_paint_selectbutton"
     },
@@ -13059,7 +13399,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L443",
       "_origin": "ast",
-      "community": 49,
+      "community": 28,
       "norm_label": ".selectbuttonfromdiv()",
       "id": "painteditor_paint_paint_selectbuttonfromdiv"
     },
@@ -13069,7 +13409,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L460",
       "_origin": "ast",
-      "community": 49,
+      "community": 28,
       "norm_label": ".getclass()",
       "id": "painteditor_paint_paint_getclass"
     },
@@ -13209,7 +13549,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L619",
       "_origin": "ast",
-      "community": 2,
+      "community": 46,
       "norm_label": ".submitnamechange()",
       "id": "painteditor_paint_paint_submitnamechange"
     },
@@ -13239,7 +13579,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L651",
       "_origin": "ast",
-      "community": 2,
+      "community": 46,
       "norm_label": ".handlenamepress()",
       "id": "painteditor_paint_paint_handlenamepress"
     },
@@ -13259,7 +13599,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L683",
       "_origin": "ast",
-      "community": 71,
+      "community": 46,
       "norm_label": ".leftpalette()",
       "id": "painteditor_paint_paint_leftpalette"
     },
@@ -13269,7 +13609,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L691",
       "_origin": "ast",
-      "community": 71,
+      "community": 46,
       "norm_label": ".setupeditpalette()",
       "id": "painteditor_paint_paint_setupeditpalette"
     },
@@ -13279,7 +13619,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L708",
       "_origin": "ast",
-      "community": 71,
+      "community": 28,
       "norm_label": ".createsizeselector()",
       "id": "painteditor_paint_paint_createsizeselector"
     },
@@ -13289,7 +13629,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L733",
       "_origin": "ast",
-      "community": 71,
+      "community": 28,
       "norm_label": ".drawpensizeincolor()",
       "id": "painteditor_paint_paint_drawpensizeincolor"
     },
@@ -13299,7 +13639,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L737",
       "_origin": "ast",
-      "community": 71,
+      "community": 28,
       "norm_label": ".updatestrokes()",
       "id": "painteditor_paint_paint_updatestrokes"
     },
@@ -13309,7 +13649,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L748",
       "_origin": "ast",
-      "community": 71,
+      "community": 28,
       "norm_label": ".selectpensize()",
       "id": "painteditor_paint_paint_selectpensize"
     },
@@ -13339,7 +13679,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L783",
       "_origin": "ast",
-      "community": 19,
+      "community": 46,
       "norm_label": ".cameratoolson()",
       "id": "painteditor_paint_paint_cameratoolson"
     },
@@ -13349,7 +13689,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L811",
       "_origin": "ast",
-      "community": 49,
+      "community": 72,
       "norm_label": ".closecameramode()",
       "id": "painteditor_paint_paint_closecameramode"
     },
@@ -13369,7 +13709,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L838",
       "_origin": "ast",
-      "community": 59,
+      "community": 49,
       "norm_label": ".setupcanvasarea()",
       "id": "painteditor_paint_paint_setupcanvasarea"
     },
@@ -13379,7 +13719,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L867",
       "_origin": "ast",
-      "community": 71,
+      "community": 28,
       "norm_label": ".colorpalette()",
       "id": "painteditor_paint_paint_colorpalette"
     },
@@ -13389,7 +13729,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L890",
       "_origin": "ast",
-      "community": 71,
+      "community": 28,
       "norm_label": ".setsplashcolor()",
       "id": "painteditor_paint_paint_setsplashcolor"
     },
@@ -13399,7 +13739,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L895",
       "_origin": "ast",
-      "community": 71,
+      "community": 28,
       "norm_label": ".addimageurl()",
       "id": "painteditor_paint_paint_addimageurl"
     },
@@ -13409,7 +13749,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L902",
       "_origin": "ast",
-      "community": 71,
+      "community": 28,
       "norm_label": ".selectswatch()",
       "id": "painteditor_paint_paint_selectswatch"
     },
@@ -13419,7 +13759,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L929",
       "_origin": "ast",
-      "community": 71,
+      "community": 28,
       "norm_label": ".setswatchcolor()",
       "id": "painteditor_paint_paint_setswatchcolor"
     },
@@ -13429,7 +13769,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L953",
       "_origin": "ast",
-      "community": 71,
+      "community": 28,
       "norm_label": ".initswatchlist()",
       "id": "painteditor_paint_paint_initswatchlist"
     },
@@ -13449,7 +13789,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L993",
       "_origin": "ast",
-      "community": 59,
+      "community": 72,
       "norm_label": ".clearworkspace()",
       "id": "painteditor_paint_paint_clearworkspace"
     },
@@ -13459,7 +13799,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1005",
       "_origin": "ast",
-      "community": 59,
+      "community": 28,
       "norm_label": ".drawgrid()",
       "id": "painteditor_paint_paint_drawgrid"
     },
@@ -13469,7 +13809,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1031",
       "_origin": "ast",
-      "community": 59,
+      "community": 28,
       "norm_label": ".getgridpath()",
       "id": "painteditor_paint_paint_getgridpath"
     },
@@ -13479,7 +13819,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1057",
       "_origin": "ast",
-      "community": 59,
+      "community": 49,
       "norm_label": ".initbkg()",
       "id": "painteditor_paint_paint_initbkg"
     },
@@ -13489,7 +13829,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1083",
       "_origin": "ast",
-      "community": 59,
+      "community": 49,
       "norm_label": ".loadbackground()",
       "id": "painteditor_paint_paint_loadbackground"
     },
@@ -13499,7 +13839,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1102",
       "_origin": "ast",
-      "community": 59,
+      "community": 49,
       "norm_label": ".getbkg()",
       "id": "painteditor_paint_paint_getbkg"
     },
@@ -13529,7 +13869,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1144",
       "_origin": "ast",
-      "community": 59,
+      "community": 49,
       "norm_label": ".initsprite()",
       "id": "painteditor_paint_paint_initsprite"
     },
@@ -13539,7 +13879,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1170",
       "_origin": "ast",
-      "community": 59,
+      "community": 49,
       "norm_label": ".loadcharacter()",
       "id": "painteditor_paint_paint_loadcharacter"
     },
@@ -13559,7 +13899,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1193",
       "_origin": "ast",
-      "community": 59,
+      "community": 49,
       "norm_label": ".loadchar()",
       "id": "painteditor_paint_paint_loadchar"
     },
@@ -13589,7 +13929,7 @@
       "source_file": "src/app/src/painteditor/Paint.js",
       "source_location": "L1230",
       "_origin": "ast",
-      "community": 28,
+      "community": 72,
       "norm_label": ".changebackground()",
       "id": "painteditor_paint_paint_changebackground"
     },
@@ -14159,7 +14499,7 @@
       "source_file": "src/app/src/painteditor/PaintAction.js",
       "source_location": "L610",
       "_origin": "ast",
-      "community": 1,
+      "community": 71,
       "norm_label": ".rectmouseup()",
       "id": "painteditor_paintaction_paintaction_rectmouseup"
     },
@@ -14169,7 +14509,7 @@
       "source_file": "src/app/src/painteditor/PaintAction.js",
       "source_location": "L637",
       "_origin": "ast",
-      "community": 1,
+      "community": 71,
       "norm_label": ".trimouseup()",
       "id": "painteditor_paintaction_paintaction_trimouseup"
     },
@@ -14179,7 +14519,7 @@
       "source_file": "src/app/src/painteditor/PaintAction.js",
       "source_location": "L644",
       "_origin": "ast",
-      "community": 1,
+      "community": 71,
       "norm_label": ".ellipsemouseup()",
       "id": "painteditor_paintaction_paintaction_ellipsemouseup"
     },
@@ -14199,7 +14539,7 @@
       "source_file": "src/app/src/painteditor/PaintAction.js",
       "source_location": "L674",
       "_origin": "ast",
-      "community": 1,
+      "community": 71,
       "norm_label": ".pathmouseup()",
       "id": "painteditor_paintaction_paintaction_pathmouseup"
     },
@@ -14339,7 +14679,7 @@
       "source_file": "src/app/src/painteditor/PaintAction.js",
       "source_location": "L953",
       "_origin": "ast",
-      "community": 1,
+      "community": 71,
       "norm_label": ".removeshape()",
       "id": "painteditor_paintaction_paintaction_removeshape"
     },
@@ -14349,7 +14689,7 @@
       "source_file": "src/app/src/painteditor/PaintAction.js",
       "source_location": "L961",
       "_origin": "ast",
-      "community": 1,
+      "community": 71,
       "norm_label": ".rectclick()",
       "id": "painteditor_paintaction_paintaction_rectclick"
     },
@@ -14359,7 +14699,7 @@
       "source_file": "src/app/src/painteditor/PaintAction.js",
       "source_location": "L986",
       "_origin": "ast",
-      "community": 1,
+      "community": 71,
       "norm_label": ".ellipseclick()",
       "id": "painteditor_paintaction_paintaction_ellipseclick"
     },
@@ -14379,7 +14719,7 @@
       "source_file": "src/app/src/painteditor/PaintAction.js",
       "source_location": "L1021",
       "_origin": "ast",
-      "community": 1,
+      "community": 71,
       "norm_label": ".triclick()",
       "id": "painteditor_paintaction_paintaction_triclick"
     },
@@ -14499,7 +14839,7 @@
       "source_file": "src/app/src/painteditor/PaintUndo.js",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 55,
+      "community": 7,
       "norm_label": "paintundo",
       "id": "painteditor_paintundo_paintundo"
     },
@@ -14509,7 +14849,7 @@
       "source_file": "src/app/src/painteditor/PaintUndo.js",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 55,
+      "community": 7,
       "norm_label": ".buffer()",
       "id": "painteditor_paintundo_paintundo_buffer"
     },
@@ -14519,7 +14859,7 @@
       "source_file": "src/app/src/painteditor/PaintUndo.js",
       "source_location": "L21",
       "_origin": "ast",
-      "community": 55,
+      "community": 7,
       "norm_label": ".index()",
       "id": "painteditor_paintundo_paintundo_index"
     },
@@ -14529,7 +14869,7 @@
       "source_file": "src/app/src/painteditor/PaintUndo.js",
       "source_location": "L32",
       "_origin": "ast",
-      "community": 55,
+      "community": 46,
       "norm_label": ".setup()",
       "id": "painteditor_paintundo_paintundo_setup"
     },
@@ -14539,7 +14879,7 @@
       "source_file": "src/app/src/painteditor/PaintUndo.js",
       "source_location": "L45",
       "_origin": "ast",
-      "community": 55,
+      "community": 46,
       "norm_label": ".newtoggleclicky()",
       "id": "painteditor_paintundo_paintundo_newtoggleclicky"
     },
@@ -14549,7 +14889,7 @@
       "source_file": "src/app/src/painteditor/PaintUndo.js",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 55,
+      "community": 7,
       "norm_label": ".runundo()",
       "id": "painteditor_paintundo_paintundo_runundo"
     },
@@ -14559,7 +14899,7 @@
       "source_file": "src/app/src/painteditor/PaintUndo.js",
       "source_location": "L74",
       "_origin": "ast",
-      "community": 55,
+      "community": 34,
       "norm_label": ".record()",
       "id": "painteditor_paintundo_paintundo_record"
     },
@@ -14569,7 +14909,7 @@
       "source_file": "src/app/src/painteditor/PaintUndo.js",
       "source_location": "L88",
       "_origin": "ast",
-      "community": 55,
+      "community": 34,
       "norm_label": ".getcanvas()",
       "id": "painteditor_paintundo_paintundo_getcanvas"
     },
@@ -14579,7 +14919,7 @@
       "source_file": "src/app/src/painteditor/PaintUndo.js",
       "source_location": "L96",
       "_origin": "ast",
-      "community": 55,
+      "community": 7,
       "norm_label": ".undo()",
       "id": "painteditor_paintundo_paintundo_undo"
     },
@@ -14589,7 +14929,7 @@
       "source_file": "src/app/src/painteditor/PaintUndo.js",
       "source_location": "L119",
       "_origin": "ast",
-      "community": 55,
+      "community": 7,
       "norm_label": ".redo()",
       "id": "painteditor_paintundo_paintundo_redo"
     },
@@ -14599,7 +14939,7 @@
       "source_file": "src/app/src/painteditor/PaintUndo.js",
       "source_location": "L139",
       "_origin": "ast",
-      "community": 55,
+      "community": 7,
       "norm_label": ".updateactiveundo()",
       "id": "painteditor_paintundo_paintundo_updateactiveundo"
     },
@@ -14609,7 +14949,7 @@
       "source_file": "src/app/src/painteditor/PaintUndo.js",
       "source_location": "L158",
       "_origin": "ast",
-      "community": 55,
+      "community": 7,
       "norm_label": ".tunonbutton()",
       "id": "painteditor_paintundo_paintundo_tunonbutton"
     },
@@ -14619,7 +14959,7 @@
       "source_file": "src/app/src/painteditor/PaintUndo.js",
       "source_location": "L164",
       "_origin": "ast",
-      "community": 55,
+      "community": 7,
       "norm_label": ".tunoffbutton()",
       "id": "painteditor_paintundo_paintundo_tunoffbutton"
     },
@@ -14869,7 +15209,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L366",
       "_origin": "ast",
-      "community": 51,
+      "community": 80,
       "norm_label": ".getcommands()",
       "id": "painteditor_path_path_getcommands"
     },
@@ -14889,7 +15229,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L405",
       "_origin": "ast",
-      "community": 51,
+      "community": 80,
       "norm_label": ".getdattribute()",
       "id": "painteditor_path_path_getdattribute"
     },
@@ -14979,7 +15319,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L723",
       "_origin": "ast",
-      "community": 29,
+      "community": 51,
       "norm_label": ".getdotcolor()",
       "id": "painteditor_path_path_getdotcolor"
     },
@@ -14989,7 +15329,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L737",
       "_origin": "ast",
-      "community": 29,
+      "community": 51,
       "norm_label": ".getdotpos()",
       "id": "painteditor_path_path_getdotpos"
     },
@@ -15009,7 +15349,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L756",
       "_origin": "ast",
-      "community": 29,
+      "community": 51,
       "norm_label": ".istip()",
       "id": "painteditor_path_path_istip"
     },
@@ -15049,7 +15389,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L803",
       "_origin": "ast",
-      "community": 29,
+      "community": 51,
       "norm_label": ".hidedots()",
       "id": "painteditor_path_path_hidedots"
     },
@@ -15069,7 +15409,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L826",
       "_origin": "ast",
-      "community": 34,
+      "community": 29,
       "norm_label": ".getdots()",
       "id": "painteditor_path_path_getdots"
     },
@@ -15079,7 +15419,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L834",
       "_origin": "ast",
-      "community": 98,
+      "community": 29,
       "norm_label": ".adddot()",
       "id": "painteditor_path_path_adddot"
     },
@@ -15089,7 +15429,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L857",
       "_origin": "ast",
-      "community": 98,
+      "community": 29,
       "norm_label": ".gethitindex()",
       "id": "painteditor_path_path_gethitindex"
     },
@@ -15109,7 +15449,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L883",
       "_origin": "ast",
-      "community": 98,
+      "community": 29,
       "norm_label": ".addpoint()",
       "id": "painteditor_path_path_addpoint"
     },
@@ -15119,7 +15459,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L906",
       "_origin": "ast",
-      "community": 98,
+      "community": 29,
       "norm_label": ".inline()",
       "id": "painteditor_path_path_inline"
     },
@@ -15149,7 +15489,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L986",
       "_origin": "ast",
-      "community": 29,
+      "community": 51,
       "norm_label": ".quiteditmode()",
       "id": "painteditor_path_path_quiteditmode"
     },
@@ -15159,7 +15499,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L991",
       "_origin": "ast",
-      "community": 29,
+      "community": 51,
       "norm_label": ".hitdot()",
       "id": "painteditor_path_path_hitdot"
     },
@@ -15169,7 +15509,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1004",
       "_origin": "ast",
-      "community": 29,
+      "community": 51,
       "norm_label": ".getclosestdotto()",
       "id": "painteditor_path_path_getclosestdotto"
     },
@@ -15179,7 +15519,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1022",
       "_origin": "ast",
-      "community": 98,
+      "community": 29,
       "norm_label": ".hitline()",
       "id": "painteditor_path_path_hitline"
     },
@@ -15189,7 +15529,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1026",
       "_origin": "ast",
-      "community": 98,
+      "community": 29,
       "norm_label": ".getpointindex()",
       "id": "painteditor_path_path_getpointindex"
     },
@@ -15229,7 +15569,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1075",
       "_origin": "ast",
-      "community": 51,
+      "community": 80,
       "norm_label": ".join()",
       "id": "painteditor_path_path_join"
     },
@@ -15419,7 +15759,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1537",
       "_origin": "ast",
-      "community": 51,
+      "community": 80,
       "norm_label": ".getfrompoints()",
       "id": "painteditor_path_path_getfrompoints"
     },
@@ -15529,7 +15869,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1742",
       "_origin": "ast",
-      "community": 51,
+      "community": 80,
       "norm_label": ".reverse()",
       "id": "painteditor_path_path_reverse"
     },
@@ -15609,7 +15949,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1887",
       "_origin": "ast",
-      "community": 29,
+      "community": 60,
       "norm_label": ".anycrossing()",
       "id": "painteditor_path_path_anycrossing"
     },
@@ -15619,7 +15959,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1903",
       "_origin": "ast",
-      "community": 29,
+      "community": 60,
       "norm_label": ".getpathcrossing()",
       "id": "painteditor_path_path_getpathcrossing"
     },
@@ -15629,7 +15969,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1922",
       "_origin": "ast",
-      "community": 29,
+      "community": 60,
       "norm_label": ".getallpoints()",
       "id": "painteditor_path_path_getallpoints"
     },
@@ -15639,7 +15979,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L1972",
       "_origin": "ast",
-      "community": 29,
+      "community": 60,
       "norm_label": ".getbezierpoints()",
       "id": "painteditor_path_path_getbezierpoints"
     },
@@ -15659,7 +15999,7 @@
       "source_file": "src/app/src/painteditor/Path.js",
       "source_location": "L2043",
       "_origin": "ast",
-      "community": 29,
+      "community": 60,
       "norm_label": ".cleanbezier()",
       "id": "painteditor_path_path_cleanbezier"
     },
@@ -15869,7 +16209,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L37",
       "_origin": "ast",
-      "community": 99,
+      "community": 5,
       "norm_label": ".init()",
       "id": "painteditor_svgtools_svgtools_init"
     },
@@ -15879,7 +16219,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L41",
       "_origin": "ast",
-      "community": 99,
+      "community": 5,
       "norm_label": ".getpenattributes()",
       "id": "painteditor_svgtools_svgtools_getpenattributes"
     },
@@ -15899,7 +16239,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L66",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".creategroup()",
       "id": "painteditor_svgtools_svgtools_creategroup"
     },
@@ -15919,7 +16259,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L92",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".addpath()",
       "id": "painteditor_svgtools_svgtools_addpath"
     },
@@ -15929,7 +16269,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L111",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".addpolyline()",
       "id": "painteditor_svgtools_svgtools_addpolyline"
     },
@@ -15939,7 +16279,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L130",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".addellipse()",
       "id": "painteditor_svgtools_svgtools_addellipse"
     },
@@ -15949,7 +16289,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L151",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".addtriangle()",
       "id": "painteditor_svgtools_svgtools_addtriangle"
     },
@@ -15959,7 +16299,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L170",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".addrect()",
       "id": "painteditor_svgtools_svgtools_addrect"
     },
@@ -15969,7 +16309,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L191",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".getpolyattr()",
       "id": "painteditor_svgtools_svgtools_getpolyattr"
     },
@@ -15979,7 +16319,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L202",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".getpenattr()",
       "id": "painteditor_svgtools_svgtools_getpenattr"
     },
@@ -15989,7 +16329,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L218",
       "_origin": "ast",
-      "community": 96,
+      "community": 5,
       "norm_label": ".getcopy()",
       "id": "painteditor_svgtools_svgtools_getcopy"
     },
@@ -15999,7 +16339,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L222",
       "_origin": "ast",
-      "community": 96,
+      "community": 5,
       "norm_label": ".svg2string()",
       "id": "painteditor_svgtools_svgtools_svg2string"
     },
@@ -16009,7 +16349,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L229",
       "_origin": "ast",
-      "community": 96,
+      "community": 5,
       "norm_label": ".toobject()",
       "id": "painteditor_svgtools_svgtools_toobject"
     },
@@ -16019,7 +16359,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L236",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".rename()",
       "id": "painteditor_svgtools_svgtools_rename"
     },
@@ -16039,7 +16379,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L286",
       "_origin": "ast",
-      "community": 96,
+      "community": 5,
       "norm_label": ".cleanup()",
       "id": "painteditor_svgtools_svgtools_cleanup"
     },
@@ -16049,7 +16389,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L301",
       "_origin": "ast",
-      "community": 96,
+      "community": 5,
       "norm_label": ".saveshape()",
       "id": "painteditor_svgtools_svgtools_saveshape"
     },
@@ -16189,7 +16529,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L641",
       "_origin": "ast",
-      "community": 99,
+      "community": 5,
       "norm_label": ".onlykeys()",
       "id": "painteditor_svgtools_svgtools_onlykeys"
     },
@@ -16259,7 +16599,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L790",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".getclonedelement()",
       "id": "painteditor_svgtools_svgtools_getclonedelement"
     },
@@ -16269,7 +16609,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L826",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": ".getclone()",
       "id": "painteditor_svgtools_svgtools_getclone"
     },
@@ -16279,7 +16619,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L861",
       "_origin": "ast",
-      "community": 96,
+      "community": 5,
       "norm_label": ".getwatermark()",
       "id": "painteditor_svgtools_svgtools_getwatermark"
     },
@@ -16289,7 +16629,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L882",
       "_origin": "ast",
-      "community": 96,
+      "community": 5,
       "norm_label": ".getwatermarkfrompng()",
       "id": "painteditor_svgtools_svgtools_getwatermarkfrompng"
     },
@@ -16299,7 +16639,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L887",
       "_origin": "ast",
-      "community": 96,
+      "community": 5,
       "norm_label": ".changeshape()",
       "id": "painteditor_svgtools_svgtools_changeshape"
     },
@@ -16309,7 +16649,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L898",
       "_origin": "ast",
-      "community": 96,
+      "community": 5,
       "norm_label": ".removeextras()",
       "id": "painteditor_svgtools_svgtools_removeextras"
     },
@@ -16319,7 +16659,7 @@
       "source_file": "src/app/src/painteditor/SVGTools.js",
       "source_location": "L915",
       "_origin": "ast",
-      "community": 96,
+      "community": 5,
       "norm_label": ".setobjectwatermark()",
       "id": "painteditor_svgtools_svgtools_setobjectwatermark"
     },
@@ -17949,7 +18289,7 @@
       "source_file": "src/app/src/utils/DrawPath.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 44,
+      "community": 23,
       "norm_label": "drawpath.js",
       "id": "utils_drawpath"
     },
@@ -18009,7 +18349,7 @@
       "source_file": "src/app/src/utils/Events.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 23,
       "norm_label": "events.js",
       "id": "utils_events"
     },
@@ -18019,7 +18359,7 @@
       "source_file": "src/app/src/utils/Events.js",
       "source_location": "L20",
       "_origin": "ast",
-      "community": 8,
+      "community": 23,
       "norm_label": "pinchcenter",
       "id": "utils_events_pinchcenter"
     },
@@ -19189,7 +19529,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 8,
+      "community": 59,
       "norm_label": "scratchaudio",
       "id": "utils_scratchaudio_scratchaudio"
     },
@@ -19199,7 +19539,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 8,
+      "community": 59,
       "norm_label": ".uisounds()",
       "id": "utils_scratchaudio_scratchaudio_uisounds"
     },
@@ -19209,7 +19549,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 8,
+      "community": 59,
       "norm_label": ".projectsounds()",
       "id": "utils_scratchaudio_scratchaudio_projectsounds"
     },
@@ -19219,7 +19559,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 8,
+      "community": 59,
       "norm_label": ".sndfx()",
       "id": "utils_scratchaudio_scratchaudio_sndfx"
     },
@@ -19229,7 +19569,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 8,
+      "community": 59,
       "norm_label": ".sndfxwithvolume()",
       "id": "utils_scratchaudio_scratchaudio_sndfxwithvolume"
     },
@@ -19239,7 +19579,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L38",
       "_origin": "ast",
-      "community": 8,
+      "community": 59,
       "norm_label": ".init()",
       "id": "utils_scratchaudio_scratchaudio_init"
     },
@@ -19249,7 +19589,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 8,
+      "community": 59,
       "norm_label": ".addsound()",
       "id": "utils_scratchaudio_scratchaudio_addsound"
     },
@@ -19259,7 +19599,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L77",
       "_origin": "ast",
-      "community": 8,
+      "community": 59,
       "norm_label": ".sounddone()",
       "id": "utils_scratchaudio_scratchaudio_sounddone"
     },
@@ -19269,7 +19609,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L82",
       "_origin": "ast",
-      "community": 8,
+      "community": 59,
       "norm_label": ".loadprojectsound()",
       "id": "utils_scratchaudio_scratchaudio_loadprojectsound"
     },
@@ -19279,7 +19619,7 @@
       "source_file": "src/app/src/utils/ScratchAudio.js",
       "source_location": "L94",
       "_origin": "ast",
-      "community": 8,
+      "community": 59,
       "norm_label": ".loadfromlocal()",
       "id": "utils_scratchaudio_scratchaudio_loadfromlocal"
     },
@@ -19559,7 +19899,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L149",
       "_origin": "ast",
-      "community": 19,
+      "community": 23,
       "norm_label": "newdiv()",
       "id": "utils_lib_newdiv"
     },
@@ -19579,7 +19919,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L175",
       "_origin": "ast",
-      "community": 44,
+      "community": 23,
       "norm_label": "newcanvas()",
       "id": "utils_lib_newcanvas"
     },
@@ -19589,7 +19929,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L186",
       "_origin": "ast",
-      "community": 19,
+      "community": 46,
       "norm_label": "newhtml()",
       "id": "utils_lib_newhtml"
     },
@@ -19599,7 +19939,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L197",
       "_origin": "ast",
-      "community": 19,
+      "community": 40,
       "norm_label": "newp()",
       "id": "utils_lib_newp"
     },
@@ -19609,7 +19949,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L205",
       "_origin": "ast",
-      "community": 25,
+      "community": 36,
       "norm_label": "hitrect()",
       "id": "utils_lib_hitrect"
     },
@@ -19619,7 +19959,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L235",
       "_origin": "ast",
-      "community": 25,
+      "community": 36,
       "norm_label": "hit3drect()",
       "id": "utils_lib_hit3drect"
     },
@@ -19639,7 +19979,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L291",
       "_origin": "ast",
-      "community": 44,
+      "community": 23,
       "norm_label": "setcanvassize()",
       "id": "utils_lib_setcanvassize"
     },
@@ -19649,7 +19989,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L298",
       "_origin": "ast",
-      "community": 8,
+      "community": 23,
       "norm_label": "setcanvassizescaledtowindowdocumentheight()",
       "id": "utils_lib_setcanvassizescaledtowindowdocumentheight"
     },
@@ -19699,7 +20039,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L356",
       "_origin": "ast",
-      "community": 44,
+      "community": 23,
       "norm_label": "setprops()",
       "id": "utils_lib_setprops"
     },
@@ -19739,7 +20079,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L462",
       "_origin": "ast",
-      "community": 25,
+      "community": 23,
       "norm_label": "drawscaled()",
       "id": "utils_lib_drawscaled"
     },
@@ -19769,7 +20109,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L523",
       "_origin": "ast",
-      "community": 19,
+      "community": 36,
       "norm_label": "getdocumentheight()",
       "id": "utils_lib_getdocumentheight"
     },
@@ -19779,7 +20119,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L527",
       "_origin": "ast",
-      "community": 2,
+      "community": 36,
       "norm_label": "getdocumentwidth()",
       "id": "utils_lib_getdocumentwidth"
     },
@@ -19789,7 +20129,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L531",
       "_origin": "ast",
-      "community": 44,
+      "community": 23,
       "norm_label": "getstringsize()",
       "id": "utils_lib_getstringsize"
     },
@@ -19799,7 +20139,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L536",
       "_origin": "ast",
-      "community": 44,
+      "community": 23,
       "norm_label": "writetext()",
       "id": "utils_lib_writetext"
     },
@@ -19829,7 +20169,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L566",
       "_origin": "ast",
-      "community": 19,
+      "community": 36,
       "norm_label": "newtextinput()",
       "id": "utils_lib_newtextinput"
     },
@@ -19839,7 +20179,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L575",
       "_origin": "ast",
-      "community": 20,
+      "community": 40,
       "norm_label": "geturlvars()",
       "id": "utils_lib_geturlvars"
     },
@@ -19849,7 +20189,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L590",
       "_origin": "ast",
-      "community": 81,
+      "community": 5,
       "norm_label": "getidfor()",
       "id": "utils_lib_getidfor"
     },
@@ -19869,7 +20209,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L611",
       "_origin": "ast",
-      "community": 7,
+      "community": 36,
       "norm_label": "rgb2hsb()",
       "id": "utils_lib_rgb2hsb"
     },
@@ -19909,7 +20249,7 @@
       "source_file": "src/app/src/utils/lib.js",
       "source_location": "L675",
       "_origin": "ast",
-      "community": 7,
+      "community": 36,
       "norm_label": "getrgb()",
       "id": "utils_lib_getrgb"
     },
@@ -20229,7 +20569,7 @@
       "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
       "source_location": "L60",
       "_origin": "ast",
-      "community": 43,
+      "community": 17,
       "norm_label": "getgalleryrestriction()",
       "id": "ui_galleryrestriction_getgalleryrestriction"
     },
@@ -20319,7 +20659,7 @@
       "source_file": "src/app/src/editor/ui/GalleryRestriction.js",
       "source_location": "L165",
       "_origin": "ast",
-      "community": 43,
+      "community": 11,
       "norm_label": "showassignmenttoast()",
       "id": "ui_galleryrestriction_showassignmenttoast"
     },
@@ -20459,7 +20799,7 @@
       "source_file": "src/app/src/editor/ui/Thumbs.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 23,
       "norm_label": "thumbs.js",
       "id": "ui_thumbs"
     },
@@ -20519,7 +20859,7 @@
       "source_file": "src/app/src/editor/ui/Thumbs.js",
       "source_location": "L124",
       "_origin": "ast",
-      "community": 43,
+      "community": 11,
       "norm_label": ".blockpagedrag()",
       "id": "ui_thumbs_thumbs_blockpagedrag"
     },
@@ -20699,7 +21039,7 @@
       "source_file": "src/app/src/editor/ui/Thumbs.js",
       "source_location": "L393",
       "_origin": "ast",
-      "community": 43,
+      "community": 11,
       "norm_label": ".clickonemptypage()",
       "id": "ui_thumbs_thumbs_clickonemptypage"
     },
@@ -20909,7 +21249,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 20,
+      "community": 38,
       "norm_label": "index.js",
       "id": "entry_index"
     },
@@ -20919,7 +21259,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 20,
+      "community": 38,
       "norm_label": "indexmain()",
       "id": "entry_index_indexmain"
     },
@@ -20929,7 +21269,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L52",
       "_origin": "ast",
-      "community": 20,
+      "community": 38,
       "norm_label": "indexfirsttime()",
       "id": "entry_index_indexfirsttime"
     },
@@ -20939,7 +21279,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L91",
       "_origin": "ast",
-      "community": 20,
+      "community": 38,
       "norm_label": "indexloadoptions()",
       "id": "entry_index_indexloadoptions"
     },
@@ -20949,7 +21289,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L95",
       "_origin": "ast",
-      "community": 20,
+      "community": 38,
       "norm_label": "indexloadstart()",
       "id": "entry_index_indexloadstart"
     },
@@ -20959,7 +21299,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L139",
       "_origin": "ast",
-      "community": 20,
+      "community": 38,
       "norm_label": "setclassofelementbyid()",
       "id": "entry_index_setclassofelementbyid"
     },
@@ -20969,7 +21309,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L150",
       "_origin": "ast",
-      "community": 20,
+      "community": 38,
       "norm_label": "indexgohome()",
       "id": "entry_index_indexgohome"
     },
@@ -20979,7 +21319,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L160",
       "_origin": "ast",
-      "community": 20,
+      "community": 38,
       "norm_label": "indexgosettings()",
       "id": "entry_index_indexgosettings"
     },
@@ -20989,7 +21329,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L169",
       "_origin": "ast",
-      "community": 20,
+      "community": 38,
       "norm_label": "indexgettingstarted()",
       "id": "entry_index_indexgettingstarted"
     },
@@ -20999,7 +21339,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L176",
       "_origin": "ast",
-      "community": 20,
+      "community": 38,
       "norm_label": "indexinfo()",
       "id": "entry_index_indexinfo"
     },
@@ -21009,7 +21349,7 @@
       "source_file": "src/app/src/entry/index.js",
       "source_location": "L183",
       "_origin": "ast",
-      "community": 20,
+      "community": 38,
       "norm_label": "indexmoreapps()",
       "id": "entry_index_indexmoreapps"
     },
@@ -21416,6 +21756,327 @@
   ],
   "links": [
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L70",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_allowedorigins",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_app",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_assignmentsroutes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_cors",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_corsoptions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_dbroutes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_envorigins",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_express",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_helmet",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L120",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_identitymiddleware",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L102",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_jwt_user_header",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_localdevorigins",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_mediaroutes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L114",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_mock_context",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_mock_tokens",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_morgan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_normalizeorigin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_parseoriginlist",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_realtimeroutes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_sharerouter_publicrouter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_teacherroutes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/index.js",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "src_index",
+      "target": "src_index_verifyanddecode_getuseridfromclaims_getturmaidfromclaims_getpresencestatusfromclaims",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "routes_publicprojectcaptures",
+      "target": "routes_publicprojectcaptures_capture_bucket",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "routes_publicprojectcaptures",
+      "target": "routes_publicprojectcaptures_createclient",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "routes_publicprojectcaptures",
+      "target": "routes_publicprojectcaptures_defaultclient",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/publicProjectCaptures.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "routes_publicprojectcaptures",
+      "target": "routes_publicprojectcaptures_express",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "routes_publicprojectcaptures_test",
+      "target": "routes_publicprojectcaptures",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "routes_publicprojectcaptures_test",
+      "target": "routes_publicprojectcaptures_test_express",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "routes_publicprojectcaptures_test",
+      "target": "routes_publicprojectcaptures_test_get",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "routes_publicprojectcaptures_test",
+      "target": "routes_publicprojectcaptures_test_query",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/publicProjectCaptures.test.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "routes_publicprojectcaptures_test",
+      "target": "routes_publicprojectcaptures_test_routes",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -21784,9 +22445,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L284",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_initadminedit",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_initadminedit"
     },
     {
       "relation": "method",
@@ -21794,9 +22455,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L296",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_onadminsaveclick",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_onadminsaveclick"
     },
     {
       "relation": "method",
@@ -21952,9 +22613,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L315",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_onadminsaveclick",
-      "target": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt",
-      "confidence_score": 1.0
+      "target": "ui_assignmentauthorbar_assignmentauthorbar_showcontextprompt"
     },
     {
       "relation": "calls",
@@ -22062,9 +22723,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentAuthorBar.js",
       "source_location": "L793",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentauthorbar_assignmentauthorbar_showhintreview",
-      "target": "ui_assignmentcapture",
-      "confidence_score": 1.0
+      "target": "ui_assignmentcapture"
     },
     {
       "relation": "calls",
@@ -22172,9 +22833,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentcapture",
-      "target": "ui_project",
-      "confidence_score": 1.0
+      "target": "ui_project"
     },
     {
       "relation": "imports_from",
@@ -22600,9 +23261,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentcapture",
-      "target": "ui_project_project",
-      "confidence_score": 1.0
+      "target": "ui_project_project"
     },
     {
       "relation": "calls",
@@ -23713,9 +24374,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentcapture",
-      "target": "ui_assignmentcapture_saveassignmentcaptures",
-      "confidence_score": 1.0
+      "target": "ui_assignmentcapture_saveassignmentcaptures"
     },
     {
       "relation": "imports_from",
@@ -23724,9 +24385,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentcapture",
-      "target": "ui_capturerenderer",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer"
     },
     {
       "relation": "imports",
@@ -23735,9 +24396,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentcapture",
-      "target": "ui_capturerenderer_captureactor",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_captureactor"
     },
     {
       "relation": "imports",
@@ -23746,9 +24407,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentcapture",
-      "target": "ui_capturerenderer_capturescripts",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_capturescripts"
     },
     {
       "relation": "imports",
@@ -23757,9 +24418,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.js",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentcapture",
-      "target": "ui_capturerenderer_waitforscene",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_waitforscene"
     },
     {
       "relation": "imports_from",
@@ -23768,9 +24429,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentcapture_test",
-      "target": "ui_assignmentcapture",
-      "confidence_score": 1.0
+      "target": "ui_assignmentcapture"
     },
     {
       "relation": "calls",
@@ -23823,9 +24484,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentcapture_test",
-      "target": "ui_assignmentcapture_saveassignmentcaptures",
-      "confidence_score": 1.0
+      "target": "ui_assignmentcapture_saveassignmentcaptures"
     },
     {
       "relation": "contains",
@@ -23833,9 +24494,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer",
-      "target": "ui_capturerenderer_canvas",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_canvas"
     },
     {
       "relation": "contains",
@@ -23843,9 +24504,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer",
-      "target": "ui_capturerenderer_captureactor",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_captureactor"
     },
     {
       "relation": "contains",
@@ -23853,9 +24514,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L72",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer",
-      "target": "ui_capturerenderer_capturescripts",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_capturescripts"
     },
     {
       "relation": "contains",
@@ -23863,9 +24524,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer",
-      "target": "ui_capturerenderer_readyimage",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_readyimage"
     },
     {
       "relation": "contains",
@@ -23873,9 +24534,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer",
-      "target": "ui_capturerenderer_resourcedataurl",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_resourcedataurl"
     },
     {
       "relation": "contains",
@@ -23883,9 +24544,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer",
-      "target": "ui_capturerenderer_scriptbounds",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_scriptbounds"
     },
     {
       "relation": "contains",
@@ -23893,9 +24554,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L39",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer",
-      "target": "ui_capturerenderer_waitforscene",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_waitforscene"
     },
     {
       "relation": "imports_from",
@@ -23904,9 +24565,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.test.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer_test",
-      "target": "ui_capturerenderer",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer"
     },
     {
       "relation": "calls",
@@ -23915,9 +24576,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer_captureactor",
-      "target": "ui_capturerenderer_canvas",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_canvas"
     },
     {
       "relation": "calls",
@@ -23926,9 +24587,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L142",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer_capturescripts",
-      "target": "ui_capturerenderer_canvas",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_canvas"
     },
     {
       "relation": "calls",
@@ -23937,9 +24598,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer_captureactor",
-      "target": "ui_capturerenderer_readyimage",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_readyimage"
     },
     {
       "relation": "calls",
@@ -23948,9 +24609,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L135",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer_capturescripts",
-      "target": "ui_capturerenderer_readyimage",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_readyimage"
     },
     {
       "relation": "calls",
@@ -23959,9 +24620,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L40",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer_waitforscene",
-      "target": "ui_capturerenderer_readyimage",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_readyimage"
     },
     {
       "relation": "calls",
@@ -23970,9 +24631,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.js",
       "source_location": "L141",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer_capturescripts",
-      "target": "ui_capturerenderer_scriptbounds",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_scriptbounds"
     },
     {
       "relation": "imports",
@@ -23981,9 +24642,9 @@
       "source_file": "src/app/src/editor/ui/CaptureRenderer.test.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_capturerenderer_test",
-      "target": "ui_capturerenderer_scriptbounds",
-      "confidence_score": 1.0
+      "target": "ui_capturerenderer_scriptbounds"
     },
     {
       "relation": "contains",
@@ -23991,9 +24652,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentcapture_test",
-      "target": "ui_assignmentcapture_test_manifest",
-      "confidence_score": 1.0
+      "target": "ui_assignmentcapture_test_manifest"
     },
     {
       "relation": "contains",
@@ -24001,9 +24662,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentcapture_test",
-      "target": "ui_assignmentcapture_test_mocks",
-      "confidence_score": 1.0
+      "target": "ui_assignmentcapture_test_mocks"
     },
     {
       "relation": "contains",
@@ -24011,9 +24672,9 @@
       "source_file": "src/app/src/editor/ui/AssignmentCapture.test.js",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ui_assignmentcapture_test",
-      "target": "ui_assignmentcapture_test_request",
-      "confidence_score": 1.0
+      "target": "ui_assignmentcapture_test_request"
     },
     {
       "relation": "contains",
@@ -24021,9 +24682,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L94",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_buildprojectfromplan",
-      "confidence_score": 1.0
+      "target": "routes_assignments_buildprojectfromplan"
     },
     {
       "relation": "contains",
@@ -24031,9 +24692,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L91",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_buildstageplacements",
-      "confidence_score": 1.0
+      "target": "routes_assignments_buildstageplacements"
     },
     {
       "relation": "contains",
@@ -24041,9 +24702,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L1206",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_caneditassignment",
-      "confidence_score": 1.0
+      "target": "routes_assignments_caneditassignment"
     },
     {
       "relation": "contains",
@@ -24051,9 +24712,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L87",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_computeprojectmanifest_comparemanifests",
-      "confidence_score": 1.0
+      "target": "routes_assignments_computeprojectmanifest_comparemanifests"
     },
     {
       "relation": "contains",
@@ -24061,9 +24722,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L84",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_createclient",
-      "confidence_score": 1.0
+      "target": "routes_assignments_createclient"
     },
     {
       "relation": "contains",
@@ -24071,9 +24732,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_express",
-      "confidence_score": 1.0
+      "target": "routes_assignments_express"
     },
     {
       "relation": "contains",
@@ -24081,9 +24742,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L1229",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_findownedtemplateproject",
-      "confidence_score": 1.0
+      "target": "routes_assignments_findownedtemplateproject"
     },
     {
       "relation": "contains",
@@ -24091,9 +24752,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L93",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_generateactivityplan",
-      "confidence_score": 1.0
+      "target": "routes_assignments_generateactivityplan"
     },
     {
       "relation": "contains",
@@ -24101,9 +24762,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_generatehints",
-      "confidence_score": 1.0
+      "target": "routes_assignments_generatehints"
     },
     {
       "relation": "contains",
@@ -24111,9 +24772,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L99",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_getsupabase",
-      "confidence_score": 1.0
+      "target": "routes_assignments_getsupabase"
     },
     {
       "relation": "contains",
@@ -24121,9 +24782,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L116",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_getturmaandnivel",
-      "confidence_score": 1.0
+      "target": "routes_assignments_getturmaandnivel"
     },
     {
       "relation": "contains",
@@ -24131,9 +24792,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L85",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_getturmaidfromclaims_getnivelfromclaims_verifyanddecode",
-      "confidence_score": 1.0
+      "target": "routes_assignments_getturmaidfromclaims_getnivelfromclaims_verifyanddecode"
     },
     {
       "relation": "contains",
@@ -24141,9 +24802,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L982",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_hint_event_types",
-      "confidence_score": 1.0
+      "target": "routes_assignments_hint_event_types"
     },
     {
       "relation": "contains",
@@ -24151,9 +24812,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_notifyassignmentregistered",
-      "confidence_score": 1.0
+      "target": "routes_assignments_notifyassignmentregistered"
     },
     {
       "relation": "contains",
@@ -24161,9 +24822,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L92",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_persiststageplacements",
-      "confidence_score": 1.0
+      "target": "routes_assignments_persiststageplacements"
     },
     {
       "relation": "contains",
@@ -24171,9 +24832,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L90",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_readcompletionsnapshot_persistcompletion_readcompletionflags",
-      "confidence_score": 1.0
+      "target": "routes_assignments_readcompletionsnapshot_persistcompletion_readcompletionflags"
     },
     {
       "relation": "contains",
@@ -24181,9 +24842,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L88",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_resolveassignmentfields_resolvehintsupdatedat",
-      "confidence_score": 1.0
+      "target": "routes_assignments_resolveassignmentfields_resolvehintsupdatedat"
     },
     {
       "relation": "contains",
@@ -24191,9 +24852,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L96",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_router",
-      "confidence_score": 1.0
+      "target": "routes_assignments_router"
     },
     {
       "relation": "contains",
@@ -24201,9 +24862,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L1126",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments",
-      "target": "routes_assignments_selectassignmenttolerantofmissinghintcontext",
-      "confidence_score": 1.0
+      "target": "routes_assignments_selectassignmenttolerantofmissinghintcontext"
     },
     {
       "relation": "calls",
@@ -24223,9 +24884,9 @@
       "source_file": "backend/src/routes/assignments.js",
       "source_location": "L1250",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_assignments_findownedtemplateproject",
-      "target": "routes_assignments_caneditassignment",
-      "confidence_score": 1.0
+      "target": "routes_assignments_caneditassignment"
     },
     {
       "relation": "calls",
@@ -24244,9 +24905,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures",
-      "target": "routes_projectcaptures_authorize",
-      "confidence_score": 1.0
+      "target": "routes_projectcaptures_authorize"
     },
     {
       "relation": "contains",
@@ -24254,9 +24915,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures",
-      "target": "routes_projectcaptures_batchfor",
-      "confidence_score": 1.0
+      "target": "routes_projectcaptures_batchfor"
     },
     {
       "relation": "contains",
@@ -24264,9 +24925,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures",
-      "target": "routes_projectcaptures_capture_bucket_fingerprint_projectsnapshot_capturemanifest_decodepng_imagepath",
-      "confidence_score": 1.0
+      "target": "routes_projectcaptures_capture_bucket_fingerprint_projectsnapshot_capturemanifest_decodepng_imagepath"
     },
     {
       "relation": "contains",
@@ -24274,9 +24935,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures",
-      "target": "routes_projectcaptures_endpoint",
-      "confidence_score": 1.0
+      "target": "routes_projectcaptures_endpoint"
     },
     {
       "relation": "contains",
@@ -24284,9 +24945,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures",
-      "target": "routes_projectcaptures_express",
-      "confidence_score": 1.0
+      "target": "routes_projectcaptures_express"
     },
     {
       "relation": "imports_from",
@@ -24295,9 +24956,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures",
-      "target": "services_projectcaptures",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures"
     },
     {
       "relation": "imports",
@@ -24306,9 +24967,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures",
-      "target": "services_projectcaptures_capturemanifest",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_capturemanifest"
     },
     {
       "relation": "imports",
@@ -24317,9 +24978,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures",
-      "target": "services_projectcaptures_decodepng",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_decodepng"
     },
     {
       "relation": "imports",
@@ -24328,9 +24989,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures",
-      "target": "services_projectcaptures_fingerprint",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_fingerprint"
     },
     {
       "relation": "imports",
@@ -24339,9 +25000,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures",
-      "target": "services_projectcaptures_imagepath",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_imagepath"
     },
     {
       "relation": "imports",
@@ -24350,9 +25011,9 @@
       "source_file": "backend/src/routes/projectCaptures.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures",
-      "target": "services_projectcaptures_projectsnapshot",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_projectsnapshot"
     },
     {
       "relation": "imports_from",
@@ -24361,9 +25022,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures_test",
-      "target": "routes_projectcaptures",
-      "confidence_score": 1.0
+      "target": "routes_projectcaptures"
     },
     {
       "relation": "contains",
@@ -24371,9 +25032,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures",
-      "target": "services_projectcaptures_canonical",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_canonical"
     },
     {
       "relation": "contains",
@@ -24381,9 +25042,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures",
-      "target": "services_projectcaptures_capturemanifest",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_capturemanifest"
     },
     {
       "relation": "contains",
@@ -24391,9 +25052,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures",
-      "target": "services_projectcaptures_createhash",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_createhash"
     },
     {
       "relation": "contains",
@@ -24401,9 +25062,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures",
-      "target": "services_projectcaptures_decodepng",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_decodepng"
     },
     {
       "relation": "contains",
@@ -24411,9 +25072,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures",
-      "target": "services_projectcaptures_fingerprint",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_fingerprint"
     },
     {
       "relation": "contains",
@@ -24421,9 +25082,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures",
-      "target": "services_projectcaptures_imagepath",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_imagepath"
     },
     {
       "relation": "contains",
@@ -24431,9 +25092,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures",
-      "target": "services_projectcaptures_projectsnapshot",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_projectsnapshot"
     },
     {
       "relation": "imports_from",
@@ -24442,9 +25103,9 @@
       "source_file": "backend/src/services/projectCaptures.test.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures_test",
-      "target": "services_projectcaptures",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures"
     },
     {
       "relation": "calls",
@@ -24453,9 +25114,9 @@
       "source_file": "backend/src/services/projectCaptures.js",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures_fingerprint",
-      "target": "services_projectcaptures_canonical",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_canonical"
     },
     {
       "relation": "imports",
@@ -24464,9 +25125,9 @@
       "source_file": "backend/src/services/projectCaptures.test.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures_test",
-      "target": "services_projectcaptures_fingerprint",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_fingerprint"
     },
     {
       "relation": "imports",
@@ -24475,9 +25136,9 @@
       "source_file": "backend/src/services/projectCaptures.test.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures_test",
-      "target": "services_projectcaptures_projectsnapshot",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_projectsnapshot"
     },
     {
       "relation": "imports",
@@ -24486,9 +25147,9 @@
       "source_file": "backend/src/services/projectCaptures.test.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures_test",
-      "target": "services_projectcaptures_capturemanifest",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_capturemanifest"
     },
     {
       "relation": "imports",
@@ -24497,9 +25158,9 @@
       "source_file": "backend/src/services/projectCaptures.test.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures_test",
-      "target": "services_projectcaptures_decodepng",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_decodepng"
     },
     {
       "relation": "imports",
@@ -24508,9 +25169,9 @@
       "source_file": "backend/src/services/projectCaptures.test.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures_test",
-      "target": "services_projectcaptures_imagepath",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_imagepath"
     },
     {
       "relation": "contains",
@@ -24518,9 +25179,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L53",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures_test",
-      "target": "routes_projectcaptures_test_api",
-      "confidence_score": 1.0
+      "target": "routes_projectcaptures_test_api"
     },
     {
       "relation": "contains",
@@ -24528,9 +25189,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures_test",
-      "target": "routes_projectcaptures_test_createroutes",
-      "confidence_score": 1.0
+      "target": "routes_projectcaptures_test_createroutes"
     },
     {
       "relation": "contains",
@@ -24538,9 +25199,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures_test",
-      "target": "routes_projectcaptures_test_express",
-      "confidence_score": 1.0
+      "target": "routes_projectcaptures_test_express"
     },
     {
       "relation": "contains",
@@ -24548,9 +25209,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures_test",
-      "target": "routes_projectcaptures_test_query",
-      "confidence_score": 1.0
+      "target": "routes_projectcaptures_test_query"
     },
     {
       "relation": "contains",
@@ -24558,9 +25219,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures_test",
-      "target": "routes_projectcaptures_test_randomuuid",
-      "confidence_score": 1.0
+      "target": "routes_projectcaptures_test_randomuuid"
     },
     {
       "relation": "contains",
@@ -24568,9 +25229,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures_test",
-      "target": "routes_projectcaptures_test_snapshot",
-      "confidence_score": 1.0
+      "target": "routes_projectcaptures_test_snapshot"
     },
     {
       "relation": "contains",
@@ -24578,9 +25239,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L58",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures_test",
-      "target": "routes_projectcaptures_test_start",
-      "confidence_score": 1.0
+      "target": "routes_projectcaptures_test_start"
     },
     {
       "relation": "calls",
@@ -24589,9 +25250,9 @@
       "source_file": "backend/src/routes/projectCaptures.test.js",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_projectcaptures_test_start",
-      "target": "routes_projectcaptures_test_api",
-      "confidence_score": 1.0
+      "target": "routes_projectcaptures_test_api"
     },
     {
       "relation": "contains",
@@ -24599,9 +25260,9 @@
       "source_file": "backend/src/services/projectCaptures.test.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures_test",
-      "target": "services_projectcaptures_test_fingerprint_projectsnapshot_capturemanifest_decodepng_imagepath",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_test_fingerprint_projectsnapshot_capturemanifest_decodepng_imagepath"
     },
     {
       "relation": "contains",
@@ -24609,9 +25270,9 @@
       "source_file": "backend/src/services/projectCaptures.test.js",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_projectcaptures_test",
-      "target": "services_projectcaptures_test_snapshot",
-      "confidence_score": 1.0
+      "target": "services_projectcaptures_test_snapshot"
     },
     {
       "relation": "imports_from",
@@ -77076,5 +77737,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "fc4c0f07c14a842c62bec600c4da8e9c7760614d"
+  "built_at_commit": "a23468db2b845baa758a87ffb6de8eca747f7ad2"
 }

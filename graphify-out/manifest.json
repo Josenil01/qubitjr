@@ -565,8 +565,8 @@
     "semantic_hash": ""
   },
   "backend/src/index.js": {
-    "mtime": 1787398561.908485,
-    "ast_hash": "e6f40db70063bdcdb3e6cd0cd2250fbb",
+    "mtime": 1793799485.20485,
+    "ast_hash": "c42742b1af7a82556bcd217815dd0ead",
     "semantic_hash": ""
   },
   "backend/src/routes/assignments.js": {
@@ -1280,8 +1280,8 @@
     "semantic_hash": ""
   },
   "backend/migrations/README-project-captures.md": {
-    "mtime": 1793793108.755587,
-    "ast_hash": "769bbfafee0cd45c375fad2f43feb83e",
+    "mtime": 1793799485.20485,
+    "ast_hash": "29627bed47c5dcb2433a45389e08bc2e",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/AGENTS.md": {
@@ -7332,6 +7332,16 @@
   "src/app/sounds/tap.wav": {
     "mtime": 1771332624.0484376,
     "ast_hash": "c87b5604daf367104841173936af783d",
+    "semantic_hash": ""
+  },
+  "backend/src/routes/publicProjectCaptures.js": {
+    "mtime": 1793799485.2038734,
+    "ast_hash": "32c13f9c52e948b79fb5e57fd7a4d216",
+    "semantic_hash": ""
+  },
+  "backend/src/routes/publicProjectCaptures.test.js": {
+    "mtime": 1793799539.4512038,
+    "ast_hash": "c8685843a8a929120698cfd94da2a7a5",
     "semantic_hash": ""
   }
 }
