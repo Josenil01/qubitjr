@@ -90,8 +90,8 @@
     "semantic_hash": "6def264c0ad930093c0df050941ff89a"
   },
   "src/app/src/editor/ui/AssignmentAuthorBar.js": {
-    "mtime": 1793758328.305225,
-    "ast_hash": "6b745519283dc29c65749e27e3a38c2c",
+    "mtime": 1793800496.1425161,
+    "ast_hash": "d92d6d736068a6c9ae586a831e007596",
     "semantic_hash": ""
   },
   "src/app/src/editor/ui/AssignmentBadge.js": {
@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "src/app/src/editor/ui/Project.js": {
-    "mtime": 1793758328.3022156,
-    "ast_hash": "d86781375a2779a5c5ffc835556d5970",
+    "mtime": 1793800496.1373727,
+    "ast_hash": "164ea563361c7e21027c4b76c724cffa",
     "semantic_hash": ""
   },
   "src/app/src/editor/ui/Record.js": {
@@ -595,13 +595,13 @@
     "semantic_hash": ""
   },
   "backend/src/routes/projectCaptures.js": {
-    "mtime": 1793793108.7615283,
-    "ast_hash": "cfc3b14d91c23fa66e135d0402e59522",
+    "mtime": 1793800597.442546,
+    "ast_hash": "4b79d62b8b919ca4ca434d3c402cba48",
     "semantic_hash": ""
   },
   "backend/src/routes/projectCaptures.test.js": {
-    "mtime": 1793792828.8299592,
-    "ast_hash": "c1775a797ec925c816a4e1245fa00239",
+    "mtime": 1793800597.4455583,
+    "ast_hash": "e836164eafa5dbd69cbbcad6618f4c60",
     "semantic_hash": ""
   },
   "backend/src/routes/realtime.js": {
@@ -800,8 +800,8 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_1_1/aula.json": {
-    "mtime": 1793702491.3600569,
-    "ast_hash": "353bbaa51e732f48a2363f49e9b50675",
+    "mtime": 1793800841.9544659,
+    "ast_hash": "2869a7925f22dbd0089bd704ba9244df",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_1_2/aula.json": {
@@ -815,8 +815,8 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_2_1/aula.json": {
-    "mtime": 1793702491.363094,
-    "ast_hash": "fc5d576f79a31ff97d1d32a5928ff73d",
+    "mtime": 1793800841.9026308,
+    "ast_hash": "eb0d0099783b1cfde64161fc94966964",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_2_2/aula.json": {
@@ -830,8 +830,8 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_3_1/aula.json": {
-    "mtime": 1793702491.3674963,
-    "ast_hash": "3dc11630cf0cd5f7842cf074f1abd180",
+    "mtime": 1793800841.9096541,
+    "ast_hash": "81a9aeb71924eab6a3493fc6e973469e",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_3_2/aula.json": {
@@ -845,13 +845,13 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_4_1/aula.json": {
-    "mtime": 1793703844.218969,
-    "ast_hash": "b6da7209b884f134c9e1bbf1f9b644dd",
+    "mtime": 1793800841.9147267,
+    "ast_hash": "48acd4edd03936714ce58d13386b0c0b",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_4_2/aula.json": {
-    "mtime": 1793703844.2219937,
-    "ast_hash": "09a4623eacf5b10f2eabb1b98aba7b35",
+    "mtime": 1793800841.9181213,
+    "ast_hash": "8139c5b518145b09e501bbbb9a98c9e2",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_5_1/aula.json": {
@@ -865,33 +865,33 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_6_1/aula.json": {
-    "mtime": 1793731386.4063766,
-    "ast_hash": "428cb56fb95acf605df3ffc1bb6cec2c",
+    "mtime": 1793800841.928717,
+    "ast_hash": "35398feea49a73be9ce74eced04954e4",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_6_2/aula.json": {
-    "mtime": 1793731386.4083776,
-    "ast_hash": "434b64f316714df7067ca34a20374f9e",
+    "mtime": 1793800841.932481,
+    "ast_hash": "4a16aa6f8b88d9681d66b50da4882b4b",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_7_1/aula.json": {
-    "mtime": 1793731386.410758,
-    "ast_hash": "bb7b3cbd08809e8944c3a17d4e6f0c18",
+    "mtime": 1793800841.9394615,
+    "ast_hash": "b0fe30f4a74d729c11c6039b6e8ed727",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_7_2/aula.json": {
-    "mtime": 1793731386.4127657,
-    "ast_hash": "d2bea2541f8169b7660dd55ae3a391bf",
+    "mtime": 1793800841.9434814,
+    "ast_hash": "31d79cb84dcebe0f7d66c54e6c473956",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/modulo_aulas/aula.schema.json": {
-    "mtime": 1793731766.165376,
-    "ast_hash": "e7407d58d98e0c42649c0026cb74a9c2",
+    "mtime": 1793800841.9564612,
+    "ast_hash": "12fea7ea0e073531d514e080f3ebffd6",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/modulo_aulas/gerar.py": {
-    "mtime": 1793731766.1663468,
-    "ast_hash": "164acab30cbf7b5b1504e5b9206de15e",
+    "mtime": 1793800841.9564612,
+    "ast_hash": "5606059774836d827a9e22b8f789689f",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/modulo_aulas/imprimiveis.py": {
@@ -910,8 +910,8 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/modulo_aulas/mecanicas/corpo_legado.js": {
-    "mtime": 1793701101.237828,
-    "ast_hash": "c30136e3569e22e8477b58f24998f7f5",
+    "mtime": 1793800841.9554622,
+    "ast_hash": "d354df9545fb35dc568e0c655b74b3a3",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/modulo_aulas/mecanicas/correio_espacial.js": {
@@ -920,8 +920,8 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/modulo_aulas/mecanicas/criacao.js": {
-    "mtime": 1793712777.4560547,
-    "ast_hash": "8ead0937507d279361f6f3cd43d38388",
+    "mtime": 1793800841.9495244,
+    "ast_hash": "fd2c684dc3bfc8f297c0ae5a78563e39",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/modulo_aulas/mecanicas/jardim_mensagens.js": {
@@ -1165,13 +1165,13 @@
     "semantic_hash": ""
   },
   "src/app/src/editor/ui/AssignmentCapture.js": {
-    "mtime": 1793793108.7585251,
-    "ast_hash": "79828ecb2d46262d96c0a216dc436f28",
+    "mtime": 1793800496.1415265,
+    "ast_hash": "94be624eb4ed21463ce4c2bb0354500f",
     "semantic_hash": ""
   },
   "src/app/src/editor/ui/AssignmentCapture.test.js": {
-    "mtime": 1793792828.8319383,
-    "ast_hash": "cce368e6759e30d71c3662244f5de4d0",
+    "mtime": 1793800597.4436097,
+    "ast_hash": "ad158424bc95f53aad9f473526aa6897",
     "semantic_hash": ""
   },
   "src/app/src/editor/ui/CaptureRenderer.js": {
@@ -1280,8 +1280,8 @@
     "semantic_hash": ""
   },
   "backend/migrations/README-project-captures.md": {
-    "mtime": 1793799485.20485,
-    "ast_hash": "29627bed47c5dcb2433a45389e08bc2e",
+    "mtime": 1793800597.4460683,
+    "ast_hash": "de29b0da9533cbe935c0027a763a3b41",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/AGENTS.md": {
@@ -1290,27 +1290,27 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_1_1/Apresentacao_professor.html": {
-    "mtime": 1793702491.4489353,
-    "ast_hash": "d487bd66d5dfe09e9925aa2c585c8d6d",
+    "mtime": 1793800842.1601925,
+    "ast_hash": "64e8c370789edbd1c9723eef09bd2b02",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_1_1/Conducao_apresentacao.html": {
-    "mtime": 1793702491.4489353,
-    "ast_hash": "00c512ff1c4da42fdf6d0b9e3a4d97a7",
+    "mtime": 1793800842.1601925,
+    "ast_hash": "94c2497265564ced5b9c9412f726a490",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_1_1/LEIA_ME.txt": {
-    "mtime": 1793702491.3610873,
-    "ast_hash": "9272a5e525c1992ffcbd8aa3aa7a8bbe",
+    "mtime": 1793800841.9564612,
+    "ast_hash": "1a61d3cbc4c28f10ce2d1afba0673a03",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_1_2/Apresentacao_professor.html": {
-    "mtime": 1793712777.5478961,
-    "ast_hash": "4351609454e664f37fe5b9b6989fc22f",
+    "mtime": 1793800842.6831987,
+    "ast_hash": "35cbc47897f590b36728ac3e718e0491",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_1_2/Conducao_apresentacao.html": {
-    "mtime": 1793712777.548882,
+    "mtime": 1793800842.6831987,
     "ast_hash": "b3130bd13448f25f03eebd06eba5d369",
     "semantic_hash": ""
   },
@@ -1320,12 +1320,12 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_2_1/Apresentacao_professor.html": {
-    "mtime": 1793702491.9907274,
-    "ast_hash": "21a739d03046859fac5283c390cd8f69",
+    "mtime": 1793800842.7701137,
+    "ast_hash": "02ee68c48765b65abd3d0797d7ccab3d",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_2_1/Conducao_apresentacao.html": {
-    "mtime": 1793702491.9907274,
+    "mtime": 1793800842.771145,
     "ast_hash": "85d53b08654a3b7d5f4b6dc42c04faaa",
     "semantic_hash": ""
   },
@@ -1335,12 +1335,12 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_2_2/Apresentacao_professor.html": {
-    "mtime": 1793712777.5658872,
-    "ast_hash": "09835863a5eaeab2664f89a4087d8c73",
+    "mtime": 1793800845.1001806,
+    "ast_hash": "b8993b137fec5af934af1729cc7d51e0",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_2_2/Conducao_apresentacao.html": {
-    "mtime": 1793712777.5658872,
+    "mtime": 1793800845.1011922,
     "ast_hash": "9242ce7cbedddd29814752955ad063c6",
     "semantic_hash": ""
   },
@@ -1350,12 +1350,12 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_3_1/Apresentacao_professor.html": {
-    "mtime": 1793702492.3832834,
-    "ast_hash": "9167c941122ec4cf416c8b7dc959f81c",
+    "mtime": 1793800845.2275968,
+    "ast_hash": "043fa9d326d5bf5f50018da54a9871cc",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_3_1/Conducao_apresentacao.html": {
-    "mtime": 1793702492.385283,
+    "mtime": 1793800845.2286146,
     "ast_hash": "0232c718b06349f246e12093cd2cd7ef",
     "semantic_hash": ""
   },
@@ -1365,12 +1365,12 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_3_2/Apresentacao_professor.html": {
-    "mtime": 1793712777.5829103,
-    "ast_hash": "625593ca85877d3bc827b70fc3719eae",
+    "mtime": 1793800847.4350927,
+    "ast_hash": "bb3f486f7f369362dfcad254228a397b",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_3_2/Conducao_apresentacao.html": {
-    "mtime": 1793712777.5838876,
+    "mtime": 1793800847.436096,
     "ast_hash": "93e2d0dd8b6d176aba9b1093f1daffdf",
     "semantic_hash": ""
   },
@@ -1380,13 +1380,13 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_4_1/Apresentacao_professor.html": {
-    "mtime": 1793704320.7847903,
-    "ast_hash": "b38614c8f849947e639136a689c43083",
+    "mtime": 1793800847.5396526,
+    "ast_hash": "36bcb80b04c65dd3ad550b57a705eb77",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_4_1/Conducao_apresentacao.html": {
-    "mtime": 1793704320.7858162,
-    "ast_hash": "be9188a31baf77042e3256281e6302fa",
+    "mtime": 1793800847.540606,
+    "ast_hash": "be71d274919ef37a54df0833ce5389f3",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_4_1/LEIA_ME.txt": {
@@ -1395,13 +1395,13 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_4_2/Apresentacao_professor.html": {
-    "mtime": 1793712777.6318898,
-    "ast_hash": "d17933fa7f73a4375b0b09390f67959f",
+    "mtime": 1793800849.2425454,
+    "ast_hash": "5225c47da798eb8b0bf8b6be1d4411cb",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_4_2/Conducao_apresentacao.html": {
-    "mtime": 1793712777.6328862,
-    "ast_hash": "ae44601e07328679df2c3ec493ecedbb",
+    "mtime": 1793800849.2425454,
+    "ast_hash": "8a8af45367593db70cebe68f0f904fc0",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_4_2/LEIA_ME.txt": {
@@ -1410,12 +1410,12 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_5_1/Apresentacao_professor.html": {
-    "mtime": 1793714074.1767602,
-    "ast_hash": "db157d89214d9e420643048681b00d13",
+    "mtime": 1793800849.3895342,
+    "ast_hash": "2791aaf650037ab70207ac801ec5d507",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_5_1/Conducao_apresentacao.html": {
-    "mtime": 1793714074.1767602,
+    "mtime": 1793800849.3895342,
     "ast_hash": "f2635270edef94a8b1a3ac1122092770",
     "semantic_hash": ""
   },
@@ -1425,12 +1425,12 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_5_2/Apresentacao_professor.html": {
-    "mtime": 1793714074.212523,
-    "ast_hash": "b25d33fa2bd512e864b8b9283493a84d",
+    "mtime": 1793800851.5918157,
+    "ast_hash": "ef692192a096bb76236159e23b50a116",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_5_2/Conducao_apresentacao.html": {
-    "mtime": 1793714074.2135131,
+    "mtime": 1793800851.592785,
     "ast_hash": "42094681173977416379d81be94ad752",
     "semantic_hash": ""
   },
@@ -1440,13 +1440,13 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_6_1/Apresentacao_professor.html": {
-    "mtime": 1793731438.2741916,
-    "ast_hash": "49151f7c78683836853a2da2f74605a7",
+    "mtime": 1793800851.6850917,
+    "ast_hash": "70c7263f8ad3b2c159cd36a492fa2ec6",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_6_1/Conducao_apresentacao.html": {
-    "mtime": 1793731438.2751641,
-    "ast_hash": "5fb288f1d8b8f5fd02ae82b0da1f202a",
+    "mtime": 1793800851.6850917,
+    "ast_hash": "ecee546e8772f54e38e577b0e3b63f22",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_6_1/LEIA_ME.txt": {
@@ -1455,13 +1455,13 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_6_2/Apresentacao_professor.html": {
-    "mtime": 1793731441.1679184,
-    "ast_hash": "2d5bdd62e92e2db7edac9dc179d484e0",
+    "mtime": 1793800854.1412416,
+    "ast_hash": "25e69d6d6221176c70bc351c030304f0",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_6_2/Conducao_apresentacao.html": {
-    "mtime": 1793731441.1688643,
-    "ast_hash": "854bbcf787a38d8ea65b128f9d751a43",
+    "mtime": 1793800854.1432424,
+    "ast_hash": "2906d95c006055dc96230006a87cecb8",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_6_2/LEIA_ME.txt": {
@@ -1470,13 +1470,13 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_7_1/Apresentacao_professor.html": {
-    "mtime": 1793731441.2688973,
-    "ast_hash": "4d1afd5169d220dd501c8fea085fd45d",
+    "mtime": 1793800854.273797,
+    "ast_hash": "679389f02c3e451de3d1bdc08f33611a",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_7_1/Conducao_apresentacao.html": {
-    "mtime": 1793731441.2688973,
-    "ast_hash": "95d1035fed081a49a8392c0d76035df2",
+    "mtime": 1793800854.2747877,
+    "ast_hash": "f2542e62fc3f11bc0c528c79bb83cb26",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_7_1/LEIA_ME.txt": {
@@ -1485,13 +1485,13 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_7_2/Apresentacao_professor.html": {
-    "mtime": 1793731443.386345,
-    "ast_hash": "c88b58a0003a560186b19a2c4eff5451",
+    "mtime": 1793800856.8637033,
+    "ast_hash": "1d9d3bbc316f5e7941f7d86b12346c7b",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_7_2/Conducao_apresentacao.html": {
-    "mtime": 1793731443.3871176,
-    "ast_hash": "7cf40e364cbc9f2460030f41efeef752",
+    "mtime": 1793800856.8637033,
+    "ast_hash": "3e885b581f04d55baf957a64d0709da4",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_7_2/LEIA_ME.txt": {
@@ -1520,8 +1520,8 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/modulo_aulas/layouts/correio_espacial.html": {
-    "mtime": 1793703508.935349,
-    "ast_hash": "fd5ab3733679c4ae918d5d5ea90f6aba",
+    "mtime": 1793800841.9515526,
+    "ast_hash": "c23e47c6c48507e02511c1c1d242d937",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/modulo_aulas/layouts/editor.html": {
@@ -1540,8 +1540,8 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/modulo_aulas/layouts/linha_execucao.html": {
-    "mtime": 1793721841.4602733,
-    "ast_hash": "4c5cf7dae5549edbc7651c8d720c1b81",
+    "mtime": 1793800841.9524708,
+    "ast_hash": "8ad6fba6694124e0e8f4d9a5a2d1723f",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/modulo_aulas/layouts/missao.html": {
@@ -1565,8 +1565,8 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/modulo_aulas/layouts/simulacao.html": {
-    "mtime": 1793702340.1075895,
-    "ast_hash": "934454e35a096c3986625494f937ee3e",
+    "mtime": 1793800841.9534628,
+    "ast_hash": "1c90a984fb5d1a79c9369b0d00e00ebb",
     "semantic_hash": ""
   },
   "src/app/assets/fonts/LICENSE-Verdana.txt": {
@@ -1690,8 +1690,8 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_1_1/01_Cards_recortaveis_A4.pdf": {
-    "mtime": 1793657044.970112,
-    "ast_hash": "50bfe82f68d85f799c7c87f3a28ea267",
+    "mtime": 1793800918.5901718,
+    "ast_hash": "5fd4545a680ff67ec316b6517b25445c",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_1_1/02_Bases_de_montagem_A4_paisagem.pdf": {
@@ -1700,138 +1700,138 @@
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_1_1/Aula_1_1_Kit_completo.pdf": {
-    "mtime": 1793657044.9841971,
-    "ast_hash": "a246a95f68a28a345e8ce0af8c5a4bd5",
+    "mtime": 1793800918.5991817,
+    "ast_hash": "d15711db7a57f2b4cd8710103fd7655e",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_1_1/Conducao_apresentacao.pdf": {
-    "mtime": 1793702491.8633564,
-    "ast_hash": "1acc3102ff077e09ba233fca03cb5983",
+    "mtime": 1793800842.6587837,
+    "ast_hash": "f72d689ef10a637a679e8919fb90294c",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_1_2/Conducao_apresentacao.pdf": {
-    "mtime": 1793702491.9739993,
-    "ast_hash": "a6f7e95f16106428042929554702c98a",
+    "mtime": 1793800842.7586713,
+    "ast_hash": "02bb70054c11b8ac3444d75c1749b0a8",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_2_1/01_CARDS_COMANDOS_A4.pdf": {
-    "mtime": 1793660776.8309507,
-    "ast_hash": "91a48de9d34a49ea98eef0f986bb826d",
+    "mtime": 1793800845.0691736,
+    "ast_hash": "a0abccd2e94d9381baf9320dab415edd",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_2_1/02_Bases_de_montagem_A4_paisagem.pdf": {
-    "mtime": 1793660776.8483007,
-    "ast_hash": "f184f4fbf6f3b9053372bc2f10a8c4a2",
+    "mtime": 1793800845.0792947,
+    "ast_hash": "461b277f20f607d32e0ae2cb58dd4d82",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_2_1/Conducao_apresentacao.pdf": {
-    "mtime": 1793702492.0966928,
-    "ast_hash": "3e980a1f4c9907da8637ab338c8fd06f",
+    "mtime": 1793800842.8952196,
+    "ast_hash": "a8d3e21547d06e626b0b52faa479a116",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_2_2/Conducao_apresentacao.pdf": {
-    "mtime": 1793702492.2881236,
-    "ast_hash": "86422d085f60544de538c8d71941d691",
+    "mtime": 1793800845.2025988,
+    "ast_hash": "9d847dbfedc02ca52ee9fac2bfbe5f97",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_3_1/01_CARDS_COMANDOS_A4.pdf": {
-    "mtime": 1793666283.4973693,
-    "ast_hash": "3d7e920d6cb725f4fb4e0c429691c3d1",
+    "mtime": 1793800847.3967006,
+    "ast_hash": "19ec91f9b7825ac8fb609e443573c373",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_3_1/02_Bases_de_montagem_A4_paisagem.pdf": {
-    "mtime": 1793666283.5123732,
-    "ast_hash": "419578b216274b7e77b26cc91dcd96a3",
+    "mtime": 1793800847.4123192,
+    "ast_hash": "a9556d1505ae1e9e4a99b90c55c996d6",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_3_1/Conducao_apresentacao.pdf": {
-    "mtime": 1793702492.5868628,
-    "ast_hash": "41984d697e78db38252b1a4e2ee595df",
+    "mtime": 1793800845.308601,
+    "ast_hash": "ffb38cd17827116005c66503871d2440",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_3_2/Conducao_apresentacao.pdf": {
-    "mtime": 1793702492.7463543,
-    "ast_hash": "0afff0cb5919e20f35b997a917ff74f8",
+    "mtime": 1793800847.5191562,
+    "ast_hash": "05512dd0d2e6747092bee5867c325376",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_4_1/01_CARDS_COMANDOS_A4.pdf": {
-    "mtime": 1793703847.1678312,
-    "ast_hash": "0607fe38c79408161ebb1bebc5db9320",
+    "mtime": 1793800849.1972158,
+    "ast_hash": "9dc6f01877771aa1a5cafa3ae4a44013",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_4_1/02_Bases_de_montagem_A4_paisagem.pdf": {
-    "mtime": 1793703847.1780658,
-    "ast_hash": "1c639d5556693885965ed7411e37b464",
+    "mtime": 1793800849.2095284,
+    "ast_hash": "62199fa5ac8aeb4ab0d007c93d3565c1",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_4_1/Conducao_apresentacao.pdf": {
-    "mtime": 1793703844.8097284,
-    "ast_hash": "982c240ca7b4018147ff5cbc3533325a",
+    "mtime": 1793800847.622981,
+    "ast_hash": "407acf6b1142db72815f1332e488b91f",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_4_2/Conducao_apresentacao.pdf": {
-    "mtime": 1793703847.4191148,
-    "ast_hash": "dfde19d7dd997aa704bb504bbf427ec3",
+    "mtime": 1793800849.3576782,
+    "ast_hash": "0ac766bc31c61e3b00517d7848af6141",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_5_1/01_CARDS_COMANDOS_A4.pdf": {
-    "mtime": 1793714032.2171779,
-    "ast_hash": "524d89c7f2c4459eaeffe13a6bd1f031",
+    "mtime": 1793800851.552742,
+    "ast_hash": "21dea68527315bc4853e13cc5f268e99",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_5_1/02_Bases_de_montagem_A4_paisagem.pdf": {
-    "mtime": 1793714032.2284145,
-    "ast_hash": "3e958db7477f357d7128065aa0c61505",
+    "mtime": 1793800851.5627418,
+    "ast_hash": "f8aa9582c70c8fc3db5aaab93790de00",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_5_1/Conducao_apresentacao.pdf": {
-    "mtime": 1793714030.478562,
-    "ast_hash": "f73c130ad5102af4c87d0820e7a5cf4a",
+    "mtime": 1793800849.561977,
+    "ast_hash": "deda146c4e81977bb2d449b01dc86dcd",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_5_2/Conducao_apresentacao.pdf": {
-    "mtime": 1793714032.3447292,
-    "ast_hash": "872776cfbb536250037c94ce5a15c766",
+    "mtime": 1793800851.6623602,
+    "ast_hash": "263438063ae8364481c9ea8ce4ad3d16",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_6_1/01_CARDS_COMANDOS_A4.pdf": {
-    "mtime": 1793731441.1135733,
-    "ast_hash": "ee6e3183e370ada7f67e3bc19dbae419",
+    "mtime": 1793800854.079248,
+    "ast_hash": "6c3c87256f549123a04e85e62f036191",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_6_1/02_Bases_de_montagem_A4_paisagem.pdf": {
-    "mtime": 1793731441.123593,
-    "ast_hash": "7a727c2cdb9ad639e0348b64889461f7",
+    "mtime": 1793800854.0902493,
+    "ast_hash": "5f77541aa057c8fc5cd457b1ad552e89",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_6_1/Conducao_apresentacao.pdf": {
-    "mtime": 1793731438.509924,
-    "ast_hash": "7196e1ee7333e7d53bea5d55d6d3ee76",
+    "mtime": 1793800851.7590802,
+    "ast_hash": "9635d61430227ed0c336d10328599b03",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_6_2/Conducao_apresentacao.pdf": {
-    "mtime": 1793731441.2437882,
-    "ast_hash": "168288a545cab052a039327015774b78",
+    "mtime": 1793800854.2377844,
+    "ast_hash": "eb3dc4c9cf6b0a0face4dbe1fc28212e",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_7_1/01_CARDS_COMANDOS_A4.pdf": {
-    "mtime": 1793731443.3277235,
-    "ast_hash": "9b0209d38a3b4f354d9324d4d8642745",
+    "mtime": 1793800856.8056808,
+    "ast_hash": "93fbf12992d5a5a8bd762df0ca280e61",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_7_1/02_Bases_de_montagem_A4_paisagem.pdf": {
-    "mtime": 1793731443.340343,
-    "ast_hash": "05a21d3b73a80b2735153824d9d10333",
+    "mtime": 1793800856.8177867,
+    "ast_hash": "24bb3a2095de57f2eece5d3fc554607b",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_7_1/Conducao_apresentacao.pdf": {
-    "mtime": 1793731441.3369033,
-    "ast_hash": "8d6ac37eecfeebe4eac76921cbf33bfd",
+    "mtime": 1793800854.3714275,
+    "ast_hash": "28b313f43a7e85c3538411a61ff3492f",
     "semantic_hash": ""
   },
   "materiais_pedagogicos/aula_7_2/Conducao_apresentacao.pdf": {
-    "mtime": 1793731443.4638407,
-    "ast_hash": "306eb175003bd216993527e0e88ee707",
+    "mtime": 1793800856.9358528,
+    "ast_hash": "982a10dfd39ef3372590eff0ff88540b",
     "semantic_hash": ""
   },
   "_legacy/docs/scratchformac.png": {
@@ -7335,13 +7335,18 @@
     "semantic_hash": ""
   },
   "backend/src/routes/publicProjectCaptures.js": {
-    "mtime": 1793799485.2038734,
-    "ast_hash": "32c13f9c52e948b79fb5e57fd7a4d216",
+    "mtime": 1793800496.140473,
+    "ast_hash": "8c62d703979468ea11b89ce3b294e88d",
     "semantic_hash": ""
   },
   "backend/src/routes/publicProjectCaptures.test.js": {
-    "mtime": 1793799539.4512038,
-    "ast_hash": "c8685843a8a929120698cfd94da2a7a5",
+    "mtime": 1793800597.4460683,
+    "ast_hash": "b2eac35016dff6a5cf4ce1a569c03b5a",
+    "semantic_hash": ""
+  },
+  "src/app/src/editor/ui/AssignmentAuthorBar.autocapture.test.js": {
+    "mtime": 1793800922.4753585,
+    "ast_hash": "ad17d28bd07e1b9f8ed2b5e687cd9fbd",
     "semantic_hash": ""
   }
 }
