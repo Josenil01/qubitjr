@@ -95,3 +95,8 @@ test('fails explicitly when a storage object cannot be signed instead of returni
     expect(result.status).toBe(502);
     expect(result.body).not.toHaveProperty('images');
 });
+
+
+test('missing captures return a machine-readable code for integrations', async () => {
+    expect((await get(60)).body.code).toBe('CAPTURES_NOT_FOUND');
+});

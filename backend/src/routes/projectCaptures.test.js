@@ -103,3 +103,32 @@ test('rejects stale project or hints and arbitrary image keys before uploading',
     expect((await api(`/7/captures/${capture.id}/images/arbitrary`, 'PUT', { data: png })).status).toBe(400);
     expect(state.uploads).toHaveLength(0);
 });
+
+
+test('automatic capture status returns saved hints only when no complete batch exists', async () => {
+    const initial = await api('/7/captures/status');
+    expect(initial.status).toBe(200);
+    expect(initial.body).toEqual({projectId: 42, hasCompletedCapture: false, hints: [{id: 'h1'}]});
+    const pending = await start();
+    expect((await api('/7/captures/status')).body.hasCompletedCapture).toBe(false);
+    for (const item of pending.expected) await api(`/7/captures/${pending.id}/images/${item.key}`, 'PUT', {data: png});
+    await api(`/7/captures/${pending.id}/complete`, 'POST', {});
+    const ready = await api('/7/captures/status');
+    expect(ready.body).toEqual({projectId: 42, hasCompletedCapture: true, captureId: pending.id});
+});
+
+test('onlyIfMissing does not create another batch after an existing capture completes', async () => {
+    const capture = await start();
+    for (const item of capture.expected) await api(`/7/captures/${capture.id}/images/${item.key}`, 'PUT', {data: png});
+    await api(`/7/captures/${capture.id}/complete`, 'POST', {});
+    const result = await api('/7/captures', 'POST', {projectId: 42, onlyIfMissing: true});
+    expect(result.status).toBe(200);
+    expect(result.body.skipped).toBe(true);
+    expect(result.body.capture.id).toBe(capture.id);
+    expect(state.project_captures).toHaveLength(1);
+});
+
+test('capture status remains private even though image consultation is public', async () => {
+    expect((await api('/7/captures/status', 'GET', null, null)).status).toBe(401);
+    expect((await api('/7/captures/status', 'GET', null, 'other')).status).toBe(403);
+});

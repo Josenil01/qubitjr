@@ -41,7 +41,14 @@ module.exports = function projectCaptureRoutes({ getSupabase, findOwnedTemplateP
     router.post('/', endpoint(async (req, res, context) => {
         const { db, project, assignmentId } = context;
         if (String(req.body.projectId) !== String(project.id)) {
-            throw Object.assign(new Error('O projeto aberto não corresponde ? missão.'), { status: 409 });
+            throw Object.assign(new Error('O projeto aberto não corresponde à missão.'), { status: 409 });
+        }
+        if (req.body.onlyIfMissing === true) {
+            const { data: existing, error: existingError } = await db.from('project_captures')
+                .select('id').eq('project_id', project.id).eq('assignment_id', assignmentId)
+                .eq('status', 'completed').limit(1).maybeSingle();
+            if (existingError) throw existingError;
+            if (existing) return res.json({ skipped: true, capture: existing });
         }
         const snapshot = projectSnapshot(project.json);
         if (fingerprint(projectSnapshot(req.body.snapshot)) !== fingerprint(snapshot)) {
@@ -109,6 +116,19 @@ module.exports = function projectCaptureRoutes({ getSupabase, findOwnedTemplateP
             .eq('id', capture.id).eq('status', 'pending');
         if (error) throw error;
         res.json({ success: true, captureId: capture.id });
+    }));
+
+    router.get('/status', endpoint(async (req, res, { db, project, assignmentId }) => {
+        res.set('Cache-Control', 'no-store');
+        const { data: capture, error } = await db.from('project_captures').select('id')
+            .eq('project_id', project.id).eq('assignment_id', assignmentId)
+            .eq('status', 'completed').limit(1).maybeSingle();
+        if (error) throw error;
+        if (capture) return res.json({ projectId: project.id, hasCompletedCapture: true, captureId: capture.id });
+        const { data: assignment, error: assignmentError } = await db.from('assignments')
+            .select('hints').eq('id', assignmentId).single();
+        if (assignmentError) throw assignmentError;
+        res.json({ projectId: project.id, hasCompletedCapture: false, hints: assignment.hints || [] });
     }));
 
     router.get('/:captureId', endpoint(async (req, res, context) => {

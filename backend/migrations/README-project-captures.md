@@ -29,3 +29,13 @@ Exemplo: `GET https://qubitjr.helloyotta.com/api/public/projects/1686/captures`.
 A resposta contém `projectId`, `captureId`, `projectVersion`, `capturedAt`, `completedAt`, `expiresIn` e `images`. Cada imagem possui `type` (`scene`, `actor` ou `scripts`), `sceneId`, `sceneIndex` (começa em zero), `actorId`, `actorName`, dimensões e `url`. Imagens de cena têm `actorId: null`.
 
 Não retorna snapshots, dicas, identidade do autor ou caminhos internos de armazenamento. Projetos excluídos e projetos sem capturas completas retornam 404; IDs inválidos retornam 400. A resposta usa `Cache-Control: no-store` para não guardar URLs vencidas.
+
+## Geração automática na abertura
+
+Ao abrir no editor um projeto de referência já vinculado a uma missão, o professor-autor ou administrador gera automaticamente as capturas que estiverem faltando. A verificação espera todas as cenas carregarem e consulta `GET /api/assignments/:id/captures/status` (autenticado). Se houver qualquer conjunto completo, não gera outro. Projetos novos ainda sem missão e projetos de alunos não iniciam essa captura.
+
+Quando faltam imagens, o editor mostra o progresso, gera as cenas/atores/programações e envia o conjunto. Esse fluxo reaproveita as dicas salvas, inclusive um array vazio, sem chamar o salvamento de dicas nem salvar o projeto novamente. A página deve permanecer aberta até terminar. Uma falha preserva os dados e permite tentar de novo ao reabrir o projeto. Se o projeto tiver sido alterado antes da captura, a comparação com o snapshot salvo evita publicar imagens divergentes.
+
+Chamadas repetidas na mesma sessão compartilham a verificação. O POST de criação aceita `onlyIfMissing: true` e também verifica se outro conjunto já foi concluído nesse intervalo. O fluxo normal de salvar dicas continua gerando uma versão nova.
+
+A consulta pública retorna `404` com `code: "CAPTURES_NOT_FOUND"` quando o projeto existe, mas ainda não tem capturas completas. Nenhuma migração adicional é necessária.

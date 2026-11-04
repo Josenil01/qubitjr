@@ -35,7 +35,7 @@ module.exports = function publicProjectCaptures(getSupabase = defaultClient) {
                 .eq('project_id', projectId).eq('status', 'completed')
                 .order('created_at', { ascending: false }).order('id', { ascending: false }).limit(1).maybeSingle();
             if (captureError) throw captureError;
-            if (!capture) return res.status(404).json({ error: 'O projeto ainda não possui capturas concluídas.' });
+            if (!capture) return res.status(404).json({ code: 'CAPTURES_NOT_FOUND', error: 'O projeto ainda não possui capturas concluídas.' });
 
             const { data: images, error: imageError } = await db.from('project_capture_images')
                 .select('image_key, scene_id, scene_index, actor_id, actor_name, kind, storage_path, width, height')
