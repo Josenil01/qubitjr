@@ -322,7 +322,12 @@
         {"md5":"HY-heart.svg","width":150,"height":250,"ext":"svg","name":"Heart","scale":0.3,"order":"characters,26 Gestos e simbolos","tags":["characters","26 Gestos e simbolos"],"legacy":false},
         {"md5":"HY-like.svg","width":150,"height":250,"ext":"svg","name":"Like","scale":0.3,"order":"characters,26 Gestos e simbolos","tags":["characters","26 Gestos e simbolos"],"legacy":false},
         {"md5":"HY-No!.svg","width":150,"height":250,"ext":"svg","name":"No","scale":0.3,"order":"characters,26 Gestos e simbolos","tags":["characters","26 Gestos e simbolos"],"legacy":false},
-        {"md5":"HY-Unlike.svg","width":150,"height":250,"ext":"svg","name":"Unlike","scale":0.3,"order":"characters,26 Gestos e simbolos","tags":["characters","26 Gestos e simbolos"],"legacy":false}
+        {"md5":"HY-Unlike.svg","width":150,"height":250,"ext":"svg","name":"Unlike","scale":0.3,"order":"characters,26 Gestos e simbolos","tags":["characters","26 Gestos e simbolos"],"legacy":false},
+        {"md5":"HY-Lixo-1-maca.svg","width":300,"height":300,"ext":"svg","name":"Resto de maçã","scale":0.5,"order":"characters,27 Lixo e reciclagem","tags":["characters","27 Lixo e reciclagem"]},
+        {"md5":"HY-Lixo-2-lata-refrigerante.svg","width":300,"height":300,"ext":"svg","name":"Lata de refrigerante amassada","scale":0.5,"order":"characters,27 Lixo e reciclagem","tags":["characters","27 Lixo e reciclagem"]},
+        {"md5":"HY-Lixo-3-sacola-plastica.svg","width":300,"height":300,"ext":"svg","name":"Sacola plástica","scale":0.5,"order":"characters,27 Lixo e reciclagem","tags":["characters","27 Lixo e reciclagem"]},
+        {"md5":"HY-Lixo-4-garra-de-vidro.svg","width":300,"height":300,"ext":"svg","name":"Garrafa de vidro quebrada","scale":0.5,"order":"characters,27 Lixo e reciclagem","tags":["characters","27 Lixo e reciclagem"]},
+        {"md5":"HY-Lixo-5-papel.svg","width":300,"height":300,"ext":"svg","name":"Papel amassado","scale":0.5,"order":"characters,27 Lixo e reciclagem","tags":["characters","27 Lixo e reciclagem"]}
     ],
     "sounds": [
         "pop.mp3"
