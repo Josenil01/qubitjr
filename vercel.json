@@ -12,6 +12,11 @@
   },
   "routes": [
     {
+      "src": "/media.json",
+      "headers": { "Cache-Control": "no-store" },
+      "dest": "/media.json"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/index.js"
     },

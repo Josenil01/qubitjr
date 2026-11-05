@@ -34,7 +34,8 @@ export default class MediaLib {
     }
 
     static loadMediaLib (root, whenDone) {
-        IO.requestFromServer(root + 'media.json', (result) => {
+        // Refresh the catalog on each page load, including after library updates.
+        IO.requestFromServer(root + 'media.json?v=' + Date.now(), (result) => {
             let parsedResult = JSON.parse(result);
             path = parsedResult.path;
             samples = parsedResult.samples;
