@@ -22,6 +22,15 @@ body {
     overflow-x: hidden;
 }
 
+/* Rede de seguranca para mobile/tablet estreito: o layout continua com o
+   mesmo min-width (nada muda em desktop/tablet >=1020px), mas abaixo disso
+   permite rolagem horizontal em vez de cortar e esconder parte da tela. */
+@media (max-width: 1019px) {
+    body {
+        overflow-x: auto;
+    }
+}
+
 /* Set default, padding, margin and font-size on block elements */
 h1 {
     font-size: 1.23em;
