@@ -6,11 +6,16 @@
  * depois de ScratchJr.appinit().
  *
  * Fluxo:
- *  1. init() consulta GET /api/assignments/active. Sem turma_id no token
- *     (a maioria dos alunos, fora do contexto HelloYotta) o backend
- *     devolve { assignment: null } (ou nem 200) - no-op silencioso, mesma
- *     filosofia de initLiveWatch() (ver comentário em entry/editor.js e em
- *     LiveWatch.js).
+ *  1. init() consulta GET /api/assignments/for-student-project/<projeto
+ *     aberto agora> primeiro - resolve a missão vinculada a ESTE projeto
+ *     (seja ela a ativa da turma ou uma mais antiga do histórico aberta via
+ *     lobby/MissionsMenu.js), e só cai pra GET /api/assignments/active (a
+ *     missão ativa da turma, pra decidir se mostra o banner de "iniciar")
+ *     quando o projeto aberto não está vinculado a missão nenhuma ainda.
+ *     Sem turma_id no token (a maioria dos alunos, fora do contexto
+ *     HelloYotta) os dois devolvem { assignment: null } (ou nem 200) -
+ *     no-op silencioso, mesma filosofia de initLiveWatch() (ver comentário
+ *     em entry/editor.js e em LiveWatch.js).
  *  2. Se a missão existe mas ainda não foi iniciada (existingProjectId
  *     null) e o projeto aberto agora não é o dela, mostra um banner
  *     dispensável ("Nova missão: X - Iniciar?"), NÃO bloqueante. Ao clicar
@@ -397,19 +402,52 @@ export default class AssignmentBadge {
     }
 
     static async init () {
-        let res;
-        try {
-            res = await apiFetch('/assignments/active');
-        } catch (err) {
-            console.warn('[AssignmentBadge] /assignments/active falhou:', err && err.message);
-            return;
+        let data = null;
+
+        // 1) Tenta a missão vinculada ao PROJETO que está aberto agora (via
+        // projects.assignment_id, ver GET /for-student-project no backend) -
+        // seja ela a ativa da turma ou uma mais antiga. Achado em teste real
+        // [2026-11]: lobby/MissionsMenu.js lista o HISTÓRICO inteiro de
+        // missões (GET /mine) e abre uma já iniciada direto por pmd5=, sem
+        // assignmentId na URL - só consultar GET /active (abaixo) nunca
+        // enxergava essa missão antiga assim que a turma avançava pra uma
+        // nova (outro existingProjectId), e o selo/as dicas simplesmente não
+        // apareciam pra ela.
+        if (ScratchJr.currentProject) {
+            try {
+                const res = await apiFetch('/assignments/for-student-project/' + encodeURIComponent(ScratchJr.currentProject));
+                if (res.ok) {
+                    const body = await res.json().catch(function () {
+                        return {};
+                    });
+                    if (body && body.assignment) {
+                        data = body;
+                    }
+                }
+            } catch (err) {
+                console.warn('[AssignmentBadge] /assignments/for-student-project falhou:', err && err.message);
+            }
         }
-        if (!res.ok) {
-            return; // sem turma_id compatível no token, ou endpoint indisponível - no-op silencioso
+
+        // 2) Projeto aberto não é (ainda) uma missão - caminho antigo: só
+        // serve pra decidir se mostra o banner de "iniciar" a missão ativa
+        // da turma (o aluno nunca criou um projeto pra ela ainda).
+        if (!data) {
+            let res;
+            try {
+                res = await apiFetch('/assignments/active');
+            } catch (err) {
+                console.warn('[AssignmentBadge] /assignments/active falhou:', err && err.message);
+                return;
+            }
+            if (!res.ok) {
+                return; // sem turma_id compatível no token, ou endpoint indisponível - no-op silencioso
+            }
+            data = await res.json().catch(function () {
+                return {};
+            });
         }
-        const data = await res.json().catch(function () {
-            return {};
-        });
+
         if (!data || !data.assignment) {
             return;
         }
@@ -453,8 +491,11 @@ export default class AssignmentBadge {
         } else if (!assignment.existingProjectId) {
             AssignmentBadge._showStartBanner();
         }
-        // else: missão já iniciada só que NOUTRO projeto, e o aluno está
-        // olhando pra este agora - fica em silêncio (ver comentário no topo do arquivo).
+        // else: só pode acontecer vindo do caminho #2 (GET /active) - a
+        // missão ATIVA da turma já foi iniciada só que NOUTRO projeto, e o
+        // aluno está olhando pra este agora (projeto livre, sem missão
+        // vinculada - senão o caminho #1 já teria resolvido e teria batido
+        // aqui). Fica em silêncio (ver comentário no topo do arquivo).
     }
 
     /**
@@ -640,17 +681,21 @@ export default class AssignmentBadge {
 
     /**
      * Só recarrega o lado REQUISITADO (assignment.requirements), consultando
-     * GET /assignments/active de novo - cobre o caso (raro) de o professor
-     * reautorar/editar o exemplo enquanto o aluno já está com a missão
-     * aberta. Reaplica o cálculo local na sequência com o requisito novo.
+     * GET /assignments/for-student-project/<projeto atual> de novo - cobre o
+     * caso (raro) de o professor reautorar/editar o exemplo enquanto o
+     * aluno já está com a missão aberta. Pelo PROJETO (não mais GET
+     * /active) pra continuar funcionando com uma missão antiga aberta pelo
+     * menu "Missões" (lobby/MissionsMenu.js), do mesmo jeito que init() -
+     * ver docblock lá. Reaplica o cálculo local na sequência com o
+     * requisito novo.
      */
     static async _refreshRequirements () {
-        if (!assignment) {
+        if (!assignment || !ScratchJr.currentProject) {
             return;
         }
         let res;
         try {
-            res = await apiFetch('/assignments/active');
+            res = await apiFetch('/assignments/for-student-project/' + encodeURIComponent(ScratchJr.currentProject));
         } catch (err) {
             return; // best-effort - próximo tick tenta de novo
         }

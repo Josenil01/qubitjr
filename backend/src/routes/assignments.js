@@ -66,6 +66,15 @@
  *                                              deixa o botão "Cadastrar aula" reaparecer
  *                                              ao reabrir pela lobby normal, não só no
  *                                              link de lançamento original da HelloYotta.
+ * GET  /api/assignments/for-student-project/:projectId — dado um projeto do PRÓPRIO
+ *                                              aluno, devolve a missão vinculada a ele
+ *                                              (requirements/hints/stagePlacements,
+ *                                              mesmo formato resolvido de GET /active),
+ *                                              seja ela a missão ATIVA da turma ou uma
+ *                                              mais antiga - usada por AssignmentBadge.js
+ *                                              ao abrir uma missão do histórico (lobby/
+ *                                              MissionsMenu.js), que GET /active nunca
+ *                                              enxerga (só conhece a ativa da turma).
  * GET  /api/assignments/:id/project         — admin (qualquer missão) ou professor-autor
  *                                              (só a própria) busca o projeto-exemplo
  *                                              vinculado à missão :id, pra carregar no
@@ -1191,6 +1200,86 @@ router.get('/by-project/:projectId', async (req, res) => {
         });
     } catch (err) {
         console.error('[assignments] GET /by-project/:projectId error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * GET /api/assignments/for-student-project/:projectId
+ *
+ * Achado em teste real [2026-11]: lobby/MissionsMenu.js lista o HISTÓRICO
+ * inteiro de missões do aluno (GET /mine) e, ao clicar numa já iniciada,
+ * navega direto pra ela via pmd5=<projectId> (sem assignmentId na URL - ver
+ * MissionsMenu.js#_goToMission). Mas AssignmentBadge.js só sabia carregar a
+ * missão ATIVA da turma (GET /active) - então, assim que a turma avançava
+ * pra uma missão nova, reabrir uma missão ANTERIOR pelo menu "Missões"
+ * carregava o projeto certo mas o `assignment` ficava sendo o da missão
+ * ativa (outro projectId) - `isCurrentProject` dava false e nem o selo nem
+ * as dicas apareciam pra essa missão antiga, mesmo com ela tendo dicas
+ * salvas. Esta rota resolve a missão a partir do PRÓPRIO projeto aberto
+ * (projects.assignment_id), não da que está "ativa" agora - mesmo formato
+ * resolvido de GET /active (requirements/hints/stagePlacements através de
+ * resolveAssignmentFields, pra edições no template continuarem propagando),
+ * pra AssignmentBadge.init() poder usar os dois como o mesmo tipo de dado.
+ * `{ assignment: null }` (nunca erro) quando o projeto não existe, não é do
+ * usuário, foi apagado, ou nunca foi vinculado a missão nenhuma (projeto
+ * livre) - AssignmentBadge cai pro caminho antigo (GET /active) nesses casos.
+ */
+router.get('/for-student-project/:projectId', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    try {
+        const { data: project, error: projectErr } = await supabase
+            .from('projects')
+            .select('id, owner, assignment_id')
+            .eq('id', req.params.projectId)
+            .eq('deleted', 'NO')
+            .maybeSingle();
+
+        if (projectErr) throw projectErr;
+        if (!project || String(project.owner) !== String(req.userId) || !project.assignment_id) {
+            return res.json({ assignment: null });
+        }
+
+        const { data: assignment, error: assignmentErr } = await supabase
+            .from('assignments')
+            .select('id, project_name, requirements, hints, nivel, turma_id, template_id')
+            .eq('id', project.assignment_id)
+            .maybeSingle();
+
+        if (assignmentErr) throw assignmentErr;
+        if (!assignment) return res.json({ assignment: null });
+
+        // Mesma foto congelada de conclusão e mesma resolução template/
+        // referência de GET /active (ver comentários lá) - só a FONTE do
+        // assignment.id muda (projeto aberto, não "o que está ativo agora").
+        const completion = await readCompletionSnapshot(supabase, project.id);
+        const resolved = (await resolveAssignmentFields(supabase, assignment, { includeStagePlacements: true })) || {
+            projectName: assignment.project_name,
+            requirements: assignment.requirements,
+            hints: assignment.hints || [],
+            stagePlacements: null,
+        };
+
+        res.json({
+            assignment: {
+                id: assignment.id,
+                projectName: resolved.projectName,
+                requirements: resolved.requirements,
+                hints: resolved.hints,
+                stagePlacements: resolved.stagePlacements || null,
+                nivel: assignment.nivel,
+                turmaId: assignment.turma_id,
+                existingProjectId: project.id,
+                completedAt: completion ? completion.completedAt : null,
+                completionSnapshot: completion ? completion.snapshot : null,
+            },
+        });
+    } catch (err) {
+        console.error('[assignments] GET /for-student-project/:projectId error:', err);
         res.status(500).json({ error: err.message });
     }
 });
