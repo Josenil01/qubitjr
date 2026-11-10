@@ -12,6 +12,7 @@ import Vector from '../geom/Vector.js';
 import AssignmentNotice from './AssignmentNotice.js';
 import MissionsMenu from './MissionsMenu.js';
 import OfficialCatalog from './OfficialCatalog.js';
+import MyLessons from './MyLessons.js';
 import GenerateActivityModal from './GenerateActivityModal.js';
 import {decodeJwtPayloadUnsafe} from '../utils/jwtUnsafe.js';
 import {gn, newHTML, isTablet} from '../utils/lib.js';
@@ -81,6 +82,11 @@ export default class Home {
         // turma), no-op silencioso pra quem não é professor/admin ou se o
         // catálogo estiver vazio (ver OfficialCatalog.js).
         OfficialCatalog.init();
+        // Botão "📚 Minhas aulas" no topbar - todas as aulas que o próprio
+        // professor/admin autorou, com a série de cada uma e opção de
+        // duplicar pra outra série, no-op silencioso pra quem não é
+        // professor/admin ou ainda não autorou nenhuma aula (ver MyLessons.js).
+        MyLessons.init();
         // Botão flutuante "Gerar atividade com IA" - no-op silencioso pra
         // quem não é professor (ver GenerateActivityModal.js).
         GenerateActivityModal.init();

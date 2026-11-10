@@ -409,3 +409,126 @@
 .officialProjectBadge.is-official:hover {
     background: #d2e6ff;
 }
+
+/* === 5. Botão "📚 Minhas aulas" (topbar) + painel de duplicar aula para
+   outra série === Ver lobby/MyLessons.js. Mesmo padrão visual/estrutural de
+   .missionsTab/.officialCatalogTab (cor própria pra diferenciar: roxo,
+   terceira cor da família depois do teal e do dourado) - `right` é setado
+   em JS (MyLessons._keepClearOfOtherTabs), não aqui, porque depende da
+   largura renderizada dos outros dois botões (mesmo motivo de
+   OfficialCatalog._keepClearOfMissionsTab). */
+#topbar .myLessonsTab {
+    position: absolute;
+    top: ${css_vh(1.5)};
+    height: ${css_vh(8)};
+    box-sizing: border-box;
+    padding: 0 ${16 * scaleMultiplier}px;
+    border-radius: ${10 * scaleMultiplier}px;
+    background: #fff;
+    border: ${2 * scaleMultiplier}px solid #8e44ad;
+    box-shadow: 0 ${2 * scaleMultiplier}px ${6 * scaleMultiplier}px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+#topbar .myLessonsTab.hidden {display: none;}
+#topbar .myLessonsTab:not(.hidden) {display: flex;}
+#topbar .myLessonsTab:hover {background: #f5ecfa;}
+
+#topbar .myLessonsTab-icon {
+    color: #8e44ad;
+    font-weight: 700;
+    font-size: ${css_vh(2.4)};
+    line-height: 1;
+}
+
+.myLessonsPanel {
+    border-color: #8e44ad;
+}
+
+.myLessonsPanel .missionsPanelTitle {
+    color: #8e44ad;
+}
+
+.myLessonItem {
+    flex-direction: column;
+    align-items: flex-start;
+    cursor: default;
+}
+
+.myLessonItemRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.myLessonNivelTag {
+    font-size: 11px;
+    font-weight: 700;
+    color: #6c3483;
+    background: #f1e6f7;
+    border: 1px solid #8e44ad;
+    border-radius: 999px;
+    padding: 2px 10px;
+    white-space: nowrap;
+}
+
+.myLessonDupBtn {
+    font-size: 12px;
+    font-weight: 600;
+    color: #8e44ad;
+    background: #fff;
+    border: ${1.5 * scaleMultiplier}px solid #8e44ad;
+    border-radius: 999px;
+    padding: 4px 10px;
+    cursor: pointer;
+}
+
+.myLessonDupBtn:hover {
+    background: #f5ecfa;
+}
+
+.myLessonNivelPicker {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed #ddd;
+}
+
+.myLessonNivelOption {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    background: #f7f7f7;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.myLessonNivelOption:hover {
+    background: #eee;
+}
+
+.myLessonNivelEmpty {
+    font-size: 12px;
+    color: #999;
+    padding: 2px 0;
+}
+
+.myLessonNivelDone {
+    font-size: 13px;
+    font-weight: 700;
+    color: #27ae60;
+    padding: 2px 0;
+}

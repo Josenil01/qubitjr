@@ -635,6 +635,11 @@ router.get('/official', async (req, res) => {
  * se a missão vinculada já está no catálogo oficial, sem depender de estar
  * olhando a turma "certa" no token (um professor/admin pode ter missões em
  * várias turmas diferentes).
+ *
+ * `nivel` incluído (além do selo oficial) pra alimentar o painel "📚 Minhas
+ * aulas" (lobby/MyLessons.js) - lista pra o professor TODAS as próprias
+ * aulas com a série de cada uma, e oferece duplicar pra outra série (ver
+ * POST /:id/duplicate abaixo).
  */
 router.get('/authored', async (req, res) => {
     if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
@@ -645,7 +650,7 @@ router.get('/authored', async (req, res) => {
     try {
         const { data: rows, error } = await supabase
             .from('assignments')
-            .select('id, project_name, is_official, generated_by_ai')
+            .select('id, project_name, is_official, generated_by_ai, nivel')
             .eq('teacher_id', req.userId)
             .is('template_id', null);
 
@@ -657,10 +662,154 @@ router.get('/authored', async (req, res) => {
                 name: row.project_name,
                 isOfficial: !!row.is_official,
                 generatedByAi: !!row.generated_by_ai,
+                nivel: row.nivel || null,
             })),
         });
     } catch (err) {
         console.error('[assignments] GET /authored error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * POST /api/assignments/:id/duplicate
+ * Body: { targetNivel: string }
+ *
+ * Duplica uma aula própria (template, ver docblock do topo do arquivo sobre
+ * o modelo self-referencing) pra outra série/nível - caso de uso real: o
+ * professor montou a aula pro 1º ano e quer uma cópia de partida pro 2º ano,
+ * sem perder o exemplo original. Chamada pelo botão "Duplicar" do painel
+ * "📚 Minhas aulas" (lobby/MyLessons.js).
+ *
+ * Copia o projeto-exemplo do professor (não o ponteiro - um JSON novo,
+ * dono independente do original) e cria uma missão-template NOVA e
+ * independente (template_id null), na MESMA turma_id do original mas
+ * `active: false` - DE PROPÓSITO não reativa nada aqui: a invariante "só uma
+ * missão ativa por turma" (ver POST /register) faria a cópia desativar a
+ * aula original da mesma turma imediatamente, o que destruiria o propósito
+ * de ter as duas versões (séries diferentes) convivendo. O professor abre a
+ * cópia no editor, ajusta o que precisar e, quando quiser publicá-la pra
+ * turma, clica "Cadastrar aula" normalmente (AssignmentAuthorBar.js) - nesse
+ * momento, como o projeto novo já nasce com assignment_id vinculado à cópia,
+ * o fluxo de reautoria de POST /register já desativa a aula antiga e ativa
+ * esta, sem precisar de nenhuma rota de ativação dedicada aqui.
+ */
+router.post('/:id/duplicate', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    const assignmentId = parseInt(req.params.id, 10);
+    if (!Number.isFinite(assignmentId)) return res.status(400).json({ error: 'Invalid assignment id' });
+
+    const rawTargetNivel = req.body && req.body.targetNivel;
+    const targetNivel = typeof rawTargetNivel === 'string' ? rawTargetNivel.trim() : '';
+    if (!targetNivel || targetNivel.length > 20) {
+        return res.status(400).json({ error: 'targetNivel é obrigatório (texto de 1 a 20 caracteres)' });
+    }
+
+    try {
+        const { data: assignment, error: fetchErr } = await supabase
+            .from('assignments')
+            .select('id, template_id, teacher_id, turma_id, nivel, hints, generated_by_ai')
+            .eq('id', assignmentId)
+            .eq('teacher_id', req.userId)
+            .is('template_id', null)
+            .maybeSingle();
+
+        if (fetchErr) throw fetchErr;
+        if (!assignment) {
+            return res.status(404).json({ error: 'Aula não encontrada, ou você não é o autor dela' });
+        }
+
+        const { data: sourceProject, error: projectErr } = await supabase
+            .from('projects')
+            .select('id, name, json, created_via')
+            .eq('owner', req.userId)
+            .eq('assignment_id', assignmentId)
+            .eq('deleted', 'NO')
+            .limit(1)
+            .maybeSingle();
+
+        if (projectErr) throw projectErr;
+        if (!sourceProject) {
+            return res.status(404).json({ error: 'Projeto-exemplo desta aula não encontrado' });
+        }
+
+        let projectJson;
+        try {
+            projectJson = JSON.parse(sourceProject.json);
+        } catch (parseErr) {
+            console.error('[assignments] duplicate: projeto', sourceProject.id, 'com json inválido:', parseErr.message);
+            return res.status(500).json({ error: 'Projeto com json inválido' });
+        }
+
+        const now = new Date().toISOString();
+        const { data: newProject, error: insertProjectErr } = await supabase
+            .from('projects')
+            .insert({
+                name: sourceProject.name,
+                json: JSON.stringify(projectJson),
+                owner: req.userId,
+                deleted: 'NO',
+                version: 'iOSv01',
+                ctime: now,
+                mtime: now,
+                created_via: sourceProject.created_via,
+            })
+            .select('id, name')
+            .single();
+
+        if (insertProjectErr || !newProject) {
+            console.error('[assignments] duplicate: falha ao copiar projeto', sourceProject.id, ':', insertProjectErr);
+            return res.status(500).json({ error: 'Falha ao copiar o projeto: ' + (insertProjectErr ? insertProjectErr.message : 'unknown') });
+        }
+
+        const requirements = computeProjectManifest(projectJson);
+        const stagePlacements = buildStagePlacements(projectJson);
+
+        const { data: newAssignment, error: insertAssignmentErr } = await supabase
+            .from('assignments')
+            .insert({
+                turma_id: assignment.turma_id,
+                nivel: targetNivel,
+                teacher_id: req.userId,
+                project_name: newProject.name,
+                requirements,
+                hints: assignment.hints || [],
+                active: false,
+                generated_by_ai: !!assignment.generated_by_ai,
+            })
+            .select('id')
+            .single();
+
+        if (insertAssignmentErr || !newAssignment) {
+            console.error('[assignments] duplicate: falha ao criar nova missão a partir de', assignmentId, ':', insertAssignmentErr);
+            return res.status(500).json({ error: 'Falha ao criar a nova aula: ' + (insertAssignmentErr ? insertAssignmentErr.message : 'unknown') });
+        }
+
+        const { error: linkErr } = await supabase
+            .from('projects')
+            .update({ assignment_id: newAssignment.id })
+            .eq('id', newProject.id)
+            .eq('owner', req.userId);
+
+        if (linkErr) {
+            console.error('[assignments] duplicate: aula', newAssignment.id, 'criada, mas falha ao vincular o projeto copiado', newProject.id, ':', linkErr);
+        }
+
+        await persistStagePlacements(supabase, newAssignment.id, stagePlacements);
+
+        res.json({
+            success: true,
+            assignmentId: newAssignment.id,
+            projectId: newProject.id,
+            projectName: newProject.name,
+            nivel: targetNivel,
+        });
+    } catch (err) {
+        console.error('[assignments] POST /:id/duplicate error:', err);
         res.status(500).json({ error: err.message });
     }
 });
