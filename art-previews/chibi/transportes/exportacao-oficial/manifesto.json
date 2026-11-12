@@ -1,0 +1,66 @@
+{
+  "version": "20261112-transports-chibi-1",
+  "catalogSha256": "8e38353996cfa7d68fd07f7b354813bd6f264ae18bb4b69cc4f2fd5c69b8184b",
+  "records": [
+    {
+      "id": "HY-Aviao1",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "a013eff767aacfa4d699911277f6bc9270c1c04cbed5315f1f92ba30be5713a1",
+      "pngSha256": "76c7df9f526af8eee9a52e5a15fb8d0bc310ea19c9c9bde62fc9d7564fd691cc",
+      "svgSha256": "25a32d31e59853585b5049804fea481b4357ebec6eda50f44c75e12fecab38e3",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Barco",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "78ccf75047e1345ca132164ecd891a8c6a321b1adc57c6885f045e14a134dbcc",
+      "pngSha256": "a793b9c53bdd0de2435b1a24318127c3eab9323871c33fc1bd29000631d8a159",
+      "svgSha256": "9c2671d196fd11c6513bc2c0554fc87af59b70b6bd5971866f042b9dfe3325f0",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Carro",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "0427a6d08b1cfe5bc40fc4dad04c13c4350acd3a8dfa94003d6a57d2f113f6d0",
+      "pngSha256": "03fcd7dbac672825e36b8415fe8cbe80be204eb0d4f91497703de357a133495b",
+      "svgSha256": "416f7e3df20791a5b8a8fe0127fbef42b82bf819cec9c712f488d15091c05d13",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Foguete",
+      "width": 300,
+      "height": 300,
+      "scale": 0.7,
+      "masterSha256": "2f1e42dde25df4b91a6afd48593ac7420b118cc397fe33da15a6567fc80998d2",
+      "pngSha256": "dc2ac62892c05ac455ddfcccd501f53fb61aa838458186a1e79052030506fc6b",
+      "svgSha256": "4ae9705206e40252fbfa01986b4bcd3efb4950b4b8d80acbd06331aa97ca011b",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Trator",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "968895e9047b5db7df061165f40891e8ec4b41e6db70267fc2362a550609b5f1",
+      "pngSha256": "1f667d8fbfda24b9620a126a7681c8c9c508c2f467d234c3ed81505453e74ce0",
+      "svgSha256": "ea2b30067c75c9c9dabf8425cd7bf11ead37a34bcf7f0ced922d4af4a375cf2b",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Onibus",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "98ce76eda953ca6fbc1c0bcc193ded5e6b079f8ce76bcdc5d905c09d9f725b61",
+      "pngSha256": "790f9f0dfbda8357eb5054d72631300d850afe78a014c8907020a53fb3316c67",
+      "svgSha256": "54e9b79160363280cadbf74e8aac3fdcb7f5e7f1159ae7b63c10db74183aea2c",
+      "silhouetteIoU": 1
+    }
+  ]
+}

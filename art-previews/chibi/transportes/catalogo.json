@@ -1,0 +1,80 @@
+[
+  {
+    "md5": "HY-Aviao1.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Avião",
+    "scale": 0.3,
+    "order": "characters,24 Transportes",
+    "tags": [
+      "characters",
+      "24 Transportes"
+    ]
+  },
+  {
+    "md5": "HY-Barco.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Barco",
+    "scale": 0.3,
+    "order": "characters,24 Transportes",
+    "tags": [
+      "characters",
+      "24 Transportes"
+    ]
+  },
+  {
+    "md5": "HY-Carro.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Carro",
+    "scale": 0.3,
+    "order": "characters,24 Transportes",
+    "tags": [
+      "characters",
+      "24 Transportes"
+    ]
+  },
+  {
+    "md5": "HY-Foguete.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Foguete",
+    "scale": 0.7,
+    "order": "characters,24 Transportes",
+    "tags": [
+      "characters",
+      "24 Transportes"
+    ]
+  },
+  {
+    "md5": "HY-Trator.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Trator",
+    "scale": 0.3,
+    "order": "characters,24 Transportes",
+    "tags": [
+      "characters",
+      "24 Transportes"
+    ]
+  },
+  {
+    "md5": "HY-Onibus.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Ônibus",
+    "scale": 0.3,
+    "order": "characters,24 Transportes",
+    "tags": [
+      "characters",
+      "24 Transportes"
+    ]
+  }
+]

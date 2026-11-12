@@ -1,0 +1,36 @@
+{
+  "version": "20261112-plants-chibi-1",
+  "catalogSha256": "8e38353996cfa7d68fd07f7b354813bd6f264ae18bb4b69cc4f2fd5c69b8184b",
+  "records": [
+    {
+      "id": "HY-Cacto",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "06771d1842f33324b98fbd3317fb1deea75392cbac894414f495b1281fd3899c",
+      "pngSha256": "68b5e0bb540e040072f8500c21d19588f7319ef1a09383f37051d2c58bf0b03b",
+      "svgSha256": "e65181cad893b63dcb65a75af426df6242be3af3ab8a167c0244e18a8e760ec2",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Feno",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "69ccd338ebafb6e4d9f8a2151f6634d8949c93c3a2d5091d40128ef85ec1a18f",
+      "pngSha256": "3074d8370394bdef1c4f3a287797b4f516b6df3b72f92cfa11c64c66fd774dc7",
+      "svgSha256": "daee94ca17ad428efd0188d16809479a739c0877776fa68f6daf126b018334cb",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Tree",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "0d54cb9b886b6e7c21afc4fb5e61d9180b5e0f784d502db7faa022a96cc3dbd7",
+      "pngSha256": "d6c49b24e0086605f3e16ae53bbe05b88a3e9a45e62be8401de5a3253d60594c",
+      "svgSha256": "300d81d10405889768e1bde6f11fb5809cd2e3f2bf805d24218f1d3a284fdea4",
+      "silhouetteIoU": 1
+    }
+  ]
+}

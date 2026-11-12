@@ -1,0 +1,29 @@
+{
+  "catalogSha256": "8e38353996cfa7d68fd07f7b354813bd6f264ae18bb4b69cc4f2fd5c69b8184b",
+  "files": [
+    {
+      "file": "pnglibrary/HY-Bolo.png",
+      "sha256": "0e58102f63335a633404dc191724b90e65ec6a96fc9779f532a9e02f4f952a44"
+    },
+    {
+      "file": "svglibrary/HY-Bolo.svg",
+      "sha256": "4acf3369592c0b60694f35acbd2ccc784f84eb1546e287a9b52ac30cbee7a2f8"
+    },
+    {
+      "file": "pnglibrary/HY-Greeps.png",
+      "sha256": "b7d4e1ea231df45c353c6eca23fc018a659ea627e844d896c33262f82c77c7a7"
+    },
+    {
+      "file": "svglibrary/HY-Greeps.svg",
+      "sha256": "41fae92a0b326ef0b52f09ebce64c325f6ef065c42b71c6cffdaa391a60b235d"
+    },
+    {
+      "file": "pnglibrary/HY-Maca.png",
+      "sha256": "420ec50d30d41eadd0d280dbaee43a9d6cf320a0ecafdd920d49398bccf4e410"
+    },
+    {
+      "file": "svglibrary/HY-Maca.svg",
+      "sha256": "474dd578c46e01c43fa92c093ba46370a297a9146ee1a38b06e132ee550e1ee5"
+    }
+  ]
+}

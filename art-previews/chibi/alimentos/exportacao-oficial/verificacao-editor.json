@@ -1,0 +1,49 @@
+{
+  "count": 3,
+  "version": "20261112-foods-chibi-1",
+  "failures": [],
+  "results": [
+    {
+      "id": "HY-Bolo",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Greeps",
+      "dimensions": [
+        150,
+        250,
+        150,
+        250,
+        150,
+        250
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Maca",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    }
+  ]
+}

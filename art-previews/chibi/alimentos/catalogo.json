@@ -1,0 +1,42 @@
+[
+  {
+    "md5": "HY-Bolo.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Bolo",
+    "scale": 0.3,
+    "order": "characters,11 Alimentos",
+    "tags": [
+      "characters",
+      "11 Alimentos"
+    ]
+  },
+  {
+    "md5": "HY-Greeps.svg",
+    "width": 150,
+    "height": 250,
+    "ext": "svg",
+    "name": "Grapes",
+    "scale": 0.3,
+    "order": "characters,11 Alimentos",
+    "tags": [
+      "characters",
+      "11 Alimentos"
+    ],
+    "legacy": false
+  },
+  {
+    "md5": "HY-Maca.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Maçã",
+    "scale": 0.3,
+    "order": "characters,11 Alimentos",
+    "tags": [
+      "characters",
+      "11 Alimentos"
+    ]
+  }
+]

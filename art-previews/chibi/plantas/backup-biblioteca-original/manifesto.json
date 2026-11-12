@@ -1,0 +1,29 @@
+{
+  "catalogSha256": "8e38353996cfa7d68fd07f7b354813bd6f264ae18bb4b69cc4f2fd5c69b8184b",
+  "files": [
+    {
+      "file": "pnglibrary/HY-Cacto.png",
+      "sha256": "bc8f51655c0ec0bb128313df00d896a12c14955ff7846b779d765f211d172c9e"
+    },
+    {
+      "file": "svglibrary/HY-Cacto.svg",
+      "sha256": "b93121ee52efd557af52ddc2f93bc88864cfcdd0b1f052cdca2d442ab7cddae3"
+    },
+    {
+      "file": "pnglibrary/HY-Feno.png",
+      "sha256": "8e7891e7571e3e81113e9cb4a6ea10d776efd125d4c60c2a3e00d26c4c21cec1"
+    },
+    {
+      "file": "svglibrary/HY-Feno.svg",
+      "sha256": "0073e03d54ad93ecc495bd802f7fc843fe308294eecead538dfa5b3158b41c75"
+    },
+    {
+      "file": "pnglibrary/HY-Tree.png",
+      "sha256": "2a4e430e4f05f887ca3f8ca6cba0de3331e435077d84c97178cb19b6d239a3f0"
+    },
+    {
+      "file": "svglibrary/HY-Tree.svg",
+      "sha256": "eb50f2454cfcf62edef6d7f982a1dd9c3be700429176f5652f34498a217676b9"
+    }
+  ]
+}

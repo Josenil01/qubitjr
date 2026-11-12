@@ -1,0 +1,32 @@
+[
+  {
+    "id": "HY-Carro",
+    "source": "C:\\Users\\TI\\.codex\\generated_images\\01a1cfcb-397b-7f73-98a7-9579318f2e5a\\exec-d2fdbf0c-2f2e-48fc-b908-6924549c67a2.png",
+    "prompt": "Use case: style-transfer. One transport library sprite. Image 1 original: preserve identity, colors, design and accessories. Image 2 hay bale is STYLE ONLY: match warm dark-brown outlines, rounded cute shapes, soft shading and restrained highlights. Subject: One small rounded red compact car in strict side view facing right, exactly two visible black tires with gray hubs, front and rear wheels aligned on same ground baseline; pale-blue two side windows, front yellow headlamp, subtle door seam. No occupants. Vehicles have NO FACE: no eyes, mouth, cheeks or human features. Entire silhouette centered with generous margins in square composition. True transparent background; no floor, scenery, external shadow or glow, lettering or watermark."
+  },
+  {
+    "id": "HY-Onibus",
+    "source": "C:\\Users\\TI\\.codex\\generated_images\\01a1cfcb-397b-7f73-98a7-9579318f2e5a\\exec-0405722a-c3ef-4a7a-903f-73ad0d213b74.png",
+    "prompt": "Use case: style-transfer. One transport library sprite. Image 1 original: preserve identity, colors, design and accessories. Image 2 hay bale is STYLE ONLY: match warm dark-brown outlines, rounded cute shapes, soft shading and restrained highlights. Subject: One compact yellow school bus side profile facing right, exactly two visible black wheels with gray hubs, same ground baseline. Three rectangular pale-blue passenger windows, one coherent tall folding front passenger door and front windshield, black horizontal side stripes, short rounded hood. No writing or passengers. Vehicles have NO FACE: no eyes, mouth, cheeks or human features. Entire silhouette centered with generous margins in square composition. True transparent background; no floor, scenery, external shadow or glow, lettering or watermark."
+  },
+  {
+    "id": "HY-Aviao1",
+    "source": "C:\\Users\\TI\\.codex\\generated_images\\01a1cfcb-397b-7f73-98a7-9579318f2e5a\\exec-0eb58c04-25c7-42ee-9e16-b614a512564b.png",
+    "prompt": "Use case: style-transfer. One transport library sprite. Image 1 original: preserve identity, colors, design and accessories. Image 2 hay bale is STYLE ONLY: match warm dark-brown outlines, rounded cute shapes, soft shading and restrained highlights. Subject: One golden-yellow vintage biplane facing right, three-quarter side view. Exactly two main wings stacked one above another with coherent struts joining them, one fuselage, one tail with vertical fin and horizontal stabilizer, one front propeller with two blades connected to central hub, two landing wheels correctly attached beneath fuselage, far wheel can be partly occluded. No pilot. Vehicles have NO FACE: no eyes, mouth, cheeks or human features. Entire silhouette centered with generous margins in square composition. True transparent background; no floor, scenery, external shadow or glow, lettering or watermark."
+  },
+  {
+    "id": "HY-Barco",
+    "source": "C:\\Users\\TI\\.codex\\generated_images\\01a1cfcb-397b-7f73-98a7-9579318f2e5a\\exec-7b9f4d4c-3633-4c97-83f1-6e859554ac8a.png",
+    "prompt": "Use case: style-transfer. One transport library sprite. Image 1 original: preserve identity, colors, design and accessories. Image 2 hay bale is STYLE ONLY: match warm dark-brown outlines, rounded cute shapes, soft shading and restrained highlights. Subject: One small blue tugboat facing right, deep navy rounded hull with white anchor emblem near bow, cream cabin with red roof and three blue circular portholes, one short red-white striped smokestack with navy cap, two red-white life rings attached to hull side. No water, waves, smoke or people. Vehicles have NO FACE: no eyes, mouth, cheeks or human features. Entire silhouette centered with generous margins in square composition. True transparent background; no floor, scenery, external shadow or glow, lettering or watermark."
+  },
+  {
+    "id": "HY-Trator",
+    "source": "C:\\Users\\TI\\.codex\\generated_images\\01a1cfcb-397b-7f73-98a7-9579318f2e5a\\exec-f0a0ca7f-a833-49af-bf7a-3336a6d488e5.png",
+    "prompt": "Use case: style-transfer. One transport library sprite. Image 1 original: preserve identity, colors, design and accessories. Image 2 hay bale is STYLE ONLY: match warm dark-brown outlines, rounded cute shapes, soft shading and restrained highlights. Subject: One green farm tractor in strict side profile facing right. Exactly two visible tires: very large rear tire at left, small front tire at right, chunky black treads and yellow hubs. Both tires share same ground baseline and correctly attach to axles. Rounded green hood, green cab roof, pale-blue windows, single brown-gray exhaust pipe, front yellow headlight. No driver. Vehicles have NO FACE: no eyes, mouth, cheeks or human features. Entire silhouette centered with generous margins in square composition. True transparent background; no floor, scenery, external shadow or glow, lettering or watermark."
+  },
+  {
+    "id": "HY-Foguete",
+    "source": "C:\\Users\\TI\\.codex\\generated_images\\01a1cfcb-397b-7f73-98a7-9579318f2e5a\\exec-9f6976c6-ae54-4364-acdf-99254caf0e30.png",
+    "prompt": "Use case: style-transfer. One transport library sprite. Image 1 original: preserve identity, colors, design and accessories. Image 2 hay bale is STYLE ONLY: match warm dark-brown outlines, rounded cute shapes, soft shading and restrained highlights. Subject: One upright white rocket with red rounded pointed nose cone, purple circular porthole, red fins and one compact orange-yellow exhaust flame directly below engine. Preserve the original small astronaut companion hugging its left side: white rounded spacesuit, opaque deep navy helmet visor with highlight, no visible face; exactly two arms and two legs attached coherently, one mitten touching purple porthole, feet bent toward rocket. Astronaut is secondary and smaller than rocket. No additional astronauts, no stars. Vehicles have NO FACE: no eyes, mouth, cheeks or human features. Entire silhouette centered with generous margins in square composition. True transparent background; no floor, scenery, external shadow or glow, lettering or watermark."
+  }
+]

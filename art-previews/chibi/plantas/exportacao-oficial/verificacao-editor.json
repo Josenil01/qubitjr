@@ -1,0 +1,49 @@
+{
+  "count": 3,
+  "version": "20261112-plants-chibi-1",
+  "failures": [],
+  "results": [
+    {
+      "id": "HY-Cacto",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Feno",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Tree",
+      "dimensions": [
+        225,
+        225,
+        225,
+        225,
+        225,
+        225
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    }
+  ]
+}

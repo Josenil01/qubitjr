@@ -1,0 +1,36 @@
+{
+  "version": "20261112-foods-chibi-1",
+  "catalogSha256": "8e38353996cfa7d68fd07f7b354813bd6f264ae18bb4b69cc4f2fd5c69b8184b",
+  "records": [
+    {
+      "id": "HY-Bolo",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "4018d46a16a0b22f42eee582c6b906c48982b782045f754ac5e86914cd837031",
+      "pngSha256": "6d622633830a99fed8c6f0da3c75e2d9c3affe9239d5cad4cf00314ce959fed7",
+      "svgSha256": "582b4bf5f9935f4c6676ddc6dfea726740eb5f280514b2f65b92ed9b2bcbc2da",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Greeps",
+      "width": 150,
+      "height": 250,
+      "scale": 0.3,
+      "masterSha256": "3f9431c491401bf3cc68b84792ef68bb1210c03e5c86f16589e5501e43ba718e",
+      "pngSha256": "1b996fa1258bd6b6dc5bf4fdc829d9d477715ed84385957c36c8916d917906b0",
+      "svgSha256": "59516de1792eed624cbbcf74fe4be9cbcb2d68ee020b207ab48e5f46ce28b9f7",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Maca",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "875827c46018eebd9b1ff256b4b4f7ae9dbdc4eb4bccaf936052cb125ad655b2",
+      "pngSha256": "82accac1ab81f2a8bec50de162357cf5ac223e083449ebb90e8884061675459c",
+      "svgSha256": "91d6051489fab07081614e380756aa2634361da59ed54611422e345f7bb75161",
+      "silhouetteIoU": 1
+    }
+  ]
+}
