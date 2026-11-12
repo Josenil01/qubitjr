@@ -38,6 +38,7 @@ For the full architecture reference (directory-by-directory), see [agent.md](age
 A snapshot of the more substantial work that's gone into hardening and polishing QubitJr recently:
 
 **Asset pipeline & character library**
+- Updated all 58 visible animals to the reviewed chibi artwork, including corrected birds, snake, butterfly legs and plain insect antennae. PNG thumbnails, stage SVGs and alpha-derived hit-test outlines are synchronized; catalog identifiers and scales are preserved. Export/validation details and the original-asset backup are documented in [the animal library notes](art-previews/chibi/animais/README.md).
 - Traced accurate hit-test outlines (`pathborder_`) for all 127 Qubit Jr characters, so click/drag/collision now follows each character's real silhouette instead of its full bounding rectangle.
 - Removed baked-in white/black backgrounds from the entire Qubit Jr SVG/PNG pack via alpha-aware background removal, so characters render with true transparency.
 - Fixed the sprite catalog (`media.json`) so the character picker groups and orders correctly, and curated which characters are offered by default.

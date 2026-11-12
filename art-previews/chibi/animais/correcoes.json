@@ -1,0 +1,17 @@
+[
+  {
+    "id": "HY-Caramgueijo",
+    "source": "C:\\Users\\TI\\.codex\\generated_images\\01a1cfcb-397b-7f73-98a7-9579318f2e5a\\exec-df444ccf-c438-43b9-aaae-c9c685187d14.png",
+    "prompt": "Remove the two extra face eyes and eyebrows; retain exactly two eyes on eyestalks."
+  },
+  {
+    "id": "HY-Aranha",
+    "source": "C:\\Users\\TI\\.codex\\generated_images\\01a1cfcb-397b-7f73-98a7-9579318f2e5a\\exec-1f693148-7854-4b28-b4f9-2c2debb55d97.png",
+    "prompt": "Precise anatomy correction of this chibi spider sprite. Current image incorrectly shows TEN legs, five on each side. Remove the LOWEST PAIR of purple legs: the bottommost dangling purple leg at lower left and the bottommost dangling purple leg at lower right. Cleanly restore the web / transparent spaces behind the removed pair. Keep the other eight legs, four on each side: two curved upward and two curved outward/down on each side. Final image MUST have EXACTLY EIGHT purple legs total, FOUR LEFT and FOUR RIGHT. Do not add limbs. Preserve the cute purple oval body, two glossy eyes with NO EYELASHES, eyebrows, pink cheeks, smile, cream web, colors, warm brown outline, framing and true transparent background."
+  },
+  {
+    "id": "HY-Borboleta",
+    "source": "C:\\Users\\TI\\.codex\\generated_images\\01a1cfcb-397b-7f73-98a7-9579318f2e5a\\exec-b23ce3ee-5c88-459c-8bcb-18d2f6b36a96.png",
+    "prompt": "Precise minor anatomy correction of this approved chibi butterfly. Fix ONLY the small brown legs around the striped body. There must be EXACTLY SIX small brown legs, THREE on the LEFT edge of the body and THREE on the RIGHT edge, arranged as three clear matching side pairs. No leg in the bottom center. Remove the extra center dangling leg and organize six short rounded side legs, none on wings. Preserve the head, smooth oval eyes without eyelashes, expression, pink cheeks, antennae with star tips, all four wings, all wing patterns and colors, brown outlines, body stripes, pose, framing and transparent background exactly. Do not change wing silhouettes or add extra animals, text, ground or shadows."
+  }
+]

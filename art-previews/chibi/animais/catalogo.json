@@ -1,0 +1,759 @@
+﻿[
+    {
+        "md5":  "HY-Bode.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Bode",
+        "scale":  0.3,
+        "order":  "characters,03 Domesticos e da fazenda",
+        "tags":  [
+                     "characters",
+                     "03 Domesticos e da fazenda"
+                 ]
+    },
+    {
+        "md5":  "HY-Cachorro.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Cachorro",
+        "scale":  0.3,
+        "order":  "characters,03 Domesticos e da fazenda",
+        "tags":  [
+                     "characters",
+                     "03 Domesticos e da fazenda"
+                 ]
+    },
+    {
+        "md5":  "HY-Cavalo.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Cavalo",
+        "scale":  0.3,
+        "order":  "characters,03 Domesticos e da fazenda",
+        "tags":  [
+                     "characters",
+                     "03 Domesticos e da fazenda"
+                 ]
+    },
+    {
+        "md5":  "HY-Coelho.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Coelho",
+        "scale":  0.3,
+        "order":  "characters,03 Domesticos e da fazenda",
+        "tags":  [
+                     "characters",
+                     "03 Domesticos e da fazenda"
+                 ]
+    },
+    {
+        "md5":  "HY-Galinha.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Galinha",
+        "scale":  0.3,
+        "order":  "characters,03 Domesticos e da fazenda",
+        "tags":  [
+                     "characters",
+                     "03 Domesticos e da fazenda"
+                 ]
+    },
+    {
+        "md5":  "HY-Gato.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Gato",
+        "scale":  0.3,
+        "order":  "characters,03 Domesticos e da fazenda",
+        "tags":  [
+                     "characters",
+                     "03 Domesticos e da fazenda"
+                 ]
+    },
+    {
+        "md5":  "HY-Ovelha.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Ovelha",
+        "scale":  0.3,
+        "order":  "characters,03 Domesticos e da fazenda",
+        "tags":  [
+                     "characters",
+                     "03 Domesticos e da fazenda"
+                 ]
+    },
+    {
+        "md5":  "HY-Pato.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Pato",
+        "scale":  0.3,
+        "order":  "characters,03 Domesticos e da fazenda",
+        "tags":  [
+                     "characters",
+                     "03 Domesticos e da fazenda"
+                 ]
+    },
+    {
+        "md5":  "HY-Pintinho.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Pintinho",
+        "scale":  0.3,
+        "order":  "characters,03 Domesticos e da fazenda",
+        "tags":  [
+                     "characters",
+                     "03 Domesticos e da fazenda"
+                 ]
+    },
+    {
+        "md5":  "HY-Porco.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Porco",
+        "scale":  0.3,
+        "order":  "characters,03 Domesticos e da fazenda",
+        "tags":  [
+                     "characters",
+                     "03 Domesticos e da fazenda"
+                 ]
+    },
+    {
+        "md5":  "HY-Rabbit.svg",
+        "width":  150,
+        "height":  250,
+        "ext":  "svg",
+        "name":  "Rabbit",
+        "scale":  0.3,
+        "order":  "characters,03 Domesticos e da fazenda",
+        "tags":  [
+                     "characters",
+                     "03 Domesticos e da fazenda"
+                 ],
+        "legacy":  false
+    },
+    {
+        "md5":  "HY-Vaca.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Vaca",
+        "scale":  0.3,
+        "order":  "characters,03 Domesticos e da fazenda",
+        "tags":  [
+                     "characters",
+                     "03 Domesticos e da fazenda"
+                 ]
+    },
+    {
+        "md5":  "HY-Camelo.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Camelo",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-Afrika-Elefante.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Elefante Africano",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-Afrika-Girafa.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Girafa Africana",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-Afrika-Leao.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Leão Africano",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-Afrika-Macaco.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Macaco Africano",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-MacacoPrego.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Macaco-prego",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-Morcego.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Morcego",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-Onca.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Onça",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-Raposa.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Raposa",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-Tamandua.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Tamanduá",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-Tatu.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Tatu",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-Afrika-Tigre.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Tigre",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-Urso-Marrom.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Urso Marrom",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-Veado.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Veado",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-Wolf.svg",
+        "width":  150,
+        "height":  150,
+        "ext":  "svg",
+        "name":  "Wolf",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ],
+        "legacy":  false
+    },
+    {
+        "md5":  "HY-Afrika-Zebra.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Zebra Africana",
+        "scale":  0.3,
+        "order":  "characters,04 Selvagens",
+        "tags":  [
+                     "characters",
+                     "04 Selvagens"
+                 ]
+    },
+    {
+        "md5":  "HY-Pinguim.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Pinguim",
+        "scale":  0.3,
+        "order":  "characters,05 Polares",
+        "tags":  [
+                     "characters",
+                     "05 Polares"
+                 ]
+    },
+    {
+        "md5":  "HY-UrsoPolarAdulto.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Urso Polar",
+        "scale":  0.3,
+        "order":  "characters,05 Polares",
+        "tags":  [
+                     "characters",
+                     "05 Polares"
+                 ]
+    },
+    {
+        "md5":  "HY-UrsoPolar.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Urso Polar Bebê",
+        "scale":  0.3,
+        "order":  "characters,05 Polares",
+        "tags":  [
+                     "characters",
+                     "05 Polares"
+                 ]
+    },
+    {
+        "md5":  "HY-Peixe-Baiacu.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Baiacu",
+        "scale":  0.3,
+        "order":  "characters,06 Aquaticos",
+        "tags":  [
+                     "characters",
+                     "06 Aquaticos"
+                 ]
+    },
+    {
+        "md5":  "HY-Baleia.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Baleia",
+        "scale":  0.3,
+        "order":  "characters,06 Aquaticos",
+        "tags":  [
+                     "characters",
+                     "06 Aquaticos"
+                 ]
+    },
+    {
+        "md5":  "HY-Caramgueijo.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Caranguejo",
+        "scale":  0.3,
+        "order":  "characters,06 Aquaticos",
+        "tags":  [
+                     "characters",
+                     "06 Aquaticos"
+                 ]
+    },
+    {
+        "md5":  "HY-CavaloMarinho.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Cavalo-Marinho",
+        "scale":  0.3,
+        "order":  "characters,06 Aquaticos",
+        "tags":  [
+                     "characters",
+                     "06 Aquaticos"
+                 ]
+    },
+    {
+        "md5":  "HY-Peixe-Golfinho.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Golfinho",
+        "scale":  0.3,
+        "order":  "characters,06 Aquaticos",
+        "tags":  [
+                     "characters",
+                     "06 Aquaticos"
+                 ]
+    },
+    {
+        "md5":  "HY-Peixe-2.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Peixe",
+        "scale":  0.3,
+        "order":  "characters,06 Aquaticos",
+        "tags":  [
+                     "characters",
+                     "06 Aquaticos"
+                 ]
+    },
+    {
+        "md5":  "HY-PeixePalhaco.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Peixe-Palhaço",
+        "scale":  0.3,
+        "order":  "characters,06 Aquaticos",
+        "tags":  [
+                     "characters",
+                     "06 Aquaticos"
+                 ]
+    },
+    {
+        "md5":  "HY-Polvo.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Polvo",
+        "scale":  0.3,
+        "order":  "characters,06 Aquaticos",
+        "tags":  [
+                     "characters",
+                     "06 Aquaticos"
+                 ]
+    },
+    {
+        "md5":  "HY-Tartaruga-Marinha.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Tartaruga Marinha",
+        "scale":  0.3,
+        "order":  "characters,06 Aquaticos",
+        "tags":  [
+                     "characters",
+                     "06 Aquaticos"
+                 ]
+    },
+    {
+        "md5":  "HY-Peixe-Tubarao.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Tubarão",
+        "scale":  0.3,
+        "order":  "characters,06 Aquaticos",
+        "tags":  [
+                     "characters",
+                     "06 Aquaticos"
+                 ]
+    },
+    {
+        "md5":  "HY-Passaro-Arara-Azul.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Arara Azul",
+        "scale":  0.3,
+        "order":  "characters,07 Aves",
+        "tags":  [
+                     "characters",
+                     "07 Aves"
+                 ]
+    },
+    {
+        "md5":  "HY-Passaro-Coruja.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Coruja",
+        "scale":  0.3,
+        "order":  "characters,07 Aves",
+        "tags":  [
+                     "characters",
+                     "07 Aves"
+                 ]
+    },
+    {
+        "md5":  "HY-Passaro.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Pássaro",
+        "scale":  0.3,
+        "order":  "characters,07 Aves",
+        "tags":  [
+                     "characters",
+                     "07 Aves"
+                 ]
+    },
+    {
+        "md5":  "HY-Passaro-Tucano.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Tucano",
+        "scale":  0.3,
+        "order":  "characters,07 Aves",
+        "tags":  [
+                     "characters",
+                     "07 Aves"
+                 ]
+    },
+    {
+        "md5":  "HY-Cobra.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Cobra",
+        "scale":  0.3,
+        "order":  "characters,08 Repteis e anfibios",
+        "tags":  [
+                     "characters",
+                     "08 Repteis e anfibios"
+                 ]
+    },
+    {
+        "md5":  "HY-jacare-2.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Jacaré",
+        "scale":  0.3,
+        "order":  "characters,08 Repteis e anfibios",
+        "tags":  [
+                     "characters",
+                     "08 Repteis e anfibios"
+                 ]
+    },
+    {
+        "md5":  "HY-Lagarto.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Lagarto",
+        "scale":  0.3,
+        "order":  "characters,08 Repteis e anfibios",
+        "tags":  [
+                     "characters",
+                     "08 Repteis e anfibios"
+                 ]
+    },
+    {
+        "md5":  "HY-Sapo.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Sapo",
+        "scale":  0.3,
+        "order":  "characters,08 Repteis e anfibios",
+        "tags":  [
+                     "characters",
+                     "08 Repteis e anfibios"
+                 ]
+    },
+    {
+        "md5":  "HY-SapoRei.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Sapo Rei",
+        "scale":  0.3,
+        "order":  "characters,08 Repteis e anfibios",
+        "tags":  [
+                     "characters",
+                     "08 Repteis e anfibios"
+                 ]
+    },
+    {
+        "md5":  "HY-Tartaruga.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Tartaruga",
+        "scale":  0.3,
+        "order":  "characters,08 Repteis e anfibios",
+        "tags":  [
+                     "characters",
+                     "08 Repteis e anfibios"
+                 ]
+    },
+    {
+        "md5":  "HY-Turtle.svg",
+        "width":  200,
+        "height":  150,
+        "ext":  "svg",
+        "name":  "Turtle",
+        "scale":  0.3,
+        "order":  "characters,08 Repteis e anfibios",
+        "tags":  [
+                     "characters",
+                     "08 Repteis e anfibios"
+                 ],
+        "legacy":  false
+    },
+    {
+        "md5":  "HY-Abelha.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Abelha",
+        "scale":  0.1,
+        "order":  "characters,09 Insetos e aracnideos",
+        "tags":  [
+                     "characters",
+                     "09 Insetos e aracnideos"
+                 ]
+    },
+    {
+        "md5":  "HY-Aranha.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Aranha",
+        "scale":  0.3,
+        "order":  "characters,09 Insetos e aracnideos",
+        "tags":  [
+                     "characters",
+                     "09 Insetos e aracnideos"
+                 ]
+    },
+    {
+        "md5":  "HY-Borboleta.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Borboleta",
+        "scale":  0.3,
+        "order":  "characters,09 Insetos e aracnideos",
+        "tags":  [
+                     "characters",
+                     "09 Insetos e aracnideos"
+                 ]
+    },
+    {
+        "md5":  "HY-Formiga.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Formiga",
+        "scale":  0.3,
+        "order":  "characters,09 Insetos e aracnideos",
+        "tags":  [
+                     "characters",
+                     "09 Insetos e aracnideos"
+                 ]
+    },
+    {
+        "md5":  "HY-Inseto-Joaninha.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Joaninha",
+        "scale":  0.3,
+        "order":  "characters,09 Insetos e aracnideos",
+        "tags":  [
+                     "characters",
+                     "09 Insetos e aracnideos"
+                 ]
+    },
+    {
+        "md5":  "HY-Inseto-Libelula.svg",
+        "width":  225,
+        "height":  225,
+        "ext":  "svg",
+        "name":  "Libélula",
+        "scale":  0.3,
+        "order":  "characters,09 Insetos e aracnideos",
+        "tags":  [
+                     "characters",
+                     "09 Insetos e aracnideos"
+                 ]
+    }
+]

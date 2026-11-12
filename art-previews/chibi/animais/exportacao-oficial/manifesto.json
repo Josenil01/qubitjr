@@ -1,0 +1,586 @@
+{
+  "version": "20261112-animals-chibi-2",
+  "catalogSha256": "e0baad546a0dab5baa3b725b868a6b86934d859688abc4d9eff35ecfdcab5d4e",
+  "records": [
+    {
+      "id": "HY-Bode",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "d3897be921d8dfbffe388582fa2a7c1a877a570eaf2fd18c01d3a098b61a03dc",
+      "pngSha256": "fa62b11bc2cb81aabffcba7bb2f58ac743ac7f0f62025dd6408bb5820b12b153",
+      "svgSha256": "cfaa329fff1ce705d50e93b30730f6e002b1b686851d9c193b8f611df806eac7",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Cachorro",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "fe3856faf4fa3a91d5c7dbcedd1f01892461b42f231b19b2580951013b3345f1",
+      "pngSha256": "0409d951c05474bf57f70cfec8e39ac9c22f98c74997770a19ca62bbaceae108",
+      "svgSha256": "50766859c4b094dd238604322e57dc1b9cc4ea45635baa9bd221d647a8b93ee3",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Cavalo",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "e1935d8f7f25cc0627425d7f6a2d588cfa83c21843afa16758e2f774edb58016",
+      "pngSha256": "ee49f85d3c7e464e41b558404e9dd4047b425edd10e74025b248e5690fdd445d",
+      "svgSha256": "b6d8074af6720a2c70484efd30742d18e4fab05919f029c178779e434b6f8997",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Coelho",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "1f9367e24802a232dddf9d6724ec21e347bc55429e906bbb45eff422a6383ae0",
+      "pngSha256": "742cdeed53f02c853c0e78909d76ddd4d51b79de14e6d2b9f27887dd28521adb",
+      "svgSha256": "e3218eaba966ad5da7af724c895fc86bded0f6aaa4e29ef7d42023c34b27c95e",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Galinha",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "b9b9f99b3dbf1ef47346edf6e96b924fa84986a4adbdb2e0e66e7f692db1329e",
+      "pngSha256": "9645230bd1b03b2d7b3da6f28e3bbde2898ff146b909c211f7534605082859b5",
+      "svgSha256": "ff78cb2c948077ab65615cdeac82bc2ae4633db3c9e358d9bcc6cd80f1cb97e1",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Gato",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "1668155e1293828a0fe81cd3b9ca49a03f09a9966ba120de03476cb51114b6a9",
+      "pngSha256": "c26b0ea79b4390030fb276fbd2c243cffd04fcdc6a597858dc2e6f42112a27b3",
+      "svgSha256": "0ddab6d9356f6e06574a2cde84969c63fe51b4780a4218f6b874b6a736df490b",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Ovelha",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "f1f2b7ec9d0932922b25bb6618dd774fa43609b78eb743b92807a7221ca5111a",
+      "pngSha256": "2f57b3c51a19956ee92f88825e3f8175cdab761338f1794f7a85ff0a67085e64",
+      "svgSha256": "ccbcf0bbdc3067d54f9c20e42340a1a4fcdb938451814df59d22cc7008244dd6",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Pato",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "b878f38033c5b4d3ed33fd586bd42b5103742ffc8174df03911045202425791c",
+      "pngSha256": "ed88c62ee6b22fe8e3c86271a2e2983cd43279e0f6bc95eecdc4d145258a4a7c",
+      "svgSha256": "2273ecc4fa48223c3458119e6598ec170709c26c50a68b99d0e3c9424cc6268b",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Pintinho",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "ab72116347bf1c7fc730ee8aca5f16faa7bb4f6c68b305773b2445d57304e4c9",
+      "pngSha256": "f605a06b9dd2005695fb405e919329b8e0ae4a6fdaa3b7828ea8d21285bc62b7",
+      "svgSha256": "f036dd59419e0c318cbe773ec30f2ed6858ee6984aa752d1856a8c30c8e9d085",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Porco",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "6d9bc125be0cc86ea7a63bc10c6959f9330afe00c3adbbef320351514eaabe4e",
+      "pngSha256": "cf4c34d9040bc98c57f2d643a82367874906589523f1362c1e66e588fba531e1",
+      "svgSha256": "20d05ab6a8ddabc925e3d8f4b722c653d5bf26adaa55ca329a374b8aa1657dfe",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Rabbit",
+      "width": 150,
+      "height": 250,
+      "scale": 0.3,
+      "masterSha256": "ba4bb451741f6589ce41170ecbb1a5dd657432b7000643a5a0e76dd59a4b2207",
+      "pngSha256": "5635848a6ab67a955c913c8819a6bb755d92a504831f6bf765527764a3e08fde",
+      "svgSha256": "cee71cf199ca212b4b99876816d33c026c4ae1e9eab13f0aafa145bfb4631718",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Vaca",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "41ee2d644ad188025221ee356b4ea8f701c093ef8656189bf876b13ff535ee85",
+      "pngSha256": "799533f96e4db4215d9ca8d31212fca8a3269a056798042f9a7b386ad350215c",
+      "svgSha256": "454628f9073a30a24078126adb78cf6ee0dbd438863f03f37be392151740036d",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Camelo",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "99135d6f67a921c22b769518794ba4c9a5c0a63b1d54cfbb3170581d6e635e3a",
+      "pngSha256": "fdd86d23f59b7136d367b517d36267b9d24a5f8a3dcea252311c15f20380b7d7",
+      "svgSha256": "adf7804d811c41cf5dcde666b5821685e997f087b9f5c25820cd0613fb5e591b",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Afrika-Elefante",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "07f89695e225e5cde5ed7f16f51348059f5feb89c8186074ce5873cd85883dca",
+      "pngSha256": "038e738234c9a9bff380290d63cef33cb72645da10061157cf61b65cf9522778",
+      "svgSha256": "da1a8d87ae3e0366252971b47e16467950d5f3ec45d22e347e8903256f6e56f4",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Afrika-Girafa",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "046d2d7a392b8e923f025cd328fa658738f486aec7a6fd194117dbe94d535ed8",
+      "pngSha256": "b85a9d512ff58d73478bb9aa4b3b011937a0cf22ec8d53cd9285302db38dc509",
+      "svgSha256": "33f92290079da2f11608d5bedab776f02583f033e4d5c6f212ed51111a37cd72",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Afrika-Leao",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "237a79c659a38580d4465854a929381066b8459dad2ab9c887e12e8a96a54318",
+      "pngSha256": "067190267400cfedecb98e2489612398456b5ff31fbe3571b0c487ed48f7850a",
+      "svgSha256": "4587a3143826622f379445071a03be838c4656b4cb9e207d8313d56ce4103f3c",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Afrika-Macaco",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "6677796eed0cc92da9489585aff5ada0c19a28459b1ea6409f4b064529b9c1a8",
+      "pngSha256": "ff78dcffea4c3e8ead2f7bd097e6e00fbbd2407415a103a1aad40520a70f7c53",
+      "svgSha256": "e2c3e52c61cda2008a722a9f364564c3e6a3f995b445bd8f4d317382238fab30",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-MacacoPrego",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "fbe141d4c372d5c1bb7b88cdac18e3965fea737c5fe1258a2ecfca9193e8f8a4",
+      "pngSha256": "105ed7d6582be6b8aecc102379afcc97ec82831d572ddd442de5b1a122e467b7",
+      "svgSha256": "c92e52f25e12240c5ff64bb3bb6f99e5e732b3d8cae533379730b447d2bbd243",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Morcego",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "b28e103adff2d8ffdaadae4d8ff6b16a9c1ceac1c373a9a961a0b0111d5ccecc",
+      "pngSha256": "604e6ff767a7cd69972dd36c5d57f15175dbdaf42e7f752edbc66587d7904324",
+      "svgSha256": "5f4010576a9106662c3b14eeab2dcd49853f047d65c0dedb252609e0c01f5b1e",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Onca",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "246a9869e49bd4d1403523191e8bf0fe7276a7281a265d420526d77ea89fc379",
+      "pngSha256": "01a81f3173d0b43cb4c23482011230eba449133754f26d7f5f6f571e6b752550",
+      "svgSha256": "e6250c9b104be2a4ffc9c79a9f2f92fc2542b96f6edc4f729869382a8a032d60",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Raposa",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "d33db9aeb353bd2afbca9e194bf57cd603500e8066f6aabe23138f9ba92c627c",
+      "pngSha256": "ef84316ddaaade9af176f73e776e8d836a49f6b94077be8face53253a0ed7700",
+      "svgSha256": "4dac5eb79d389d1ae95e32f5d56f9db0f2bfefe658eb8a657ff39ae6d66579b4",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Tamandua",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "a46d308b6949c955e05087627de3085fcf8131538a364461056d407738749f4d",
+      "pngSha256": "45aca14aa38a8381849d55d15aff0ff2de71e2b81ba6e0a29c9b1fd278cbcf02",
+      "svgSha256": "0ba69b0560a3d62e925fb682c83946d15fd0857b8c48dbfd8505921c3a276f4d",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Tatu",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "2b669ef8e0962598c1ad85f800ff22c266d7a99ee69384ea20db5e4b15b0778a",
+      "pngSha256": "bd266bdb67ef67f4d3e73ced764694a2c7eb9e01885b8e0457ad0b3b26e4f5d4",
+      "svgSha256": "71ffaf39bb1874c841ca09f3c31e7597d0a1ba4f5c74690f4c0bf5dc0228eaff",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Afrika-Tigre",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "2403e9441f75555567b1e2ff4f206800ea25da5c4f6fb0d8e9879cf0ea7a8e77",
+      "pngSha256": "a5a6002945476aafdf6939d639f5677c3a3afd2edd1b08a3fa196e606dcd1ecc",
+      "svgSha256": "b7d6821c96d3f415252c4f419d5638c95f97a58f2e804ce630965519c8ffd6e0",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Urso-Marrom",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "fd65a490aebabcf2c5f5898ba77f7882b81cd0fa7c2b4e823ec3c7b3dd159771",
+      "pngSha256": "c4d31601495ca374f97b8de3bb9e6a9b3f6cad4012da1e9bb6cc86799f8ff5d7",
+      "svgSha256": "86f543c8a43a62616a88b0a470cdab1b65eaef19f49dca390165d763bc95516a",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Veado",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "f3a42ec1e56d1c9530ad1dd1dbe6ac4367e852d4cba5b729890e7adf38bd02fc",
+      "pngSha256": "5f8873ca8862a1494607b76738e8748ca2eca30b92c28de5b7198115a155b9bf",
+      "svgSha256": "4c403140824f61fa82ffdb1b51b1b18abb8abe35cd00481397e8476ffb1f7d15",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Wolf",
+      "width": 150,
+      "height": 150,
+      "scale": 0.3,
+      "masterSha256": "2cf2d536ef6068b45632ad159842c5caaab3df0fa5774ac1de44e5006734035a",
+      "pngSha256": "8521e8e19802ddfcea4ebb05d3ff3d56139ef5ec2144156551b64b9d27e05502",
+      "svgSha256": "98a94d6c977812649ff2f6b8270dba3bd0b73143f039927ffce7382b82713530",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Afrika-Zebra",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "96bb3ce6865f9c9708f439deebe022551d3bc49b4266153a2b6065942644ad3c",
+      "pngSha256": "d17b779328e1c81161541c66e16b93880f4ec66195ea029efe791c52f39d3f25",
+      "svgSha256": "78a2d127dc4a0607db701ed4afdfce15100de1ffb119aa58da837d1d21e8cb9e",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Pinguim",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "fcf4f40707015e9108c88dc24ea0954d218bf3e4468ed46898bc0cc77fe23be9",
+      "pngSha256": "cb5c947b2c1096fce98c3949d5143b3b858a1b5237095804108ae4b1f97380de",
+      "svgSha256": "6299f2cd516877ca97a00ac1c07209d8905fbba03a27b4e27f4cbd8da51b809a",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-UrsoPolarAdulto",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "a1176d61d6f3919e2372adf2e890ce8f3e94836780d98d56cb7d2125e3d871f7",
+      "pngSha256": "6b3f8362e3b3a34eaad3cc62d26c540f755c3e16463d2dd87cb354a5c7bf28a4",
+      "svgSha256": "99f7a4089e31e2b0edf1ff54517f69ca4102149205cb19a41522246d479d8987",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-UrsoPolar",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "e1f003183b2581e4f7c27e9b845ba387541e29bf79ee371c6dd29570a7b34638",
+      "pngSha256": "3a867118fd76d192a96a49be768fe82cd1bac35dd6ae8a65f8d79ce3a827b2b9",
+      "svgSha256": "b2d7eb069ad3992784c57a5051173e144d7c318b7a4d8a172cda9677ea7de3a7",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Peixe-Baiacu",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "f17dfd98761262922b6a2f67abaaa13b59b76a8f8a2d3df11cbd37d787f5538d",
+      "pngSha256": "f20e94bddd47279d1dac863321456e7d81ca9c8739a5b9d2b38294a239419acf",
+      "svgSha256": "9b8ac18bbf01254e47874d08f93e5351b812664535bfd075a1bc92134dc620bd",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Baleia",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "066f1ac11cc154b14ad2893ec92ebc23a7a2a664eaacea4555b0cc1cb2d9eaa4",
+      "pngSha256": "5acf8e1fad5adeac89124952db9e20ff214ea68ae8ac6ef441614c59c3ed5323",
+      "svgSha256": "087332ed9a77c807e9f37b17319803371113bd4a736a18e2b84a2a5a7c6e2071",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Caramgueijo",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "092593f5b59ceab3922e8eb020c04807a7ca5b37a10028ff34d719689ad23653",
+      "pngSha256": "1aefe50763612aa940b3e11cbb6a0e683eb12ccbd628ed3d088c337b15401161",
+      "svgSha256": "2657b711d186e191a86d33be3a014cf06e7f6ce3519fc79d96c66d72e13c033a",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-CavaloMarinho",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "c310509953cf275a30db6873f0a15416ae536270dd486a8d4ad7fb5b4a535c07",
+      "pngSha256": "bd4ae48418f9aa7e88710e1ff068e24d2051e1a581147f8098945c3baf6c16e4",
+      "svgSha256": "3ed14e26e00e6c9e4d05ad62fa13c518399e65d807c9f45682921e1d9190a2a0",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Peixe-Golfinho",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "8b5bcffddd50d067b028349b4648338c2d89f33b9cbe9c0647322f9402c4919e",
+      "pngSha256": "53b7a3a94d5978fed1a678cf64272b0dfa99cb024c10fed2ee6c182706a59a61",
+      "svgSha256": "dfc93b7e1c7c8ad753638e761c6b5cc882c98f3d50e53e35713dc5fbcbfef848",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Peixe-2",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "e14b6445696324be661a4dce0fc1bc164206e537bf158c57aa572dd0d29b609d",
+      "pngSha256": "3e287a45f3aec82a1a6e98c3252116f148dd107e36e1a85a71f4142b7f732254",
+      "svgSha256": "37becd8569b83ad5395e931e0fc57f8e8afe4868d7094bc1360b1fbc36446792",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-PeixePalhaco",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "c500f285c226b3e87ad52d971e421c19df2be4608ee89fcb60067676d9ae7e48",
+      "pngSha256": "35476a866636caeab3aa8fe872c5502f533c4963e1f4e41b6cd4961dc75a0bca",
+      "svgSha256": "36208a2e0ce10c342469638573b1edc12d3d77e3d132f0d641d720f343daa9f6",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Polvo",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "af7d731e4e2f4ea014eab4a2172fdeac5a8506ee76c2bad836f7a88172543b32",
+      "pngSha256": "62ae1b8121d503ea9fc73d3ab1f4f36691d1115a1358d605efa6d8d1b6d7f09f",
+      "svgSha256": "f66b24839481740bf24d535ac41638c852ea3020c9e16c84255ea72e112252b0",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Tartaruga-Marinha",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "af53cddaf74ae001f31d66254da8d9579db187b2ee78d4d8b2b3b8c3afae9c11",
+      "pngSha256": "5177b6689981b7d70f8db03f1171db31cfdaa0dece98bcae46cc7d037688a643",
+      "svgSha256": "68a983b4934e55aae1191ce3c9131b511264b6e9b2ba8627d98168b0ca6ee41a",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Peixe-Tubarao",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "c5b26515a0ab3ec56950cfff22e5af0adb893b58e1958173945fed82d341e889",
+      "pngSha256": "cd3bf8fda82874ae7a36c2806a5e95705d14cdddb1ec65bc853dae0896e5e36b",
+      "svgSha256": "8a9ac10d1b96cbbe2113459f963c6744f1d5e5dfb2a0e4c1ee9331399f17e744",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Passaro-Arara-Azul",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "8e867a01685e43e6c650048c4325e9dc42262057fa3a7c2925c4a6b7cdcd3677",
+      "pngSha256": "37c2b6363d8314a9c21fa48f3d06207bd2cdce713a0a518e19eb375676973747",
+      "svgSha256": "1de1fa33d65bb73155a4ffc2594aef53352c726290a05200e19e231bd7432321",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Passaro-Coruja",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "246b3ce0963b757a09db1177d8b3dcadb5b989314802e98b04a220773b947d89",
+      "pngSha256": "b06ef5ed8b6010e355353d679a923cb24bb44c7d1ddaa061bdac817d052112ff",
+      "svgSha256": "95f64c8c272669cc2fd6272bc3e5c2ec6db808d39133c0a3748f08c459101f57",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Passaro",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "f40ed864a07149f275f8038eadef0fd116367e6b2a93a571dba37c6df2c0f6d2",
+      "pngSha256": "fb36e884dc1884e8b74e6fed9588c0f36de5f25c93ac60e0fb9b9141302e14c9",
+      "svgSha256": "9b17bbadd0f8e50088ea516c7179ce741fc36c597fe31343c4a4ecdc5a2884aa",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Passaro-Tucano",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "0d3c8cff3cd14248a0a7fd71e2aab909821023de1336aa1013d28808930425ad",
+      "pngSha256": "c27dd10680457f2d1f8ae849ae2b105926019eef57f942461bf5d19c36567f6f",
+      "svgSha256": "f03b5870583226bb6afa9d188dbe67ae82187b90b00a106899dfe7a4c061b707",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Cobra",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "ab153ce00144e64d2ab87373c38b91cda263472a51b5cb7194e492232f38ca7f",
+      "pngSha256": "5c79a38a05243edeb3bf4030a11a127a84dac61a278539c94d5c77950a5e45b9",
+      "svgSha256": "e25e348666fee318b9457dcc7ab99096065ed448491754c67860121cdc8a6a3b",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-jacare-2",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "e831afc7f8d902ba0a5fbd619d525ea2153ff7ed3070baf656f5ab30e2e92a7a",
+      "pngSha256": "726d32d5f7a4ab0425c17bade21f5c7b18db351755f9791f394b10b527402344",
+      "svgSha256": "ced31abb5868873f50842f74f9ed026c039a8071d65fd9d003ea6d578886fe42",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Lagarto",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "ceaf127acc69e1df3335ea4ab50f9a1f70886faab000259736800313eb25b9e0",
+      "pngSha256": "75b4e15f7c91b31f24fc18aff1685514c0bb3b40e7f778364010eb0478f397f7",
+      "svgSha256": "baadba0a7423e1a0fe13805b2358b4249078324e8b446f16ebb7c7ffb7f39e6f",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Sapo",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "773f5a91405ef2bb25fdc7858322c51f5e18a3736172b9cc517b5533f4db838a",
+      "pngSha256": "7636bc1a103d3ab29013c2ff2916220bf27e0e1bd5a9a52b6eaaefa301a5fc7e",
+      "svgSha256": "4b9241793d17e62aba33f091e9da8fe3312fba4fb135ef00edc9c73c7002fb89",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-SapoRei",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "9ac2ae17e351590956d17ec003d615e13f32ac03d602838ef778bcdfb8279fff",
+      "pngSha256": "f9602c7ee51e40ec289952b0c7e253573258a4b79ca025579bb004546b1b3a33",
+      "svgSha256": "4255ee98b16156861a31819c90f243baa9b38c95429489dc14d5b989365abd25",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Tartaruga",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "1b8846651a227d447b6e014c150bde68bdbabcbd638fb56d1c7fe8753f9e6d76",
+      "pngSha256": "8ba1b791aca6ecc92ffce1fffe7393fa0f8a2ee3e6e8a03431feb751abac858a",
+      "svgSha256": "f4ef23219b4c0c64d6bf01971984c9c15430f2c1df6da6ce3d4683df5b2b3b99",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Turtle",
+      "width": 200,
+      "height": 150,
+      "scale": 0.3,
+      "masterSha256": "6bb9ed55089d65527c792bd297d91d596cbc4aea7279a2da49647bee47d09c4f",
+      "pngSha256": "fcb9bcc9db417c5b1b0e1a4f0de10663deb174b73317b8399521d24365dcdc0d",
+      "svgSha256": "322fe3d31526873858c87912bd02f499bc0885fd3ba377db840bc3dea66e6525",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Abelha",
+      "width": 300,
+      "height": 300,
+      "scale": 0.1,
+      "masterSha256": "98df1fce2e1e6a82b73a81fc291c1cef5e3d2f21aa3229b2eaaec4ba5b654f0e",
+      "pngSha256": "8ffd5a45bf2193db8d294198adf55f6b537cfc58a95066726c3e8b28503056c4",
+      "svgSha256": "4b33cf021462b6b3f51107da080c6977c6727f339af63600c2ced4d888398ae5",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Aranha",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "8126b184e1e6e6a9c63dba4d3515ae92858afee1fc157562857a4377ef7b21af",
+      "pngSha256": "3a6616a09dd314b19625223a9d44686aded778bd301452aec81f9d3932585386",
+      "svgSha256": "9c269a313ad9c7f67865e4b41a23f43a3895ab28f3392aa4ca95097b189add77",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Borboleta",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "23c1e2f435063d899aed4d7f83ddcc42928a7bd8f3e39c102dfb7b9c045ac5aa",
+      "pngSha256": "16b7c5c0cef7412f46e3803bde9d36e03d272447dab99098f587f0cd9640da86",
+      "svgSha256": "9ea46243102aa2000b887c994884982cb71f5a44d197abf0323bee0c118ff9cf",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Formiga",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "fa121764bd834325ee16cb4358d89cd7441d3d1e6c333d382bc69514bc4502fd",
+      "pngSha256": "39d03c90769e3af0ceac7e751e30f4a0b881e6de809c9dd8c420f29a5867b3bf",
+      "svgSha256": "b7f9c9eeb4c997540b60398e5eae137bcf505e8606e55645442f4cc998a2bc08",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Inseto-Joaninha",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "bf9a8aee8847a4a6c958b3838d8bbde7954493d344a60b4e4c104d0922e51dbb",
+      "pngSha256": "e2d62d92fd96687792f5b2a4313c0d1c7a60aac09a4a2da8f6dc6bd484b00c06",
+      "svgSha256": "22daa36cc87c611d808645e368fd76ed1d32253342b114820069d282b775610d",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Inseto-Libelula",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "c41f125c820efc05519f2b1e7c6756f9c14dcc08875e31fe7d63274ae2fc32a5",
+      "pngSha256": "6b423149af73c8b16c660b9f44c7f9055574657cd28122e695d9a3b296237d76",
+      "svgSha256": "bd633a72eb755f6da35b562e0a025d4c9d6d06d9e04cc4c4dc1dbd0831671e81",
+      "silhouetteIoU": 1
+    }
+  ]
+}

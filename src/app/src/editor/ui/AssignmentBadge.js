@@ -92,6 +92,7 @@
  */
 
 import ScratchJr from '../ScratchJr.js';
+import {LIBRARY_ASSET_VERSION} from '../../utils/libraryAssets.js';
 import Project from './Project.js';
 import {newHTML, gn} from '../../utils/lib.js';
 import {computeProjectManifest, compareManifests} from '../../../../../shared/assignmentScoring.mjs';
@@ -151,7 +152,7 @@ function characterThumbSrc (characterMd5) {
     if (!characterMd5 || !MediaLib.path) {
         return null;
     }
-    return MediaLib.path.replace('svg', 'png') + IO.getFilename(characterMd5) + '.png';
+    return MediaLib.path.replace('svg', 'png') + IO.getFilename(characterMd5) + '.png?v=' + LIBRARY_ASSET_VERSION;
 }
 
 let assignment = null; // { id, projectName, requirements, stagePlacements, nivel, turmaId, existingProjectId }

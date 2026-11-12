@@ -5,10 +5,10 @@
  * Faz chamadas HTTP para o backend Express
  */
 
+import {LIBRARY_ASSET_VERSION as ASSET_VERSION} from '../utils/libraryAssets.js';
+
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
-// Incrementar quando svglibrary/pnglibrary forem corrigidos, pra furar o cache de 24h do navegador.
-const ASSET_VERSION = '20260920';
 
 class WebInterface {
   constructor() {

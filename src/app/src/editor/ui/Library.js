@@ -1,5 +1,6 @@
 
 import ScratchJr from '../ScratchJr.js';
+import {LIBRARY_ASSET_VERSION} from '../../utils/libraryAssets.js';
 import iOS from '../../iPad/iOS.js';
 import IO from '../../iPad/IO.js';
 import MediaLib from '../../iPad/MediaLib.js';
@@ -348,7 +349,7 @@ export default class Library {
 
         // Cached downsized-thumbnails are in pnglibrary
         var pngPath = MediaLib.path.replace('svg', 'png');
-        img.src = pngPath + IO.getFilename(md5) + '.png';
+        img.src = pngPath + IO.getFilename(md5) + '.png?v=' + LIBRARY_ASSET_VERSION;
 
         tb.onmousedown = function (evt) {
             fcn(evt, tb);

@@ -3,6 +3,8 @@
  * Evita problemas de sincronização assíncrona ao renderizar sprites
  */
 
+import {LIBRARY_ASSET_VERSION} from '../utils/libraryAssets.js';
+
 class PNGCache {
     constructor() {
         this.cache = {}; // {spriteName: canvasElement}
@@ -54,7 +56,7 @@ class PNGCache {
             };
             
             // Tentar carregar de ./pnglibrary/
-            const path = './pnglibrary/' + spriteName + '.png?v=20260920';
+            const path = './pnglibrary/' + spriteName + '.png?v=' + LIBRARY_ASSET_VERSION;
             img.src = path;
         });
 
