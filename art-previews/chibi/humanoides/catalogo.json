@@ -1,0 +1,292 @@
+﻿[
+    {
+        "md5":  "HY-Allan.svg",
+        "width":  150,
+        "height":  250,
+        "ext":  "svg",
+        "name":  "Allan",
+        "scale":  0.5,
+        "order":  "characters,00 Turma Qubit",
+        "tags":  [
+                     "characters",
+                     "00 Turma Qubit"
+                 ],
+        "legacy":  false
+    },
+    {
+        "md5":  "HY-Cris.svg",
+        "width":  150,
+        "height":  250,
+        "ext":  "svg",
+        "name":  "Cris",
+        "scale":  0.5,
+        "order":  "characters,00 Turma Qubit",
+        "tags":  [
+                     "characters",
+                     "00 Turma Qubit"
+                 ],
+        "legacy":  false
+    },
+    {
+        "md5":  "HY-Qubit.svg",
+        "width":  150,
+        "height":  250,
+        "ext":  "svg",
+        "name":  "Qubit",
+        "scale":  0.5,
+        "order":  "characters,00 Turma Qubit",
+        "tags":  [
+                     "characters",
+                     "00 Turma Qubit"
+                 ],
+        "legacy":  false
+    },
+    {
+        "md5":  "HY-Ruby.svg",
+        "width":  150,
+        "height":  250,
+        "ext":  "svg",
+        "name":  "Ruby",
+        "scale":  0.5,
+        "order":  "characters,00 Turma Qubit",
+        "tags":  [
+                     "characters",
+                     "00 Turma Qubit"
+                 ],
+        "legacy":  false
+    },
+    {
+        "md5":  "HY-Cavalheiro.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Cavalheiro",
+        "scale":  0.3,
+        "order":  "characters,14 Fantasia e dinossauros",
+        "tags":  [
+                     "characters",
+                     "14 Fantasia e dinossauros"
+                 ]
+    },
+    {
+        "md5":  "HY-Fada.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Fada",
+        "scale":  0.3,
+        "order":  "characters,14 Fantasia e dinossauros",
+        "tags":  [
+                     "characters",
+                     "14 Fantasia e dinossauros"
+                 ]
+    },
+    {
+        "md5":  "HY-Ginomo.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Gnomo",
+        "scale":  0.3,
+        "order":  "characters,14 Fantasia e dinossauros",
+        "tags":  [
+                     "characters",
+                     "14 Fantasia e dinossauros"
+                 ]
+    },
+    {
+        "md5":  "HY-Mago.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Mago",
+        "scale":  0.3,
+        "order":  "characters,14 Fantasia e dinossauros",
+        "tags":  [
+                     "characters",
+                     "14 Fantasia e dinossauros"
+                 ]
+    },
+    {
+        "md5":  "HY-Caipora.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Caipora",
+        "scale":  0.3,
+        "order":  "characters,15 Folclore",
+        "tags":  [
+                     "characters",
+                     "15 Folclore"
+                 ]
+    },
+    {
+        "md5":  "HY-Cuca.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Cuca",
+        "scale":  0.3,
+        "order":  "characters,15 Folclore",
+        "tags":  [
+                     "characters",
+                     "15 Folclore"
+                 ]
+    },
+    {
+        "md5":  "HY-Curupira.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Curupira",
+        "scale":  0.3,
+        "order":  "characters,15 Folclore",
+        "tags":  [
+                     "characters",
+                     "15 Folclore"
+                 ]
+    },
+    {
+        "md5":  "HY-Lobsomem.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Lobisomem",
+        "scale":  0.3,
+        "order":  "characters,15 Folclore",
+        "tags":  [
+                     "characters",
+                     "15 Folclore"
+                 ]
+    },
+    {
+        "md5":  "HY-NegrinhoPastoreiro.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Negrinho do Pastoreio",
+        "scale":  0.3,
+        "order":  "characters,15 Folclore",
+        "tags":  [
+                     "characters",
+                     "15 Folclore"
+                 ]
+    },
+    {
+        "md5":  "HY-SaciPerere1.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Saci Pererê",
+        "scale":  0.3,
+        "order":  "characters,15 Folclore",
+        "tags":  [
+                     "characters",
+                     "15 Folclore"
+                 ]
+    },
+    {
+        "md5":  "HY-SaciPerere2.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Saci Pererê",
+        "scale":  0.3,
+        "order":  "characters,15 Folclore",
+        "tags":  [
+                     "characters",
+                     "15 Folclore"
+                 ]
+    },
+    {
+        "md5":  "HY-Yara.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Yara",
+        "scale":  0.3,
+        "order":  "characters,15 Folclore",
+        "tags":  [
+                     "characters",
+                     "15 Folclore"
+                 ]
+    },
+    {
+        "md5":  "HY-Pirata.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Pirata",
+        "scale":  0.3,
+        "order":  "characters,16 Piratas",
+        "tags":  [
+                     "characters",
+                     "16 Piratas"
+                 ]
+    },
+    {
+        "md5":  "HY-Bruxa.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Bruxa",
+        "scale":  0.3,
+        "order":  "characters,17 Halloween",
+        "tags":  [
+                     "characters",
+                     "17 Halloween"
+                 ]
+    },
+    {
+        "md5":  "HY-Dracula.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Drácula",
+        "scale":  0.3,
+        "order":  "characters,17 Halloween",
+        "tags":  [
+                     "characters",
+                     "17 Halloween"
+                 ]
+    },
+    {
+        "md5":  "HY-Fantasma.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Fantasma",
+        "scale":  0.3,
+        "order":  "characters,17 Halloween",
+        "tags":  [
+                     "characters",
+                     "17 Halloween"
+                 ]
+    },
+    {
+        "md5":  "HY-Mumia.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Múmia",
+        "scale":  0.3,
+        "order":  "characters,17 Halloween",
+        "tags":  [
+                     "characters",
+                     "17 Halloween"
+                 ]
+    },
+    {
+        "md5":  "HY-MeninoBicicleta.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Menino de Bicicleta",
+        "scale":  0.3,
+        "order":  "characters,24 Transportes",
+        "tags":  [
+                     "characters",
+                     "24 Transportes"
+                 ]
+    }
+]

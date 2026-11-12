@@ -1,0 +1,306 @@
+{
+  "version": "20261112-humans-chibi-1",
+  "catalogSha256": "e0baad546a0dab5baa3b725b868a6b86934d859688abc4d9eff35ecfdcab5d4e",
+  "records": [
+    {
+      "id": "HY-Allan",
+      "width": 150,
+      "height": 250,
+      "scale": 0.5,
+      "masterSha256": "e738ca03339bb79814029070d590957cd1d3a3adc462dcb174ec9d59cf4e3214",
+      "pngSha256": "66a4a792dc67e030246e32841be2a9485b7be8e8fc322d4ce7d4a1e2ce8dc3d6",
+      "svgSha256": "2ad58d0d8a9ccba5be870dabd25f8e6ca957a64ed5a5269b4c6a563031829726",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Cris",
+      "width": 150,
+      "height": 250,
+      "scale": 0.5,
+      "masterSha256": "7ad53f6fc7b8d45bd9df5b33512bc3f1f8b090881b058f96ff759185fc2e8375",
+      "pngSha256": "ad39e999c8141e6339ab1416c725375c96427f38e61cb514e4fd5f6b711fa10a",
+      "svgSha256": "c6f48bd74ccad098886fb2c6d59a2fc0be47ab1eb6ec4611f9a5ae5dbeeb7178",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Qubit",
+      "width": 150,
+      "height": 250,
+      "scale": 0.5,
+      "masterSha256": "1fa793166b45963b10ba9c8948099706f9036085318cc055b2c43c1f160df815",
+      "pngSha256": "c2a8acedcf60d6d5a9806635bfe8ed92f11ea5d66f2b4fd41a608c4d34f99ce2",
+      "svgSha256": "271eaf8a869be88d24d6167b2e48e19f931575dc5734a36a1445ee151cc195fc",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Ruby",
+      "width": 150,
+      "height": 250,
+      "scale": 0.5,
+      "masterSha256": "37900624269ab2d4e329694aee6b3d617f2ea2cf478b03945f7c84141fdb2554",
+      "pngSha256": "88aa7ada930684242622ef64e682ce1e3d4ddbbe95acf1069e4e71f5d56a642d",
+      "svgSha256": "416b70fc3dcd05eb670e9d17e313e8937f61e0aa6a773cf76e6755b8255b4c5c",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Bebe",
+      "width": 300,
+      "height": 300,
+      "scale": 0.5,
+      "masterSha256": "6c29cbeb9f0626299762df73681294eda5cb0d722dda8cdea69bab76735a2ab5",
+      "pngSha256": "464f30953f451503a2de775e48f795f75f7372ba9e06a4f90e9b82b843ced114",
+      "svgSha256": "8f1e466e462799fca69787ee6d3a576a77a57cb5729d898941521e5d114a4f43",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Menina1",
+      "width": 300,
+      "height": 300,
+      "scale": 0.5,
+      "masterSha256": "7d42235db255eeb392c183d38cc3d624e30dcec47c0bb6794f2554f470e10ee2",
+      "pngSha256": "f098ea4224ad512428c8c708ec4d0af70ad94367021dfe35e0aa943550291366",
+      "svgSha256": "33bb58393a3f7d50f40b239576378ecc4433f4dab4f20ebd236df320c223dc6e",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Menina2",
+      "width": 300,
+      "height": 300,
+      "scale": 0.5,
+      "masterSha256": "cdb90b4ef7dd37403c0373d55bfbdfd234bc6b109db84277c6e0cdbe83152fdf",
+      "pngSha256": "530352543b65da88e4a3de6e1aa30edc522ff5a06140ae89de83596ccc6ab63e",
+      "svgSha256": "395291eef903c5dc0a83bcd2a53c98de93e03cdc2011bddce139c360cd74511d",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Menina3",
+      "width": 300,
+      "height": 300,
+      "scale": 0.5,
+      "masterSha256": "4bbfeb5abc9567cd19830cacb5630ad9ecc36211a73b4ca37aab92ae149ad47e",
+      "pngSha256": "0b016ab04d7d92dbd2755f61368cea52de1738a5bf2ea1a6efccb407afd7e616",
+      "svgSha256": "a8ae1f293d9460a564437b739208b66e8e82c8096da037b45f2ceb13ce1ba91a",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Menino",
+      "width": 300,
+      "height": 300,
+      "scale": 0.5,
+      "masterSha256": "94a2f6cb7207ef0f7005a02ad4c2d313c6a084520d54451c26144ceae0af9645",
+      "pngSha256": "0c182a2236df7aa12d577ae8d82612f592c4a461fe3a1a49fb7ef4792a2af9e7",
+      "svgSha256": "794c1047803bca57d8464428b6babebb66aaf77a4c5213c8040b4730f044ddcf",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-VovoF",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "43c85b4016fab175164168b33ae556732c3f3aadfb92c09048a3f9f3a520c7dd",
+      "pngSha256": "9fba739a582ecbb0b96fa2195360b4e63b072c2058f08c1eb5c31e39c14eaf90",
+      "svgSha256": "ed5339a8241b0c218bcfbc92e77cb24f462c3a86389f9e0f56baf595a354a4e5",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-VovoM",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "bc4f3a13291d593ce4f2aaf0aaed93c4f1c8aa4285168d4375e783e5c711eb1d",
+      "pngSha256": "fe1a01413c596593cedc751571cd9c8367b6b7a5fb1c7bc9c29338a9cac24d7d",
+      "svgSha256": "17baedd560492ea90726f8a87ef3be7712d509dab7880ea5991c4333589d7323",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Astronauta",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "21d4ba746680e50899ead4ae00e78ef9c6a5887048fa6cb2a2e5833f403ec9d2",
+      "pngSha256": "279d309e9e1794460d8dba79ac7c23da66e52fc5ff012a168e5199f386e9d9f6",
+      "svgSha256": "f11945adebb886fd8cbb84bf18dc620d7df82f853b6822832c37ae70407da044",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Cavalheiro",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "27dfde2e7b8c7d1626bd9a3c0b32da06c8173660dd663eeaeb3d63f9fd22a4d5",
+      "pngSha256": "751a4b5486adfd6868614885e926cdc50ae395a13f987a57a1b8dc6620896145",
+      "svgSha256": "40445bf4d339489198a7f5829e0d75d680e9e61116dba61d16329ca9dd8bf872",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Fada",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "ef8d59f7028b3dacbe8858bf8056b051dc714d14fbe28e3d02e93c201b127a1c",
+      "pngSha256": "c0d4a0c23f0cf04650a1bad9d3de23226e76d2dd012fef5c85399c31e162d284",
+      "svgSha256": "7f3cafbef2f7ac080531e4350775f4df5e9a5f5f48ad42f00c4fe60e83790908",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Ginomo",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "ae51328c7cde34fb3cfa5d056d3cc976f3bddeeeeb2e65d5c84227cf65a8bd42",
+      "pngSha256": "88e9c833cad01914c74fc0fb6a7c508d0c059f105d95f18fa653de271844dcf3",
+      "svgSha256": "e68117e14d2117304448473f3d8d7ea8da1ab0f435b1a4f80d276d628edd23cc",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Mago",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "6ee6cc6ab744216f9df7a1fef536274ab1b54685e913b7f5a0ba4044e7ee0976",
+      "pngSha256": "b42ce2e77bb8de44f2e135528b9e854fdba6c187d6ea4c712a5a1c853d8e1d24",
+      "svgSha256": "aba176584b7a377b845c902ba6d8a746e1289ec24487f16df7c8c2c8b51c3758",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Caipora",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "5e66ff7c459c5781a211a6e6a4273c04961b2974517222b23d6243e33aed48b3",
+      "pngSha256": "403393121065db33baa209470ed726a699542599e65ed67c823d8f6b16d0564b",
+      "svgSha256": "93b42f9298aa3e595755f515206611436b5eb1bce05c1ecd507e3f813046bf6c",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Cuca",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "25f06cfd657ad122b60692ee5e7db11a4037bc5159e5e14ea26a2a0b28bcc2e2",
+      "pngSha256": "bd944328ba47aaaf9b94746460ac25fe0c5a56d376b414d8b0ab708cf71f905e",
+      "svgSha256": "ce48e8e323703e12e1d76040d4bd7c09b43d623b802d7948b5870cd6fa55e926",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Curupira",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "89e7004601aa4ecaa8d761b5076b3f42d38b68f2be65a97be30251fd4ac63c1e",
+      "pngSha256": "4af646439d172b72948fc85149b8223a5bc349742db80a5735c8f558adb376f5",
+      "svgSha256": "27c60db611b336f80c553f01d979e9caa90959d42f79ce35a1a148a5bb08c9a5",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Lobsomem",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "600ce49e3d3d58b6ff132c5cfbba4b3fbc5ad01bc7b8bf409c0a781dc3092ad7",
+      "pngSha256": "092c5a745f8330b8d54022b482dc144b8e863f33064037c382cdf06e1f78e5af",
+      "svgSha256": "ea4241beab6fc52b3a706cc9a8dac6bc270a468c50d6be1c1c54fd2480b5dde7",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-NegrinhoPastoreiro",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "8657da73fd386db2fca251f316a8da110203cd343278b0582e71fd6c9fdc8536",
+      "pngSha256": "1386b4f721ad8326de9e6621f9a94c7c000f09181112aef1ba923541733679f8",
+      "svgSha256": "417ca64e1a5eaaabe9a313c4845b10bb101b198a7da5a5db2fb0ce70f843226e",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-SaciPerere1",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "9745eed4d1e81d28fd94b029eb7c9925643deb710ac1d234188a76dbc163aaa2",
+      "pngSha256": "7c4db3aff2043207588a6508e000b0360a02305debae35908dc507677f97ad47",
+      "svgSha256": "ee1b5144f6de83f54a8bb72d3932a4aeb4fbb38f1bfa5c6d04b5f6887a5df17e",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-SaciPerere2",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "6d667721b2b1067b043efeba0bb4d3d2332e7bab56cb24e13ea2a0c6d01bfa2d",
+      "pngSha256": "d7af7ef145f625b7f227fb7633eb6ae77d765131f75cbe1e56059a59b652b8a6",
+      "svgSha256": "36b101c75f1de9dab8b036f685acc60b43e882ddcb051fd9930f2c7c6cf65913",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Yara",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "cc4a3f8e24026251fa726c4d2259a9f0785ed77f3b2e07582929eee8ca70b47e",
+      "pngSha256": "f05bf03f712f0cf440b029355233fc81077a7e68fbd856363ff4873d48621243",
+      "svgSha256": "3fb70ccfc6ebcca1fa7b77a4109f62c77b45185ce85f31d1d2e08563ab298003",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Pirata",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "afdd255f312ea059541f0fc257ae4866aa7b076e6907d170508a33f7da7a9160",
+      "pngSha256": "c4028825e3c88984e07a382c39b97f2429b5a67072670861868fc0f5ec184ab2",
+      "svgSha256": "8f3be6716a3ba2398d714bb14165bb9010d5155e29ecc27d2285b456caf7ee87",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Bruxa",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "0debf380d391c508874668e6ff3d4963725b626b19bcf24de17b49496bd0fbe3",
+      "pngSha256": "a37086e2b97e8af54af01710b0cfa550fbe56b9b8477304bd0f26a66128f255d",
+      "svgSha256": "801531420d61280076b26b9c7bbbacd879a7893e87c3ca374f8877cf764f2a87",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Dracula",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "c0a76b87cc851437b9ea1a82093da4bd49589a11398971bbf04bdabd101b9387",
+      "pngSha256": "1b053679e7a3ab041825cee1d037cf4793f5df8725cc5cf861dbbf920292bead",
+      "svgSha256": "5cddaa98f9534dab89e3882a26990f80010a6287d20b06a053e12a4dae8c8ef7",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Fantasma",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "3aa0e957b794bdf76c0353290142112ffef752397efa8319e35af95464b57cc0",
+      "pngSha256": "f7cbe16277226f56f49ca06134eb2ceeaae6469e411629abe6269c5d35564179",
+      "svgSha256": "e8d8a517726d2e3e6e476597e930eab46808f2e11d3728cda1bec02aa982dfdb",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Mumia",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "3e38df51c957b9a4320cfa819330c945e6009a232bd6100a722d5ad51f9fa24a",
+      "pngSha256": "2610076b20d4465653cd6c6158f456be09f9d592ee08b1c04e5beaf8647d4a4b",
+      "svgSha256": "350775e87dc788a93a7792f72b36fae66160ae8907d1d76426a61dbf6123759c",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-MeninoBicicleta",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "28deccc354fbe0d1acbc6546fee740fdabd08a4fdbc276fffd4bdcb9493941f0",
+      "pngSha256": "61038ad2d58cdc769a99dbef25e3c8d93f84d4b133bb5c023210ca976d52d621",
+      "svgSha256": "dea8ca15f037a39ba74af445f813f301d34ce6655550312aec23d3b01b6221d9",
+      "silhouetteIoU": 1
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+﻿[
+    {
+        "md5":  "HY-Bebe.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Bebê",
+        "scale":  0.5,
+        "order":  "characters,01 Familia",
+        "tags":  [
+                     "characters",
+                     "01 Familia"
+                 ]
+    },
+    {
+        "md5":  "HY-Menina1.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Menina 1",
+        "scale":  0.5,
+        "order":  "characters,01 Familia",
+        "tags":  [
+                     "characters",
+                     "01 Familia"
+                 ]
+    },
+    {
+        "md5":  "HY-Menina2.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Menina 2",
+        "scale":  0.5,
+        "order":  "characters,01 Familia",
+        "tags":  [
+                     "characters",
+                     "01 Familia"
+                 ]
+    },
+    {
+        "md5":  "HY-Menina3.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Menina 3",
+        "scale":  0.5,
+        "order":  "characters,01 Familia",
+        "tags":  [
+                     "characters",
+                     "01 Familia"
+                 ]
+    },
+    {
+        "md5":  "HY-Menino.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Menino",
+        "scale":  0.5,
+        "order":  "characters,01 Familia",
+        "tags":  [
+                     "characters",
+                     "01 Familia"
+                 ]
+    },
+    {
+        "md5":  "HY-VovoF.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Vovó",
+        "scale":  0.3,
+        "order":  "characters,01 Familia",
+        "tags":  [
+                     "characters",
+                     "01 Familia"
+                 ]
+    },
+    {
+        "md5":  "HY-VovoM.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Vovô",
+        "scale":  0.3,
+        "order":  "characters,01 Familia",
+        "tags":  [
+                     "characters",
+                     "01 Familia"
+                 ]
+    },
+    {
+        "md5":  "HY-Astronauta.svg",
+        "width":  300,
+        "height":  300,
+        "ext":  "svg",
+        "name":  "Astronauta",
+        "scale":  0.3,
+        "order":  "characters,02 Profissoes",
+        "tags":  [
+                     "characters",
+                     "02 Profissoes"
+                 ]
+    }
+]
