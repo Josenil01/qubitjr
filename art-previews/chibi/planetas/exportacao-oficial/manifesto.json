@@ -1,0 +1,136 @@
+{
+  "version": "20261112-space-chibi-1",
+  "catalogSha256": "8e38353996cfa7d68fd07f7b354813bd6f264ae18bb4b69cc4f2fd5c69b8184b",
+  "records": [
+    {
+      "id": "HY-Estrela",
+      "width": 300,
+      "height": 300,
+      "scale": 0.7,
+      "masterSha256": "5e2a82aedf3c645d1dd895cfd5d3d62ae6bb9158eb386f82a2824b04390742bc",
+      "pngSha256": "2df868ebcba34d5bcd648a8495af57fee45384196e898d770a0fc4633eb48a9b",
+      "svgSha256": "05ee977fcf14fbcfc982b0ff806c6bedf14ce387d2e3a03d87c61a799df1a2bf",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Jupiter",
+      "width": 300,
+      "height": 300,
+      "scale": 0.7,
+      "masterSha256": "0167c2cf5e96ea5ace7ce30b9199994fa0b3c6bec27701c13a2c28a329778e06",
+      "pngSha256": "7b8acfab6131f5d05ed22ce8d4a8939de0ca2a8520714510349eeef9835451b5",
+      "svgSha256": "cfb21c46d87d6fb5f32f26da490816859c9ec5170cdbc6b3a2b35953c26dd9b7",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Lua",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "fac7e0351af3eaf602c3b26017c27f5d84931cf3e03bc7fab6088333b765c4e1",
+      "pngSha256": "81c345b4edc3f4ac94beac434afca32d4c027b43e2c790ed11dc1b1ea1162a7f",
+      "svgSha256": "7c0426a5c8c479a627c473bfe0204ba09c5b32222bb7d59406bffd3a58eecb98",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Marte",
+      "width": 300,
+      "height": 300,
+      "scale": 0.4,
+      "masterSha256": "24216f243c250ef83623e5bb08f5fa1269f440a681ab31824b44a51e0ff64fe4",
+      "pngSha256": "457af85c1c3a00c53911fe34255efd0e125cefbf0ffbfcefccd5115f0d89fac8",
+      "svgSha256": "0b64e3eb6aaa17e4a8e842768674e397376233db262d56c6384c39bf6ebb1d97",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Mercurio",
+      "width": 300,
+      "height": 300,
+      "scale": 0.4,
+      "masterSha256": "3fffe134b1ca9ab4d3b8742557886a3d7ed798986352914a98d22859af8225a8",
+      "pngSha256": "4182cc54ddc196103389c2930012a4e1c60d93c561fd6d1bc3d0089206fb3325",
+      "svgSha256": "fa71c084c2cb8fbc07fe0e44f8652cce3f6ddc3ffb1e4ab5b5c9f060966621c5",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Meteoro",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "a57ab50cc16013063836270952386e2e88023577d78542074cc1ce2c3cb8eb61",
+      "pngSha256": "a99066695db08a532a94037b70866a94911d4e03c79f8497682b86b17616ed04",
+      "svgSha256": "7b818a868b7d74a8a1b0ea496c6c086eae375e602299b40b8abd29354a99808d",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Netuno",
+      "width": 300,
+      "height": 300,
+      "scale": 0.6,
+      "masterSha256": "6c7bd3a65b914ef1a66a12e3371f3cf3844418a3d929a66cd9e30c94e8db009f",
+      "pngSha256": "c4a7093a40947d5aea8d465b9264cabcdc692d6f0f23ccd4916999d15f88dec4",
+      "svgSha256": "c9496b79fa8cd64015bd67b1ecffc1336f7794b706e4dd345f304a9eb3627a8f",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Saturno",
+      "width": 300,
+      "height": 300,
+      "scale": 0.6,
+      "masterSha256": "ea8307596930ae38f7dae4fee2837b189aea68600c836b336c4dde968a076178",
+      "pngSha256": "3deca20a124f8f354f0fe6dee8e8717c62f336e43768b7e9d28eccd33dd89ac2",
+      "svgSha256": "be17908a3a054478a832332b46d7e87c9bfb384ddf57410a46d99353cd7b25cc",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Sol",
+      "width": 300,
+      "height": 300,
+      "scale": 0.6,
+      "masterSha256": "60667462aea699993440d13f05c9c4b158c031337f6fbd4fc0e12a725b900be4",
+      "pngSha256": "3836c8a47422f153880045eaf6d819144be05868c6da8f22235736fe2f702a6b",
+      "svgSha256": "eb93d2610c9eb6877577b095981ccc6f6aaafd50f09a992b12bce6762673a041",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Terra",
+      "width": 300,
+      "height": 300,
+      "scale": 0.6,
+      "masterSha256": "62fe8a5bc385a217e62635eba72ff4cd640cf6337be63acf94b43f8fc0b6e32f",
+      "pngSha256": "7a6f4509a4149eb84345a46d74cb4858794e74ffec7fd65d6604340a9fb257d1",
+      "svgSha256": "d235047ecd5febe9a4535d89341d2f5f5472785add47f88a3435bcd7750f8b7c",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Urano",
+      "width": 300,
+      "height": 300,
+      "scale": 0.6,
+      "masterSha256": "357ef9e321faef77d874ea12b92c9b8cd4d9d46f70bbf84df21bc37030b6190f",
+      "pngSha256": "e025e1cb6d8a275f304758fc1de5bb79dd3c74bdeb0bf04c47bcc3887ce2e952",
+      "svgSha256": "fef23d70b4a5f94bf22084d0d5313c981949ce265c4dcec3a389d4446bafee64",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Urano2",
+      "width": 300,
+      "height": 300,
+      "scale": 0.6,
+      "masterSha256": "ddad2748adc46ba78a24d58418dc203017dc5ec83de894586cddf614ecf1d7f0",
+      "pngSha256": "33e8526b829639f904a1180aa5ce244a99303cedd0edde103a9ba7320657e716",
+      "svgSha256": "4c7d9cf132308d8e0444414f48dbce131987823867a7285686ac3ba6bbe8f5ac",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Venus",
+      "width": 300,
+      "height": 300,
+      "scale": 0.6,
+      "masterSha256": "3b2009bbbd6fd209d69301c290220785cd59b1c9eb2a466167fb8b1e3d16c6ec",
+      "pngSha256": "ffab8e57387276d3b10cc62c5faa0c55973b3f330778ca07b02f83967e85b850",
+      "svgSha256": "afb4b4bbfe685fc7682af90b40cc2a80b0b64e06b25f78bedf092545b5a40f8c",
+      "silhouetteIoU": 1
+    }
+  ]
+}

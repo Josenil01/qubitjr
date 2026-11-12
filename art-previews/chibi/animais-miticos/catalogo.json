@@ -1,0 +1,80 @@
+[
+  {
+    "md5": "HY-DinoSinoceratops.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Dino Sinoceratops",
+    "scale": 0.3,
+    "order": "characters,14 Fantasia e dinossauros",
+    "tags": [
+      "characters",
+      "14 Fantasia e dinossauros"
+    ]
+  },
+  {
+    "md5": "HY-Dragao.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Dragão",
+    "scale": 0.6,
+    "order": "characters,14 Fantasia e dinossauros",
+    "tags": [
+      "characters",
+      "14 Fantasia e dinossauros"
+    ]
+  },
+  {
+    "md5": "HY-Boitata.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Boitatá",
+    "scale": 0.3,
+    "order": "characters,15 Folclore",
+    "tags": [
+      "characters",
+      "15 Folclore"
+    ]
+  },
+  {
+    "md5": "HY-MulaSemCabeca.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Mula sem Cabeça",
+    "scale": 0.3,
+    "order": "characters,15 Folclore",
+    "tags": [
+      "characters",
+      "15 Folclore"
+    ]
+  },
+  {
+    "md5": "HY-PapagaioPirata.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Papagaio Pirata",
+    "scale": 0.3,
+    "order": "characters,16 Piratas",
+    "tags": [
+      "characters",
+      "16 Piratas"
+    ]
+  },
+  {
+    "md5": "HY-CapiravaBicicleta.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Capivara de Bicicleta",
+    "scale": 0.3,
+    "order": "characters,24 Transportes",
+    "tags": [
+      "characters",
+      "24 Transportes"
+    ]
+  }
+]

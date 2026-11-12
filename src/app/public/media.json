@@ -216,6 +216,7 @@
         {"md5":"Star.svg","width":80,"height":101,"ext":"svg","name":"Star","scale":0.3,"order":"characters,13 Espaco","tags":["characters","13 Espaco"],"legacy":true},
         {"md5":"Star2.svg","width":64,"height":63,"ext":"svg","name":"Star","scale":0.3,"order":"characters,13 Espaco","tags":["characters","13 Espaco"],"legacy":true},
         {"md5":"Star3.svg","width":74,"height":77,"ext":"svg","name":"Star","scale":0.3,"order":"characters,13 Espaco","tags":["characters","13 Espaco"],"legacy":true},
+        {"md5":"HY-Sol.svg","width":300,"height":300,"ext":"svg","name":"Sol","scale":0.6,"order":"characters,13 Espaco","tags":["characters","13 Espaco"]},
         {"md5":"Sun.svg","width":176,"height":176,"ext":"svg","name":"Sun","scale":0.3,"order":"characters,13 Espaco","tags":["characters","13 Espaco"],"legacy":true},
         {"md5":"HY-Terra.svg","width":300,"height":300,"ext":"svg","name":"Terra","scale":0.6,"order":"characters,13 Espaco","tags":["characters","13 Espaco"]},
         {"md5":"HY-Urano.svg","width":300,"height":300,"ext":"svg","name":"Urano","scale":0.6,"order":"characters,13 Espaco","tags":["characters","13 Espaco"]},

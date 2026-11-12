@@ -1,0 +1,77 @@
+{
+  "images": [
+    {
+      "loaded": true,
+      "name": "",
+      "width": 300,
+      "height": 300
+    },
+    {
+      "loaded": true,
+      "name": "Dino Sinoceratops",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "loaded": true,
+      "name": "",
+      "width": 300,
+      "height": 300
+    },
+    {
+      "loaded": true,
+      "name": "Dragão",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "loaded": true,
+      "name": "",
+      "width": 300,
+      "height": 300
+    },
+    {
+      "loaded": true,
+      "name": "Boitatá",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "loaded": true,
+      "name": "",
+      "width": 300,
+      "height": 300
+    },
+    {
+      "loaded": true,
+      "name": "Mula sem Cabeça",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "loaded": true,
+      "name": "",
+      "width": 300,
+      "height": 300
+    },
+    {
+      "loaded": true,
+      "name": "Papagaio Pirata",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "loaded": true,
+      "name": "",
+      "width": 300,
+      "height": 300
+    },
+    {
+      "loaded": true,
+      "name": "Capivara de Bicicleta",
+      "width": 1254,
+      "height": 1254
+    }
+  ],
+  "mobileOverflow": false
+}

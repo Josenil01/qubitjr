@@ -1,0 +1,18 @@
+{
+  "tool": "image_gen integrated",
+  "base": "Use case: style-transfer. One cute planet character sprite for children's ScratchJr library. Image 1: original planet, reference identity. Image 2: approved animal STYLE reference only; do not depict the animal. Match the existing library's clean warm dark-brown outlines, softly shaded pastel color, rounded friendly forms and restrained glossy highlights. Planet has exactly two large glossy dark-brown eyes WITHOUT eyelashes, small pink cheeks, and one small centered smiling mouth. Face directly on globe; no head/body separation, arms, legs, nose, hair, accessories or stars. ",
+  "specs": [
+    [
+      "HY-Terra",
+      "Earth: spherical blue oceans and recognizable simplified green continents, white polar caps and two small subtle white cloud swirls. Keep geography readable around face."
+    ],
+    [
+      "HY-Jupiter",
+      "Jupiter: spherical cream, tan and muted orange horizontal cloud bands with a clearly visible oval Great Red Spot on lower right, away from face."
+    ],
+    [
+      "HY-Saturno",
+      "Saturn: spherical pale golden planet with subtle tan horizontal cloud bands and one broad flat elliptical cream ring system tilted diagonally. Ring passes behind upper globe and in front across lower third, correctly occluded, never crossing eyes or mouth. Distinct visible gap between ring and globe on both sides."
+    ]
+  ]
+}

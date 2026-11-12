@@ -1,0 +1,30 @@
+{
+  "tool": "image_gen integrated",
+  "base": "Use case: style-transfer. Create one full-body chibi library sprite. Image 1 is the original character reference: preserve its identity, signature palette and accessories. Image 2 is the approved library STYLE reference only: match warm dark-brown outlines, rounded cute proportions, large expressive glossy eyes without eyelashes, pink cheeks where suitable, soft restrained shading and highlights. Subject: ",
+  "specs": [
+    [
+      "HY-DinoSinoceratops",
+      "Golden yellow quadruped Sinoceratops dinosaur with purple back spots, broad rounded neck frill, a single short nasal horn, hornlets around frill, stout beaked muzzle, exactly four stout legs with toes, one tapering tail. Recognizable dinosaur, not a mammal."
+    ],
+    [
+      "HY-Dragao",
+      "Friendly mint/teal green dragon, pale yellow belly and two cream horns, rounded snout, dorsal spikes, one curved tail, exactly four limbs (two arms and two legs), two batlike teal wings attached at shoulder blades behind arms. Sitting three-quarter pose."
+    ],
+    [
+      "HY-Boitata",
+      "Brazilian Boitata fiery orange snake with darker red stripes, coiled long continuous limbless body, rounded friendly snake head, golden eyes, one anatomically placed mouth on muzzle. Small golden-orange flames follow the back and head. No arms legs wings or separate human smile."
+    ],
+    [
+      "HY-MulaSemCabeca",
+      "Brazilian Mula sem Cabeca: brown mule body, exactly four short equine legs with dark hooves, dark mane along neck ridge, one dark flowing tail, red collar. NO HEAD, NO EYES, NO FACE and no ears. Friendly orange and yellow flame plume emerges directly from top of neck replacing entire head. Three-quarter standing pose, compact rounded body; retain headless myth identity without disturbing imagery."
+    ],
+    [
+      "HY-PapagaioPirata",
+      "Red and orange pirate parrot with black tricorn hat bearing simple white crossed bones, black diagonal sash and golden buckle. Rounded red head and curved gray beak. Exactly two folded orange wings attached at shoulders, two gray avian feet with toes, one red-orange feather tail. Standing bird, no human arms or separate human smile; eyes without eyelashes."
+    ],
+    [
+      "HY-CapiravaBicicleta",
+      "Tan capybara with round ears, broad squared brown muzzle and small glossy eyes, riding a turquoise bicycle side profile. Exactly four capybara limbs: two forepaws gripping handlebar, two bent hindlegs each resting on one pedal. Exactly two round wheels aligned in same plane, coherent triangular bicycle frame, saddle supporting rump, fork joining front axle to handlebar. No extra limbs or wheels, no clothing."
+    ]
+  ]
+}

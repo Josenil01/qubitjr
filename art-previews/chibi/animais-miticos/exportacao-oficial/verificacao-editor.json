@@ -1,0 +1,91 @@
+{
+  "count": 6,
+  "version": "20261112-space-chibi-1",
+  "failures": [],
+  "results": [
+    {
+      "id": "HY-DinoSinoceratops",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Dragao",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Boitata",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-MulaSemCabeca",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-PapagaioPirata",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-CapiravaBicicleta",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    }
+  ]
+}

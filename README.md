@@ -140,3 +140,5 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 For contribution guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 The 30 reviewed human and humanoid characters now use the chibi style in the official PNG/SVG library. Catalog IDs, dimensions and scales are preserved, with alpha-derived selection/collision outlines and refreshed asset caches. See [human library notes](art-previews/chibi/humanos/README.md).
+
+The Space category now uses 13 chibi characters, including a newly registered Sun and the existing planets, Moon, star and meteor. The six remaining animals and mythical creatures also match the official style. [Space library notes](art-previews/chibi/planetas/README.md) and [remaining creature notes](art-previews/chibi/animais-miticos/README.md) include artwork, prompts, backups and validation reports.

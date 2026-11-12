@@ -1,0 +1,53 @@
+{
+  "catalogSha256": "e0baad546a0dab5baa3b725b868a6b86934d859688abc4d9eff35ecfdcab5d4e",
+  "files": [
+    {
+      "file": "pnglibrary/HY-DinoSinoceratops.png",
+      "sha256": "aef65455232d7cff4d3f08ece85b20a10f5b236398303d7c2299ef3a4c829835"
+    },
+    {
+      "file": "svglibrary/HY-DinoSinoceratops.svg",
+      "sha256": "19ce7b54cb8110bc9d0fc67e5eda782cec4512b54b70e95f697216bae0439387"
+    },
+    {
+      "file": "pnglibrary/HY-Dragao.png",
+      "sha256": "a783ea4b2e646fbdf71bb0b8cc1985f473e759f3b580fe4404c004d58d0d031e"
+    },
+    {
+      "file": "svglibrary/HY-Dragao.svg",
+      "sha256": "78e4ddd5061b8f8c983536a1a6e04dc2f681d55b66a2c5604d82a21d342938d9"
+    },
+    {
+      "file": "pnglibrary/HY-Boitata.png",
+      "sha256": "57b23b59ed675da33a6080a619638a9741b242abb7a442999d05a028e275a30f"
+    },
+    {
+      "file": "svglibrary/HY-Boitata.svg",
+      "sha256": "eb4b8f92a821c343b1ed2e24aa4be87be795385defa6fed0476740ca0911a2b1"
+    },
+    {
+      "file": "pnglibrary/HY-MulaSemCabeca.png",
+      "sha256": "bbd865af6ecb62e30553616584b546804ecd1bdaf2d76e11f6e6276d864d6ce1"
+    },
+    {
+      "file": "svglibrary/HY-MulaSemCabeca.svg",
+      "sha256": "0422a9e26f0a06ce66e99953bd9c43bbb5a45d4b620db9e1a7c3adf51e339703"
+    },
+    {
+      "file": "pnglibrary/HY-PapagaioPirata.png",
+      "sha256": "15b2dde46063fc4867be9f0aa79325d66759d32071e21d6793c13321f8ab6200"
+    },
+    {
+      "file": "svglibrary/HY-PapagaioPirata.svg",
+      "sha256": "1def8bb3f92fde9bc0f91255b7420c5adbea1ff9eaf1b1e92fefda3518be4376"
+    },
+    {
+      "file": "pnglibrary/HY-CapiravaBicicleta.png",
+      "sha256": "943b198790114b22eb8c383d5e8ba532de0032c8d8d22a7d3903a3e35679190c"
+    },
+    {
+      "file": "svglibrary/HY-CapiravaBicicleta.svg",
+      "sha256": "83683ac5b4e6ef9d76b6de99a1e85ae87405f7224e761ffdb221e5ded9945afa"
+    }
+  ]
+}

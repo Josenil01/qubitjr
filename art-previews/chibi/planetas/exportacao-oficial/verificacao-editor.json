@@ -1,0 +1,189 @@
+{
+  "count": 13,
+  "version": "20261112-space-chibi-1",
+  "failures": [],
+  "results": [
+    {
+      "id": "HY-Estrela",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Jupiter",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Lua",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Marte",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Mercurio",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Meteoro",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Netuno",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Saturno",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Sol",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Terra",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Urano",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Urano2",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Venus",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    }
+  ]
+}

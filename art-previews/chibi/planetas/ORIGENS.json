@@ -1,0 +1,17 @@
+[
+  {
+    "id": "HY-Terra",
+    "source": "C:\\Users\\TI\\.codex\\generated_images\\01a1cfcb-397b-7f73-98a7-9579318f2e5a\\exec-ec7e6f8b-6f84-47e8-912e-88c78f2fc6b9.png",
+    "prompt": "Use case: style-transfer. One cute planet character sprite for children's ScratchJr library. Image 1: original planet, reference identity. Image 2: approved animal STYLE reference only; do not depict the animal. Match the existing library's clean warm dark-brown outlines, softly shaded pastel color, rounded friendly forms and restrained glossy highlights. Planet has exactly two large glossy dark-brown eyes WITHOUT eyelashes, small pink cheeks, and one small centered smiling mouth. Face directly on globe; no head/body separation, arms, legs, nose, hair, accessories or stars. Earth: spherical blue oceans and recognizable simplified green continents, white polar caps and two small subtle white cloud swirls. Keep geography readable around face. Full isolated silhouette centered with generous margins, square composition, transparent background, no scenery, no shadow or glow outside outline, no lettering or watermark."
+  },
+  {
+    "id": "HY-Jupiter",
+    "source": "C:\\Users\\TI\\.codex\\generated_images\\01a1cfcb-397b-7f73-98a7-9579318f2e5a\\exec-e1cc5974-8288-48cb-9187-665eb057a366.png",
+    "prompt": "Use case: style-transfer. One cute planet character sprite for children's ScratchJr library. Image 1: original planet, reference identity. Image 2: approved animal STYLE reference only; do not depict the animal. Match the existing library's clean warm dark-brown outlines, softly shaded pastel color, rounded friendly forms and restrained glossy highlights. Planet has exactly two large glossy dark-brown eyes WITHOUT eyelashes, small pink cheeks, and one small centered smiling mouth. Face directly on globe; no head/body separation, arms, legs, nose, hair, accessories or stars. Jupiter: spherical cream, tan and muted orange horizontal cloud bands with a clearly visible oval Great Red Spot on lower right, away from face. Full isolated silhouette centered with generous margins, square composition, transparent background, no scenery, no shadow or glow outside outline, no lettering or watermark."
+  },
+  {
+    "id": "HY-Saturno",
+    "source": "C:\\Users\\TI\\.codex\\generated_images\\01a1cfcb-397b-7f73-98a7-9579318f2e5a\\exec-36ccdd73-25de-4786-9965-e4da43ffd5a4.png",
+    "prompt": "Use case: style-transfer. One cute planet character sprite for children's ScratchJr library. Image 1: original planet, reference identity. Image 2: approved animal STYLE reference only; do not depict the animal. Match the existing library's clean warm dark-brown outlines, softly shaded pastel color, rounded friendly forms and restrained glossy highlights. Planet has exactly two large glossy dark-brown eyes WITHOUT eyelashes, small pink cheeks, and one small centered smiling mouth. Face directly on globe; no head/body separation, arms, legs, nose, hair, accessories or stars. Saturn: spherical pale golden planet with subtle tan horizontal cloud bands and one broad flat elliptical cream ring system tilted diagonally. Ring passes behind upper globe and in front across lower third, correctly occluded, never crossing eyes or mouth. Distinct visible gap between ring and globe on both sides. Full isolated silhouette centered with generous margins, square composition, transparent background, no scenery, no shadow or glow outside outline, no lettering or watermark."
+  }
+]
