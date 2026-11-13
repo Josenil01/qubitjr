@@ -1,4 +1,0 @@
-﻿const {chromium}=require('playwright');
-const fs=require('fs');
-const goalData='data:image/png;base64,'+fs.readFileSync('art-previews/chibi/esportes/HY-Gol.png').toString('base64');
-(async()=>{const b=await chromium.launch();try{const p=await b.newPage({viewport:{width:900,height:900}});await p.setContent('<body style="background:#7464ad;margin:20px"><img style="width:800px;height:800px;object-fit:contain" src="' + goalData + '"></body>');await p.locator('img').evaluate(i=>i.decode());console.log(await p.locator('img').evaluate(i=>{const c=document.createElement('canvas');c.width=i.naturalWidth;c.height=i.naturalHeight;const x=c.getContext('2d');x.drawImage(i,0,0);return [[550,650],[600,500],[700,650],[500,600]].map(([a,b])=>({point:[a,b],rgba:Array.from(x.getImageData(a,b,1,1).data)}))}));await p.screenshot({path:'art-previews/chibi/esportes/inspecao-rede.png'});}finally{await b.close()}})();

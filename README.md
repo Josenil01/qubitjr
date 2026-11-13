@@ -38,7 +38,7 @@ For the full architecture reference (directory-by-directory), see [agent.md](age
 A snapshot of the more substantial work that's gone into hardening and polishing QubitJr recently:
 
 **Asset pipeline & character library**
-- Updated all 58 visible animals to the reviewed chibi artwork, including corrected birds, snake, butterfly legs and plain insect antennae. PNG thumbnails, stage SVGs and alpha-derived hit-test outlines are synchronized; catalog identifiers and scales are preserved. Export/validation details and the original-asset backup are documented in [the animal library notes](art-previews/chibi/animais/README.md).
+- Updated all 58 visible animals to the reviewed chibi artwork, including corrected birds, snake, butterfly legs and plain insect antennae. PNG thumbnails, stage SVGs and alpha-derived hit-test outlines are synchronized; catalog identifiers and scales are preserved.
 - Traced accurate hit-test outlines (`pathborder_`) for all 127 Qubit Jr characters, so click/drag/collision now follows each character's real silhouette instead of its full bounding rectangle.
 - Removed baked-in white/black backgrounds from the entire Qubit Jr SVG/PNG pack via alpha-aware background removal, so characters render with true transparency.
 - Fixed the sprite catalog (`media.json`) so the character picker groups and orders correctly, and curated which characters are offered by default.
@@ -139,10 +139,4 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 For contribution guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-The 30 reviewed human and humanoid characters now use the chibi style in the official PNG/SVG library. Catalog IDs, dimensions and scales are preserved, with alpha-derived selection/collision outlines and refreshed asset caches. See [human library notes](art-previews/chibi/humanos/README.md).
-
-The Space category now uses 13 chibi characters, including a newly registered Sun and the existing planets, Moon, star and meteor. The six remaining animals and mythical creatures also match the official style. [Space library notes](art-previews/chibi/planetas/README.md) and [remaining creature notes](art-previews/chibi/animais-miticos/README.md) include artwork, prompts, backups and validation reports.
-
-Plants (3), foods (3) and the remaining vehicles (6) now share the same rounded artwork style without faces. Official thumbnails, stage SVGs and selection/collision outlines are synchronized, with existing catalog IDs, dimensions and scales preserved. Artwork, prompts, original backups and editor validation reports are available in the [plant](art-previews/chibi/plantas/README.md), [food](art-previews/chibi/alimentos/README.md) and [transport](art-previews/chibi/transportes/README.md) notes.
-
-The visible character/object library is now fully standardized: 168 entries, including buildings, furniture, sports and the final 33 objects, flags, emotions and symbols. All 168 passed the real editor integration audit with synchronized thumbnails, stage images and collision masks. Legacy entries and background scenes are preserved. See the [complete gallery and audit](art-previews/chibi/auditoria-final/README.md) and [final batch notes](art-previews/chibi/restantes/README.md).
+The official PNG/SVG library contains 168 standardized visible characters and objects, including the new Sun. Catalog IDs, dimensions and scales are preserved, with synchronized thumbnails, stage images and alpha-derived selection/collision outlines. All 168 passed the editor integration audit. Legacy entries and background scenes are preserved.

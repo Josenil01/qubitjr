@@ -1,8 +1,0 @@
-{
-  "tool": "image_gen integrated",
-  "id": "HY-Sol",
-  "prompt": "Use case: illustration-story. Create a brand new SUN character sprite for the ScratchJr children's art library. Attached Jupiter is STYLE REFERENCE ONLY: match warm dark-brown outlines of consistent thickness, softly shaded pastel finish, rounded forms, simple shiny highlights, exactly two large glossy dark-brown eyes without eyelashes, two subtle pink cheeks and one small centered happy smiling mouth. Subject: one golden-yellow circular sun disk, surrounded by an evenly distributed corona of short rounded triangular orange-gold rays. Rays are clean and friendly, not sharp spikes; all rays attached to or immediately behind sun disk. Face directly on central disk, subtle warm orange shading along lower edge and one restrained pale highlight upper left. No bands, continents, spots, rings or clouds. No arms, legs, nose, hair, extra characters, text, lettering, watermark, props, scenery or floor shadow. Entire sun and all rays visible centered in square composition with generous clear margins. True transparent background, no glow or haze outside silhouette.",
-  "source": "C:\\Users\\TI\\.codex\\generated_images\\01a1cfcb-397b-7f73-98a7-9579318f2e5a\\exec-07855684-136f-4d94-b2a0-2d9297859a3a.png",
-  "output": "art-previews/chibi/planetas/HY-Sol.png",
-  "status": "official"
-}

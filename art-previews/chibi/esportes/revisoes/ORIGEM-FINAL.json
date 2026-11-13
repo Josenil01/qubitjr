@@ -1,6 +1,0 @@
-{
-  "tool": "image_gen integrated",
-  "prompt": "Create a NEW clean children's illustration sprite of one soccer goal, three-quarter view, full object visible. Attached hay bale is STYLE reference only: soft rounded forms, warm dark-brown clean outlines, gentle highlights, cream and pale gray-blue shading. Goal has two rounded front upright posts joined by one crossbar, connected rear supports. Use a VERY SIMPLE SPARSE net: only six columns and four rows of thin smooth cream strands on the rear panel, with a few perspective-correct strands on side panels. Every net cell is an EMPTY COMPLETELY TRANSPARENT OPENING, smooth quadrilateral boundary, absolutely NO white/gray patches, paper scraps, fabric, fill, mottling or speckles in openings. Uniform clean strand thickness, mechanically coherent. True transparent background outside AND through all the net openings; no ground plane, grass, balls, people, lettering, watermark, external shadow or glow. Square composition with generous margins. No face.",
-  "source": "C:\\Users\\TI\\.codex\\generated_images\\01a1cfcb-397b-7f73-98a7-9579318f2e5a\\exec-1a5746b3-e0ec-42f0-b422-df631d6a0cd9.png",
-  "note": "Final transparency verified against colored background in browser; generation preview artifacts do not appear in actual PNG."
-}
