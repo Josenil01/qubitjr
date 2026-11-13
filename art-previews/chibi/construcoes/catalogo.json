@@ -1,0 +1,145 @@
+[
+  {
+    "md5": "HY-Banco.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Banco",
+    "scale": 0.3,
+    "order": "characters,20 Construcoes",
+    "tags": [
+      "characters",
+      "20 Construcoes"
+    ]
+  },
+  {
+    "md5": "HY-Casa1.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Casa",
+    "scale": 0.3,
+    "order": "characters,20 Construcoes",
+    "tags": [
+      "characters",
+      "20 Construcoes"
+    ]
+  },
+  {
+    "md5": "HY-Casa2.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Casa",
+    "scale": 0.3,
+    "order": "characters,20 Construcoes",
+    "tags": [
+      "characters",
+      "20 Construcoes"
+    ]
+  },
+  {
+    "md5": "HY-Casa3.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Casa",
+    "scale": 0.3,
+    "order": "characters,20 Construcoes",
+    "tags": [
+      "characters",
+      "20 Construcoes"
+    ]
+  },
+  {
+    "md5": "HY-Castelo.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Castelo",
+    "scale": 0.3,
+    "order": "characters,20 Construcoes",
+    "tags": [
+      "characters",
+      "20 Construcoes"
+    ]
+  },
+  {
+    "md5": "HY-Celeiro.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Celeiro",
+    "scale": 0.3,
+    "order": "characters,20 Construcoes",
+    "tags": [
+      "characters",
+      "20 Construcoes"
+    ]
+  },
+  {
+    "md5": "HY-Escola.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Escola",
+    "scale": 0.3,
+    "order": "characters,20 Construcoes",
+    "tags": [
+      "characters",
+      "20 Construcoes"
+    ]
+  },
+  {
+    "md5": "HY-Iglu.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Iglu",
+    "scale": 0.3,
+    "order": "characters,20 Construcoes",
+    "tags": [
+      "characters",
+      "20 Construcoes"
+    ]
+  },
+  {
+    "md5": "HY-Loja.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Loja",
+    "scale": 0.3,
+    "order": "characters,20 Construcoes",
+    "tags": [
+      "characters",
+      "20 Construcoes"
+    ]
+  },
+  {
+    "md5": "HY-Moinho.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Moinho",
+    "scale": 0.3,
+    "order": "characters,20 Construcoes",
+    "tags": [
+      "characters",
+      "20 Construcoes"
+    ]
+  },
+  {
+    "md5": "HY-Predio.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Prédio",
+    "scale": 0.3,
+    "order": "characters,20 Construcoes",
+    "tags": [
+      "characters",
+      "20 Construcoes"
+    ]
+  }
+]

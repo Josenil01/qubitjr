@@ -1,0 +1,18 @@
+{
+  "tool": "image_gen integrated",
+  "base": "Use case: style-transfer. One isolated sports library sprite for children. Image 1 original identity and color reference; image 2 approved hay bale is STYLE ONLY. Match warm dark-brown clean outlines, rounded forms, softly shaded harmonious colors and restrained glossy highlights. Subject: ",
+  "specs": [
+    [
+      "Ball",
+      "One spherical pink play ball with broad curved hot-pink and coral stripes plus one cyan-blue curved stripe, matching the original. Coherent round silhouette, bands wrap naturally around sphere, one restrained pale highlight at upper left and gentle lower-right shading."
+    ],
+    [
+      "Soccerball",
+      "One spherical classic soccer ball with coherent black pentagonal panels connected by white polygon panels and fine warm dark-brown seams following the sphere's curvature. Rounded circular silhouette, restrained highlight upper left and gentle soft shading. No logos or letters."
+    ],
+    [
+      "HY-Gol",
+      "One small soccer goal in three-quarter view facing front-left, TWO upright front posts joined by ONE horizontal crossbar, pale cream tubular frame with soft gray-blue shading and warm brown fine outlines. Front opening empty; visible side and back net made of a simple sparse regular white/cream square mesh, attached coherently to rear supports and frame. Transparent holes between all strands: no filled white or gray fabric behind mesh. Consistent perspective, rear frame connects to ground supports. No ball, grass or ground."
+    ]
+  ]
+}

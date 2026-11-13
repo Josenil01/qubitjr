@@ -1,0 +1,7 @@
+const fs=require('fs');const {chromium}=require('playwright');
+const dir='art-previews/chibi/restantes';fs.mkdirSync(dir,{recursive:true});
+const done=new Set();for(const d of fs.readdirSync('art-previews/chibi',{withFileTypes:true}).filter(d=>d.isDirectory())){const p='art-previews/chibi/'+d.name+'/exportacao-oficial/manifesto.json';if(fs.existsSync(p))for(const r of JSON.parse(fs.readFileSync(p)).records||[])done.add(r.id+'.svg')}
+const file=dir+'/catalogo.json';const catalog=fs.existsSync(file)?JSON.parse(fs.readFileSync(file)):JSON.parse(fs.readFileSync('src/app/media.json')).sprites.filter(a=>!a.legacy&&!done.has(a.md5));
+if(catalog.length!==33)throw Error('Expected 33 remaining assets');if(!fs.existsSync(file))fs.writeFileSync(file,JSON.stringify(catalog,null,2));
+fs.writeFileSync(dir+'/originais.html','<!doctype html><meta charset="utf-8"><style>body{font:16px system-ui;background:#fff6e5}main{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}figure{margin:0;background:white;padding:8px;text-align:center}img{width:180px;height:180px;object-fit:contain}</style><main>'+catalog.map(a=>'<figure><img src="../../../src/app/pnglibrary/'+a.md5.replace('.svg','.png')+'"><figcaption>'+a.name+'<br>'+a.md5+'</figcaption></figure>').join('')+'</main>');
+(async()=>{const b=await chromium.launch();try{const p=await b.newPage({viewport:{width:1300,height:1000},javaScriptEnabled:false});await p.goto('http://127.0.0.1:5502/'+dir+'/originais.html');await p.screenshot({path:dir+'/originais.png',fullPage:true});}finally{await b.close()}})();

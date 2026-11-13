@@ -1,0 +1,442 @@
+[
+  {
+    "md5": "HY-Nuvem.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Nuvem",
+    "scale": 0.6,
+    "order": "characters,12 Clima",
+    "tags": [
+      "characters",
+      "12 Clima"
+    ]
+  },
+  {
+    "md5": "HY-GarradaDeMoedas.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Jarra de Moedas",
+    "scale": 0.3,
+    "order": "characters,16 Piratas",
+    "tags": [
+      "characters",
+      "16 Piratas"
+    ]
+  },
+  {
+    "md5": "HY-LunetaPirata.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Luneta de Pirata",
+    "scale": 0.3,
+    "order": "characters,16 Piratas",
+    "tags": [
+      "characters",
+      "16 Piratas"
+    ]
+  },
+  {
+    "md5": "HY-MapaTesouro.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Mapa do Tesouro",
+    "scale": 0.3,
+    "order": "characters,16 Piratas",
+    "tags": [
+      "characters",
+      "16 Piratas"
+    ]
+  },
+  {
+    "md5": "HY-Moeda.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Moeda",
+    "scale": 0.3,
+    "order": "characters,16 Piratas",
+    "tags": [
+      "characters",
+      "16 Piratas"
+    ]
+  },
+  {
+    "md5": "HY-TesouroPirata.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Tesouro Pirata",
+    "scale": 0.3,
+    "order": "characters,16 Piratas",
+    "tags": [
+      "characters",
+      "16 Piratas"
+    ]
+  },
+  {
+    "md5": "HY-AbaboraHalloween.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Abóbora de Halloween",
+    "scale": 0.3,
+    "order": "characters,17 Halloween",
+    "tags": [
+      "characters",
+      "17 Halloween"
+    ]
+  },
+  {
+    "md5": "HY-Pascoa-Ovo-1.svg",
+    "width": 225,
+    "height": 225,
+    "ext": "svg",
+    "name": "Ovo de Páscoa 1",
+    "scale": 0.3,
+    "order": "characters,18 Pascoa",
+    "tags": [
+      "characters",
+      "18 Pascoa"
+    ]
+  },
+  {
+    "md5": "HY-Pascoa-Ovo-2.svg",
+    "width": 225,
+    "height": 225,
+    "ext": "svg",
+    "name": "Ovo de Páscoa 2",
+    "scale": 0.3,
+    "order": "characters,18 Pascoa",
+    "tags": [
+      "characters",
+      "18 Pascoa"
+    ]
+  },
+  {
+    "md5": "HY-Bandeira-Argentina.svg",
+    "width": 225,
+    "height": 225,
+    "ext": "svg",
+    "name": "Bandeira da Argentina",
+    "scale": 0.3,
+    "order": "characters,19 Bandeiras",
+    "tags": [
+      "characters",
+      "19 Bandeiras"
+    ]
+  },
+  {
+    "md5": "HY-Bandeira-China.svg",
+    "width": 225,
+    "height": 225,
+    "ext": "svg",
+    "name": "Bandeira da China",
+    "scale": 0.3,
+    "order": "characters,19 Bandeiras",
+    "tags": [
+      "characters",
+      "19 Bandeiras"
+    ]
+  },
+  {
+    "md5": "HY-Bandeira-Portugal.svg",
+    "width": 225,
+    "height": 225,
+    "ext": "svg",
+    "name": "Bandeira de Portugal",
+    "scale": 0.3,
+    "order": "characters,19 Bandeiras",
+    "tags": [
+      "characters",
+      "19 Bandeiras"
+    ]
+  },
+  {
+    "md5": "HY-Bandeira-Brazil.svg",
+    "width": 225,
+    "height": 225,
+    "ext": "svg",
+    "name": "Bandeira do Brasil",
+    "scale": 0.3,
+    "order": "characters,19 Bandeiras",
+    "tags": [
+      "characters",
+      "19 Bandeiras"
+    ]
+  },
+  {
+    "md5": "HY-Bandeira-Japao.svg",
+    "width": 225,
+    "height": 225,
+    "ext": "svg",
+    "name": "Bandeira do Japão",
+    "scale": 0.3,
+    "order": "characters,19 Bandeiras",
+    "tags": [
+      "characters",
+      "19 Bandeiras"
+    ]
+  },
+  {
+    "md5": "HY-Bandeira-EUA.svg",
+    "width": 225,
+    "height": 225,
+    "ext": "svg",
+    "name": "Bandeira dos Estados Unidos",
+    "scale": 0.3,
+    "order": "characters,19 Bandeiras",
+    "tags": [
+      "characters",
+      "19 Bandeiras"
+    ]
+  },
+  {
+    "md5": "HY-GuardaChuva.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Guarda-chuva",
+    "scale": 0.3,
+    "order": "characters,23 Objetos",
+    "tags": [
+      "characters",
+      "23 Objetos"
+    ]
+  },
+  {
+    "md5": "HY-Vela.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Vela",
+    "scale": 0.3,
+    "order": "characters,23 Objetos",
+    "tags": [
+      "characters",
+      "23 Objetos"
+    ]
+  },
+  {
+    "md5": "HY-Angry.svg",
+    "width": 150,
+    "height": 250,
+    "ext": "svg",
+    "name": "Angry",
+    "scale": 0.3,
+    "order": "characters,25 Emocoes",
+    "tags": [
+      "characters",
+      "25 Emocoes"
+    ],
+    "legacy": false
+  },
+  {
+    "md5": "HY-Crying.svg",
+    "width": 150,
+    "height": 250,
+    "ext": "svg",
+    "name": "Crying",
+    "scale": 0.3,
+    "order": "characters,25 Emocoes",
+    "tags": [
+      "characters",
+      "25 Emocoes"
+    ],
+    "legacy": false
+  },
+  {
+    "md5": "HY-Dizzy.svg",
+    "width": 150,
+    "height": 250,
+    "ext": "svg",
+    "name": "Dizzy",
+    "scale": 0.3,
+    "order": "characters,25 Emocoes",
+    "tags": [
+      "characters",
+      "25 Emocoes"
+    ],
+    "legacy": false
+  },
+  {
+    "md5": "HY-happy.svg",
+    "width": 150,
+    "height": 250,
+    "ext": "svg",
+    "name": "Happy",
+    "scale": 0.3,
+    "order": "characters,25 Emocoes",
+    "tags": [
+      "characters",
+      "25 Emocoes"
+    ],
+    "legacy": false
+  },
+  {
+    "md5": "HY-Sad.svg",
+    "width": 150,
+    "height": 250,
+    "ext": "svg",
+    "name": "Sad",
+    "scale": 0.3,
+    "order": "characters,25 Emocoes",
+    "tags": [
+      "characters",
+      "25 Emocoes"
+    ],
+    "legacy": false
+  },
+  {
+    "md5": "HY-Shame.svg",
+    "width": 150,
+    "height": 250,
+    "ext": "svg",
+    "name": "Shame",
+    "scale": 0.3,
+    "order": "characters,25 Emocoes",
+    "tags": [
+      "characters",
+      "25 Emocoes"
+    ],
+    "legacy": false
+  },
+  {
+    "md5": "HY-what.svg",
+    "width": 150,
+    "height": 250,
+    "ext": "svg",
+    "name": "What",
+    "scale": 0.3,
+    "order": "characters,25 Emocoes",
+    "tags": [
+      "characters",
+      "25 Emocoes"
+    ],
+    "legacy": false
+  },
+  {
+    "md5": "HY-heart.svg",
+    "width": 150,
+    "height": 250,
+    "ext": "svg",
+    "name": "Heart",
+    "scale": 0.3,
+    "order": "characters,26 Gestos e simbolos",
+    "tags": [
+      "characters",
+      "26 Gestos e simbolos"
+    ],
+    "legacy": false
+  },
+  {
+    "md5": "HY-like.svg",
+    "width": 150,
+    "height": 250,
+    "ext": "svg",
+    "name": "Like",
+    "scale": 0.3,
+    "order": "characters,26 Gestos e simbolos",
+    "tags": [
+      "characters",
+      "26 Gestos e simbolos"
+    ],
+    "legacy": false
+  },
+  {
+    "md5": "HY-No!.svg",
+    "width": 150,
+    "height": 250,
+    "ext": "svg",
+    "name": "No",
+    "scale": 0.3,
+    "order": "characters,26 Gestos e simbolos",
+    "tags": [
+      "characters",
+      "26 Gestos e simbolos"
+    ],
+    "legacy": false
+  },
+  {
+    "md5": "HY-Unlike.svg",
+    "width": 150,
+    "height": 250,
+    "ext": "svg",
+    "name": "Unlike",
+    "scale": 0.3,
+    "order": "characters,26 Gestos e simbolos",
+    "tags": [
+      "characters",
+      "26 Gestos e simbolos"
+    ],
+    "legacy": false
+  },
+  {
+    "md5": "HY-Lixo-1-maca.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Resto de maçã",
+    "scale": 0.5,
+    "order": "characters,27 Lixo e reciclagem",
+    "tags": [
+      "characters",
+      "27 Lixo e reciclagem"
+    ]
+  },
+  {
+    "md5": "HY-Lixo-2-lata-refrigerante.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Lata de refrigerante amassada",
+    "scale": 0.5,
+    "order": "characters,27 Lixo e reciclagem",
+    "tags": [
+      "characters",
+      "27 Lixo e reciclagem"
+    ]
+  },
+  {
+    "md5": "HY-Lixo-3-sacola-plastica.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Sacola plástica",
+    "scale": 0.5,
+    "order": "characters,27 Lixo e reciclagem",
+    "tags": [
+      "characters",
+      "27 Lixo e reciclagem"
+    ]
+  },
+  {
+    "md5": "HY-Lixo-4-garra-de-vidro.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Garrafa de vidro quebrada",
+    "scale": 0.5,
+    "order": "characters,27 Lixo e reciclagem",
+    "tags": [
+      "characters",
+      "27 Lixo e reciclagem"
+    ]
+  },
+  {
+    "md5": "HY-Lixo-5-papel.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Papel amassado",
+    "scale": 0.5,
+    "order": "characters,27 Lixo e reciclagem",
+    "tags": [
+      "characters",
+      "27 Lixo e reciclagem"
+    ]
+  }
+]

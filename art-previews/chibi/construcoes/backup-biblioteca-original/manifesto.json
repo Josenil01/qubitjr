@@ -1,0 +1,93 @@
+{
+  "catalogSha256": "8e38353996cfa7d68fd07f7b354813bd6f264ae18bb4b69cc4f2fd5c69b8184b",
+  "files": [
+    {
+      "file": "pnglibrary/HY-Banco.png",
+      "sha256": "548086d755a8b984267b51388699fc0515ca2cb80b607de63c5eaa27043c5912"
+    },
+    {
+      "file": "svglibrary/HY-Banco.svg",
+      "sha256": "4af982523ad2082195518154c15fcd5f85dbc5b4d2a4b2d9a7c90fcfcc00bc92"
+    },
+    {
+      "file": "pnglibrary/HY-Casa1.png",
+      "sha256": "8063e4b455baf691e8c59ae02e09b33f3fe353175d8485c825cfaea2c52ab54e"
+    },
+    {
+      "file": "svglibrary/HY-Casa1.svg",
+      "sha256": "01693a3a9b519952b4c096deb5a1432e467aaba2c837ebc755f7e6b622ad8ff2"
+    },
+    {
+      "file": "pnglibrary/HY-Casa2.png",
+      "sha256": "9a9b19999f283735e0184b37e66925b3522a13ba1e6f2c67de7283a8e388b479"
+    },
+    {
+      "file": "svglibrary/HY-Casa2.svg",
+      "sha256": "e25db10ab651839d0a0ad18ff207845988c9826b2a9457484b7434f16e9f510c"
+    },
+    {
+      "file": "pnglibrary/HY-Casa3.png",
+      "sha256": "27c13fa7db79013a977fd26ba1637ae1bfc36aab054c2a80360ee0e657b052e2"
+    },
+    {
+      "file": "svglibrary/HY-Casa3.svg",
+      "sha256": "a43080dbd671c805abb221c6645db9e6f164aea865cc5a5e4cdc0abb5a376708"
+    },
+    {
+      "file": "pnglibrary/HY-Castelo.png",
+      "sha256": "7ae03b5ae67ed98d9fbaa70c8de74241395e2280ae09b02f90dd99b593beeebb"
+    },
+    {
+      "file": "svglibrary/HY-Castelo.svg",
+      "sha256": "c162eabf5c157d69056cfaf678b5b266af783f3fa5776ef779b93c152c1ae127"
+    },
+    {
+      "file": "pnglibrary/HY-Celeiro.png",
+      "sha256": "22f7bff187d22dd3528b4e3c54c6c915294e578026850546eade384c900d51e5"
+    },
+    {
+      "file": "svglibrary/HY-Celeiro.svg",
+      "sha256": "4fc7df3c66025a65ec16cebea5a2b37227b42dfc37d96d1b6296b03b8375c67a"
+    },
+    {
+      "file": "pnglibrary/HY-Escola.png",
+      "sha256": "986377d1f9f903e4af1b1851a8f405e65f745e623d1b3ef314d916c70ce42532"
+    },
+    {
+      "file": "svglibrary/HY-Escola.svg",
+      "sha256": "868d855e7c0c5d14858bb5873dbe186f5a46d1eb75b3d1e96bfe718a3cde1de2"
+    },
+    {
+      "file": "pnglibrary/HY-Iglu.png",
+      "sha256": "eada7496e90728ae328dca674b13b1e4adeba7d342fdb63a7925560d4c987911"
+    },
+    {
+      "file": "svglibrary/HY-Iglu.svg",
+      "sha256": "e015af0c319805d3f835cc46536563b58c6ce532c840b4becacf4e7134dfad03"
+    },
+    {
+      "file": "pnglibrary/HY-Loja.png",
+      "sha256": "aa6e2ade1d2a29b166473152b65c37e383d895a045cddd23a7fd385b3c87315f"
+    },
+    {
+      "file": "svglibrary/HY-Loja.svg",
+      "sha256": "538946deae89dfc9f131bb45191b4f8969ec0fa007d77f4c55d4f737499d3e5e"
+    },
+    {
+      "file": "pnglibrary/HY-Moinho.png",
+      "sha256": "60cd9db266dc5df40ba8d568d4b3fb03b091313f61ed040d7f37d3f7dbe6609d"
+    },
+    {
+      "file": "svglibrary/HY-Moinho.svg",
+      "sha256": "ad5955118304ca0a7e67b2debb098b58f6d7929860478c2f6cc8149e6187f5d6"
+    },
+    {
+      "file": "pnglibrary/HY-Predio.png",
+      "sha256": "1fbb6080884042bd5833f74bda9eeca6cfea631352c89f31c99cf724d089241c"
+    },
+    {
+      "file": "svglibrary/HY-Predio.svg",
+      "sha256": "4e52688bfbd0193f2e1f05b0b08e0ded77b84e061fbb2ad2fa1ffc4f57c5e8c5"
+    }
+  ]
+}

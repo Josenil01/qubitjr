@@ -1,0 +1,21 @@
+{
+  "catalogSha256": "8e38353996cfa7d68fd07f7b354813bd6f264ae18bb4b69cc4f2fd5c69b8184b",
+  "files": [
+    {
+      "file": "pnglibrary/Bed.png",
+      "sha256": "ae2f3109c4d9a4be43f237e960a6133ec046130e79f753dad8667bec3f0fd9db"
+    },
+    {
+      "file": "svglibrary/Bed.svg",
+      "sha256": "1460f091c34871f71687b4557a8dc4a1b92a0a319cc0da9089a7e74d694d7230"
+    },
+    {
+      "file": "pnglibrary/HY-Mesa.png",
+      "sha256": "e99d66c932fecfb257adde0e79b8cbca703cc9fbaefb2d9381ce5288d1a9f7c6"
+    },
+    {
+      "file": "svglibrary/HY-Mesa.svg",
+      "sha256": "01699fd20ec163267065a4fc296d117a26714bf1740914714cabab2203b8fd7f"
+    }
+  ]
+}

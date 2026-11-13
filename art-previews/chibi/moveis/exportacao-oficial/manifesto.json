@@ -1,0 +1,26 @@
+{
+  "version": "20261112-furniture-chibi-1",
+  "catalogSha256": "8e38353996cfa7d68fd07f7b354813bd6f264ae18bb4b69cc4f2fd5c69b8184b",
+  "records": [
+    {
+      "id": "Bed",
+      "width": 370,
+      "height": 343,
+      "scale": 0.3,
+      "masterSha256": "69a2a8f54b25bf2365f804147821c5bd2fae2d37a23a4279a623d7963680cbf3",
+      "pngSha256": "44d37081ddbc42780f8b4fc42677ac26f7f4d06eea65c406c9fc0632f974febd",
+      "svgSha256": "ab600fcf38c34387d4652f3e04b07e22f95371de8bfe82f4de41ccfd3b011f63",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Mesa",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "17f36cfd4015c8d2764dabca071571a27f5e1de3795dc2886bc921b8721cda1c",
+      "pngSha256": "b9558418966ee790f59b3b0a9026403522bbcd79608f0d275f7c89e0f5607973",
+      "svgSha256": "4b80634da9f5d3297ff94aad1770a51b57ee60d7d54ccba0ac6c74a7da84e9bd",
+      "silhouetteIoU": 1
+    }
+  ]
+}

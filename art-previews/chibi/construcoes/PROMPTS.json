@@ -1,0 +1,50 @@
+{
+  "tool": "image_gen integrated",
+  "base": "Use case: style-transfer. One isolated building/object library sprite. Image 1 original is identity, silhouette and palette reference; image 2 approved hay bale is STYLE ONLY. Match clean warm dark-brown outlines, rounded cute proportions, soft shading, warm harmonious colors and restrained upper-left highlights. Subject: ",
+  "specs": [
+    [
+      "HY-Banco",
+      "One small wooden stool (NOT a bank building), round lilac-purple padded seat, exactly three visible sturdy brown wooden legs naturally connected underneath seat, cross braces connecting legs. Three-quarter view, coherent perspective."
+    ],
+    [
+      "HY-Casa1",
+      "One small light-gray house front view, simple red gabled roof with cream chimney and red cap, small semicircular blue attic window, two square blue windows flanking one dark-gray front door, short front steps, tiny rounded green shrubs beside foundation."
+    ],
+    [
+      "HY-Casa2",
+      "One cozy cream cottage in three-quarter view, terracotta red pitched roof, one small dormer, brick chimney, brown timber framing and brown door on right-facing wall. Blue square windows and short red-brown front steps. Tiny white cat sitting beside steps as in original, simple coherent cat silhouette. Small green shrubs only immediately around foundation."
+    ],
+    [
+      "HY-Casa3",
+      "One small slate-blue cottage front view, tall gray triangular gabled roof with cream trim, golden cream chimney, one circular attic window with cross mullion, two dark plum rectangular shuttered windows flanking pale cream front door and short pale steps. Subtle stone patches on blue walls. Tiny shrubs at foundation only."
+    ],
+    [
+      "HY-Castelo",
+      "One friendly compact gray stone castle, exactly three towers (tall central tower and two shorter side towers), each with red conical roof and crenellated upper walls. Central arched entry gate, small arched dark windows and a few rounded stone-block seams. Symmetrical coherent facade, tiny shrubs beside base only."
+    ],
+    [
+      "HY-Celeiro",
+      "One red timber barn front view, dark brown gambrel roof, large closed red double doors with cream frame and clear diagonal X braces, one open upper hayloft window containing short golden hay tufts. Rounded red vertical boards. No animals, lettering or landscape."
+    ],
+    [
+      "HY-Escola",
+      "One golden-yellow school front view, taller central section with red-brown pitched roof and small red flag, round clock directly above blue arched double entrance, two shorter side wings with blue arched windows, short cream stairs and tiny green shrubs at foundation. Preserve sign text exactly \"SCHOOL\", once, clearly legible above clock. No other text."
+    ],
+    [
+      "HY-Iglu",
+      "One pale icy-blue igloo with round dome, curved coherent courses of rounded snow/ice blocks, one short projecting arched entrance tunnel at front-right opening into dark blue interior. Block seams follow dome perspective. No surrounding snowfield or people."
+    ],
+    [
+      "HY-Loja",
+      "One small cream and peach shop front view, terracotta red low roof, blank cream rectangular signboard, red-and-cream striped scalloped awning over one wide blue display window at left, brown glazed door at right, short cream doorstep. Blank side sign, no text or products outside."
+    ],
+    [
+      "HY-Moinho",
+      "One warm tan traditional windmill tower, slightly tapering upward, rounded dark-brown roof, small cream-framed vertical window and brown door. Exactly four red-brown lattice sails in an X, each attached coherently to ONE central circular hub on upper tower, evenly spaced at quarter turns. No floating or extra blades."
+    ],
+    [
+      "HY-Predio",
+      "One compact apartment building with taller mustard-yellow section at left and shorter terracotta-orange section at right, cream flat roof cornices, rows of blue rectangular windows, three small brown balcony rails on taller section and one central red-brown ground-floor entry door. Coherent straight perspective and aligned floors."
+    ]
+  ]
+}

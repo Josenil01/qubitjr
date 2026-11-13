@@ -1,0 +1,470 @@
+{
+  "count": 33,
+  "version": "20261113-library-chibi-final-1",
+  "failures": [],
+  "derivedFrom": "../../auditoria-final/verificacao-editor.json",
+  "results": [
+    {
+      "id": "HY-Nuvem",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-GarradaDeMoedas",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-LunetaPirata",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-MapaTesouro",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Moeda",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-TesouroPirata",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-AbaboraHalloween",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Pascoa-Ovo-1",
+      "dimensions": [
+        225,
+        225,
+        225,
+        225,
+        225,
+        225
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Pascoa-Ovo-2",
+      "dimensions": [
+        225,
+        225,
+        225,
+        225,
+        225,
+        225
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Bandeira-Argentina",
+      "dimensions": [
+        225,
+        225,
+        225,
+        225,
+        225,
+        225
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Bandeira-China",
+      "dimensions": [
+        225,
+        225,
+        225,
+        225,
+        225,
+        225
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Bandeira-Portugal",
+      "dimensions": [
+        225,
+        225,
+        225,
+        225,
+        225,
+        225
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Bandeira-Brazil",
+      "dimensions": [
+        225,
+        225,
+        225,
+        225,
+        225,
+        225
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Bandeira-Japao",
+      "dimensions": [
+        225,
+        225,
+        225,
+        225,
+        225,
+        225
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Bandeira-EUA",
+      "dimensions": [
+        225,
+        225,
+        225,
+        225,
+        225,
+        225
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-GuardaChuva",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Vela",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Angry",
+      "dimensions": [
+        150,
+        250,
+        150,
+        250,
+        150,
+        250
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Crying",
+      "dimensions": [
+        150,
+        250,
+        150,
+        250,
+        150,
+        250
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Dizzy",
+      "dimensions": [
+        150,
+        250,
+        150,
+        250,
+        150,
+        250
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-happy",
+      "dimensions": [
+        150,
+        250,
+        150,
+        250,
+        150,
+        250
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Sad",
+      "dimensions": [
+        150,
+        250,
+        150,
+        250,
+        150,
+        250
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Shame",
+      "dimensions": [
+        150,
+        250,
+        150,
+        250,
+        150,
+        250
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-what",
+      "dimensions": [
+        150,
+        250,
+        150,
+        250,
+        150,
+        250
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-heart",
+      "dimensions": [
+        150,
+        250,
+        150,
+        250,
+        150,
+        250
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-like",
+      "dimensions": [
+        150,
+        250,
+        150,
+        250,
+        150,
+        250
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-No!",
+      "dimensions": [
+        150,
+        250,
+        150,
+        250,
+        150,
+        250
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Unlike",
+      "dimensions": [
+        150,
+        250,
+        150,
+        250,
+        150,
+        250
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Lixo-1-maca",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Lixo-2-lata-refrigerante",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Lixo-3-sacola-plastica",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Lixo-4-garra-de-vidro",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Lixo-5-papel",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    }
+  ]
+}

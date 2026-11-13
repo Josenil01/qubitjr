@@ -1,0 +1,35 @@
+{
+  "count": 2,
+  "version": "20261112-furniture-chibi-1",
+  "failures": [],
+  "results": [
+    {
+      "id": "Bed",
+      "dimensions": [
+        370,
+        343,
+        370,
+        343,
+        370,
+        343
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Mesa",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    }
+  ]
+}

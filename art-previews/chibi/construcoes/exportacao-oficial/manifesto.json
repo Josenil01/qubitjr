@@ -1,0 +1,116 @@
+{
+  "version": "20261112-buildings-chibi-1",
+  "catalogSha256": "8e38353996cfa7d68fd07f7b354813bd6f264ae18bb4b69cc4f2fd5c69b8184b",
+  "records": [
+    {
+      "id": "HY-Banco",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "e00faac2b72db519042ad63b6473d962e11c1c05dbd9fcb3a6ce62b06072113b",
+      "pngSha256": "2f9da5f453ae34c1ec51632fe29e0a22b9f054830a7b2330d38d993a69fca6c4",
+      "svgSha256": "cf2bd0b9c45c31772fecbeefe0e2c5eedee787b5cc9677ddddda71101f2dd076",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Casa1",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "6c9fe4514bf6a2f3f3071c8a30ce1d936aa0daf01d284f6e3f55e870a99d9570",
+      "pngSha256": "23fb13566ec751456c1a4fdd2baa54fb7db847afa7d2bc9a79b24899393648a0",
+      "svgSha256": "af8961c61920d78b71a6532c0651ba370288a441f0ab9bf22039ae76fc10590d",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Casa2",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "6f87c2135c141b4f969130569e884c84590ff5e83cf8af34ae1c6713ce7e9308",
+      "pngSha256": "cb26735b2a469fa685d737f6924fed1ac650c0a21c920be8bbdbc6538b3d21e1",
+      "svgSha256": "f702ff85b437fa80bdd60144ebe50f8cc0daeb914a9a2544bbfcbf91a27e70ab",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Casa3",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "a05dde18f84f6220be8f0b7537af667bfa60f0dd68dbf0639302850383a65afc",
+      "pngSha256": "3a72a75df65633b8ca098bec976807b299d4326c2eff8294a68087b9819ab6a6",
+      "svgSha256": "b9d71fa7973985db088e1aea0830dd3f7dcae54f140a90f555a2c847a76b117e",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Castelo",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "0ee39b6d405b01d79b07937024b0f676ac582ef0b3f066031151326367529fa6",
+      "pngSha256": "e80cf2248bd9898badc5368ffcca571050e4a3ea273e20e471d2d77251aec193",
+      "svgSha256": "81080c2c6e837ca4826c32e377888fcf332645f9d9541a268ab01cfa2e8b1b8c",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Celeiro",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "735960cf0f79a93564f7b9b7608ea46026af9f75c6bd155b9f916571ed4b80d1",
+      "pngSha256": "6c8022656685dda44769599df439a71cd1ebbc595c65b74eed8ce3f32ee7bc56",
+      "svgSha256": "9f9025949fcfb76a75fbdef5bae9785d069c70e3b24580d3f512e35e3b862b6d",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Escola",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "8144c133e479ccd13e5fe33d8044253087f7239248daac281c60bad723dcdcce",
+      "pngSha256": "1a55237aef904bba15b7b294820dcfaf49b0c2a56d4d6c3b89987283e928033c",
+      "svgSha256": "cf35bae56496d6338de848b1299704818eae82bc5c43f0765713b9c17a36a700",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Iglu",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "b284b265b9cc8b125bc57bb3c87d753c2746bf8e2eb12c52bc1ce5f36540a6cb",
+      "pngSha256": "b9be4406548442cdb281438f8e3be6274ba24e19eee32aa0f5f10a3cf9ea4e53",
+      "svgSha256": "feb4780ad43e2ebab0dafa557102116ef4b82379220b4bf263e050550c85fc09",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Loja",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "4e25221e519d431f38fefb546ffb0f2746de1509c8839fbafd1f5a6d3df35017",
+      "pngSha256": "052abd5b97df8cb8e25067fcc10ac0b75e79696b952ef9f9981133cae433d8d7",
+      "svgSha256": "b63a8df96a297f44bd3c6e95dc1ba1e9a9a8082392397b3164b0c26231b15c54",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Moinho",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "8087b9910b7e8b45956b16aaba3aae81e7a86aaf894298cd2288579b99fe6c56",
+      "pngSha256": "36f0a87d4094465850d59c9e3680bb8cb45c2ab2a7c3bbe2a786f5de9850cd6b",
+      "svgSha256": "9648ecfd47514042531468dbb824fcebb10154890b739e057978b02cd986f6aa",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Predio",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "44636a9ece66e08e66315a54ee00dd8347d13191dea29b9d05f344777b1c1fe1",
+      "pngSha256": "4bbbe60dd26e9f784cd722cbc9427bad3a8b06ecefc99506a7b2bff1e0242715",
+      "svgSha256": "47cf39a51232b8e3ebfd8d48d0717f310fcd1e453548bd946a908b5b873080a7",
+      "silhouetteIoU": 1
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "images": [
+    {
+      "loaded": true,
+      "name": "",
+      "width": 137,
+      "height": 140
+    },
+    {
+      "loaded": true,
+      "name": "Ball",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "loaded": true,
+      "name": "",
+      "width": 300,
+      "height": 300
+    },
+    {
+      "loaded": true,
+      "name": "Gol",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "loaded": true,
+      "name": "",
+      "width": 140,
+      "height": 140
+    },
+    {
+      "loaded": true,
+      "name": "Soccer Ball",
+      "width": 1254,
+      "height": 1254
+    }
+  ],
+  "mobileOverflow": false
+}

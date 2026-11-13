@@ -1,0 +1,28 @@
+[
+  {
+    "md5": "Bed.svg",
+    "width": 370,
+    "height": 343,
+    "ext": "svg",
+    "name": "Bed",
+    "scale": 0.3,
+    "order": "characters,21 Moveis",
+    "tags": [
+      "characters",
+      "21 Moveis"
+    ]
+  },
+  {
+    "md5": "HY-Mesa.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Mesa",
+    "scale": 0.3,
+    "order": "characters,21 Moveis",
+    "tags": [
+      "characters",
+      "21 Moveis"
+    ]
+  }
+]

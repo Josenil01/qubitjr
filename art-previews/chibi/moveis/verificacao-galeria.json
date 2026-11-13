@@ -1,0 +1,29 @@
+{
+  "images": [
+    {
+      "loaded": true,
+      "name": "",
+      "width": 151,
+      "height": 140
+    },
+    {
+      "loaded": true,
+      "name": "Bed",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "loaded": true,
+      "name": "",
+      "width": 300,
+      "height": 300
+    },
+    {
+      "loaded": true,
+      "name": "Mesa",
+      "width": 1254,
+      "height": 1254
+    }
+  ],
+  "mobileOverflow": false
+}

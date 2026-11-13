@@ -1,0 +1,41 @@
+[
+  {
+    "md5": "Ball.svg",
+    "width": 126,
+    "height": 129,
+    "ext": "svg",
+    "name": "Ball",
+    "scale": 0.3,
+    "order": "characters,22 Esportes",
+    "tags": [
+      "characters",
+      "22 Esportes"
+    ]
+  },
+  {
+    "md5": "HY-Gol.svg",
+    "width": 300,
+    "height": 300,
+    "ext": "svg",
+    "name": "Gol",
+    "scale": 0.3,
+    "order": "characters,22 Esportes",
+    "tags": [
+      "characters",
+      "22 Esportes"
+    ]
+  },
+  {
+    "md5": "Soccerball.svg",
+    "width": 96,
+    "height": 96,
+    "ext": "svg",
+    "name": "Soccer Ball",
+    "scale": 0.3,
+    "order": "characters,22 Esportes",
+    "tags": [
+      "characters",
+      "22 Esportes"
+    ]
+  }
+]

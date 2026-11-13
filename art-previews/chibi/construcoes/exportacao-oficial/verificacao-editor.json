@@ -1,0 +1,161 @@
+{
+  "count": 11,
+  "version": "20261112-buildings-chibi-1",
+  "failures": [],
+  "results": [
+    {
+      "id": "HY-Banco",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Casa1",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Casa2",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Casa3",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Castelo",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Celeiro",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Escola",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Iglu",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Loja",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Moinho",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    },
+    {
+      "id": "HY-Predio",
+      "dimensions": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "silhouetteIoU": 1,
+      "watermark": true,
+      "ok": true
+    }
+  ]
+}

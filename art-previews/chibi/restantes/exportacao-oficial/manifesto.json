@@ -1,0 +1,336 @@
+{
+  "version": "20261113-library-chibi-final-1",
+  "catalogSha256": "8e38353996cfa7d68fd07f7b354813bd6f264ae18bb4b69cc4f2fd5c69b8184b",
+  "records": [
+    {
+      "id": "HY-Nuvem",
+      "width": 300,
+      "height": 300,
+      "scale": 0.6,
+      "masterSha256": "3c73c28de8650ef32347bd1fac4ca47ab7217fda43073d6304595bc13279d264",
+      "pngSha256": "0dfa92fd125193d1cfc09291f081b3b073f76b63b95c7ee374677ab668c48cf5",
+      "svgSha256": "a149bd1a75d43bae87beabdbbc150b8ccf13eac67f234f7a8498c38417c0fad9",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-GarradaDeMoedas",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "4e167eeffce9e8093131dbf212e2046a71cda20d6047cd1967c959cf89bb48fa",
+      "pngSha256": "52215d0fa7b6936af2a2779282e8b8ca5b012eac8f59794a7b1363723f85c260",
+      "svgSha256": "29982fa404cb441eb21a52a8915ab945fe815375f6ad72411c364bc06ac32001",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-LunetaPirata",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "68275bb2ee733723d8c35ee14c165fb445ac4cc2fdeddf5c180f89473716038f",
+      "pngSha256": "4afd1360eab9c702a51d5c8237771f66df3fb5404aaf873fc9c5315f75082905",
+      "svgSha256": "454eccc5af2d42b716ec3b0c35a9300b954aae350793e1a46ab306f65268b65d",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-MapaTesouro",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "af30f3c7de2bca7e4ff8c5a1cf315eab5dcfdf84a26d7c5377fffc095e42540e",
+      "pngSha256": "e6f7c0c1a311ea2cd8dd98d325f49db7e7a6521bb59f06b59087c24812e556bd",
+      "svgSha256": "baa95383676834031b26970e0a167c25cd72f9a3a0b8c2f628a820a0915a0bd5",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Moeda",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "7c47f11ac38d7c633cde3f0a0859ad1c65e271517466da049e76353ffa7b8e74",
+      "pngSha256": "2fe2914a57e8efe1904ace892130cc5da28640e35bc7e4fae2dc5ea2d5870fed",
+      "svgSha256": "cedb9861574e11279bc49111f49371a498f9cba6024fae787d3b5b83fc24502d",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-TesouroPirata",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "fe567f1650ffd96da8f2f9293ce1a9c4f0cb7e457a99677d1fdeefd32c445287",
+      "pngSha256": "3da6a55334a9ddbf6176c8aed05c2c88c255d67e932fa9de79d246794dd68a48",
+      "svgSha256": "1a1059de63710c7dbe7a5cef12bb6722ea522e24c33aee1bd11205bb94ecbb3e",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-AbaboraHalloween",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "e18ace5a11f09def9e266d60f85080f8d986ea29fa6c1d17cca224cfee292dc6",
+      "pngSha256": "c73a802a9a966df5de0c17a58bd5f555cfd7952c82d26063588c34028973f284",
+      "svgSha256": "e4caea19848373c43188ed3c319dab2677f66dae62f6bfc724018f3a32ee2b24",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Pascoa-Ovo-1",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "2e914a97b62446f0bab98a850c08293ea7cac3bbf67e4ce564c592d0261fe022",
+      "pngSha256": "2d771d218b0826892b5e5aa171d0910d86323f1e73d5d685ba7d14a4a3f6dde1",
+      "svgSha256": "1f9b0150ed7f22d942c6c883c08325a3c3ceae80aae146af1a88d287649e7ebf",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Pascoa-Ovo-2",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "68c2de2f6ba1cae66bdbf6ed97ccafed07bb01e51b9efadb64575e218607749a",
+      "pngSha256": "117b7a905fedc22c24d215c474c8f46649e4bc9c3cd519a3ac27c5cd6b3cae26",
+      "svgSha256": "86094d8240660d53ef7043594c2d9a9ff3599b09fe4ec11a269f16d4a7a1aadb",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Bandeira-Argentina",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "ada249a43cd055c9c7d8c95a25992fe2b2c630e20f2799f7d36c8fd3c970c1da",
+      "pngSha256": "d79e3b2173868b8c3f99f6b83b898b826dd2d51f50022454ab275eff9a9bd49e",
+      "svgSha256": "e2538bf852cfae243b83162c9f2378b19fa7a814186b8281c57fdd56bacabd80",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Bandeira-China",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "650da515351bd07d86e57ebd9306acfea2d3a39f781ed1ce4fc083f682be3a1f",
+      "pngSha256": "23d6855b49f43257130e970ce98c47aba0b84eda59d740446b91b3359a6eead7",
+      "svgSha256": "433e2d7d9a081ed1b199363263a6cc286576240ba4fff61e789b58cc748dff58",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Bandeira-Portugal",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "cc4525ac9ba5958d9b7b8648ccb314714a945075196a5355b589886613100ce6",
+      "pngSha256": "233d7fa753b837fc01867fe27ff877d2350c9ce1c664b9be63734047eb159180",
+      "svgSha256": "4853b9460846286b71e73ea40ea2e19191ec7721b421193cd1117f9f47b885fa",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Bandeira-Brazil",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "996d30192d9ecfc4a2b09d973bd4fa16a442a093c6f65698e59bb0e987a7f223",
+      "pngSha256": "ee07e5ee89b0146d30e154601e6ec605373e78980b14d748258a0e0d8344047d",
+      "svgSha256": "cdd9e8d79b185c44f0e0c4985f740fe3073f74b679a2b83f0e0b192d720e395c",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Bandeira-Japao",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "bb4a5a62c78a070fbe4bc3788d8fade23d0f4915df763109173d14b89dec4549",
+      "pngSha256": "73bfc18f8d9184bdf6d37883518196473b5d74f69dca248fcbfc823158f4c58e",
+      "svgSha256": "ae5460a0d1074c48b4c19b0ad5badcbbd211f7e4b2af4f86cfb037e55a90fece",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Bandeira-EUA",
+      "width": 225,
+      "height": 225,
+      "scale": 0.3,
+      "masterSha256": "7859723447bffa3355ab905ce5d61ae31ed449880620d25622c0b2c9c7beb3fb",
+      "pngSha256": "6fb2fa27120eb96aaa6ee732711658000f0e9ce594a726a9742c876afc63669c",
+      "svgSha256": "ccb546308c496926940618312238b5b43fd371fdd0d586d50717ebb86acb2280",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-GuardaChuva",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "07528f64ed74490df9d969bcec2ecba76317712c99d04d6c1785647ab8b676a4",
+      "pngSha256": "ec78fdda047452f6d1687a8a3068ebfc626547ab993997c2c63ad243b83d3b11",
+      "svgSha256": "d21dfc09e268875625d2ed25c343283b610452ac33b2a2b098cba152ef7bb362",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Vela",
+      "width": 300,
+      "height": 300,
+      "scale": 0.3,
+      "masterSha256": "a68b9f77f974a356a5a701466cab7afe128a42407b98c1c57fb47b11ae0508de",
+      "pngSha256": "4e245f79c5049ba231c357368c9ba8373ac85ec7bdda0fe43ba10f348c87732b",
+      "svgSha256": "0eb13f895c3916fb1dcbd623cb964ecec7e8840cead52c3da5ca513b4df6fab4",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Angry",
+      "width": 150,
+      "height": 250,
+      "scale": 0.3,
+      "masterSha256": "7e8f1d34338123c92c0548e394112da647569ad3127112c674a7aeb757fe1d13",
+      "pngSha256": "2dda207dbaf59c99b6207c580b3f2415594fc5ab9035952d7cdabe162cda7275",
+      "svgSha256": "6019b6ec538ff73fadb27442867ac407b815d7a72bba43bf91a01cd3762d1d22",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Crying",
+      "width": 150,
+      "height": 250,
+      "scale": 0.3,
+      "masterSha256": "e27dd16e2aae1a13a64c5a5c52258f83d48fa024295ea3e54b62d81c608ce681",
+      "pngSha256": "237b241be29b793dfde34053f120903fd209c470d3ad7c1c3106b47c6ad187a0",
+      "svgSha256": "01542b1231ff96a5b32cb5558b47c9e0fa5b0e8f02f709d40b2b350d677ecd9d",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Dizzy",
+      "width": 150,
+      "height": 250,
+      "scale": 0.3,
+      "masterSha256": "cf937e4d75ead69ea1eb12a2710389cca020c1b63c83c7908dfbf895e4d842a9",
+      "pngSha256": "559861ce178284b2d8c4d535825069515d3aa4a4da089a5827ff781a99f3fd87",
+      "svgSha256": "2dcf3b5aab71786251c2dbaa10a5fc58ecd75fbe99e977849e02119a70a14642",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-happy",
+      "width": 150,
+      "height": 250,
+      "scale": 0.3,
+      "masterSha256": "315454b614628e0260e5b62d36ef4771a9cb7bfbe547b73aca6e97f24996e184",
+      "pngSha256": "4d98536e499b6519fb68a920220a6ec787ff15dfa32aeb37a66bc3921dd861c9",
+      "svgSha256": "71869131b32b228e62e00bb22cf472dd94e770aee1422d3c70da3676f731b3f4",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Sad",
+      "width": 150,
+      "height": 250,
+      "scale": 0.3,
+      "masterSha256": "d2efac46b2b6b5852e65bab78408fe753698dee8d54c84cede17999d28d70a33",
+      "pngSha256": "e813f5663b1f80d3883bda72cd06a5c50a342bc741108067926293c53e94740d",
+      "svgSha256": "4226f64cdcd37df042839bb2a56bed36a505aff543984189cece7370286524a5",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Shame",
+      "width": 150,
+      "height": 250,
+      "scale": 0.3,
+      "masterSha256": "a742773edf64080fd46aa6110b8004f6ff336b9e92a2ac48eb8dec70d1335d8a",
+      "pngSha256": "a967ee3a9e4d6e7c059d8a9491798a27f5c105402a073545fe1747ee708f2b52",
+      "svgSha256": "7cd6a5704f3a5ad0c68537c8c8193bffb5daff90e2774008272395450e448c12",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-what",
+      "width": 150,
+      "height": 250,
+      "scale": 0.3,
+      "masterSha256": "b199db7a6393a9a81fbb5a09653f6814e2af8c7a6e04a307764d94a5ff573f44",
+      "pngSha256": "e1a778335d1935ce294d22634b27d296c6fea5b3faaf22e15fab54452137561a",
+      "svgSha256": "563af08b82dc329ff818a5da0954bb12c48eca0f47e72cbfc018fad6b50eee5b",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-heart",
+      "width": 150,
+      "height": 250,
+      "scale": 0.3,
+      "masterSha256": "24466eb84ceb66f3db3a8f8183e5e10d627bb87f7ef02f8cdb0a73ede754dffa",
+      "pngSha256": "7826226ae41b0fdfa0700f62d4d0bcb3534681c99f293eea386068ebf82eb681",
+      "svgSha256": "c0d32908971c0f6e83c30b69159a47018302273fd39728af445605f28436de8e",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-like",
+      "width": 150,
+      "height": 250,
+      "scale": 0.3,
+      "masterSha256": "ec321cc98ccd193f8cf52dd7a144bb77af2b448dda833c0edc7aaca6b341ade5",
+      "pngSha256": "d87d50454378ec5e021095cbdb607b5cb6c996aac48cd191757bbd8fde6aa5d9",
+      "svgSha256": "fbcb3c16343460b189ac9a66d839b62aac3f81c2a622fc2f19390e1c9d889d1a",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-No!",
+      "width": 150,
+      "height": 250,
+      "scale": 0.3,
+      "masterSha256": "97ceaaac6a20dae669a7e899aeef75b6f569451f81a177b4f3f7f5d7c4c9477a",
+      "pngSha256": "d07fdec6c8fecc50e64998c635eb5f23a09bdc2290b25adf5ec12541e9fcfcfe",
+      "svgSha256": "614d419d03cb8916e5a5e657355ea2b3d1bd573116153fade5d8e0562012b423",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Unlike",
+      "width": 150,
+      "height": 250,
+      "scale": 0.3,
+      "masterSha256": "ffba95f8aece464c62c9d3ee1a52c88f492ecf3516deed2c6cf4fc398facd680",
+      "pngSha256": "3ce66e71931c58f71526302d44cdef9bd5fc1db04354cebf79e930970f85f1ce",
+      "svgSha256": "18715044ffea12c7998ea743cc79e67c80e5a701eeac15786d9f42758699f7a6",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Lixo-1-maca",
+      "width": 300,
+      "height": 300,
+      "scale": 0.5,
+      "masterSha256": "d1c4cab2989095ff75dc4926045f61eb6964f6b90eb8472a9ab74ac61221dd64",
+      "pngSha256": "9204830760a6e7ad919d4c7928161ffd806a49410d36a3bf4e6e58bfcddfa8af",
+      "svgSha256": "84e632e0596d53756a698b04da0d042bab9944a750413acef5c5b2c65e7ee5cc",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Lixo-2-lata-refrigerante",
+      "width": 300,
+      "height": 300,
+      "scale": 0.5,
+      "masterSha256": "49eefd160a66ad30694384331ceacc87d05d294fbdf4f09ed7947097a8b1e98e",
+      "pngSha256": "98be66681f19d317c5115286ea2b7d4872853460f7bf3907c55f354621522acc",
+      "svgSha256": "61a08b659c54fada049717bde457c81ceb2684b35990353e5e455879c8c02c2d",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Lixo-3-sacola-plastica",
+      "width": 300,
+      "height": 300,
+      "scale": 0.5,
+      "masterSha256": "14550ea9cadfb9ca69ac4344d421a7050d443a70a7b3311b9762f163210624fb",
+      "pngSha256": "381c3c39985388c35e95a0d8feb0ac7eeab4bbdc58f69aa1d775c3aa0e4a56eb",
+      "svgSha256": "a06a451cd60bd92fa754d795c59de7444df3f2a516f9c89a84d1179777942ab3",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Lixo-4-garra-de-vidro",
+      "width": 300,
+      "height": 300,
+      "scale": 0.5,
+      "masterSha256": "c4b6dd1d88b1ff724f8197023956db5279537a8df6b0348a73b1e008631bd62d",
+      "pngSha256": "5e54aa24ebbb0068c10582d0f02e9956fb2a4d875ac2efb3d2a5af54490dc1bc",
+      "svgSha256": "7f7700636faa93d642ff5a58843cfe54322bf77beaa8093fe1270779ecebe049",
+      "silhouetteIoU": 1
+    },
+    {
+      "id": "HY-Lixo-5-papel",
+      "width": 300,
+      "height": 300,
+      "scale": 0.5,
+      "masterSha256": "1b5d1f341e7c9fef3ed2f928a777448abc4bf79158069d7c97dbebe749804290",
+      "pngSha256": "738bf11f6edfd185c9b1b032ff967b67b5f1bd7be43a27c176b24e4e0a1ab9b0",
+      "svgSha256": "4f4ac3d9cbae7ce61c9c3a31a9509a99b9259b1d31194a23c67322600ae71372",
+      "silhouetteIoU": 1
+    }
+  ]
+}
