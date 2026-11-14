@@ -149,6 +149,9 @@ async function buildMutationQuery(supabase, sql, values = [], userId = null, rol
     if (userId && OWNER_TABLES.has(table)) {
       data.owner = userId;
     }
+    if (table === 'projects') {
+      console.log(`[DAILY_LIMIT debug] INSERT projects userId=${userId} role=${role} assignment_id=${data.assignment_id || null}`);
+    }
     // Dedup de projeto de missão: IO.createProject({..., assignmentId}) →
     // addValue('assignment_id', obj.assignmentId) (src/app/src/iPad/IO.js)
     // roda tanto quando um professor autora um exemplo (AssignmentAuthorBar.js)
@@ -205,6 +208,7 @@ async function buildMutationQuery(supabase, sql, values = [], userId = null, rol
         .lt('created_at', tomorrowStart.toISOString());
       // Cap elevado de 1 pra 100/dia [2026-11-14, a pedido do usuário] -
       // permanente, não é mais temporário.
+      console.log(`[DAILY_LIMIT debug] userId=${userId} role=${role} count=${count} countErr=${countErr ? JSON.stringify(countErr) : null}`);
       if (!countErr && count >= 100) {
         const limitErr = new Error('DAILY_LIMIT_EXCEEDED');
         limitErr.status = 429;
