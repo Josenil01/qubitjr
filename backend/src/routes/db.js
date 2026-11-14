@@ -205,6 +205,7 @@ async function buildMutationQuery(supabase, sql, values = [], userId = null, rol
         .lt('created_at', tomorrowStart.toISOString());
       // TEMP [2026-11-14]: cap elevado de 1 pra 100/dia a pedido do usuário.
       // REVERTER pra `count >= 1` até 2026-11-16.
+      console.log(`[DAILY_LIMIT debug] userId=${userId} role=${role} count=${count} countErr=${countErr ? JSON.stringify(countErr) : null} todayStart=${todayStart.toISOString()}`);
       if (!countErr && count >= 100) {
         const limitErr = new Error('DAILY_LIMIT_EXCEEDED');
         limitErr.status = 429;
