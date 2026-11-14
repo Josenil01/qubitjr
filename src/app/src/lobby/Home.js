@@ -528,11 +528,15 @@ export default class Home {
         
         Home.emptyProjectThumbnail(div);
         
-        // Check daily project limit (UTC day)
+        // Check daily project limit (UTC day) - precisa bater com o cap real
+        // do backend (routes/db.js#buildMutationQuery, hoje 100/dia), senão
+        // essa pré-checagem client-side bloqueia o botão antes mesmo de
+        // tentar o servidor, com um limite desatualizado.
         var _today = new Date().toISOString().split('T')[0];
-        Home._dailyLimitReached = data.some(function(p) {
+        var _todayCount = data.filter(function(p) {
             return p.isgift !== '1' && p.created_at && p.created_at.startsWith(_today);
-        });
+        }).length;
+        Home._dailyLimitReached = _todayCount >= 100;
         if (Home._dailyLimitReached) {
             var _btn = gn('newproject');
             if (_btn) _btn.classList.add('daily-limit-reached');
