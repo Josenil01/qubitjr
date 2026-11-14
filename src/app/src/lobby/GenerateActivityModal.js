@@ -42,6 +42,9 @@ const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : 
 
 let btnEl = null;
 let busy = false;
+// Espelha os mocks de ALUNO em backend/src/index.js#MOCK_TOKENS (dev-teacher-a
+// é o único mock de professor, por isso fica fora desta lista).
+const MOCK_STUDENT_TOKENS = ['dev-user-a', 'dev-user-b'];
 
 function authHeader () {
     var token = window.__AUTH_TOKEN__;
@@ -109,21 +112,28 @@ function closeOverlay (overlayEl) {
 export default class GenerateActivityModal {
     static init () {
         var token = window.__AUTH_TOKEN__;
-        // Token mock de dev (dev-teacher-a/dev-user-a) não é um JWT - não tem
-        // ponto nenhum pra separar header.payload.signature, então
-        // decodeJwtPayloadUnsafe sempre devolve null pra ele. Só esconde o
-        // botão quando CONSEGUIMOS decodificar um JWT de verdade e ele diz
-        // explicitamente que não é professor - um token mock (indecodificável)
-        // cai no "mostra por padrão" (ambiente de dev, sem HelloYotta real
-        // emitindo JWT). Nunca é uma fronteira de segurança de qualquer jeito -
-        // POST /assignments/generate-from-theme já rejeita com 403 quem não
-        // for professor de verdade no backend.
+        // Token mock de dev (dev-teacher-a/dev-user-a/dev-user-b) não é um JWT -
+        // não tem ponto nenhum pra separar header.payload.signature, então
+        // decodeJwtPayloadUnsafe sempre devolve null pra ele. Quando
+        // CONSEGUIMOS decodificar um JWT de verdade, só mostra se ele diz
+        // explicitamente que é professor/admin. Para mock, checamos a lista
+        // MOCK_STUDENT_TOKENS (dev-user-a/dev-user-b são mocks de ALUNO) -
+        // qualquer outro valor de mock (ex.: dev-teacher-a) cai no "mostra por
+        // padrão" (ambiente de dev, sem HelloYotta real emitindo JWT). Nunca é
+        // uma fronteira de segurança de qualquer jeito - POST
+        // /assignments/generate-from-theme já rejeita com 403 quem não for
+        // professor de verdade no backend.
         var looksLikeJwt = typeof token === 'string' && token.split('.').length >= 3;
         if (looksLikeJwt) {
             var claims = decodeJwtPayloadUnsafe(token);
             if (!claims || (claims.role !== 'professor' && claims.role !== 'admin')) {
                 return;
             }
+        } else if (MOCK_STUDENT_TOKENS.indexOf(token) !== -1) {
+            // dev-user-a/dev-user-b (backend/src/index.js#MOCK_TOKENS) são
+            // mocks de ALUNO, não de professor - ao contrário de dev-teacher-a,
+            // não devem ver o botão de gerar atividade (mesmo sendo dev/teste).
+            return;
         }
         if (btnEl) return;
         btnEl = newHTML('button', 'assignmentAuthorBtn', document.body);
