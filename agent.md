@@ -26,7 +26,7 @@ There are now **five** active HTML pages, each with its own JS entry:
 `src/app/appEntry-vite.js` is the module entry for the editor/home/splash pages.
 `src/app/src/entry/player.js` is the **separate** entry module for the player page — it is loaded directly by `player.html` and NOT bundled through `appEntry-vite.js`.
 
-Do NOT touch or reference `appEntry.js` or `appEntry-web.js` — they are in `_legacy/`.
+Do NOT touch or reference `appEntry.js` or `appEntry-web.js` — they were part of the old Electron desktop app, now removed from the repo (see "Legacy Folder" below).
 
 ### Development vs. Build
 - `npm run dev` serves files directly from source via Vite's dev server.
@@ -60,10 +60,12 @@ The project has a share/public-player feature added after the initial architectu
 - **Frontend:** `player.js` fetches `/api/public/project/:token` (no auth header). Emoji reactions are posted to `/api/public/project/:token/react`.
 - Allowed emojis: `❤️ 😄 👏 🌟 🎉` — hardcoded in both `share.js` and `player.js`. Change in both if you need to add/remove.
 
-### Legacy Folder
-`_legacy/` contains files from previous generations of the project (Electron app, old CI).
-Do NOT import, modify, or reference anything inside `_legacy/`.
-To revert a file, copy it back from `_legacy/<original-path>` to `<original-path>`.
+### Legacy Folder (removed)
+This project used to ship an Electron desktop app alongside the web app, archived under
+`_legacy/` (Electron main/renderer process, old CI config, superseded entry points). The
+desktop app has been fully removed from the repo — this is now a web-only project
+(Vite + Express + Supabase). If you need to inspect the old Electron code, check git
+history from before its removal rather than looking for a `_legacy/` folder.
 
 ### Database
 This project uses **Supabase (PostgreSQL)** via `@supabase/supabase-js`.
@@ -204,17 +206,6 @@ Do not remove or convert these to standard CSS values.
 │           └── snap/             # Snap.svg library (minified, do not edit)
 │               └── snap.svg-min.js
 ├── dist/                         # Build output (Vite build)
-├── _legacy/                      # Files from previous project generations (Electron, old CI)
-│   ├── src/
-│   │   ├── main.js               #   Electron main process (archived)
-│   │   ├── electronClient.js     #   Electron renderer (archived)
-│   │   └── app/
-│   │       ├── appEntry.js       #   Original synchronous entry point (archived)
-│   │       ├── appEntry-web.js   #   ES6 module entry without bundler (archived)
-│   │       └── index-vite.html   #   Alternative HTML without CSS <link> tags (archived)
-│   ├── .compilerc                #   Legacy Babel config for Electron (archived)
-│   ├── .travis.yml               #   Legacy CI pipeline (archived)
-│   └── docs/                     #   Electron documentation (archived)
 ├── scripts/                      # (empty)
 ├── vite.config.js                # Vite configuration (plugins, proxy, aliases, CSS processing)
 ├── vercel.json                   # Vercel deployment config (routes, functions)
@@ -365,7 +356,6 @@ Never introduce new globals. Always use module imports.
 - Add expository comments explaining what code does — code should be self-documenting.
 - Add JSDoc or documentation comments unless explicitly requested.
 - Introduce new npm dependencies without explicit user request.
-- Modify anything inside `_legacy/` (archived Electron code).
 - Modify `src/app/src/snap/snap.svg-min.js` (third-party minified library).
 - Create new global variables on `window`.
 - Use `console.log` for temporary debugging in production paths — use structured logging or remove before commit.

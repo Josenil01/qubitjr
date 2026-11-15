@@ -28,8 +28,9 @@ por blocos para crianças. A base de código foi originalmente escrita para iPad
 e persistência em nuvem. Deploy em produção via **Vercel** (frontend estático + função
 serverless em `api/`).
 
-- **Runtime:** navegador (frontend) + Node.js/Express (backend) — **não há Electron ativo**;
-  o antigo app Electron desktop foi arquivado em `_legacy/` (ver abaixo).
+- **Runtime:** navegador (frontend) + Node.js/Express (backend) — **não há Electron**;
+  o antigo app Electron desktop foi removido do repositório (não está mais em `_legacy/`,
+  essa pasta não existe mais). Este é um projeto web-only.
 - **Build:** Vite (entrada única `src/app/appEntry-vite.js`; `player.html` usa
   `src/app/src/entry/player.js` como entrada separada, sem passar por `appEntry-vite.js`).
 - **Backend:** Express (`backend/src/`) traduzindo chamadas legadas (SQL-like, iPad) para
@@ -48,13 +49,13 @@ serverless em `api/`).
 | `api/index.js` | Entry point serverless da Vercel (monta o app Express para produção). |
 | `src/app/assets`, `sounds`, `svglibrary`, `pnglibrary`, `samples` | Assets (sprites, sons) — **não são código**, não editar para lógica. |
 | `src/app/*.html`, `appEntry-vite.js` | Entradas do Vite (frontend). |
-| `dist/`, `_legacy/dist/` | **Builds gerados** — nunca editar à mão; saem do build. |
-| `_legacy/` | App Electron antigo (arquivado) — não importar nem referenciar. |
+| `dist/` | **Build gerado** — nunca editar à mão; sai do build. |
 | `graphify-out/` | Grafo de conhecimento do código (ver abaixo). |
 
 > ⚠️ Ao buscar/editar lógica, restrinja a `src/app/src/` (frontend) e `backend/src/`
-> (backend). `dist/` e `_legacy/` contêm bundles minificados/código arquivado que
-> aparecem em buscas mas **não devem ser alterados**.
+> (backend). `dist/` contém bundles minificados que aparecem em buscas mas **não devem
+> ser alterados**. O app Electron antigo (`_legacy/`) foi removido do repositório — não
+> existe mais.
 
 ## Estrutura de `src/app/src/`
 
@@ -138,6 +139,6 @@ Grafo gerado por `/graphify` sobre `src/app/src/` (1766 nós, 4459 arestas, 84 c
 ## Convenções de trabalho
 
 - Escreva código no mesmo estilo do entorno (classes ES, `var` local como no legado, mesma densidade de comentários).
-- Não toque em `dist/` nem `_legacy/` — são saídas de build.
+- Não toque em `dist/` — é saída de build.
 - Remova `console.log` de debug antes de finalizar uma correção.
 - Commits/PRs só quando o usuário pedir.
