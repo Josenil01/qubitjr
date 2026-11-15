@@ -1,3 +1,4 @@
+import {costumeOptions, drawCostumeChoice} from './CostumeMenu.js';
 import ScratchJr from '../ScratchJr.js';
 import BlockSpecs from './BlockSpecs.js';
 import Menu from './Menu.js';
@@ -47,7 +48,7 @@ export default class BlockArg {
             this.list = JSON.stringify(block.spec[1]);
             this.numperrow = 3;
             if (block.blocktype == 'setcostume') {
-                this.icon = BlockSpecs.costumes[this.argValue] || BlockSpecs.costumes[0];
+                this.icon = null;
                 this.div = this.addImageMenu(this.menuCloseCostumes);
             } else {
                 // 3 = velocidade "ainda não escolhida" (paleta zerada de missão) - fora
@@ -88,7 +89,11 @@ export default class BlockArg {
         }
     }
 
-    update () {
+    update (spr) {
+        if (this.daddy.blocktype == 'setcostume') {
+            this.costumeSprite = spr;
+            this.drawChoice(this.daddy.blockicon);
+        }
         if (this.argType == 'r') {
             this.div.childNodes[0].textContent = this.argValue;
         }
@@ -257,6 +262,10 @@ export default class BlockArg {
     }
 
     drawChoice (cnv) {
+        if (this.daddy.blocktype == 'setcostume') {
+            drawCostumeChoice(cnv, this.argValue, this.daddy.scale * window.devicePixelRatio);
+            return cnv;
+        }
         var ctx = cnv.getContext('2d');
         ctx.clearRect(0, 0, cnv.width, cnv.height);
         var icon = BlockSpecs.getImageFrom('assets/blockicons/' + this.icon, 'svg');
@@ -316,6 +325,11 @@ export default class BlockArg {
         ScratchJr.unfocus(e);
         if (!this.daddy) {
             return;
+        }
+        if (this.daddy.blocktype == 'setcostume') {
+            const spr = this.daddy.div.parentNode?.owner?.spr || this.costumeSprite || ScratchJr.getSprite();
+            this.list = JSON.stringify(costumeOptions(spr));
+            if (!JSON.parse(this.list).length) return;
         }
         Menu.openDropDown(this.daddy.div, fcn);
     }
@@ -405,26 +419,8 @@ export default class BlockArg {
         e.preventDefault();
         b.owner.arg.unconfirmed = false;
         var value = b.owner.arg.argValue;
-        b.owner.arg.argValue = BlockSpecs.costumes.indexOf(c);
-        var ctx = b.owner.blockicon.getContext('2d');
-        b.icon = BlockSpecs.getImageFrom('assets/blockicons/' + c, 'svg');
-        ctx.clearRect(0, 0, 64 * scaleMultiplier * window.devicePixelRatio,
-            64 * scaleMultiplier * window.devicePixelRatio);
-        b.owner.blockicon.style.display = 'none';
-        b.owner.blockicon.style.display = 'inherit';
-        if (!b.icon.complete) {
-            b.icon.onload = function () {
-                var w = b.icon.width;
-                var h = b.icon.height;
-                ctx.drawImage(b.icon, 0, 0, w, h, 0, 0,
-                    w * scaleMultiplier * window.devicePixelRatio, h * scaleMultiplier * window.devicePixelRatio);
-            };
-        } else {
-            var w = b.icon.width;
-            var h = b.icon.height;
-            ctx.drawImage(b.icon, 0, 0, w, h, 0, 0,
-                w * scaleMultiplier * window.devicePixelRatio, h * scaleMultiplier * window.devicePixelRatio);
-        }
+        b.owner.arg.argValue = Number(c);
+        b.owner.arg.drawChoice(b.owner.blockicon);
         if (Menu.openMenu) {
             Menu.openMenu.parentNode.removeChild(Menu.openMenu);
         }

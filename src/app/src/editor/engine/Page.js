@@ -20,7 +20,8 @@ import {newHTML, newDiv, gn,
 // usada pelos índices do bloco (ver Prims.SetCostume).
 const costumeVariants = {
     'HY-SaciPerere1.svg': ['HY-SaciPerere1.svg', 'HY-SaciPerere2.svg'],
-    'HY-SaciPerere2.svg': ['HY-SaciPerere1.svg', 'HY-SaciPerere2.svg']
+    'HY-SaciPerere2.svg': ['HY-SaciPerere1.svg', 'HY-SaciPerere2.svg'],
+    'HY-Dracula.svg': ['HY-Dracula.svg', 'HY-Morcego.svg']
 };
 
 export default class Page {

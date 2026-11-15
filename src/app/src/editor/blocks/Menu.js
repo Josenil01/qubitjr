@@ -1,3 +1,4 @@
+import {menuGrid, drawCostumeChoice} from './CostumeMenu.js';
 import BlockSpecs from './BlockSpecs.js';
 import {scaleMultiplier, setProps, setCanvasSize, newHTML, isTablet,
     newDiv, getDocumentHeight, drawThumbnail, frame, globalx, globaly} from '../../utils/lib.js';
@@ -20,9 +21,10 @@ export default class Menu {
         var list = JSON.parse(b.owner.arg.list);
         var num = b.owner.arg.numperrow;
         var p = b.parentNode;
-        var dh = size * Math.round(list.length / num);
-        var rows = list.length / num;
-        var w = size * list.length / rows;
+        if (!list.length) return;
+        var grid = menuGrid(list.length, num);
+        var dh = Math.min(size * grid.rows, Math.max(size, (getDocumentHeight() - 30) / scaleMultiplier));
+        var w = size * grid.columns;
         var scaledWidth = w * scaleMultiplier;
         var dx = b.left + (b.offsetWidth - scaledWidth) / 2;
         if ((dx + scaledWidth) > p.width) {
@@ -44,6 +46,9 @@ export default class Menu {
                 'translate(' + (w / 2) + 'px, ' + (dh / 2) + 'px)'
         });
         mu.setAttribute('class', 'menustyle ' + color);
+        if (b.owner.blocktype == 'setcostume') {
+            mu.style.overflowY = 'auto';
+        }
         mu.active = b;
         for (var i = 0; i < list.length; i++) {
             Menu.addImageToDropDown(mu, list[i], b, fcn);
@@ -52,7 +57,8 @@ export default class Menu {
     }
 
     static addImageToDropDown (mu, c, block, fcn) {
-        var img = BlockSpecs.getImageFrom('assets/blockicons/' + c, 'svg');
+        var isCostume = block.owner.blocktype == 'setcostume';
+        var img = isCostume ? null : BlockSpecs.getImageFrom('assets/blockicons/' + c, 'svg');
         var cs = newHTML('div', 'ddchoice', mu);
         var micon = newHTML('canvas', undefined, cs);
         var iconSize = 42;
@@ -63,7 +69,9 @@ export default class Menu {
                 'scale(' + (1 / window.devicePixelRatio) + ', ' + (1 / window.devicePixelRatio) + ') ' +
                 'translate(' + (scaledIconSize / 2) + 'px, ' + (scaledIconSize / 2) + 'px)'
         });
-        if (!img.complete) {
+        if (isCostume) {
+            drawCostumeChoice(micon, c, scaledIconSize / 64);
+        } else if (!img.complete) {
             img.onload = function () {
                 drawThumbnail(img, micon);
             };
