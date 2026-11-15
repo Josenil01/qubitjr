@@ -39,7 +39,17 @@
         {"md5":"Summer.svg","width":480,"height":360,"ext":"svg","name":"Summer","order":"backgrounds,06 Estacoes do ano","tags":["backgrounds","06 Estacoes do ano"]},
         {"md5":"Winter.svg","width":480,"height":360,"ext":"svg","name":"Winter","order":"backgrounds,06 Estacoes do ano","tags":["backgrounds","06 Estacoes do ano"]},
         {"md5":"MoonBkg.svg","width":480,"height":360,"ext":"svg","name":"Moon","order":"backgrounds,07 Espaco","tags":["backgrounds","07 Espaco"]},
-        {"md5":"Space.svg","width":480,"height":360,"ext":"svg","name":"Space","order":"backgrounds,07 Espaco","tags":["backgrounds","07 Espaco"]}
+        {"md5":"Space.svg","width":480,"height":360,"ext":"svg","name":"Space","order":"backgrounds,07 Espaco","tags":["backgrounds","07 Espaco"]},
+        {"md5":"HY-Cenario-Reciclagem.svg","width":480,"height":360,"ext":"svg","name":"Centro de reciclagem","order":"backgrounds,01 Cidade","tags":["backgrounds","01 Cidade"]},
+        {"md5":"HY-Cenario-Horta.svg","width":480,"height":360,"ext":"svg","name":"Horta comunitária","order":"backgrounds,00 Campo e fazenda","tags":["backgrounds","00 Campo e fazenda"]},
+        {"md5":"HY-Cenario-Transito.svg","width":480,"height":360,"ext":"svg","name":"Faixa de pedestres e cruzamento","order":"backgrounds,01 Cidade","tags":["backgrounds","01 Cidade"]},
+        {"md5":"HY-Cenario-Feira.svg","width":480,"height":360,"ext":"svg","name":"Feira de alimentos","order":"backgrounds,01 Cidade","tags":["backgrounds","01 Cidade"]},
+        {"md5":"HY-Cenario-Cozinha.svg","width":480,"height":360,"ext":"svg","name":"Cozinha","order":"backgrounds,02 Ambientes internos","tags":["backgrounds","02 Ambientes internos"]},
+        {"md5":"HY-Cenario-Laboratorio.svg","width":480,"height":360,"ext":"svg","name":"Laboratório de ciências","order":"backgrounds,02 Ambientes internos","tags":["backgrounds","02 Ambientes internos"]},
+        {"md5":"HY-Cenario-EstacaoEspacial.svg","width":480,"height":360,"ext":"svg","name":"Estação espacial por dentro","order":"backgrounds,07 Espaco","tags":["backgrounds","07 Espaco"]},
+        {"md5":"HY-Cenario-IlhaPirata.svg","width":480,"height":360,"ext":"svg","name":"Ilha dos piratas","order":"backgrounds,04 Praias e aguas","tags":["backgrounds","04 Praias e aguas"]},
+        {"md5":"HY-Cenario-CasteloInterior.svg","width":480,"height":360,"ext":"svg","name":"Castelo por dentro","order":"backgrounds,02 Ambientes internos","tags":["backgrounds","02 Ambientes internos"]},
+        {"md5":"HY-Cenario-PracaVila.svg","width":480,"height":360,"ext":"svg","name":"Praça de uma vila brasileira","order":"backgrounds,01 Cidade","tags":["backgrounds","01 Cidade"]}
     ],
     "sprites": [
         {"md5":"HY-Allan.svg","width":150,"height":250,"ext":"svg","name":"Allan","scale":0.5,"order":"characters,00 Turma Qubit","tags":["characters","00 Turma Qubit"],"legacy":false},

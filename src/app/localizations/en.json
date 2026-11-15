@@ -451,5 +451,15 @@
     "CHARACTER_HY-Lixo-2-lata-refrigerante.svg": "Crushed soda can",
     "CHARACTER_HY-Lixo-3-sacola-plastica.svg": "Plastic bag",
     "CHARACTER_HY-Lixo-4-garra-de-vidro.svg": "Broken glass bottle",
-    "CHARACTER_HY-Lixo-5-papel.svg": "Crumpled paper"
+    "CHARACTER_HY-Lixo-5-papel.svg": "Crumpled paper",
+    "BACKGROUND_HY-Cenario-Reciclagem.svg": "Recycling center",
+    "BACKGROUND_HY-Cenario-Horta.svg": "Community garden",
+    "BACKGROUND_HY-Cenario-Transito.svg": "Pedestrian crossing",
+    "BACKGROUND_HY-Cenario-Feira.svg": "Food market",
+    "BACKGROUND_HY-Cenario-Cozinha.svg": "Kitchen",
+    "BACKGROUND_HY-Cenario-Laboratorio.svg": "Science laboratory",
+    "BACKGROUND_HY-Cenario-EstacaoEspacial.svg": "Space station interior",
+    "BACKGROUND_HY-Cenario-IlhaPirata.svg": "Pirate island",
+    "BACKGROUND_HY-Cenario-CasteloInterior.svg": "Castle interior",
+    "BACKGROUND_HY-Cenario-PracaVila.svg": "Brazilian village square"
 }

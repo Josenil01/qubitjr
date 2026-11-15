@@ -139,4 +139,4 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 For contribution guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-The official PNG/SVG library contains 168 standardized visible characters and objects, including the new Sun. Catalog IDs, dimensions and scales are preserved, with synchronized thumbnails, stage images and alpha-derived selection/collision outlines. All 168 passed the editor integration audit. Legacy entries and background scenes are preserved.
+The official PNG/SVG library contains 168 standardized visible characters and objects, including the new Sun. Catalog IDs, dimensions and scales are preserved, with synchronized thumbnails, stage images and alpha-derived selection/collision outlines. All 168 passed the editor integration audit. Legacy entries are preserved. The 39 chibi backgrounds include 29 restyled scenes and 10 new settings, with synchronized 480×360 thumbnails and stage images. Generation prompts and asset hashes are recorded in `docs/art/cenarios-chibi.json`.

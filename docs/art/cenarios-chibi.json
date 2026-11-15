@@ -1,0 +1,518 @@
+{
+  "tool": "image_gen integrated",
+  "logicalSize": [
+    480,
+    360
+  ],
+  "embeddedSize": [
+    960,
+    720
+  ],
+  "resampling": "Uniform center-cover crop; no stretching",
+  "backgrounds": [
+    {
+      "id": "Farm",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Green open farmland with distant cultivated rows and rolling hills. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "f47bee4e906771d096e5c84016af70aff0fe13d41e4fd0f8d3cb03b77fe46aff",
+      "pngSha256": "fa655d9d750f91e6ab5a46e59f115f9a4f39edc41322033b8fd10c9ddea179a4",
+      "svgSha256": "448cf50025e24fb5fc67402c9adb38edad3fd418223b00834d400582a9990892"
+    },
+    {
+      "id": "Farm_1",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Pasture with white fence, red barn at right, distant snowy mountains. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "6935d5bff64f93b09aafe7773362edc98c27e95b2fff2e2499c0b15660399e69",
+      "pngSha256": "2371460a8b74532e292aa1bbb3b506ed60f2409248a73e8108109c9482169c14",
+      "svgSha256": "526ba3d23710597300f6cc741e8b129dcbe6b64a6a4910e1f58155e9a6b934e0"
+    },
+    {
+      "id": "City",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Colorful urban buildings behind horizontal road, open green foreground. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "142f2ce167755b5bb3987991edbe8578d661a1accec6ccedeb73360a45384db7",
+      "pngSha256": "53783630c0567d324d9fb883f83fda1788984df12630d17cd66c306fe69a5be3",
+      "svgSha256": "a777f4908ec476de4433de75c04481c5b1777fc69ec0f294e667f291d2078ccb"
+    },
+    {
+      "id": "Park",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Green city park with distant skyline, trees at edges, bench at right and stepping stones. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "0fe80cc0f4e6e573dd641202d00e0ac7c4ca8da033562c58d974ea0c59ade8bf",
+      "pngSha256": "60b9ee69bd00fa02c4d1d8cbe2cb1a4f7f5a06581edbddb7aae714c2824f8195",
+      "svgSha256": "de82b4961381f61acd06ef04fba6cb8517b813fb4a5e50bc71b2298ea56591c6"
+    },
+    {
+      "id": "Suburbs",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Suburban houses behind horizontal road and open lawn foreground. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "063361c61406d52440d170677ea4f1f8e7271c5a87908e9a41580a924fedf9e4",
+      "pngSha256": "6e90d24fa59f5a868ca344877bbae98369361ca3ace8219819c8f8f30afbb5ba",
+      "svgSha256": "78e7b3bdbd6855c20c99d3f74689a95bc947b83510d3207ceb728da27c86b777"
+    },
+    {
+      "id": "Bedroom",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Cozy bedroom, yellow bed beneath window, bookcase at left, toy chest at right, round blue rug. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "20e7aa690e8f9719a6c1a7b9dc46141c1a68240f9f6d4083f3cee53d5228ec4b",
+      "pngSha256": "f67b0777544a9b49c32c0ffdf8f3595c18436f954b93ff53c47390d81382cf1b",
+      "svgSha256": "7ee381468033f8466f3217b7b69afdfe7df860a3567413850e15a38a9e22d84f"
+    },
+    {
+      "id": "Classroom",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Cheerful classroom, blank whiteboard, colorful rear storage, small tables and chairs. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "9e6bb588ed2d9267c099bb2be5ad150c4c9a3ee584dc1a8ae39d769fe8c523c6",
+      "pngSha256": "cd632b0b164c7e4214dad9f272d5918e04e9f4e971a6bd7b23b10ba60a9a9ecb",
+      "svgSha256": "636e8ca25d39bde39acda50c54c9996c262878556e39c9b0a45e28600efda66a"
+    },
+    {
+      "id": "EmptyRoom",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Simple empty cream room, rear window, wood floor, red oval rug. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "3fb065fe05984c4ba4cdcf4b15d0ea8959f38738709b18443d9aa2a345276a20",
+      "pngSha256": "5b9a3ca85f5051ab1a012677f49f38c4845af3ed6305366f53f98257ac8e57e5",
+      "svgSha256": "ec59cd4b13872bc8bf325b92efb5b2ce2847bfdc0965a4ec5947935b1f19cd64"
+    },
+    {
+      "id": "Gym",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: School gym side court view, blue bleachers rear, basketball hoop right. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "559a307a3eeb0c184c695649981e8fe31340ec7f285f80d15c2c33628b75c379",
+      "pngSha256": "9e5a77aef4d59656f89ba8a9324e5b731abc3c53acfd135bee1e9c552cb6b1bb",
+      "svgSha256": "bd88b5cc95d6c2199c5705508a7cf41ddaba3122a21f27645f32313dce17f4f3"
+    },
+    {
+      "id": "Gym2",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: School gym symmetrical front view, rear basketball hoop, blue bleachers along sides. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "4c9cd2a469fb00653c51cf0c5baa117424e5ab01a5c421e21a66b889bf8be3ab",
+      "pngSha256": "81e93461d99ba9aac185a7aff6e2a0a672f36eaf883b2a76532ef06535a4e1ee",
+      "svgSha256": "fd529eb0a41a39d2ff83e1912bba91c900fa01e6119f3fa7e0e3dbaa74502450"
+    },
+    {
+      "id": "Library",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Children library, bookshelves along sides, rear window, small reading table and stools. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "108f3ed1b7aa3fe26553b0fabdfa156e62e95c3da4b5c2cf821105bdc4f4e9a5",
+      "pngSha256": "52a728fccb1e2f867dedda89278800ad5d576cf485ccd2006c187423f30b63a0",
+      "svgSha256": "76600acd101e77a3e3a39aae27492845b9cb381275f3ad5fb4dd70b70fc362f5"
+    },
+    {
+      "id": "Theatre",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: View toward theatre stage framed by red curtains, forest painted backdrop, three pools of light and audience seats bottom. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "268e1a07863e3052b644aa88172827b68335b2fe0cad6e4dbc87227426c8370b",
+      "pngSha256": "01f05c12117a32c34b3c9d71f53dd92fe40daaafa4f1d75066bab4b6742f919b",
+      "svgSha256": "9e37730ddda96f440cdfd6a2a06ea0ff158417f470abbc58d66e92bf529d416c"
+    },
+    {
+      "id": "Jungle",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Dense green jungle with hanging vines, mossy branches at edges and distant waterfall. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "f330b26329e56832291ef49b3d5dd8322393ba38fbea267dad4f273bc218c0bf",
+      "pngSha256": "33b443ebe089800f267b148f1bb61b5f1b9627a8b85b2b4fdd2652b5c13b00d3",
+      "svgSha256": "078c0cac2661a6abea404e80504f04c8b2c82d1a4329024743759cbe9fe15858"
+    },
+    {
+      "id": "Savannah",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Sunny golden savannah with acacia tree, distant hills and grass. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "bfbd62324098fd50bbee879bd86d96a88c4797b1f9bcbd09169736f3138e2e5e",
+      "pngSha256": "38c416793c727d3dd5599d13f3542d5889c6ecfb48ee602c646e0c4c58d90cca",
+      "svgSha256": "a7d42a09fda768e76f9f363c8b6c44cd2b28bb7e25b183854270faca9cebd704"
+    },
+    {
+      "id": "Woods",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Moonlit purple pine forest with full moon, open clearing foreground. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "9ae3aa63f45d3ebc8a62da5f2e92c65f1832e02d7d80d0604749f1d5a4222d77",
+      "pngSha256": "038cf7ffaab58254d3afb98edcc6628dd0ed70f11242f1bd0e5926c3e700a909",
+      "svgSha256": "a527a84d733018056390d2f0c9fc2b95cbf838997b621460f7cd493c8373ff00"
+    },
+    {
+      "id": "BeachDay",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Sunny beach with turquoise ocean and orange surfboard at right. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "df9be88b6602ed142bff48977df7e1f2826e96477715a06b3ddda6f3b801c482",
+      "pngSha256": "64223458ab57cebc26a2544e3d1310af809757154e65ca2eebc7a3cb14f706bc",
+      "svgSha256": "88545c1c102ccf7f82503f4bed09674ab91a8baa0bb8ae6f7fae73df7d3a3333"
+    },
+    {
+      "id": "BeachNight",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Dark blue moonlit beach, wooden pier extending from left, moon reflected on ocean. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "c8103755b6b4112bda8ea198794f52c442646f3f0a81f0f916064ef486b2c182",
+      "pngSha256": "9da6bd904d3765e444e84efa1ecbe09eeaa18502951d3afe52280246c6372ebb",
+      "svgSha256": "15e981a23719ed93878f79f74472111c4ec943105ba32c8fe710451e3298b0bb"
+    },
+    {
+      "id": "BeachSunrise",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Warm orange sunset over ocean, sun near horizon, purple beach foreground. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "fd821f74c60fa8f21b995a9326dd0a3c33db111ad9e7155e6a4f4fb07544e6d6",
+      "pngSha256": "391a4b6e5ab8a7bcfab2b7ac7bd0a7652696a1c5f2fda31c0faf8034c7e0ed4e",
+      "svgSha256": "5e7c004a768c5f38710b35428208bce967cac68c82451aee9a33d1d0f118ae6b"
+    },
+    {
+      "id": "Lake",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Quiet blue lake at night, layered hills and crescent moon. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "364c6ac8c957aeac74b0a88533ada4ea1f2f5c78ceada97b910651cf3bc515c3",
+      "pngSha256": "b81b001ffb4662be92eafc9f100106e045d2ef777d3849db4ccbd8cb696886d2",
+      "svgSha256": "45f16445933fe72803aa440af3b81d43a0a4502ce3127c459d940313a2b8f191"
+    },
+    {
+      "id": "Creek",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Sunny woodland meadow, small stream on right and rounded trees. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "9c4cf9de7d34c3be324061524a6f40ee00acb9431097304c7c3b08b4c5f50207",
+      "pngSha256": "435e1400c8bc0eabb12132f739b9e52d2e926192103cefda2d982377b6becf26",
+      "svgSha256": "ac8ba7adcb6d78198803cbd1894f2c6295919158c3a2394442c67e3afb56b448"
+    },
+    {
+      "id": "Underwater",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Underwater turquoise ocean floor, coral and seaweed along edges, sunbeams descending. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "bc32e48c9d16b44e93b0ed75ce8893da69a78767eaff2754008997c8468f9827",
+      "pngSha256": "846eceea71eff1423f8726df3b7dca4f990dbe14cb01f0726f68d70d67ff10d8",
+      "svgSha256": "8f5b4831bb5bc0cd59770817678cc1fa45649e3eb81032485243f349a86323f2"
+    },
+    {
+      "id": "Arctic",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Snowy arctic landscape, distant pale mountains, open snow foreground and ice floes in water at right. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "4780e243905b8b03401924070be6db2f23e55a3b432428cadaf4c02734a32894",
+      "pngSha256": "c8a29f7c8613981d10ac147ee342d8d437609b018a422891ad6e438426aaca5b",
+      "svgSha256": "1d712fc3eae41cf6b729eefa0e6ad7641e571d7966390f3f7432a59e6ac09eb6"
+    },
+    {
+      "id": "Desert",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Warm desert sunset, layered dunes, sparse cacti along horizon. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "896546f1383f503c3b933e7edf3b282646512973f013b7397ee8f0d49741a631",
+      "pngSha256": "c96d1de7c68d9eb2222b0ac76a89b6f5f33df8d5a95d12416763a1f756aa0e4a",
+      "svgSha256": "357d19deca4392cb9da23c0c8517631cfb00cda6e44939ba804ed674599c84d2"
+    },
+    {
+      "id": "Fall",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Autumn orchard clearing, orange yellow tree canopies, fallen leaves and small distant cabin. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "f4c532cc02da42ed74b9780b9377ec8e3d8477e4b3abe2fb2baa543c1235493f",
+      "pngSha256": "bf134a21d32317360b1270055206b8200fba05b19cf329f3c7247e0ae19cefe7",
+      "svgSha256": "5f78e570858e3465919f79b6f1fa2691a1984a2df901b0cca9173798e923065c"
+    },
+    {
+      "id": "Spring",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Spring orchard clearing, blossoming trees, flowers and small distant cabin. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "7e69b6bf1c97a3d041117104415dfe1a4a2aa18e5042915f5737e35cd0b3fc8b",
+      "pngSha256": "e89cc0d4f12ea241180fb2328da7998ee6eee05107cf4bc6b3892ddebbac1e6d",
+      "svgSha256": "8489846a4a82542cb6e8f28476e3f52f372e5c5b370eeea6e8c456d6ebf25c9d"
+    },
+    {
+      "id": "Summer",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Summer orchard clearing, green fruit trees, grass and small distant cabin. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "245b9e7f7d600b1a3148c6c6866e992c614f2f6e5460df9585c4da8a8f01c7ad",
+      "pngSha256": "c445aa910487d35ac81599ee8c18069e8c016a0c7447ee9229a597a6adf57be7",
+      "svgSha256": "a507616affd94d51b8ca09ac7326363f1995089c57fbabd4dd6c693f2dd25553"
+    },
+    {
+      "id": "Winter",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Winter orchard clearing, bare trees with snow, footprints and small distant cabin. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "82807dca4a35df6922b926a18f8021554b8962a248149c12bf9c74345b895a50",
+      "pngSha256": "020d566940324bf6813538dc32057a4e06ef7bf82da5b6b20c7741959659ab40",
+      "svgSha256": "442455f81a4db60b768d9638bdd4f32c8c69eb4672ce7a19c585cd050bb74cc3"
+    },
+    {
+      "id": "MoonBkg",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Moon surface with craters and footprints, purple starry sky and small Earth at upper right. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "48cac3ee68bd63669664d27eda85f47155e7b802f3c4499b541ca9dd9739fc2d",
+      "pngSha256": "9f088b2724fb4f820cba5d10485fb45e7f3ce6c8702c117b9de445913d5a3eb7",
+      "svgSha256": "dd6fa5c3d15cc09872036e8420480be6f87a475ef62d229cb59bde1b71653aec"
+    },
+    {
+      "id": "Space",
+      "isNew": false,
+      "prompt": "Use case: style-transfer. Restyle image 1, the original ScratchJr background, to match image 2's chibi storybook rendering. Preserve the scene identity, viewpoint, key objects, season and time of day. Scene: Deep purple outer space, ringed blue planet upper left and large partial purple planet bottom right. Image 2 is STYLE reference only: rounded toy-like forms, clean warm dark-brown outlines, harmonious colors, soft restrained shading and highlights. Full bleed opaque landscape 4:3 game background, no border, no text, no watermark, no characters or faces on objects. Keep central and lower play area simple and uncluttered for movable sprites. Do not copy objects from image 2. Maintain original scene's lighting including night or sunset where specified. Render an actual complete landscape illustration, not a contact sheet.",
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "56f05b08a901a7b171025f97acaff1f1f9f55d8e74ea7068bc2db2dec2fa18a5",
+      "pngSha256": "5c390eee15694bc6e900e75466043c48a71f56a60eaee6e05e166fe0d987d712",
+      "svgSha256": "14f22c5defa44dbb838bbe5cd70ad463eab8dd2f9802703302117c41c7d744ed"
+    },
+    {
+      "id": "HY-Cenario-Reciclagem",
+      "name": "Centro de reciclagem",
+      "en": "Recycling center",
+      "category": "01 Cidade",
+      "prompt": "Use case: illustration-story. NEW full-bleed game BACKGROUND for ScratchJr, landscape 4:3 composition. Attached chibi house is STYLE REFERENCE ONLY, not an object to paste into every scene: match clean warm dark-brown outlines, rounded storybook shapes, softly shaded harmonious pastel colors, restrained highlights and consistent charming toy-like proportions. A cheerful small neighborhood recycling center. Back wall with four rounded sorting bins in blue, red, yellow and green, each showing ONE simple pictogram for paper, plastic bottle, metal can and glass bottle respectively, no written labels. Small covered sorting shed and neatly bundled cardboard at outer edges, a tree behind. Wide clean pale-beige paved forecourt completely open across center and foreground. No scattered litter. No faces on scenery or objects, no characters or creatures unless explicitly specified as a distant background detail. Keep central and lower 45% as a simple readable open play area; visual detail concentrates toward rear and outer edges. Coherent perspective, no fisheye, no isometric board, no framing border, no text, no logo, no watermark. All critical objects comfortably inside central 4:3 safe area with generous margins at left and right, suitable for cropping to 480x360. Fully opaque continuous scenery, not a transparent cutout. Friendly daytime lighting (soft ambient light for interiors).",
+      "isNew": true,
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "098efba297f4556cc39a71fea44ddb0bb45527c72bbe44a5a55d7b7714b056f0",
+      "pngSha256": "3f0d855861de58b5ea46e9c8def850f2f7740b0037dc4b9a4a9db644adb40e8a",
+      "svgSha256": "2663e282d86a1f3c7379f2fc62912b35ef3fe6c0b30a71d10d962b3d56d4f59d"
+    },
+    {
+      "id": "HY-Cenario-Horta",
+      "name": "Horta comunitária",
+      "en": "Community garden",
+      "category": "00 Campo e fazenda",
+      "prompt": "Use case: illustration-story. NEW full-bleed game BACKGROUND for ScratchJr, landscape 4:3 composition. Attached chibi house is STYLE REFERENCE ONLY, not an object to paste into every scene: match clean warm dark-brown outlines, rounded storybook shapes, softly shaded harmonious pastel colors, restrained highlights and consistent charming toy-like proportions. A sunny community vegetable garden. Low rounded timber raised beds with leafy vegetables and carrots along far left and far right, short wooden fence and small tool shed in distant background, one watering can near an edge. Broad open tan garden path across center and foreground for sprites, accessible and uncluttered. Soft greenery, small sunlit sky. No faces on scenery or objects, no characters or creatures unless explicitly specified as a distant background detail. Keep central and lower 45% as a simple readable open play area; visual detail concentrates toward rear and outer edges. Coherent perspective, no fisheye, no isometric board, no framing border, no text, no logo, no watermark. All critical objects comfortably inside central 4:3 safe area with generous margins at left and right, suitable for cropping to 480x360. Fully opaque continuous scenery, not a transparent cutout. Friendly daytime lighting (soft ambient light for interiors).",
+      "isNew": true,
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "daddaf63d5f392ae495f3cd2132056a512dca671ec1447260b4508f43b46719d",
+      "pngSha256": "b38431ce15791c6ef65dc1e7ea51af3d368092c7abe36f12db1fc75b544a4936",
+      "svgSha256": "c31a4cb5530157caeb9d825f34c56238dd40feaf4c6657189c04470c33eb15b7"
+    },
+    {
+      "id": "HY-Cenario-Transito",
+      "name": "Faixa de pedestres e cruzamento",
+      "en": "Pedestrian crossing",
+      "category": "01 Cidade",
+      "prompt": "Use case: illustration-story. NEW full-bleed game BACKGROUND for ScratchJr, landscape 4:3 composition. Attached chibi house is STYLE REFERENCE ONLY, not an object to paste into every scene: match clean warm dark-brown outlines, rounded storybook shapes, softly shaded harmonious pastel colors, restrained highlights and consistent charming toy-like proportions. A calm neighborhood street intersection from a mildly elevated SIDE-FRONT stage view, not top-down. Clear wide empty gray roadway across foreground, coherent white zebra crossing across the road near middle, cream sidewalks, rounded traffic-light posts at outer edges, tiny pastel houses and trees along distant sidewalk. Traffic lights have circular red/amber/green lenses vertically arranged. No vehicles or pedestrians baked into background, no written signs. No faces on scenery or objects, no characters or creatures unless explicitly specified as a distant background detail. Keep central and lower 45% as a simple readable open play area; visual detail concentrates toward rear and outer edges. Coherent perspective, no fisheye, no isometric board, no framing border, no text, no logo, no watermark. All critical objects comfortably inside central 4:3 safe area with generous margins at left and right, suitable for cropping to 480x360. Fully opaque continuous scenery, not a transparent cutout. Friendly daytime lighting (soft ambient light for interiors).",
+      "isNew": true,
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "dac2e38ca814a9a58599e293bc3c292f1b64228d8b20430d5780bfcc76318aa9",
+      "pngSha256": "4d1a28169fefd296786fd93d856fd326defd4929e54d702c30179d28f94f1c8b",
+      "svgSha256": "beae5bff5ebe8e508121ae68f1bbd7b952e60d4a0c5401fc1d7ec454084be242"
+    },
+    {
+      "id": "HY-Cenario-Feira",
+      "name": "Feira de alimentos",
+      "en": "Food market",
+      "category": "01 Cidade",
+      "prompt": "Use case: illustration-story. NEW full-bleed game BACKGROUND for ScratchJr, landscape 4:3 composition. Attached chibi house is STYLE REFERENCE ONLY, not an object to paste into every scene: match clean warm dark-brown outlines, rounded storybook shapes, softly shaded harmonious pastel colors, restrained highlights and consistent charming toy-like proportions. A cheerful outdoor neighborhood food market. Three small stalls with rounded striped awnings positioned along back and side edges, simple baskets of colorful fruit and vegetables arranged on counters, a few distant trees and pastel roofs. Broad empty pale stone market walkway in central and lower half, ready for characters and movement. No sellers, shoppers, price tags or lettering. No faces on scenery or objects, no characters or creatures unless explicitly specified as a distant background detail. Keep central and lower 45% as a simple readable open play area; visual detail concentrates toward rear and outer edges. Coherent perspective, no fisheye, no isometric board, no framing border, no text, no logo, no watermark. All critical objects comfortably inside central 4:3 safe area with generous margins at left and right, suitable for cropping to 480x360. Fully opaque continuous scenery, not a transparent cutout. Friendly daytime lighting (soft ambient light for interiors).",
+      "isNew": true,
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "cb3882ac9715bf343f92273ec8de849948630ccabf0dbf2ca25e0d84f56d6202",
+      "pngSha256": "366ff71a1bf5336bbc8901fc7ebf02a654ba23a84fcc217714ce0dec0ec362dd",
+      "svgSha256": "027c69a8e1ded701d9e34a30ec456435f38ce6db7f9924e2a7df31508062b222"
+    },
+    {
+      "id": "HY-Cenario-Cozinha",
+      "name": "Cozinha",
+      "en": "Kitchen",
+      "category": "02 Ambientes internos",
+      "prompt": "Use case: illustration-story. NEW full-bleed game BACKGROUND for ScratchJr, landscape 4:3 composition. Attached chibi house is STYLE REFERENCE ONLY, not an object to paste into every scene: match clean warm dark-brown outlines, rounded storybook shapes, softly shaded harmonious pastel colors, restrained highlights and consistent charming toy-like proportions. A cozy tidy kitchen interior, front three-quarter stage perspective. Cream and sage cabinets against rear wall, small blue window above sink, rounded stove and red-brown countertop along back; compact fridge at far side. All appliances closed and safe-looking, no fire. Broad entirely empty warm cream tiled floor fills lower half and center, no table or kitchen island blocking play area. No dishes scattered on floor. No faces on scenery or objects, no characters or creatures unless explicitly specified as a distant background detail. Keep central and lower 45% as a simple readable open play area; visual detail concentrates toward rear and outer edges. Coherent perspective, no fisheye, no isometric board, no framing border, no text, no logo, no watermark. All critical objects comfortably inside central 4:3 safe area with generous margins at left and right, suitable for cropping to 480x360. Fully opaque continuous scenery, not a transparent cutout. Friendly daytime lighting (soft ambient light for interiors).",
+      "isNew": true,
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "f0af5bbfeab3de2219efa7a5f1d2a45500cb06fe261d6e4b3695c1d0ec2e56ca",
+      "pngSha256": "560ed90feaa9d8bc739fd7982808b9a7da6e9443780f463b4b8692f421bb25c7",
+      "svgSha256": "f815bc9cd2b376d66af93c7b1a768996d5fac610190a2adeddd01e431c69ade3"
+    },
+    {
+      "id": "HY-Cenario-Laboratorio",
+      "name": "Laboratório de ciências",
+      "en": "Science laboratory",
+      "category": "02 Ambientes internos",
+      "prompt": "Use case: illustration-story. NEW full-bleed game BACKGROUND for ScratchJr, landscape 4:3 composition. Attached chibi house is STYLE REFERENCE ONLY, not an object to paste into every scene: match clean warm dark-brown outlines, rounded storybook shapes, softly shaded harmonious pastel colors, restrained highlights and consistent charming toy-like proportions. A bright friendly elementary science laboratory interior. Rounded mint and cream workbench against far wall, a few simple colored flasks and one microscope on back counter, wall shelf and small plant at outer side, blue rear window. Broad uncluttered pale-blue/cream floor covers central and lower half. No chemical labels, smoke, fire, hazardous warning signs, people or robot. No faces on scenery or objects, no characters or creatures unless explicitly specified as a distant background detail. Keep central and lower 45% as a simple readable open play area; visual detail concentrates toward rear and outer edges. Coherent perspective, no fisheye, no isometric board, no framing border, no text, no logo, no watermark. All critical objects comfortably inside central 4:3 safe area with generous margins at left and right, suitable for cropping to 480x360. Fully opaque continuous scenery, not a transparent cutout. Friendly daytime lighting (soft ambient light for interiors).",
+      "isNew": true,
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "0c8e5800c75fa0179b1460da6e92b7049330addf0644eee4b1559b685c433393",
+      "pngSha256": "484ecaad0575066aeffd4364f2815de8e7fba67b89d1554bc83181af9949bb21",
+      "svgSha256": "63d2802ae7f76c38f4ad71ea9cd11d7d9847d99545ed92dec51bffa8612ae54e"
+    },
+    {
+      "id": "HY-Cenario-EstacaoEspacial",
+      "name": "Estação espacial por dentro",
+      "en": "Space station interior",
+      "category": "07 Espaco",
+      "prompt": "Use case: illustration-story. NEW full-bleed game BACKGROUND for ScratchJr, landscape 4:3 composition. Attached chibi house is STYLE REFERENCE ONLY, not an object to paste into every scene: match clean warm dark-brown outlines, rounded storybook shapes, softly shaded harmonious pastel colors, restrained highlights and consistent charming toy-like proportions. A cozy child-friendly space-station control room interior. Rounded cream and pale-blue walls, one broad rear window showing deep navy space and small distant Earth, curved consoles confined to rear and outer sides, simple colored unlettered buttons. A wide empty lightly shaded pale-blue floor across center and lower half for astronauts and robots. No floating tools, people, robots or spaceship in foreground. No faces on scenery or objects, no characters or creatures unless explicitly specified as a distant background detail. Keep central and lower 45% as a simple readable open play area; visual detail concentrates toward rear and outer edges. Coherent perspective, no fisheye, no isometric board, no framing border, no text, no logo, no watermark. All critical objects comfortably inside central 4:3 safe area with generous margins at left and right, suitable for cropping to 480x360. Fully opaque continuous scenery, not a transparent cutout. Friendly daytime lighting (soft ambient light for interiors).",
+      "isNew": true,
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "954cec44eff7f9d6914c5c23ff7f8cf14587a667a65072c7f936c61bc62f2261",
+      "pngSha256": "874148c4727bdc55355acb286c46bf45eafc2c47bfcbcca5cf419fae4cb519de",
+      "svgSha256": "101808124be59aab64febf7ea3026cd2ea608ce215b0365e8d70dd93e45685cf"
+    },
+    {
+      "id": "HY-Cenario-IlhaPirata",
+      "name": "Ilha dos piratas",
+      "en": "Pirate island",
+      "category": "04 Praias e aguas",
+      "prompt": "Use case: illustration-story. NEW full-bleed game BACKGROUND for ScratchJr, landscape 4:3 composition. Attached chibi house is STYLE REFERENCE ONLY, not an object to paste into every scene: match clean warm dark-brown outlines, rounded storybook shapes, softly shaded harmonious pastel colors, restrained highlights and consistent charming toy-like proportions. A friendly pirate island beach scene, stage-like eye-level view. Turquoise ocean and small distant sailboat in background, palm trees framing outer edges, rounded rocks and tiny closed treasure chest tucked near one palm at far side. Wide empty warm golden sandy clearing covers center and entire foreground, gently curved waterline beyond clearing. No pirates, animals, skull piles, text or map overlay. No faces on scenery or objects, no characters or creatures unless explicitly specified as a distant background detail. Keep central and lower 45% as a simple readable open play area; visual detail concentrates toward rear and outer edges. Coherent perspective, no fisheye, no isometric board, no framing border, no text, no logo, no watermark. All critical objects comfortably inside central 4:3 safe area with generous margins at left and right, suitable for cropping to 480x360. Fully opaque continuous scenery, not a transparent cutout. Friendly daytime lighting (soft ambient light for interiors).",
+      "isNew": true,
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "ab0447286658528e96b0f239e9ed876c2d6a10d039d557fad8c73793b2ee5d1c",
+      "pngSha256": "0ff8edb8b85ec3d305e601fe1c72c97bbba520fbb37a3687f4abe4de3d7739d2",
+      "svgSha256": "19ead42bf543614640cdf50a697a979667bdfc0a76123ea951fad0369f442634"
+    },
+    {
+      "id": "HY-Cenario-CasteloInterior",
+      "name": "Castelo por dentro",
+      "en": "Castle interior",
+      "category": "02 Ambientes internos",
+      "prompt": "Use case: illustration-story. NEW full-bleed game BACKGROUND for ScratchJr, landscape 4:3 composition. Attached chibi house is STYLE REFERENCE ONLY, not an object to paste into every scene: match clean warm dark-brown outlines, rounded storybook shapes, softly shaded harmonious pastel colors, restrained highlights and consistent charming toy-like proportions. A warm fairy-tale castle hall interior. Rounded light-beige stone walls, tall arched rear windows with soft blue sky, one red-brown double doorway, two small purple-and-gold hanging banners at sides and subtle decorative arch. Broad empty cream stone floor occupies lower half and center, no furniture obstructing play area. No throne, people, creatures, fire or lettering. No faces on scenery or objects, no characters or creatures unless explicitly specified as a distant background detail. Keep central and lower 45% as a simple readable open play area; visual detail concentrates toward rear and outer edges. Coherent perspective, no fisheye, no isometric board, no framing border, no text, no logo, no watermark. All critical objects comfortably inside central 4:3 safe area with generous margins at left and right, suitable for cropping to 480x360. Fully opaque continuous scenery, not a transparent cutout. Friendly daytime lighting (soft ambient light for interiors).",
+      "isNew": true,
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "c836d2c9f0722e214d4dea9852aefcb54550347fd8695af849528b0acfd6ccff",
+      "pngSha256": "f2a9fcf78616d7728764f01fa5c1ae34fb68158a6fdbe381371797ee82db603b",
+      "svgSha256": "e593b4acd28a220358a729fde0725df4da056eefc42d82b0e02c072fd551f49a"
+    },
+    {
+      "id": "HY-Cenario-PracaVila",
+      "name": "Praça de uma vila brasileira",
+      "en": "Brazilian village square",
+      "category": "01 Cidade",
+      "prompt": "Use case: illustration-story. NEW full-bleed game BACKGROUND for ScratchJr, landscape 4:3 composition. Attached chibi house is STYLE REFERENCE ONLY, not an object to paste into every scene: match clean warm dark-brown outlines, rounded storybook shapes, softly shaded harmonious pastel colors, restrained highlights and consistent charming toy-like proportions. A welcoming small Brazilian village square on a clear day. Low pastel houses with terracotta tiled roofs along rear edge, one modest rounded gazebo at distant side, flowering trees and simple wooden benches near outer corners. Broad open warm pale cobblestone plaza across center and foreground, subtle curving paving lines, room for folktale characters and neighborhood scenes. No fixed people, cars, animals, flags, shops lettering or religious symbols. No faces on scenery or objects, no characters or creatures unless explicitly specified as a distant background detail. Keep central and lower 45% as a simple readable open play area; visual detail concentrates toward rear and outer edges. Coherent perspective, no fisheye, no isometric board, no framing border, no text, no logo, no watermark. All critical objects comfortably inside central 4:3 safe area with generous margins at left and right, suitable for cropping to 480x360. Fully opaque continuous scenery, not a transparent cutout. Friendly daytime lighting (soft ambient light for interiors).",
+      "isNew": true,
+      "sourceSize": [
+        1448,
+        1086
+      ],
+      "masterSha256": "c6cf1ad5e0e13c25fbbe185b87430ec7eadcba08b80c9806f9a15695aa902921",
+      "pngSha256": "efe4f9dc00ee4abef3bab4ba5a7134d521dc5630642698fc3c785c4ba311a23c",
+      "svgSha256": "43e6e6f4dd4961ebb92ad3fc6ec6e3773b4147522ed79ed1175a709ea59c8dfc"
+    }
+  ],
+  "validation": {
+    "backgroundsPassed": 39,
+    "method": "Real Library.addLocalThumbChoose and Page.setBackground in Chromium via Vite; complete alpha and thumbnail/stage comparison",
+    "maximumMeanPixelDifference": 1.411130401234568,
+    "spriteRecordsPreserved": 287
+  }
+}
