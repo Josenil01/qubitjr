@@ -413,7 +413,7 @@ describe('escala dos personagens (media.json)', () => {
         const { getCharacterScale } = require('./activityAssetLibrary');
         // Escolhe um personagem cuja escala difere do default (0.5) e de 1, senão
         // o teste não distinguiria "leu do arquivo" de "caiu no fallback".
-        const spr = require('../../../src/app/media.json').sprites.find((x) => x.scale && x.scale !== 0.5 && x.scale !== 1);
+        const spr = require('../../../src/app/public/media.json').sprites.find((x) => x.scale && x.scale !== 0.5 && x.scale !== 1);
         expect(spr).toBeDefined();
         expect(getCharacterScale(spr.md5)).toBe(spr.scale);
         expect(getCharacterScale('nao-existe.svg')).toBe(0.5);

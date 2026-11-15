@@ -26,7 +26,11 @@ const path = require('path');
 const PT_LOCALIZATION_PATH = path.join(__dirname, '../../../src/app/localizations/pt.json');
 // Só pra ler o "scale" de cada personagem (ver getCharacterScale) - a LISTA de
 // personagens continua vindo de pt.json, ver docblock acima.
-const MEDIA_JSON_PATH = path.join(__dirname, '../../../src/app/media.json');
+// Lê de src/app/public/ (não src/app/) porque é essa a cópia que o Vite
+// (copyPublicDir) de fato embarca em dist/ e serve ao navegador - a cópia da
+// raiz existia só por histórico e já causou divergência silenciosa entre o
+// que o jogador via e o que o backend lia (ver memória do projeto).
+const MEDIA_JSON_PATH = path.join(__dirname, '../../../src/app/public/media.json');
 
 // Mesmo default de Library.js (`!data.scale ? 0.5 : data.scale`) pra
 // personagem sem "scale" no media.json ou se o arquivo não puder ser lido.
