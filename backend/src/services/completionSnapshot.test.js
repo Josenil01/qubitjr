@@ -77,27 +77,30 @@ describe('completionSnapshot.persistCompletion', () => {
 });
 
 describe('completionSnapshot.readCompletionFlags', () => {
-    it('lista vazia de ids não bate no banco - Set vazio direto', async () => {
+    it('lista vazia de ids não bate no banco - Map vazio direto', async () => {
         const supabase = fakeSupabase({ data: [], error: null });
         const result = await readCompletionFlags(supabase, []);
-        expect(result).toEqual(new Set());
+        expect(result).toEqual(new Map());
         expect(supabase.from).not.toHaveBeenCalled();
     });
 
-    it('devolve só os ids que têm assignment_completed_at', async () => {
-        const supabase = fakeSupabase({ data: [{ id: 10 }, { id: 30 }], error: null });
+    it('devolve id -> assignment_completed_at só dos projetos concluídos', async () => {
+        const supabase = fakeSupabase({
+            data: [{ id: 10, assignment_completed_at: '2026-01-01T00:00:00.000Z' }, { id: 30, assignment_completed_at: '2026-01-02T00:00:00.000Z' }],
+            error: null,
+        });
         const result = await readCompletionFlags(supabase, [10, 20, 30]);
-        expect(result).toEqual(new Set([10, 30]));
+        expect(result).toEqual(new Map([[10, '2026-01-01T00:00:00.000Z'], [30, '2026-01-02T00:00:00.000Z']]));
         expect(supabase.in).toHaveBeenCalledWith('id', [10, 20, 30]);
     });
 
-    it('migração não rodada (42703) - Set vazio, não lança', async () => {
+    it('migração não rodada (42703) - Map vazio, não lança', async () => {
         const supabase = fakeSupabase({ data: null, error: { code: '42703' } });
-        await expect(readCompletionFlags(supabase, [1])).resolves.toEqual(new Set());
+        await expect(readCompletionFlags(supabase, [1])).resolves.toEqual(new Map());
     });
 
-    it('erro inesperado - Set vazio, não lança (best-effort)', async () => {
+    it('erro inesperado - Map vazio, não lança (best-effort)', async () => {
         const supabase = fakeSupabase({ data: null, error: { code: '500', message: 'boom' } });
-        await expect(readCompletionFlags(supabase, [1])).resolves.toEqual(new Set());
+        await expect(readCompletionFlags(supabase, [1])).resolves.toEqual(new Map());
     });
 });

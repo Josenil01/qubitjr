@@ -88,17 +88,22 @@ async function persistCompletion(supabase, projectId, comparison) {
 }
 
 /**
- * Versão em lote de readCompletionSnapshot, só o "sim/não" (sem a foto
- * inteira) - usada pela tela de live do professor (GET /teacher/classroom/
- * :turmaId/students, routes/teacher.js) pra marcar, num único round-trip,
- * quais dos projetos já exibidos nos cards (um por aluno) já concluíram a
- * missão vinculada. Retorna um Set com os ids de projeto concluídos; nunca
- * lança - migração não rodada (42703), lista vazia ou erro de rede viram
- * Set vazio (nenhum card marcado), igual à tolerância dos outros helpers
- * deste módulo.
+ * Versão em lote de readCompletionSnapshot, só "concluiu? quando?" (sem a
+ * foto inteira) - usada pela tela de live do professor (GET /teacher/
+ * classroom/:turmaId/students, routes/teacher.js) pra marcar, num único
+ * round-trip, quais dos projetos já exibidos nos cards (um por aluno) já
+ * concluíram a missão vinculada - e, a partir do timestamp, ranquear quem
+ * terminou primeiro (teacher.js#_renderLobby, coroas de ouro/prata/bronze).
+ * Também usada por routes/assignments.js, que só chama .has(id) - Map tem o
+ * mesmo método, então essa troca de Set pra Map (pra carregar o timestamp
+ * junto) não quebra esse outro chamador.
+ * Retorna um Map id de projeto -> assignment_completed_at (string ISO);
+ * nunca lança - migração não rodada (42703), lista vazia ou erro de rede
+ * viram Map vazio (nenhum card marcado), igual à tolerância dos outros
+ * helpers deste módulo.
  */
 async function readCompletionFlags (supabase, projectIds) {
-    if (!Array.isArray(projectIds) || !projectIds.length) return new Set();
+    if (!Array.isArray(projectIds) || !projectIds.length) return new Map();
     try {
         const { data, error } = await supabase
             .from('projects')
@@ -106,13 +111,13 @@ async function readCompletionFlags (supabase, projectIds) {
             .in('id', projectIds)
             .not('assignment_completed_at', 'is', null);
         if (error) {
-            if (isMissingColumnError(error)) return new Set();
+            if (isMissingColumnError(error)) return new Map();
             throw error;
         }
-        return new Set((data || []).map((row) => row.id));
+        return new Map((data || []).map((row) => [row.id, row.assignment_completed_at]));
     } catch (err) {
         console.warn('[completionSnapshot] readCompletionFlags falhou (não-fatal):', err && err.message);
-        return new Set();
+        return new Map();
     }
 }
 

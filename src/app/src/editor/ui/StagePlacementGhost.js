@@ -7,8 +7,11 @@
  * servidor por shared/detailedManifest.mjs#buildStagePlacements). A sombra
  * NUNCA move nada sozinha - só mostra o alvo; a criança arrasta o próprio
  * personagem até lá. Quando ele chega perto o bastante (isNearTarget), a
- * sombra some. Não é avaliada nem persistida: um F5 pode trazê-la de volta
- * se o personagem ainda não estiver no lugar.
+ * sombra some - e volta a aparecer sempre que o aluno tirar o personagem
+ * do lugar de novo (solta longe do alvo), até a missão ser concluída
+ * (getStagePlacements() passa a devolver null - ver GalleryRestriction.js).
+ * Não é avaliada nem persistida: um F5 também traz a sombra de volta se o
+ * personagem não estiver no lugar.
  *
  * Fronteira de dependências (mesmo princípio de GalleryRestriction.js): este
  * arquivo só é importado por AssignmentBadge.js, que só o editor do aluno
@@ -136,8 +139,6 @@ export function ghostTransform (placement, cx, cy) {
 
 // key -> {el, page} das sombras no DOM agora (só da cena atual).
 var ghosts = new Map();
-// Sombras já alcançadas nesta sessão de aba - não voltam (até um F5).
-var reached = new Set();
 var scheduled = false;
 var pendingDropped = [];
 
@@ -202,7 +203,12 @@ function buildGhost (sprite, placement, page) {
  * vez (cobre quem já chegou no lugar sem arrastar - Undo, LiveMirror, ou o
  * personagem já nasceu ali) e quando o aluno solta um arrasto (dropped).
  * Fora isso não confere de propósito: um script onclick passando pelo alvo
- * no meio da animação não conta como "posicionou".
+ * no meio da animação não conta como "posicionou". Importante: a checagem
+ * NÃO é permanente - não existe "alcançado pra sempre" nesta sessão. Se o
+ * aluno chegou no lugar (sombra sumiu) e depois arrasta o personagem pra
+ * fora dali, o próximo drop (justDropped) refaz a conta e a sombra volta,
+ * exatamente como a missão pede: ela só para de aparecer quando a própria
+ * missão é concluída (getStagePlacements() então devolve null/hidden).
  */
 function reconcile (dropped) {
     var state = getStagePlacements();
@@ -219,14 +225,13 @@ function reconcile (dropped) {
         var sprite = pair.sprite;
         var placement = pair.placement;
         var key = stagePlacementKey(state.sceneIndex, placement);
-        if (reached.has(key) || !spriteReady(sprite)) {
+        if (!spriteReady(sprite)) {
             return;
         }
         var entry = ghosts.get(key);
         var isNew = !entry || entry.page !== page || entry.el.parentNode !== page.div;
         var justDropped = dropped.indexOf(sprite) > -1;
         if ((isNew || justDropped) && canCheck && isNearTarget(sprite, placement)) {
-            reached.add(key);
             return;
         }
         if (isNew) {

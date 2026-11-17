@@ -179,6 +179,25 @@ function _formatDuration(totalSeconds) {
     return '⏱ <1min';
 }
 
+// Posição de quem já concluiu (1º, 2º, 3º...), ordenado por
+// completedAt (projects.assignment_completed_at, ver
+// services/completionSnapshot.js#readCompletionFlags) - quem terminou
+// primeiro aparece primeiro. student.completedAt ausente (banco sem a
+// migração, ou ainda não concluiu) fica de fora do ranking (sem coroa/
+// número). Devolve um Map studentId -> posição 1-based.
+function _rankCompletedStudents(list) {
+    const ranked = list
+        .filter((s) => s.completedMission && s.completedAt)
+        .sort((a, b) => new Date(a.completedAt) - new Date(b.completedAt));
+    const positions = new Map();
+    ranked.forEach((s, i) => positions.set(s.id, i + 1));
+    return positions;
+}
+
+// 🥇/🥈/🥉 pros 3 primeiros a concluir a missão; "#N" (numeração simples)
+// pro resto de quem já concluiu - pedido do usuário.
+const _RANK_CROWNS = { 1: '🥇', 2: '🥈', 3: '🥉' };
+
 function _renderLobby() {
     const root = gn('teacher-root');
     root.innerHTML = '';
@@ -190,6 +209,7 @@ function _renderLobby() {
         if (aOnline !== bOnline) return bOnline - aOnline;
         return (a.name || '').localeCompare(b.name || '', 'pt-BR', { sensitivity: 'base' });
     });
+    const completionRank = _rankCompletedStudents(sorted);
 
     sorted.forEach((student) => {
         const online = onlineIds.has(student.id);
@@ -200,6 +220,13 @@ function _renderLobby() {
         // AssignmentBadge.js#everCompleted e services/completionSnapshot.js.
         const card = newHTML('div', 'teacherCard' + (online ? ' online' : ' offline') +
             (student.completedMission ? ' missionCompleted' : ''), grid);
+
+        const rank = completionRank.get(student.id);
+        if (rank) {
+            const badge = newHTML('div', 'teacherCardRank', card);
+            badge.textContent = _RANK_CROWNS[rank] || ('#' + rank);
+            badge.title = `${rank}º a concluir a missão`;
+        }
 
         const status = newHTML('div', 'teacherCardStatus', card);
         status.textContent = online ? '🟢 online' : '⚪ offline';
