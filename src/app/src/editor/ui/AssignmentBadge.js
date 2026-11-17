@@ -1239,6 +1239,12 @@ export default class AssignmentBadge {
         const card = newHTML('div', 'assignmentCompleteCard assignmentCoachCard assignmentHintsPanelCard', hintsPanelEl);
         const emoji = newHTML('div', 'assignmentCompleteEmoji', card);
         emoji.textContent = '💡';
+        // Miniatura do personagem da dica (mesmo padrão de _showCoachModal,
+        // ver characterThumbSrc) - sem isto o painel navegável mostrava só o
+        // texto, diferente do modal automático de dica/alerta, que sempre
+        // mostra a miniatura. Recriada a cada render() porque o personagem
+        // muda com Anterior/Próxima.
+        let thumbEl = null;
         const status = newHTML('div', 'assignmentHintsPanelStatus', card);
         const actorEl = newHTML('div', 'assignmentHintsPanelActor', card);
         const textEl = newHTML('div', 'assignmentCompleteText', card);
@@ -1258,6 +1264,23 @@ export default class AssignmentBadge {
 
         function render () {
             const hint = hints[index];
+            if (thumbEl && thumbEl.parentNode) {
+                thumbEl.parentNode.removeChild(thumbEl);
+                thumbEl = null;
+            }
+            const thumbSrc = characterThumbSrc(hint && hint.when && hint.when.characterMd5);
+            if (thumbSrc) {
+                thumbEl = newHTML('img', 'assignmentCompleteThumb', card);
+                thumbEl.src = thumbSrc;
+                thumbEl.alt = '';
+                thumbEl.onerror = function () {
+                    if (thumbEl.parentNode) {
+                        thumbEl.parentNode.removeChild(thumbEl);
+                    }
+                    thumbEl = null;
+                };
+                card.insertBefore(thumbEl, status);
+            }
             textEl.textContent = (hint && hint.text) || '';
             const actorLabel = hint ? actorLabelFor(hint, detailed) : null;
             actorEl.textContent = actorLabel || '';
