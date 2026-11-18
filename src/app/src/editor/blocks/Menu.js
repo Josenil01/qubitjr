@@ -70,7 +70,7 @@ export default class Menu {
                 'translate(' + (scaledIconSize / 2) + 'px, ' + (scaledIconSize / 2) + 'px)'
         });
         if (isCostume) {
-            drawCostumeChoice(micon, c, scaledIconSize / 64);
+            drawCostumeChoice(micon, c, scaledIconSize / 64, block.owner.arg.costumeSprite);
         } else if (!img.complete) {
             img.onload = function () {
                 drawThumbnail(img, micon);

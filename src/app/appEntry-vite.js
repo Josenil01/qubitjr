@@ -8,6 +8,11 @@
 // Importar WebInterface para global scope
 import WebInterface from './src/services/WebInterface.js';
 
+// Bloqueia zoom acidental da página (Ctrl+scroll, Ctrl+/Ctrl-) — ver docblock
+// em ZoomGuard.js para o que é e o que não é coberto.
+import { installZoomGuard } from './src/utils/ZoomGuard.js';
+installZoomGuard();
+
 // Importar os módulos do ScratchJr
 import { preprocessAndLoadCss } from './src/utils/lib.js';
 import Localization from './src/utils/Localization.js';

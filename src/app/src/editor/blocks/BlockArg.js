@@ -263,7 +263,7 @@ export default class BlockArg {
 
     drawChoice (cnv) {
         if (this.daddy.blocktype == 'setcostume') {
-            drawCostumeChoice(cnv, this.argValue, this.daddy.scale * window.devicePixelRatio);
+            drawCostumeChoice(cnv, this.argValue, this.daddy.scale * window.devicePixelRatio, this.costumeSprite);
             return cnv;
         }
         var ctx = cnv.getContext('2d');
@@ -328,6 +328,7 @@ export default class BlockArg {
         }
         if (this.daddy.blocktype == 'setcostume') {
             const spr = this.daddy.div.parentNode?.owner?.spr || this.costumeSprite || ScratchJr.getSprite();
+            this.costumeSprite = spr;
             this.list = JSON.stringify(costumeOptions(spr));
             if (!JSON.parse(this.list).length) return;
         }

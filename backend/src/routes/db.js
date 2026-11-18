@@ -263,12 +263,27 @@ async function buildMutationQuery(supabase, sql, values = [], userId = null, rol
     if (userId && OWNER_TABLES.has(table)) {
       q = q.eq('owner', userId);
     }
-    const result = q.select();
-    result.then(({ data: d, error: e }) => {
-      if (e) console.error('[DB UPDATE] Supabase error:', e);
-      else console.log('[DB UPDATE] Supabase ok, rows updated:', d ? d.length : 0, d && d[0] ? { json: d[0].json ? d[0].json.substring(0,40)+'...' : 'NULL', thumbnail: d[0].thumbnail } : '');
-    }).catch(err => console.error('[DB UPDATE] Promise error:', err));
-    return result;
+    // IMPORTANTE: PostgrestBuilder (supabase-js) não é uma Promise de verdade -
+    // é um "thenable" que SÓ dispara o fetch de verdade quando `.then()` é
+    // chamado, e cada chamada de `.then()` dispara um fetch INDEPENDENTE (ver
+    // node_modules/@supabase/postgrest-js/src/PostgrestBuilder.ts, método
+    // `then`: ele chama `executeWithRetry()` ali dentro, não cacheia nada).
+    // O código antigo chamava `.then()` aqui só pra logar e DEPOIS dava
+    // `return result` - como esta função é `async`, isso faz o runtime
+    // chamar `.then()` de novo pra resolver o valor de retorno, ou seja,
+    // CADA UPDATE (inclusive o rename feito por iOS.setfield em UI.js e o
+    // autosave completo de IO.saveProject) ia pro Supabase/Postgres como
+    // DUAS requisições HTTP concorrentes e independentes em vez de uma.
+    // Mesmo carregando o mesmo payload, isso dobra a escrita concorrente
+    // nesta linha e cria uma corrida com qualquer outro UPDATE quase
+    // simultâneo na mesma linha (ex.: autosave completo vs. rename pontual)
+    // - exatamente o tipo de corrida que o diagnóstico PAGE_LOSS_SUSPECTED
+    // acima foi criado pra investigar. Corrigido: dispara o fetch uma única
+    // vez (await) e loga a partir do mesmo resultado que é devolvido.
+    const { data: d, error: e } = await q.select();
+    if (e) console.error('[DB UPDATE] Supabase error:', e);
+    else console.log('[DB UPDATE] Supabase ok, rows updated:', d ? d.length : 0, d && d[0] ? { json: d[0].json ? d[0].json.substring(0,40)+'...' : 'NULL', thumbnail: d[0].thumbnail } : '');
+    return { data: d, error: e };
   }
 
   // DELETE FROM table WHERE id = ?

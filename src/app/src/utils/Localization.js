@@ -65,7 +65,7 @@ export default class Localization {
         
         // Get messages - usar fetch diretamente
         const localeFilePath = localizationRoot + 'localizations/' + topLevel + '.json';
-        fetch(localeFilePath)
+        fetch(localeFilePath, {cache: 'no-cache'})
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Erro ao carregar localização: ${response.status}`);
@@ -85,11 +85,28 @@ export default class Localization {
     }
 
     // Translate a particular message given the message key and info
+    // `formatting` is an optional object of placeholder -> value pairs; any
+    // `{PLACEHOLDER}` token found in the localized string is substituted with
+    // the matching value (e.g. {CHARACTER_NAME: spr.name} replaces
+    // "{CHARACTER_NAME}" in the message with the sprite's actual name).
     static localize (key, formatting) {
-        if (key in localizationMessages) {
-            return localizationMessages[key];
+        var message = (key in localizationMessages) ? localizationMessages[key] : key;
+
+        if (formatting && typeof message === 'string') {
+            Object.keys(formatting).forEach(function (placeholder) {
+                var value = formatting[placeholder];
+                var replacement = (value === null || typeof value === 'undefined') ? '' : value;
+                // Matches both the simple "{NAME}" placeholders used by the block
+                // descriptions and the ICU-style "{NAME, number}" placeholders used
+                // by the interface/paint guides and grid labels.
+                message = message.replace(
+                    new RegExp('\\{' + placeholder + '(,[^}]*)?\\}', 'g'),
+                    replacement
+                );
+            });
         }
-        return key; // Retornar a chave se a mensagem não existir
+
+        return message;
     }
 
     // For sample projects, some fields (sprite names, text on stage, and text in say blocks)

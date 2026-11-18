@@ -10,6 +10,8 @@
  */
 
 import WebInterface from './src/services/WebInterface.js';
+import { installZoomGuard } from './src/utils/ZoomGuard.js';
+installZoomGuard();
 import { preprocessAndLoadCss } from './src/utils/lib.js';
 import iOS from './src/iPad/iOS.js';
 import IO from './src/iPad/IO.js';
