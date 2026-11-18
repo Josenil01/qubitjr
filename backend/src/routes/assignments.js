@@ -1663,6 +1663,48 @@ router.post('/:id/generate-hints', async (req, res) => {
 });
 
 /**
+ * GET /api/assignments/:id/hints
+ *
+ * Devolve as dicas JÁ salvas (assignments.hints) e o hint_context desta
+ * missão - usado pelo modo admin (editor.html?editAssignmentId=<id>, ver
+ * entry/editor.js e AssignmentAuthorBar.js#initAdminEdit) pra popular o
+ * botão "✏️ Editar dicas" sem depender de GET /by-project/:projectId, que é
+ * owner-filtrado e nunca devolveria nada pro admin editando a missão de
+ * OUTRO professor. Mesma autorização de findOwnedTemplateProject acima
+ * (canEditAssignment): admin lê/edita qualquer missão, professor só a própria.
+ */
+router.get('/:id/hints', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+
+    const assignmentId = parseInt(req.params.id, 10);
+    if (!Number.isFinite(assignmentId)) return res.status(400).json({ error: 'Invalid assignment id' });
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    try {
+        const assignment = await selectAssignmentTolerantOfMissingHintContext(supabase, assignmentId);
+        if (!assignment) {
+            return res.status(404).json({ error: 'Missão não encontrada' });
+        }
+        if (assignment.template_id) {
+            return res.status(400).json({ error: 'Não é possível ler dicas de uma referência, só do molde (template) original da missão.' });
+        }
+        if (!canEditAssignment(req, assignment)) {
+            return res.status(403).json({ error: 'Você não tem permissão para editar esta missão.' });
+        }
+
+        res.json({
+            hints: Array.isArray(assignment.hints) ? assignment.hints : [],
+            hintContext: assignment.hint_context || '',
+        });
+    } catch (err) {
+        console.error('[assignments] GET /:id/hints error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
  * POST /api/assignments/:id/hints
  * Body: { hints: [{ id, text, when }, ...] }
  *

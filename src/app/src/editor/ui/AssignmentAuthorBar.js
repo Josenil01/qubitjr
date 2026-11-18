@@ -294,6 +294,27 @@ export default class AssignmentAuthorBar {
         barEl.textContent = idleLabel;
         barEl.onclick = AssignmentAuthorBar._onAdminSaveClick;
         AssignmentAuthorBar._captureMissingImages(assignmentId);
+        // Diferente do fluxo normal (_checkExistingMission, via GET
+        // /by-project/:projectId - owner-filtrado, nunca devolveria nada pro
+        // admin editando a missão de OUTRO professor), aqui buscamos direto
+        // por assignmentId (GET /assignments/:id/hints, autorização
+        // canEditAssignment no backend) - sem isso cachedHints nunca era
+        // preenchido neste modo e o botão "✏️ Editar dicas" (_show(), que só
+        // aparece com cachedHints.length > 0) nunca existia, mesmo a missão
+        // já tendo dicas publicadas.
+        apiFetch('/assignments/' + encodeURIComponent(assignmentId) + '/hints')
+            .then(function (res) {
+                return res.ok ? res.json() : null;
+            })
+            .then(function (data) {
+                if (!data) {
+                    return;
+                }
+                cachedHintContext = data.hintContext || '';
+                cachedHints = Array.isArray(data.hints) ? data.hints : [];
+                AssignmentAuthorBar._show();
+            })
+            .catch(function () {}); // best-effort - nunca quebra o editor em modo admin
     }
 
     static _captureMissingImages (assignmentId) {
