@@ -303,10 +303,10 @@ export default class BlockSpecs {
         return {
             'onflag': Localization.localize('BLOCK_DESC_GREEN_FLAG'),
             'onclick': Localization.localize('BLOCK_DESC_ON_TAP', {
-                CHARACTER_NAME: spr.name
+                CHARACTER_NAME: spr.name ? spr.name.toUpperCase() : ''
             }),
             'ontouch': Localization.localize('BLOCK_DESC_ON_BUMP', {
-                CHARACTER_NAME: spr.name ? spr.name : ''
+                CHARACTER_NAME: spr.name ? spr.name.toUpperCase() : ''
             }),
             'onmessage': Localization.localize('BLOCK_DESC_ON_MESSAGE', {
                 COLOR: Localization.localize('BLOCK_DESC_MESSAGE_COLOR_ORANGE')
@@ -323,7 +323,7 @@ export default class BlockSpecs {
             'wait': Localization.localize('BLOCK_DESC_WAIT'),
             'setspeed': Localization.localize('BLOCK_DESC_SET_SPEED'),
             'stopmine': Localization.localize('BLOCK_DESC_STOP', {
-                CHARACTER_NAME: spr.name ? spr.name : spr.str
+                CHARACTER_NAME: spr.name ? spr.name.toUpperCase() : spr.str
             }),
             'say': Localization.localize('BLOCK_DESC_SAY'),
             'show': Localization.localize('BLOCK_DESC_SHOW'),
@@ -338,7 +338,7 @@ export default class BlockSpecs {
             'playusersnd': Localization.localize('BLOCK_DESC_PLAY_RECORDED_SOUND'),
             'endstack': Localization.localize('BLOCK_DESC_END'),
             'stopall': Localization.localize('BLOCK_DESC_STOP', {
-                CHARACTER_NAME: spr.name ? spr.name : ''
+                CHARACTER_NAME: spr.name ? spr.name.toUpperCase() : ''
             }),
             'forever': Localization.localize('BLOCK_DESC_REPEAT_FOREVER'),
             'gotopage': Localization.localize('BLOCK_DESC_GO_TO_PAGE', {
