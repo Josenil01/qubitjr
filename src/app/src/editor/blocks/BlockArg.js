@@ -445,20 +445,23 @@ export default class BlockArg {
     pageIcon (num) {
         var dpr = window.devicePixelRatio;
         var page = ScratchJr.stage.pages[num - 1];
+        // 68px de largura pra bater com o shape quadrado padrao (redEnd) que
+        // o bloco gotopage passou a usar - era 86px, pensado pro redEndLong
+        // antigo (ver BlockSpecs.js#gotopage e Block.js#getWidth).
         var icon = document.createElement('canvas');
-        setCanvasSize(icon, 86 * dpr, 66 * dpr);
+        setCanvasSize(icon, 68 * dpr, 66 * dpr);
         if (!page) {
             return icon;
         }
         var canvas = document.createElement('canvas');
-        setCanvasSize(canvas, 52 * dpr, 42 * dpr);
+        setCanvasSize(canvas, 41 * dpr, 42 * dpr);
         var mainctx = canvas.getContext('2d');
         mainctx.fillStyle = '#AE1F24';
         mainctx.fillRect(0, 0, canvas.width, canvas.height);
         mainctx.fillStyle = '#48076a';
-        mainctx.fillRect(1 * dpr, 1 * dpr, 50 * dpr, 40 * dpr);
+        mainctx.fillRect(1 * dpr, 1 * dpr, 39 * dpr, 40 * dpr);
         var c = document.createElement('canvas');
-        var w = (52 - 6) * dpr;
+        var w = (41 - 6) * dpr;
         var h = (42 - 6) * dpr;
         setCanvasSize(c, w, h);
         var ctx = c.getContext('2d');
@@ -480,21 +483,22 @@ export default class BlockArg {
         }
         mainctx.drawImage(c, 3 * dpr, 3 * dpr);
         var ictx = icon.getContext('2d');
+        var badgeX = 50;
         ictx.fillStyle = '#AE1F24';
         ictx.beginPath();
-        ictx.arc(63 * dpr, 19 * dpr, 10 * dpr, 0 * dpr, Math.PI * 2, true);
+        ictx.arc(badgeX * dpr, 19 * dpr, 10 * dpr, 0 * dpr, Math.PI * 2, true);
         ictx.closePath();
         ictx.fill();
-        ictx.drawImage(canvas, 14 * dpr, 16 * dpr);
+        ictx.drawImage(canvas, 11 * dpr, 16 * dpr);
         ictx.beginPath();
         ictx.fillStyle = '#48076a';
         ictx.strokeStyle = '#48076a';
-        ictx.arc(63 * dpr, 19 * dpr, 8 * dpr, 0 * dpr, Math.PI * 2, true);
+        ictx.arc(badgeX * dpr, 19 * dpr, 8 * dpr, 0 * dpr, Math.PI * 2, true);
         ictx.closePath();
         ictx.stroke();
         ictx.fill();
         writeText(ictx, 'bold ' + (12 * dpr) + 'px ' +
-            window.Settings.blockArgFont, 'white', page.num, 26 * dpr, 58 * dpr);
+            window.Settings.blockArgFont, 'white', page.num, 26 * dpr, 45 * dpr);
         return icon;
     }
 

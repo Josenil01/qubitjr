@@ -44,9 +44,6 @@ export default class Block {
         if (this.blocktype == 'repeat') {
             return 176;
         }
-        if (this.blocktype == 'gotopage') {
-            return 86;
-        }
         if (this.aStart || this.anEnd) {
             return 84;
         }

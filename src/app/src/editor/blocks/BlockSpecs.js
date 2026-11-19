@@ -279,8 +279,12 @@ export default class BlockSpecs {
                 BlockSpecs.redEndH, null, null, BlockSpecs.endS],
             'forever': ['forever', BlockSpecs.getImageFrom('assets/blockicons/Forever', 'svg'),
                 BlockSpecs.redEnd, null, null, BlockSpecs.redEndH, null, null, BlockSpecs.endS],
+            // Shape quadrado padrao (igual endstack/forever) em vez do redEndLong
+            // proprio - esse era bem mais largo (86px) que os irmaos vermelhos
+            // (68px) e destoava na paleta. A pre-visualizacao da pagina em
+            // BlockArg.js#pageIcon foi encolhida pra caber no shape menor.
             'gotopage': ['gotopage', null,
-                BlockSpecs.redEndLong, 'p', '2', BlockSpecs.redEndLongH, null, null, BlockSpecs.endLongS],
+                BlockSpecs.redEnd, 'p', '2', BlockSpecs.redEndH, null, null, BlockSpecs.endS],
             'caretstart': ['caretstart', null,
                 BlockSpecs.getImageFrom('assets/blocks/caretstart', 'png'), null, null, null, null, null],
             'caretend': ['caretend', null,

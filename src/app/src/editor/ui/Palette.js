@@ -381,6 +381,13 @@ export default class Palette {
             } else {
                 var newb = Palette.newScaledBlock(pal, list[k],
                     ((list[k] == 'repeat') ? 0.65 * scaleMultiplier : blockscale), dx, blockdy);
+                if (list[k] == 'setcostume') {
+                    // Sem isto o icone na paleta fica preso no fallback numerico de
+                    // drawCostumeChoice (CostumeMenu.js) - so o bloco ARRASTADO pra
+                    // dentro do script ganhava a miniatura real, via duplicateBlock
+                    // (Block.js) chamando update(spr); o da paleta nunca recebia spr.
+                    newb.update(spr);
+                }
                 newb.lift();
                 dx += betweenblocks;
             }
