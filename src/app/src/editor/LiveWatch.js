@@ -55,6 +55,7 @@ import {
     showLockOverlay, hideLockOverlay, resetMirroredUi, reloadProjectFromBackend,
     resetMirrorState, isLockOverlayShown, reserveFrameTopSpace, ABOVE_LOCK_OVERLAY_Z_INDEX,
 } from './LiveMirror.js';
+import {showCenterModal} from './ui/CenterModal.js';
 
 const SESSION_HEARTBEAT_MS = 20000;
 // Payload agora é dado (JSON, ~1KB típico), não mais imagem — mesma
@@ -204,11 +205,22 @@ function requestControlBack() {
  * Salva com o motor local (que já reflete o estado espelhado do professor,
  * se ele estiver no controle nesse instante — ver applyStageState) antes de
  * sair, mesmo padrão de saveThenSignalReady.
+ *
+ * Modal central (CenterModal.js, compartilhado com AssignmentBadge.js) em
+ * vez da barra fina de status (showBanner) — é uma DECISÃO que interrompe o
+ * aluno (diferente de um status contínuo tipo "seu professor está vendo"),
+ * mesmo tratamento visual do modal de dica/parabéns da missão. zIndex
+ * explícito (ABOVE_LOCK_OVERLAY_Z_INDEX) porque o CSS padrão do modal (9500)
+ * fica ABAIXO do vidro de bloqueio do LiveMirror quando o professor já está
+ * no controle nesse instante.
  */
 function promptReturnToHelloyotta() {
-    showBanner('Sua professora quer te levar de volta pro HelloYotta', [
-        { label: 'Voltar para o HelloYotta', onClick: _confirmReturnToHelloyotta },
-    ]);
+    showCenterModal({
+        icon: '🏠',
+        text: 'Sua professora quer te levar de volta pro HelloYotta',
+        zIndex: ABOVE_LOCK_OVERLAY_Z_INDEX,
+        buttons: [{ label: 'Voltar para o HelloYotta', onClick: _confirmReturnToHelloyotta }],
+    });
 }
 
 function _confirmReturnToHelloyotta() {
@@ -337,11 +349,21 @@ function saveThenSignalReady() {
     }, true);
 }
 
+// Modal central (não a barra fina de status) - mesma razão de
+// promptReturnToHelloyotta acima: é uma decisão do aluno (Aceitar/Recusar),
+// não um status contínuo. A barra fina continua valendo pro ESTADO depois
+// da decisão ("Seu professor está no controle agora"/"...vendo 👀" -
+// acceptControlRequest/denyControlRequest abaixo, via showBanner).
 function promptControlRequest() {
-    showBanner('Seu professor quer assumir o controle da tela', [
-        { label: 'Aceitar', onClick: acceptControlRequest },
-        { label: 'Recusar', onClick: denyControlRequest },
-    ]);
+    showCenterModal({
+        icon: '🖐️',
+        text: 'Seu professor quer assumir o controle da tela',
+        zIndex: ABOVE_LOCK_OVERLAY_Z_INDEX,
+        buttons: [
+            { label: 'Aceitar', onClick: acceptControlRequest },
+            { label: 'Recusar', onClick: denyControlRequest },
+        ],
+    });
 }
 
 function acceptControlRequest() {

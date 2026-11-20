@@ -336,6 +336,17 @@
     cursor: default;
 }
 
+/* Modal com MAIS de um botão (ex.: Aceitar/Recusar em LiveWatch.js, via
+ * CenterModal.js#showCenterModal `buttons`) - lado a lado em vez do botão
+ * único "Continuar" centralizado. Cada botão continua herdando
+ * .assignmentCompleteClose (mesmo visual), só o container muda pra linha. */
+.assignmentCompleteButtons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
 /* ===== Hints review UI (professor) =====
  * Overlay mostrado ao professor logo após "Aula cadastrada!" (barra
  * flutuante), ANTES do redirecionamento pro returnUrl ou do reset do botão -

@@ -123,6 +123,7 @@ import {
     resolveLiveBlock,
 } from './HintEngine.js';
 import PollScheduler from './PollScheduler.js';
+import {showCenterModal, closeCenterModal, isCenterModalOpen} from './CenterModal.js';
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const API_BASE_URL = window.API_URL || (isLocal ? 'http://localhost:5000/api' : (window.location.origin + '/api'));
@@ -162,7 +163,9 @@ let badgeEl = null;
 let popoverEl = null;
 let hintButtonEl = null; // botão flutuante "💡" - abre o painel com todas as dicas da missão
 let hintsPanelEl = null; // painel navegável (Anterior/Próxima) aberto pelo botão - ver _openHintsPanel
-let coachModalEl = null; // um modal por vez - serve tanto pro "parabéns" quanto pra dica de coach automática
+// Modal de "parabéns"/dica de coach - DOM e estado de abertura agora moram em
+// CenterModal.js (compartilhado com LiveWatch.js, ver seu docblock). Este
+// arquivo só chama isCenterModalOpen()/showCenterModal()/closeCenterModal().
 let dismissedThisSession = false;
 let dismissedHintIds = new Set(); // ids de dica já mostrada+fechada nesta sessão de aba - nunca mais reexibida automaticamente
 let zeroDefaultsApplied = false; // último estado aplicado à paleta (ver _syncPaletteDefaults)
@@ -855,7 +858,7 @@ export default class AssignmentBadge {
             dismissed: dismissedHintIds,
             alerted: wrongValueAlerted,
             idleMs: PollScheduler.idleFor(),
-            modalOpen: !!coachModalEl,
+            modalOpen: isCenterModalOpen(),
             // hintsPanelEl aberto: o aluno já está olhando as dicas por conta
             // própria (ver _openHintsPanel) - não interrompe por cima.
             panelOpen: !!hintsPanelEl,
@@ -1183,7 +1186,7 @@ export default class AssignmentBadge {
      * de abrir o painel.
      */
     static _openHintsPanel () {
-        if (!assignment || coachModalEl || hintsPanelEl) {
+        if (!assignment || isCenterModalOpen() || hintsPanelEl) {
             return;
         }
         const hints = Array.isArray(assignment.hints) ? assignment.hints : [];
@@ -1341,60 +1344,22 @@ export default class AssignmentBadge {
      * dismissedHintIds).
      */
     static _showCoachModal ({icon, title, text, extraClass, characterMd5, onClose}) {
-        if (coachModalEl) {
-            return; // já tem um modal (parabéns ou dica) aberto - não duplica/sobrepõe
-        }
-        const close = function () {
-            AssignmentBadge._closeCoachModal();
-            if (onClose) {
-                onClose();
-            }
-        };
-        coachModalEl = newHTML('div', 'assignmentCompleteOverlay', document.body);
-        // Sem onclick no fundo - só o botão dentro do cartão fecha (ver
-        // CLOSE_DELAY_MS acima).
-        const cardClass = 'assignmentCompleteCard' + (extraClass ? (' ' + extraClass) : '');
-        const card = newHTML('div', cardClass, coachModalEl);
-        const emoji = newHTML('div', 'assignmentCompleteEmoji', card);
-        emoji.textContent = icon || '💡';
         // Miniatura de QUAL personagem a dica/alerta se refere (pnglibrary,
         // ver characterThumbSrc acima) - sem ela a criança só tem o texto
         // pra adivinhar de quem está falando. Ausente pra dicas sem
         // personagem (scene_missing/message_not_received/mission_intro/
         // manual - when.characterMd5 nunca existe nessas) ou se o asset
-        // não existir (onerror remove, não deixa ícone quebrado).
-        const thumbSrc = characterThumbSrc(characterMd5);
-        if (thumbSrc) {
-            const thumb = newHTML('img', 'assignmentCompleteThumb', card);
-            thumb.src = thumbSrc;
-            thumb.alt = '';
-            thumb.onerror = function () {
-                if (thumb.parentNode) {
-                    thumb.parentNode.removeChild(thumb);
-                }
-            };
-        }
-        if (title) {
-            const titleEl = newHTML('div', 'assignmentCompleteTitle', card);
-            titleEl.textContent = title;
-        }
-        const textEl = newHTML('div', 'assignmentCompleteText', card);
-        textEl.textContent = text || '';
-        const closeBtn = newHTML('button', 'assignmentCompleteClose', card);
-        closeBtn.type = 'button';
-        closeBtn.textContent = 'Continuar';
-        closeBtn.onclick = close;
-        closeBtn.disabled = true;
-        window.setTimeout(function () {
-            closeBtn.disabled = false;
-        }, CLOSE_DELAY_MS);
+        // não existir (onerror remove, não deixa ícone quebrado - ver
+        // CenterModal.js).
+        showCenterModal({
+            icon: icon, title: title, text: text, extraClass: extraClass,
+            thumbSrc: characterThumbSrc(characterMd5),
+            closeDelayMs: CLOSE_DELAY_MS, onClose: onClose,
+        });
     }
 
     static _closeCoachModal () {
-        if (coachModalEl && coachModalEl.parentNode) {
-            coachModalEl.parentNode.removeChild(coachModalEl);
-        }
-        coachModalEl = null;
+        closeCenterModal();
     }
 
     static _toggleExpanded () {
