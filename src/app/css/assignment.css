@@ -74,6 +74,7 @@
     border: none;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    transition: bottom 0.15s ease;
 }
 
 .assignmentAuthorBtn {
@@ -144,6 +145,21 @@
 
 .assignmentBadge.completed:hover {
     background: #27ae60;
+}
+
+/* Teclado numérico (.picokeyboard, editor.css) aberto - ver
+ * AssignmentBadge.js#_watchKeypad. Ele mora fixo no mesmo canto
+ * inferior-direito (top ~71.6vh, right ~1vh, 23.44vh x 27.34vh), e como o
+ * selo tem z-index maior ele sempre fica por cima cobrindo o teclado -
+ * achado real do usuário ("dicas e dados ficam sobre o teclado virtual").
+ * Em vez de mover o selo pra sempre (os outros cantos já têm as setas de
+ * página .prevpage/.nextpage do palco - editorstage.css), ele só sobe pra
+ * cima do teclado ENQUANTO essa classe estiver presente, voltando ao canto
+ * de sempre assim que o campo perde o foco (sync no mesmo instante via
+ * MutationObserver, não no ritmo do poll de progresso). 100vh - 71.61vh =
+ * 28.39vh é a faixa livre ACIMA do teclado; +12px de respiro. */
+.assignmentBadge.keyboardOpen {
+    bottom: calc(28.39vh + 12px);
 }
 
 /* Banner dispensável "nova missão" (aluno) - não bloqueante, fica no
@@ -665,6 +681,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: bottom 0.15s ease;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     user-select: none;
@@ -676,6 +693,13 @@
 
 .assignmentHintButton.hidden {
     display: none;
+}
+
+/* Mesmo ajuste de .assignmentBadge.keyboardOpen acima, 60px mais alto (o
+ * gap de sempre entre os dois: 76px - 16px) pra continuar empilhado por
+ * cima do selo em vez de colidir com ele quando os dois sobem juntos. */
+.assignmentHintButton.keyboardOpen {
+    bottom: calc(28.39vh + 72px);
 }
 
 /* Pontinho de "dica pronta agora" - ver AssignmentBadge._updateHintButton.

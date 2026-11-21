@@ -163,6 +163,8 @@ let badgeEl = null;
 let popoverEl = null;
 let hintButtonEl = null; // botão flutuante "💡" - abre o painel com todas as dicas da missão
 let hintsPanelEl = null; // painel navegável (Anterior/Próxima) aberto pelo botão - ver _openHintsPanel
+let keypadEl = null; // <div class="picokeyboard">, ver _watchKeypad
+let keypadObserver = null; // MutationObserver do class attribute de keypadEl, ver _watchKeypad
 // Modal de "parabéns"/dica de coach - DOM e estado de abertura agora moram em
 // CenterModal.js (compartilhado com LiveWatch.js, ver seu docblock). Este
 // arquivo só chama isCenterModalOpen()/showCenterModal()/closeCenterModal().
@@ -572,6 +574,49 @@ export default class AssignmentBadge {
         });
     }
 
+    /**
+     * O teclado numérico (<div class="picokeyboard">, criado uma vez em
+     * ScratchJr.js#appinit e alternado 'picokeyboard on'/'off' no mesmo
+     * instante síncrono do foco/blur de um campo de bloco - ver
+     * ScratchJr.js#numEditKey/numEditKeyUp) mora fixo no canto inferior-
+     * direito (top ~71.6vh, right ~1vh - editor.css), o MESMO canto do
+     * selo/botão de dica (bottom:16px, right:16px - assignment.css). Como o
+     * selo tem z-index maior, ele sempre fica por cima, cobrindo o teclado
+     * (achado real: "dicas e dados ficam sobre o teclado virtual").
+     *
+     * Em vez de mover o selo pra sempre pra outro canto (testados: inferior-
+     * esquerdo já é a seta `.prevpage` do palco, inferior-direito já tem a
+     * seta `.nextpage` por baixo - qualquer canto fixo troca uma sobreposição
+     * permanente por outra), observa o atributo `class` do próprio teclado e
+     * afasta o selo/botão SÓ enquanto ele está aberto (classe .keyboardOpen,
+     * ver assignment.css) - a sobreposição só existe durante os segundos em
+     * que o aluno está digitando um número, então o selo volta ao canto de
+     * sempre assim que o campo perde o foco. MutationObserver (não o poll de
+     * PollScheduler) pra reagir no mesmíssimo instante do toggle, sem esperar
+     * a cadência de 800ms/2s do recálculo de progresso.
+     */
+    static _watchKeypad () {
+        if (keypadObserver) {
+            return; // já observando - _showBadge só chama isto uma vez, mas por via das dúvidas
+        }
+        keypadEl = document.querySelector('.picokeyboard');
+        if (!keypadEl) {
+            return; // layout legado inesperado - best-effort, o selo só não se afasta do teclado
+        }
+        const sync = function () {
+            const open = keypadEl.classList.contains('on');
+            if (badgeEl) {
+                badgeEl.classList.toggle('keyboardOpen', open);
+            }
+            if (hintButtonEl) {
+                hintButtonEl.classList.toggle('keyboardOpen', open);
+            }
+        };
+        keypadObserver = new MutationObserver(sync);
+        keypadObserver.observe(keypadEl, {attributes: true, attributeFilter: ['class']});
+        sync(); // estado inicial, caso o teclado já esteja aberto ao montar o selo
+    }
+
     static _showBadge () {
         if (badgeEl) {
             return;
@@ -594,6 +639,7 @@ export default class AssignmentBadge {
             badgeEl.textContent = '✅ Concluído';
             AssignmentBadge._syncSceneLimitUi();
             AssignmentBadge._syncPaletteDefaults();
+            AssignmentBadge._watchKeypad();
             return;
         }
 
@@ -603,6 +649,7 @@ export default class AssignmentBadge {
         if (assignment && Array.isArray(assignment.hints) && assignment.hints.length) {
             AssignmentBadge._createHintButton();
         }
+        AssignmentBadge._watchKeypad();
 
         AssignmentBadge._recomputeLocal();
         // Cadência de recálculo (poll normal/acelerado, recheck instantâneo
