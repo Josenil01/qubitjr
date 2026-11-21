@@ -631,6 +631,9 @@ export function orderInfo (hints, detailed) {
  *        | 'extra'   (extra_block: bloco a mais no script - evento NOVO wrong_extra)
  *        | 'confirm' (pending 'unconfirmed' com o valor pedido - wrong_confirm)
  *        | 'fill',   (pending 'unset', ou 'unconfirmed' com outro valor - wrong_fill)
+ *        | 'missing' (pending 'missing' DENTRO de um script que o aluno já
+ *          começou - ele fez PARTE do combo (ex.: arrastou "andar" sem o
+ *          "velocidade" que devia vir junto) - evento NOVO wrong_missing)
  *    sig, state, reason?, blockType, teacherIndex?,
  *    position: {scriptIndex, path},   // bloco do ALUNO no momento da decisão
  *    characterOccurrence,             // cópia do aluno avaliada (sempre presente)
@@ -653,7 +656,22 @@ export function orderInfo (hints, detailed) {
  * valor errado por OUTRO valor errado, ou o bloco de lugar, gera sig nova.
  */
 export function alignmentInfo (hint, result) {
-    if (!hint || !result || !result.position || !Array.isArray(result.position.path)) {
+    if (!hint || !result) {
+        return null;
+    }
+    // 'missing' (bloco do professor sem par no aluno) não tem result.position
+    // (o bloco nem existe ainda) - só vira alerta quando result.partial é
+    // true: a dica cobre VÁRIOS blocos (ex.: "velocidade + andar" bundlados
+    // numa dica só, regra "setspeed pode ir junto do movimento que ele
+    // acompanha") e o aluno já colocou PARTE do combo (ver evaluateGroup em
+    // shared/hintAlignment.mjs). Dica de UM bloco só "ainda não chegou nesse
+    // passo" (reason 'missing' sem 'partial') ou script inteiro ausente
+    // (reason 'no_script'/'no_character') continuam SEM alerta - vale só a
+    // proativa. say nunca alerta aqui (mesma exceção do kind 'fill' acima -
+    // fala é livre, texto padrão nem entra no manifesto).
+    const isPartialMissing = result.state === 'pending' && result.reason === 'missing' &&
+        result.partial === true && result.blockType !== 'say';
+    if (!isPartialMissing && (!result.position || !Array.isArray(result.position.path))) {
         return null;
     }
     let kind = null;
@@ -667,13 +685,19 @@ export function alignmentInfo (hint, result) {
         kind = (result.expected === null || result.expected === undefined || result.got === result.expected) ? 'confirm' : 'fill';
     } else if (result.state === 'pending' && result.reason === 'unset' && result.blockType !== 'say') {
         kind = 'fill';
+    } else if (isPartialMissing) {
+        kind = 'missing';
     }
     if (!kind) {
         return null;
     }
+    // 'missing' não tem bloco do aluno pra apontar - usa a raiz do script
+    // (path vazio) só pra ter uma posição estável pro sig; o modal não
+    // precisa destacar bloco nenhum nesse caso (ver _highlightMistake).
+    const position = result.position || {scriptIndex: result.scriptIndex, path: []};
     const occurrence = result.characterOccurrence;
-    const where = result.position.scriptIndex + ':' + result.position.path.join('.');
-    const detail = kind === 'extra' ? result.extraCount : result.got;
+    const where = position.scriptIndex + ':' + position.path.join('.');
+    const detail = kind === 'extra' ? result.extraCount : (kind === 'missing' ? result.teacherIndex : result.got);
     const info = {
         source: 'expected',
         kind: kind,
@@ -681,7 +705,7 @@ export function alignmentInfo (hint, result) {
             (occurrence > 1 ? '@' + occurrence : ''),
         state: result.state,
         blockType: result.blockType,
-        position: {scriptIndex: result.position.scriptIndex, path: result.position.path.slice()},
+        position: {scriptIndex: position.scriptIndex, path: position.path.slice()},
         characterOccurrence: occurrence,
     };
     ['reason', 'teacherIndex', 'expected', 'got', 'extraCount'].forEach(function (key) {
@@ -689,7 +713,7 @@ export function alignmentInfo (hint, result) {
             info[key] = result[key];
         }
     });
-    if (kind === 'fill') {
+    if (kind === 'fill' || kind === 'missing') {
         info.idleMs = FILL_IDLE_MS;
     }
     return info;
@@ -842,6 +866,8 @@ const LEGACY_ALERT_PREFIX = {
  *  - 'extra': "Ops! Acho que tem um bloco de X a mais";
  *  - 'order': "Opa, esse bloco está fora do lugar! " + texto da dica cujo
  *    bloco está fora do lugar (a própria dica - ela diz onde ele vai);
+ *  - 'missing': "Quase lá! Ainda falta um bloco nesse script. " + texto da
+ *    dica (ela já descreve o combo completo - inclusive o bloco que falta);
  *  - 'confirm'/'fill': mesmos textos do legado.
  */
 export function alertText (info, spokenHint) {
@@ -859,6 +885,9 @@ export function alertText (info, spokenHint) {
         }
         if (info.kind === 'order') {
             return 'Opa, esse bloco está fora do lugar! ' + hintText;
+        }
+        if (info.kind === 'missing') {
+            return 'Quase lá! Ainda falta um bloco nesse script. ' + hintText;
         }
     }
     const kind = info && info.kind;

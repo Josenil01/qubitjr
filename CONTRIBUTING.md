@@ -1,8 +1,10 @@
 ## Contributing
-This repository contains a port of ScratchJr for Desktop. 
+This repository contains a web port of ScratchJr.
 
-It has been ported with love from the iPad / Android editions to Mac/Windows
-as an independent, open source community project.
+It has been ported with love from the iPad / Android editions to run entirely
+in the browser (Vite + Express + Supabase), as an independent, open source
+community project. There is no desktop (Electron) build — an earlier version
+of this project shipped one, but it was removed; this is web-only going forward.
 
 
 Here are some ways you can contribute to the original ScratchJr:

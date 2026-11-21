@@ -171,8 +171,10 @@ describe('generateHints', () => {
         const result = await generateHints(twoSceneProject());
         const hints = stripIntro(result.hints);
 
-        expect(hints).toHaveLength(1);
-        expect(hints[0].when).toEqual({ type: 'scene_missing', sceneMd5: 'Summer.svg' });
+        // +1: a scene_missing da Cena 1 (Spring.svg) é garantida por
+        // ensureFirstHintIsSceneMissing, mesmo não vindo da LLM aqui.
+        expect(hints).toHaveLength(2);
+        expect(hints[1].when).toEqual({ type: 'scene_missing', sceneMd5: 'Summer.svg' });
     });
 
     it('drops a hint with a hallucinated sceneMd5 not present in the manifest', async () => {
@@ -217,10 +219,13 @@ describe('generateHints', () => {
         const hints = stripIntro(result.hints);
 
         // Ruby é isenta de fillMissingCharacterAddedHints() (ver describe
-        // dedicado abaixo), então nada é injetado aqui - as duas dicas
-        // inventadas continuam descartadas e só "Personagem real" sobrevive.
-        expect(hints).toHaveLength(1);
-        expect(hints[0].text).toBe('Personagem real');
+        // dedicado abaixo), então nada relacionado a personagem é injetado
+        // aqui - as duas dicas inventadas continuam descartadas e só
+        // "Personagem real" sobrevive (+ a scene_missing da Cena 1,
+        // garantida por ensureFirstHintIsSceneMissing, sem relação com o que
+        // este teste verifica).
+        expect(hints).toHaveLength(2);
+        expect(hints[1].text).toBe('Personagem real');
     });
 
     it('drops a hint with a hallucinated messageName not in the union of sent messages', async () => {
@@ -236,8 +241,10 @@ describe('generateHints', () => {
         const result = await generateHints(twoSceneProject());
         const hints = stripIntro(result.hints);
 
-        expect(hints).toHaveLength(1);
-        expect(hints[0].text).toBe('Mensagem real');
+        // +1: a scene_missing da Cena 1 (Spring.svg), garantida por
+        // ensureFirstHintIsSceneMissing.
+        expect(hints).toHaveLength(2);
+        expect(hints[1].text).toBe('Mensagem real');
     });
 
     it('drops a character_missing_block_type hint with an empty/malformed blockTypes array', async () => {
@@ -294,9 +301,11 @@ describe('generateHints', () => {
 
         // Ruby é isenta de fillMissingCharacterAddedHints() (ver describe
         // dedicado abaixo) - a dica com blockTypes vazio continua descartada,
-        // e nada extra é injetado pra ela.
-        expect(hints).toHaveLength(1);
-        expect(hints[0].text).toBe('Com blockTypes válido');
+        // e nada relacionado a personagem é injetado pra ela (+ a
+        // scene_missing da Cena 1 - única cena deste projeto, Summer.svg -
+        // garantida por ensureFirstHintIsSceneMissing).
+        expect(hints).toHaveLength(2);
+        expect(hints[1].text).toBe('Com blockTypes válido');
     });
 
     it('drops a character_missing_block_type hint listing a blockType the character does not really use', async () => {
@@ -342,7 +351,11 @@ describe('generateHints', () => {
         const result = await generateHints(project);
         const hints = stripIntro(result.hints);
 
-        expect(hints).toHaveLength(0);
+        // A dica inventada é descartada, mas a scene_missing da Cena 1
+        // (única cena deste projeto, Summer.svg) continua garantida por
+        // ensureFirstHintIsSceneMissing - não fica vazio.
+        expect(hints).toHaveLength(1);
+        expect(hints[0].when).toMatchObject({ type: 'scene_missing', sceneMd5: 'Summer.svg' });
     });
 
     describe('fillBlockArgs (valor exato de blocos numéricos, decisão do usuário: só "say" pode divergir)', () => {
@@ -398,8 +411,10 @@ describe('generateHints', () => {
             const result = await generateHints(projectWithSetspeed(1));
             const hints = stripIntro(result.hints);
 
-            expect(hints).toHaveLength(1);
-            expect(hints[0].when.blockArgs).toEqual({ setspeed: 1, forward: 3 });
+            // +1: a scene_missing da Cena 1 (City.svg), garantida por
+            // ensureFirstHintIsSceneMissing.
+            expect(hints).toHaveLength(2);
+            expect(hints[1].when.blockArgs).toEqual({ setspeed: 1, forward: 3 });
         });
 
         it('never includes "say" in blockArgs even when it is in blockTypes - the one block allowed to differ', async () => {
@@ -422,9 +437,11 @@ describe('generateHints', () => {
             const result = await generateHints(projectWithSetspeed(1));
             const hints = stripIntro(result.hints);
 
-            expect(hints).toHaveLength(1);
+            // +1: a scene_missing da Cena 1 (City.svg), garantida por
+            // ensureFirstHintIsSceneMissing.
+            expect(hints).toHaveLength(2);
             // blockArgs sempre presente (mesmo vazio) - "say" nunca entra.
-            expect(hints[0].when.blockArgs).toEqual({});
+            expect(hints[1].when.blockArgs).toEqual({});
         });
 
         it('leaves a type out of blockArgs when the teacher\'s character uses it with two DIFFERENT values (ambiguous)', async () => {
@@ -468,9 +485,11 @@ describe('generateHints', () => {
             const result = await generateHints(project);
             const hints = stripIntro(result.hints);
 
-            expect(hints).toHaveLength(1);
+            // +1: a scene_missing da Cena 1 (City.svg), garantida por
+            // ensureFirstHintIsSceneMissing.
+            expect(hints).toHaveLength(2);
             // Ambíguo - fica de fora, sem travar a dica (só o tipo é exigido).
-            expect(hints[0].when.blockArgs).toEqual({});
+            expect(hints[1].when.blockArgs).toEqual({});
         });
     });
 
@@ -500,8 +519,10 @@ describe('generateHints', () => {
         const result = await generateHints(twoSceneProject());
         const hints = stripIntro(result.hints);
 
-        expect(hints).toHaveLength(1);
-        expect(hints[0].text).toBe('Com characterMd5 válido');
+        // +1: a scene_missing da Cena 1 (Spring.svg), garantida por
+        // ensureFirstHintIsSceneMissing.
+        expect(hints).toHaveLength(2);
+        expect(hints[1].text).toBe('Com characterMd5 válido');
     });
 
     it('drops a hint with an unrecognized when.type entirely', async () => {
@@ -512,7 +533,12 @@ describe('generateHints', () => {
         );
 
         const result = await generateHints(twoSceneProject());
-        expect(stripIntro(result.hints)).toHaveLength(0);
+        const hints = stripIntro(result.hints);
+
+        // A dica de tipo desconhecido é descartada, mas a scene_missing da
+        // Cena 1 continua garantida por ensureFirstHintIsSceneMissing.
+        expect(hints).toHaveLength(1);
+        expect(hints[0].when).toMatchObject({ type: 'scene_missing', sceneMd5: 'Spring.svg' });
     });
 
     it('keeps every valid hint - no cap on how many survive, even for a large batch', async () => {
@@ -573,7 +599,15 @@ describe('generateHints', () => {
 
         const result = await generateHints(project);
 
-        expect(stripIntro(result.hints).map((h) => h.text)).toEqual(['1a vez na Primavera - Lobisomem', '2a vez na Primavera - Allan']);
+        // 1º item: a scene_missing da Cena 1 (Spring.svg, ocorrência 1),
+        // garantida por ensureFirstHintIsSceneMissing - não vinha da LLM
+        // aqui (o mock só tem character_missing/scene_missing de outras
+        // ocorrências), e é isso que este teste passa a cobrir também.
+        expect(stripIntro(result.hints).map((h) => h.text)).toEqual([
+            'Que tal colocar o cenário da Primavera?',
+            '1a vez na Primavera - Lobisomem',
+            '2a vez na Primavera - Allan',
+        ]);
     });
 
     it('defaults sceneOccurrence to 1 when the LLM omits it, for backward compatibility', async () => {
@@ -980,6 +1014,62 @@ describe('generateHints', () => {
             // propósito) devem produzir um character_missing pra ela.
             expect(result.hints.filter((h) => h.when.type === 'character_missing' && h.when.characterMd5 === 'HY-Ruby.svg')).toHaveLength(0);
             expect(stripIntro(result.hints).map((h) => h.when.type)).toEqual(['scene_missing', 'character_missing_block_type']);
+        });
+    });
+
+    describe('ensureFirstHintIsSceneMissing (a 1ª dica de tarefa é sempre o cenário da Cena 1)', () => {
+        it('move a scene_missing da Cena 1 pro início quando a LLM gerou ela fora de ordem, preservando o texto original', async () => {
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        { text: 'Crie uma página com o Verão.', when: { type: 'scene_missing', sceneMd5: 'Summer.svg', sceneOccurrence: 1 } },
+                        { text: 'Que tal a Primavera?', when: { type: 'scene_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 1 } },
+                    ],
+                })
+            );
+
+            const result = await generateHints(twoSceneProject());
+            const hints = stripIntro(result.hints);
+
+            expect(hints[0].when).toMatchObject({ type: 'scene_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 1 });
+            expect(hints[0].text).toBe('Que tal a Primavera?'); // movida, não regenerada
+            expect(hints[1].when).toMatchObject({ type: 'scene_missing', sceneMd5: 'Summer.svg' });
+        });
+
+        it('injeta a scene_missing da Cena 1 no início quando a LLM esqueceu dela por completo', async () => {
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        { text: 'Crie uma página com o Verão.', when: { type: 'scene_missing', sceneMd5: 'Summer.svg', sceneOccurrence: 1 } },
+                    ],
+                })
+            );
+
+            const result = await generateHints(twoSceneProject());
+            const hints = stripIntro(result.hints);
+
+            expect(hints[0]).toMatchObject({
+                text: 'Que tal colocar o cenário da Primavera?',
+                when: { type: 'scene_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 1 },
+            });
+            expect(hints[1].when).toMatchObject({ type: 'scene_missing', sceneMd5: 'Summer.svg' });
+        });
+
+        it('não muda nada quando a LLM já gerou a scene_missing da Cena 1 em primeiro lugar', async () => {
+            mockLlmResponse(
+                JSON.stringify({
+                    hints: [
+                        { text: 'Que tal a Primavera?', when: { type: 'scene_missing', sceneMd5: 'Spring.svg', sceneOccurrence: 1 } },
+                        { text: 'Crie uma página com o Verão.', when: { type: 'scene_missing', sceneMd5: 'Summer.svg', sceneOccurrence: 1 } },
+                    ],
+                })
+            );
+
+            const result = await generateHints(twoSceneProject());
+            const hints = stripIntro(result.hints);
+
+            expect(hints.map((h) => h.when.sceneMd5)).toEqual(['Spring.svg', 'Summer.svg']);
+            expect(hints).toHaveLength(2); // nenhuma dica extra injetada
         });
     });
 

@@ -9,7 +9,10 @@
  * são chamados pelos dois lados (ver comentário de cada rota); as
  * checagens de dono aceitam teacher_id OU student_id por isso.
  *
- * GET  /api/teacher/classroom/:turmaId/students
+ * GET  /api/teacher/classroom/:turmaId/missions
+ * GET  /api/teacher/classroom/:turmaId/students (?assignmentId= opcional -
+ *      escopa pra uma missão específica, ver docblock da rota)
+ * GET  /api/teacher/credits
  * POST /api/teacher/session/start
  * POST /api/teacher/session/:sessionId/heartbeat
  * POST /api/teacher/session/:sessionId/end
@@ -24,6 +27,7 @@ const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
 const { getClassroomRoster } = require('../services/helloyotta');
 const { readCompletionFlags } = require('../services/completionSnapshot');
+const credits = require('../services/credits');
 
 const router = express.Router();
 
@@ -83,13 +87,78 @@ function serializeSession(row) {
 }
 
 /**
+ * GET /api/teacher/classroom/:turmaId/missions
+ * Lista as missões (assignments) já cadastradas pra esta turma - histórico
+ * inteiro, não só a ativa (mesmo espírito de GET /assignments/mine do lado
+ * do aluno, mas sem exigir token de aluno: aqui a autorização é a mesma
+ * checagem de turma da HelloYotta que as outras rotas deste arquivo usam).
+ * Alimenta o seletor de missão do painel do professor (teacher.js) - ver
+ * `assignmentId` em GET /classroom/:turmaId/students abaixo, que usa o `id`
+ * devolvido aqui pra escopar "só os projetos desta aula" em vez do projeto
+ * mais recente de cada aluno (independente de qual aula ele estava fazendo).
+ */
+router.get('/classroom/:turmaId/missions', async (req, res) => {
+    const { turmaId } = req.params;
+    if (!turmaId) return res.status(400).json({ error: 'Invalid turmaId' });
+
+    let roster;
+    try {
+        roster = await getClassroomRoster(req.rawToken, req.userId, turmaId);
+    } catch (err) {
+        console.error('[teacher] HelloYotta error:', err);
+        return res.status(502).json({ error: 'Falha ao consultar HelloYotta' });
+    }
+
+    if (!roster) {
+        return res.status(403).json({ error: 'Professor não autorizado para esta turma' });
+    }
+
+    const supabase = getSupabase();
+    if (!supabase) return res.status(503).json({ error: 'Database not configured' });
+
+    try {
+        const { data: rows, error } = await supabase
+            .from('assignments')
+            .select('id, project_name, active, created_at')
+            .eq('turma_id', turmaId)
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        res.json({
+            missions: (rows || []).map((row) => ({
+                id: row.id,
+                name: row.project_name,
+                active: !!row.active,
+                createdAt: row.created_at,
+            })),
+        });
+    } catch (err) {
+        console.error('[teacher] GET missions error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
  * GET /api/teacher/classroom/:turmaId/students
  * Lista os alunos da turma (autorizados pela HelloYotta) com o projeto mais
  * recente de cada um. Status "online agora" é responsabilidade do canal
  * Realtime no frontend — esta rota devolve só o snapshot estático inicial.
+ *
+ * ?assignmentId= (opcional, ver GET /classroom/:turmaId/missions acima):
+ * escopa qual projeto de cada aluno entra na conta - em vez do mais recente
+ * (que pode já ser um projeto livre, de outra aula), passa a ser o projeto
+ * vinculado especificamente a essa missão (projects.assignment_id, no máximo
+ * um por aluno por missão - ver comentário de dedup em GET /assignments/
+ * mine). Pedido do usuário: sem isso, um aluno que concluiu a missão e
+ * depois abriu outro projeto perdia o selo de conclusão no painel, mesmo
+ * tendo terminado - ver conversa que motivou este parâmetro. Validado contra
+ * `turma_id` antes de usar, pra um professor não conseguir espiar projetos
+ * de uma missão de outra turma só adivinhando o id.
  */
 router.get('/classroom/:turmaId/students', async (req, res) => {
     const { turmaId } = req.params;
+    const assignmentIdParam = req.query.assignmentId;
     if (!turmaId) return res.status(400).json({ error: 'Invalid turmaId' });
 
     let roster;
@@ -113,21 +182,43 @@ router.get('/classroom/:turmaId/students', async (req, res) => {
     }
 
     try {
-        const { data: projects, error } = await supabase
+        let assignmentId = null;
+        if (assignmentIdParam) {
+            const { data: assignmentRow, error: assignmentErr } = await supabase
+                .from('assignments')
+                .select('id')
+                .eq('id', assignmentIdParam)
+                .eq('turma_id', turmaId)
+                .maybeSingle();
+            if (assignmentErr) throw assignmentErr;
+            if (!assignmentRow) {
+                return res.status(400).json({ error: 'Missão não pertence a esta turma' });
+            }
+            assignmentId = assignmentRow.id;
+        }
+
+        let projectsQuery = supabase
             .from('projects')
             .select('id, name, owner, thumbnail, mtime, time_spent_seconds')
             .in('owner', studentIds)
-            .eq('deleted', 'NO')
-            .order('mtime', { ascending: false });
+            .eq('deleted', 'NO');
+        if (assignmentId !== null) {
+            projectsQuery = projectsQuery.eq('assignment_id', assignmentId);
+        }
+        const { data: projects, error } = await projectsQuery.order('mtime', { ascending: false });
 
         if (error) throw error;
 
         // A query já vem ordenada por mtime desc, então a primeira ocorrência
-        // de cada owner é o projeto mais recente daquele aluno.
+        // de cada owner é o projeto mais recente daquele aluno (ou, com
+        // assignmentId, o único projeto dele vinculado a esta missão - um
+        // por aluno por missão, ver docblock da rota).
         const latestByOwner = {};
         // Tempo total do aluno na plataforma = soma de time_spent_seconds de
         // TODOS os projetos dele, não só o mais recente (ver
-        // increment_project_time em supabase-setup.sql).
+        // increment_project_time em supabase-setup.sql) - não escopado por
+        // assignmentId de propósito, é "tempo na plataforma", não "tempo
+        // nesta missão".
         const totalTimeByOwner = {};
         (projects || []).forEach((p) => {
             if (!latestByOwner[p.owner]) latestByOwner[p.owner] = p;
@@ -135,8 +226,9 @@ router.get('/classroom/:turmaId/students', async (req, res) => {
         });
 
         // Sombra verde no card (teacher.html#missionCompleted): só sobre o
-        // projeto MOSTRADO no card (o mais recente de cada aluno), não "o
-        // aluno já concluiu alguma missão algum dia" - ver
+        // projeto MOSTRADO no card (o mais recente de cada aluno, ou o da
+        // missão escolhida via assignmentId), não "o aluno já concluiu
+        // alguma missão algum dia" - ver
         // services/completionSnapshot.js#readCompletionFlags. Uma única
         // consulta extra, tolerante à migração ainda não ter rodado.
         const latestProjectIds = Object.values(latestByOwner).map((p) => p.id);
@@ -164,9 +256,40 @@ router.get('/classroom/:turmaId/students', async (req, res) => {
             };
         });
 
-        res.json({ turmaId, turmaName: roster.turmaName, students });
+        res.json({ turmaId, turmaName: roster.turmaName, assignmentId, students });
     } catch (err) {
         console.error('[teacher] GET students error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * GET /api/teacher/credits
+ * Sincroniza o saldo de créditos de IA do professor com a HelloYotta e
+ * devolve o resultado - chamado pelo frontend UMA VEZ ao abrir o painel do
+ * professor ("início da sessão", decisão do usuário), não em toda request -
+ * mesma lição já aplicada ao cache de verifyStudentToken em identity.js,
+ * pra não estourar nenhuma cota do lado da HelloYotta.
+ *
+ * Só pra EXIBIR na UI - quem decide se uma geração pode rodar é sempre a
+ * chamada síncrona e bloqueante em services/credits.js#debitCredits, nunca
+ * este valor (teria a mesma corrida que esse desenho corrigiu, ver
+ * services/helloyotta.js). Sem custos fixos no retorno: quem resolve o
+ * preço de cada ação é a HelloYotta, numa tabela ajustável sem deploy do
+ * lado deles - qualquer valor hardcoded aqui ficaria desatualizado sem
+ * aviso.
+ */
+router.get('/credits', async (req, res) => {
+    if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
+    if (req.role !== 'professor' && req.role !== 'admin') {
+        return res.status(403).json({ error: 'Só professores ou administradores têm saldo de créditos' });
+    }
+
+    try {
+        const balance = await credits.syncBalance(req.rawToken, req.userId);
+        res.json({ balance });
+    } catch (err) {
+        console.error('[teacher] GET credits error:', err);
         res.status(500).json({ error: err.message });
     }
 });

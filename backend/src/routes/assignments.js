@@ -101,6 +101,7 @@ const { buildStagePlacements } = require('../services/detailedManifest');
 const { persistStagePlacements } = require('../services/stagePlacements');
 const { generateActivityPlan } = require('../services/activityGeneration');
 const { buildProjectFromPlan } = require('../services/activityProjectBuilder');
+const credits = require('../services/credits');
 
 const router = express.Router();
 
@@ -170,6 +171,13 @@ async function getTurmaAndNivel(req) {
  *
  * Só professores podem chamar (req.role, populado pelas claims do JWT em
  * index.js) - alunos autenticados não têm motivo pra gerar uma atividade.
+ *
+ * Debita créditos do professor (reason=activities.generate) ANTES de chamar
+ * a LLM (ver services/credits.js) - a decisão de saldo é SEMPRE da
+ * HelloYotta (chamada síncrona e bloqueante), nunca local; 402 se o saldo
+ * for insuficiente, sem gastar nenhum token de IA. Nunca reembolsa se a
+ * geração falhar depois (decisão do usuário) - a tentativa fica registrada
+ * em credit_transactions (log local, não decide nada).
  */
 router.post('/generate-from-theme', async (req, res) => {
     if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
@@ -187,6 +195,21 @@ router.post('/generate-from-theme', async (req, res) => {
     // activityProjectBuilder.js). Ausente/inválido cai no default dentro de
     // generateActivityPlan - nunca rejeitado aqui, só repassado como veio.
     const level = req.body && req.body.level;
+
+    // Debita ANTES de chamar a LLM - chamada síncrona e bloqueante à
+    // HelloYotta (ver services/credits.js), saldo insuficiente bloqueia
+    // aqui, sem gastar nenhum token de IA.
+    let creditKey;
+    try {
+        const result = await credits.debitCredits(req.userId, credits.REASON_ACTIVITY);
+        creditKey = result.idempotencyKey;
+    } catch (err) {
+        if (err.code === 'INSUFFICIENT_CREDITS') {
+            return res.status(402).json({ error: 'Saldo de créditos insuficiente para gerar um projeto' });
+        }
+        console.error('[assignments] generate-from-theme: falha ao debitar créditos na HelloYotta:', err);
+        return res.status(502).json({ error: 'Falha ao verificar créditos com a HelloYotta' });
+    }
 
     try {
         const { projectName, teacherDescription, assetGapNote, plan, level: resolvedLevel, levelLabel } =
@@ -216,6 +239,7 @@ router.post('/generate-from-theme', async (req, res) => {
 
         if (insertErr || !inserted) {
             console.error('[assignments] generate-from-theme: falha ao criar projeto:', insertErr);
+            await credits.markGenerationFailed(creditKey, insertErr ? insertErr.message : 'unknown');
             return res.status(500).json({ error: 'Falha ao criar projeto: ' + (insertErr ? insertErr.message : 'unknown') });
         }
 
@@ -229,6 +253,7 @@ router.post('/generate-from-theme', async (req, res) => {
             levelLabel,
         });
     } catch (err) {
+        await credits.markGenerationFailed(creditKey, err.message);
         if (err.code === 'NOT_CONFIGURED') {
             return res.status(503).json({ error: 'Geração de atividade por IA não configurada' });
         }
@@ -1616,6 +1641,13 @@ router.put('/:id/project', async (req, res) => {
  * Truncado em 1000 caracteres (mesmo limite do <textarea maxlength> no
  * cliente) - contexto é pra um resumo curto, não um texto livre gigante
  * competindo por atenção com a transcrição estruturada no prompt.
+ *
+ * Debita créditos do professor (reason=hints.generate) ANTES de chamar a
+ * LLM (ver services/credits.js) - decisão de saldo é SEMPRE da HelloYotta
+ * (síncrona e bloqueante); 402 se insuficiente, depois de já ter validado
+ * que a missão existe e pertence a ele (senão um 402 vazaria "a missão
+ * existe" pra quem não é dono). Nunca reembolsa se a geração falhar depois
+ * (decisão do usuário).
  */
 router.post('/:id/generate-hints', async (req, res) => {
     if (!req.userId) return res.status(401).json({ error: 'Missing user identity' });
@@ -1651,8 +1683,25 @@ router.post('/:id/generate-hints', async (req, res) => {
             return res.status(500).json({ error: 'Projeto com json inválido' });
         }
 
-        const { hints } = await generateHints(projectJson, hintContext, project.name);
-        res.json({ success: true, hints });
+        let creditKey;
+        try {
+            const result = await credits.debitCredits(req.userId, credits.REASON_HINTS, { assignmentId });
+            creditKey = result.idempotencyKey;
+        } catch (creditErr) {
+            if (creditErr.code === 'INSUFFICIENT_CREDITS') {
+                return res.status(402).json({ error: 'Saldo de créditos insuficiente para gerar dicas' });
+            }
+            console.error('[assignments] generate-hints: falha ao debitar créditos na HelloYotta:', creditErr);
+            return res.status(502).json({ error: 'Falha ao verificar créditos com a HelloYotta' });
+        }
+
+        try {
+            const { hints } = await generateHints(projectJson, hintContext, project.name);
+            res.json({ success: true, hints });
+        } catch (genErr) {
+            await credits.markGenerationFailed(creditKey, genErr.message);
+            throw genErr;
+        }
     } catch (err) {
         if (err.code === 'NOT_CONFIGURED') {
             return res.status(503).json({ error: 'Geração de dicas não configurada' });

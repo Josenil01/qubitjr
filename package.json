@@ -123,6 +123,7 @@
         ]
     },
     "dependencies": {
+        "@elevenlabs/elevenlabs-js": "^2.76.0",
         "@supabase/supabase-js": "^2.39.8",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
@@ -138,6 +139,7 @@
         "sql.js": "^0.4.0"
     },
     "devDependencies": {
+        "@vitest/coverage-v8": "5.0.3",
         "babel-plugin-transform-async-to-generator": "^6.24.1",
         "babel-preset-env": "^1.6.1",
         "babel-preset-react": "^6.24.1",
@@ -148,7 +150,6 @@
         "eslint-plugin-jsx-a11y": "^5.1.1",
         "eslint-plugin-react": "^7.7.0",
         "http-server": "^14.1.0",
-        "@vitest/coverage-v8": "5.0.3",
         "jsdom": "^29.1.1",
         "playwright": "^1.64.1",
         "vite": "^7.3.1",

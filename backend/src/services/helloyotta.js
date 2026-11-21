@@ -22,6 +22,36 @@
  * confundir com o roster/verify-token acima — aqueles têm contrato fechado
  * por e-mail; este usa HELLOYOTTA_ASSIGNMENT_WEBHOOK_URL, que fica vazia (e
  * a função vira no-op) até a URL real existir do lado deles.
+ *
+ * Quarto e quinto pontos, pro sistema de créditos de IA (ver
+ * services/credits.js):
+ *
+ *  - getTeacherCredits(): lê o saldo do professor só pra EXIBIR na UI (GET
+ *    /api/teacher/credits). NUNCA usar o retorno disto pra decidir se uma
+ *    geração pode rodar (ver próximo item - teria a mesma corrida que
+ *    debitTeacherCredits foi desenhada pra evitar).
+ *
+ *  - debitTeacherCredits(): débito SÍNCRONO E BLOQUEANTE, contrato
+ *    confirmado por e-mail (2026-11). [2026-11-20] Design anterior
+ *    (debitar localmente, avisar depois por webhook best-effort) foi
+ *    REJEITADO pelo time da HelloYotta: eles identificaram que não
+ *    serializa débitos concorrentes quando VÁRIAS plataformas (não só o
+ *    QubitJr) debitam do MESMO saldo do MESMO professor ao mesmo tempo -
+ *    cada uma decidindo "tem saldo?" sobre a própria cópia local, sem
+ *    nenhum ponto único de verdade no momento da decisão. Corrigido: a
+ *    decisão agora é SEMPRE da HelloYotta - chamamos o endpoint deles ANTES
+ *    de qualquer geração e só seguimos se vier {success:true}. O valor
+ *    debitado (`amount`) também NÃO é mais decidido por nós - só mandamos
+ *    `reason` (qual ação), e eles resolvem o custo numa tabela própria,
+ *    ajustável sem deploy do lado deles.
+ *
+ *    [2026-11-20] Contrato final (GET e debit) confirmado contra produção
+ *    real da HelloYotta: os dois endpoints exigem header `X-App-Id: qubitjr`
+ *    além do Bearer QUBITJR_API_KEY - sem ele a HelloYotta não sabe qual app
+ *    chamador está debitando (não é mais `appId` no corpo do POST, como no
+ *    rascunho anterior do contrato). O GET de saldo também deixou de ser
+ *    placeholder: path fixo `/api/credits/teachers/:teacherId` (mesmo
+ *    teacherId do debit), não precisa mais de HELLOYOTTA_CREDITS_ENDPOINT.
  */
 
 const HELLOYOTTA_MODE = process.env.HELLOYOTTA_MODE || 'mock';
@@ -164,4 +194,144 @@ async function notifyAssignmentRegistered(payload) {
     }
 }
 
-module.exports = { getClassroomRoster, verifyStudentToken, notifyAssignmentRegistered };
+// Saldo generoso de propósito pra dev local (HELLOYOTTA_MODE=mock) - não
+// depende de nenhum contrato, só destrava testar o fluxo de créditos sem
+// travar em saldo zero.
+const MOCK_CREDITS_BALANCE = 9999;
+
+/**
+ * Saldo de créditos de IA do professor. Contrato confirmado contra produção
+ * real da HelloYotta (2026-11):
+ *
+ *   GET {HELLOYOTTA_API_URL}/api/credits/teachers/:teacherId
+ *   Authorization: Bearer QUBITJR_API_KEY
+ *   X-App-Id: qubitjr
+ *
+ * Só pra EXIBIR na UI - nunca usar o retorno pra decidir se uma geração pode
+ * rodar (ver debitTeacherCredits). Em qualquer falha (rede, HTTP não-ok),
+ * devolve null — services/credits.js mantém o último saldo local conhecido
+ * em vez de zerar o professor na tela.
+ *
+ * @param {string} teacherToken - não usado na chamada (autenticação é via
+ *        QUBITJR_API_KEY, não o token do professor) - mantido no parâmetro
+ *        por simetria com getClassroomRoster/chamadores existentes.
+ * @param {string} teacherId - sub do token, usado no modo mock e no path.
+ * @returns {Promise<number|null>} saldo, ou null se a HelloYotta respondeu
+ *          com erro ou a chamada falhou.
+ */
+async function getTeacherCredits(teacherToken, teacherId) {
+    if (HELLOYOTTA_MODE === 'mock') {
+        return MOCK_CREDITS_BALANCE;
+    }
+
+    if (!HELLOYOTTA_API_URL) {
+        if (process.env.DEBUG === 'true') {
+            console.log('[helloyotta] getTeacherCredits: HELLOYOTTA_API_URL não configurada, mantendo saldo local');
+        }
+        return null;
+    }
+
+    try {
+        const url = `${HELLOYOTTA_API_URL}/api/credits/teachers/${encodeURIComponent(teacherId)}`;
+        const response = await fetch(url, {
+            headers: { Authorization: `Bearer ${QUBITJR_API_KEY}`, 'X-App-Id': 'qubitjr' },
+        });
+        if (!response.ok) {
+            console.warn('[helloyotta] getTeacherCredits: HelloYotta respondeu', response.status, '- mantendo saldo local');
+            return null;
+        }
+        const body = await response.json();
+        // Mesmo cuidado do roster: resposta real pode vir envelopada em
+        // { success, data: {...} } - aceita os dois formatos até confirmar.
+        const data = body.data || body;
+        const balance = Number(data.balance ?? data.credits);
+        return Number.isFinite(balance) ? balance : null;
+    } catch (err) {
+        console.warn('[helloyotta] getTeacherCredits failed (non-fatal, mantendo saldo local):', err.message);
+        return null;
+    }
+}
+
+// Custos fixos só pra simular uma resposta plausível em modo mock - não tem
+// nenhum efeito em produção, onde o custo real vem sempre da HelloYotta.
+const MOCK_CREDIT_COSTS = {
+    'activities.generate': 5,
+    'hints.generate': 1,
+};
+
+/**
+ * Débito SÍNCRONO E BLOQUEANTE de créditos de IA - decidido atomicamente do
+ * lado da HelloYotta (ver docblock do arquivo pro raciocínio completo de
+ * por que o design anterior, local, foi abandonado). Contrato confirmado
+ * por e-mail (2026-11):
+ *
+ *   POST {HELLOYOTTA_API_URL}/api/credits/teachers/:teacherId/debit
+ *   Authorization: Bearer QUBITJR_API_KEY
+ *   X-App-Id: qubitjr
+ *   Body: { reason, idempotencyKey }
+ *
+ * `reason` identifica a AÇÃO ('activities.generate' | 'hints.generate'),
+ * nunca o valor - quem resolve quanto custa é a HelloYotta. `idempotencyKey`
+ * deve ser único por TENTATIVA de geração (gerado em services/credits.js) -
+ * reenviar a mesma key devolve o mesmo resultado sem debitar de novo,
+ * essencial pra retry seguro de rede (um timeout do nosso lado não é
+ * garantia de que o débito não aconteceu do lado deles).
+ *
+ * @returns {Promise<{success: boolean, debited?: number, balance: number}>}
+ *          success:false (HTTP 402) = saldo insuficiente, nada foi debitado.
+ * @throws se a HelloYotta responder 400 (reason não cadastrado do lado
+ *         deles - avisar a HelloYotta antes de introduzir uma ação nova) ou
+ *         qualquer outro erro de rede/servidor. NUNCA interpretar uma falha
+ *         de rede/exceção como "pode gerar" - sem {success:true} confirmado,
+ *         a geração não deve rodar.
+ */
+async function debitTeacherCredits(teacherId, reason, idempotencyKey) {
+    if (HELLOYOTTA_MODE === 'mock') {
+        // Sem endpoint real em dev - sempre aprova (mesmo espírito do resto
+        // do modo mock: destrava testar o fluxo sem depender do contrato).
+        return { success: true, debited: MOCK_CREDIT_COSTS[reason] || 0, balance: MOCK_CREDITS_BALANCE };
+    }
+
+    if (!HELLOYOTTA_API_URL) {
+        throw new Error('HELLOYOTTA_API_URL não configurada para HELLOYOTTA_MODE=live');
+    }
+
+    const response = await fetch(`${HELLOYOTTA_API_URL}/api/credits/teachers/${encodeURIComponent(teacherId)}/debit`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${QUBITJR_API_KEY}`,
+            'X-App-Id': 'qubitjr',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reason, idempotencyKey }),
+    });
+
+    if (response.status === 402) {
+        // Resposta real vem envelopada: { success:false, error, data: { balance } }
+        // — confirmado testando direto contra produção (mesmo formato do roster).
+        const body = await response.json().catch(() => ({}));
+        const data = body.data || body;
+        return { success: false, balance: typeof data.balance === 'number' ? data.balance : 0 };
+    }
+
+    if (!response.ok) {
+        // Inclui 400 (reason não cadastrado do lado deles) - não é um caso
+        // de "saldo insuficiente", é configuração/contrato errado, por isso
+        // lança em vez de devolver success:false.
+        const err = new Error(`HelloYotta respondeu ${response.status} ao debitar créditos`);
+        err.status = 502;
+        throw err;
+    }
+
+    const body = await response.json();
+    const data = body.data || body;
+    return { success: true, debited: data.debited, balance: data.balance };
+}
+
+module.exports = {
+    getClassroomRoster,
+    verifyStudentToken,
+    notifyAssignmentRegistered,
+    getTeacherCredits,
+    debitTeacherCredits,
+};

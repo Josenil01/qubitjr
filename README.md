@@ -6,6 +6,8 @@ Scratch and ScratchJr are trademarks of the Massachusetts Institute of Technolog
 
 **QubitJr** is a web-based reimagining of ScratchJr — the visual, block-based programming environment for young children — rebuilt to run entirely in the browser instead of as a native iPad/Android app. It keeps ScratchJr's core editing model (pages, sprites, drag-and-drop blocks, paint editor) while adding cloud accounts, cross-device project sync, and classroom tools for teachers.
 
+This is a **web-only** project — Vite (frontend) + Express (backend) + Supabase, deployed on Vercel. An earlier iteration of this repo also shipped a separate Electron desktop app; that code has been fully removed, and there is no desktop build going forward.
+
 If you're looking for the official ScratchJr app from MIT, see [LLK/scratchjr](https://github.com/LLK/scratchjr).
 
 ## Key Features

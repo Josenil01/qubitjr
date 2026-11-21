@@ -71,6 +71,8 @@ const { resolveAssignmentFields } = require('../services/assignmentResolver');
 const { generateActivityPlan } = require('../services/activityGeneration');
 const { buildProjectFromPlan } = require('../services/activityProjectBuilder');
 const { generateHintsWithProvider } = require('../services/hintsGeneration');
+const credits = require('../services/credits');
+const { trackUserSeen } = require('../services/userTracking');
 
 const router = express.Router();
 const publicRouter = express.Router();
@@ -1004,16 +1006,42 @@ async function deliverActivityCallback(callbackUrl, payload) {
  * respondeu 202. Nunca deixa uma exceção escapar sem marcar o rascunho como
  * 'failed' e sem tentar avisar a HelloYotta do erro - o chamador não tem
  * mais nenhuma outra chance de saber que algo deu errado.
+ *
+ * activityCreditKey (idempotencyKey do débito de activities.generate) já
+ * foi confirmado pela HelloYotta ANTES deste pipeline começar (ver POST
+ * /activities/generate) - se o PROJETO falhar aqui, só marca essa
+ * transação como 'failed' pra auditoria (services/credits.js), não
+ * reembolsa (decisão do usuário, e a HelloYotta não expõe estorno).
+ *
+ * As DICAS são um débito separado (reason=hints.generate - a HelloYotta só
+ * reconhece 'activities.generate'/'hints.generate', não um reason
+ * combinado), feito AQUI DENTRO, depois que o projeto já existe. Se o
+ * saldo for insuficiente pra dicas (ou a geração delas falhar), o rascunho
+ * ainda é salvo como 'ready' SEM dicas (hints=null) - o projeto já foi
+ * gerado e já foi pago, não faz sentido descartá-lo por causa de um
+ * segundo débito que falhou; o professor pode gerar dicas depois pelo
+ * fluxo manual já existente (POST /assignments/:id/generate-hints) quando
+ * tiver saldo.
  */
-async function processActivityDraft(supabase, draftId, theme, callbackUrl) {
+async function processActivityDraft(supabase, draftId, theme, callbackUrl, teacherId, activityCreditKey) {
     try {
         const { projectName, teacherDescription, assetGapNote, plan, provider, model } = await generateActivityPlan(theme);
         const { projectJson } = buildProjectFromPlan(plan);
         const requirements = computeProjectManifest(projectJson);
+
         // Mesmo provider/modelo escolhido pra gerar a atividade também gera as
         // dicas dela - decisão do usuário ("um único modelo faz tudo,
         // configurável"). Ver generateHintsWithProvider em hintsGeneration.js.
-        const { hints } = await generateHintsWithProvider(projectJson, '', projectName, provider, model);
+        let hints = null;
+        let hintCreditKey = null;
+        try {
+            const hintDebit = await credits.debitCredits(teacherId, credits.REASON_HINTS, { draftId });
+            hintCreditKey = hintDebit.idempotencyKey;
+            ({ hints } = await generateHintsWithProvider(projectJson, '', projectName, provider, model));
+        } catch (hintErr) {
+            console.warn('[public] activities/generate: dicas não geradas pro rascunho', draftId, '(projeto segue, sem dicas):', hintErr.message);
+            if (hintCreditKey) await credits.markGenerationFailed(hintCreditKey, hintErr.message);
+        }
 
         const { error: updateErr } = await supabase
             .from('ai_activity_drafts')
@@ -1054,6 +1082,7 @@ async function processActivityDraft(supabase, draftId, theme, callbackUrl) {
             console.error('[public] activities/generate: falha ao salvar erro do rascunho', draftId, ':', updateErr);
         }
 
+        await credits.markGenerationFailed(activityCreditKey, err.message);
         await deliverActivityCallback(callbackUrl, { draftId, status: 'failed', theme, error: err.message });
     }
 }
@@ -1065,10 +1094,17 @@ async function processActivityDraft(supabase, draftId, theme, callbackUrl) {
  * Endpoint servidor-a-servidor (mesma chave HELLOYOTTA_INBOUND_API_KEY dos
  * outros endpoints deste arquivo) pra HelloYotta pedir uma atividade nova
  * gerada por IA a partir só de um TEMA (ex.: "A lenda do Saci Pererê") -
- * ver services/activityGeneration.js. De propósito NÃO recebe turma_id/
- * faixa etária/nível de XP (decisão do produto: "só o tema") - o rascunho
- * nasce sem dono, pra qualquer professor revisar/ajustar/aprovar depois
+ * ver services/activityGeneration.js. Continua SEM turma_id/faixa etária/
+ * nível de XP (decisão do produto original: "só o tema") - o rascunho ainda
+ * nasce sem turma, pra qualquer professor revisar/ajustar/aprovar depois
  * (fluxo de importação é trabalho futuro).
+ *
+ * `teacherId` AGORA é obrigatório (decisão do usuário, sistema de créditos -
+ * ver services/credits.js): sem identidade de professor não há de quem
+ * descontar os créditos desta geração, então a HelloYotta precisa informar
+ * qual professor está pedindo. upsert em app_users como 'professor' logo
+ * abaixo garante que teacher_credits (FK pra app_users) aceite a linha
+ * mesmo que este professor nunca tenha aberto o app antes.
  *
  * Responde 202 imediatamente com { draftId, status: 'generating' } e roda a
  * geração de verdade (2 chamadas de LLM - atividade e depois dicas - podem
@@ -1079,6 +1115,16 @@ async function processActivityDraft(supabase, draftId, theme, callbackUrl) {
  * HELLOYOTTA_ACTIVITY_CALLBACK_URL como default) - ver deliverActivityCallback.
  * Sem callback configurado, o resultado só fica na tabela ai_activity_drafts,
  * consultável via GET .../generate/:draftId.
+ *
+ * Débito de créditos pro PROJETO (reason=activities.generate) acontece
+ * AQUI, ANTES de criar o rascunho e responder 202 - decisão SEMPRE da
+ * HelloYotta (síncrona e bloqueante, ver services/helloyotta.js), nunca
+ * local; saldo insuficiente vira 402 na hora, sem nenhum rascunho criado e
+ * sem nenhuma chamada de LLM. O débito das DICAS (reason=hints.generate) é
+ * separado e acontece DENTRO do pipeline em background (processActivityDraft)
+ * - são dois reasons distintos pra HelloYotta, não um combinado - e,
+ * diferente do projeto, saldo insuficiente pra dicas não derruba o
+ * rascunho (ver docblock de processActivityDraft).
  *
  * Screenshots do projeto ficaram de fora desta versão (decisão do usuário) -
  * não há hoje nenhum renderizador do motor real (Stage.js/Snap.svg/Canvas)
@@ -1103,26 +1149,52 @@ publicRouter.post('/activities/generate', async (req, res) => {
         return res.status(400).json({ error: 'theme é obrigatório (texto de 1 a 200 caracteres)' });
     }
 
+    const rawTeacherId = req.body && req.body.teacherId;
+    const teacherId = typeof rawTeacherId === 'string' ? rawTeacherId.trim() : '';
+    if (!teacherId) {
+        return res.status(400).json({ error: 'teacherId é obrigatório (de quem descontar os créditos desta geração)' });
+    }
+
     const rawCallbackUrl = req.body && req.body.callbackUrl;
     const callbackUrl = typeof rawCallbackUrl === 'string' && rawCallbackUrl.trim()
         ? rawCallbackUrl.trim()
         : (process.env.HELLOYOTTA_ACTIVITY_CALLBACK_URL || null);
 
     try {
+        // Garante que teacher_credits/credit_transactions (FK pra app_users)
+        // aceitam linha mesmo que este professor nunca tenha logado no nosso
+        // app antes - quem está afirmando "este id é um professor" aqui é a
+        // própria HelloYotta (chamador server-to-server autenticado pela API
+        // key acima).
+        await trackUserSeen(teacherId, 'professor', null);
+
+        let activityCreditKey;
+        try {
+            const result = await credits.debitCredits(teacherId, credits.REASON_ACTIVITY);
+            activityCreditKey = result.idempotencyKey;
+        } catch (creditErr) {
+            if (creditErr.code === 'INSUFFICIENT_CREDITS') {
+                return res.status(402).json({ error: 'Saldo de créditos insuficiente para gerar esta atividade' });
+            }
+            console.error('[public] POST activities/generate: falha ao debitar créditos na HelloYotta:', creditErr);
+            return res.status(502).json({ error: 'Falha ao verificar créditos com a HelloYotta' });
+        }
+
         const { data: inserted, error: insertErr } = await supabase
             .from('ai_activity_drafts')
-            .insert({ theme, status: 'generating', callback_url: callbackUrl })
+            .insert({ theme, status: 'generating', callback_url: callbackUrl, teacher_id: teacherId })
             .select('id')
             .single();
 
         if (insertErr || !inserted) {
             console.error('[public] POST activities/generate: falha ao criar rascunho:', insertErr);
+            await credits.markGenerationFailed(activityCreditKey, insertErr ? insertErr.message : 'unknown');
             return res.status(500).json({ error: 'Falha ao criar rascunho: ' + (insertErr ? insertErr.message : 'unknown') });
         }
 
         res.status(202).json({ draftId: inserted.id, status: 'generating' });
 
-        runInBackground(processActivityDraft(supabase, inserted.id, theme, callbackUrl));
+        runInBackground(processActivityDraft(supabase, inserted.id, theme, callbackUrl, teacherId, activityCreditKey));
     } catch (err) {
         console.error('[public] POST activities/generate error:', err);
         if (!res.headersSent) res.status(500).json({ error: err.message });

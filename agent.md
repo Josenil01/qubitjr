@@ -60,6 +60,48 @@ The project has a share/public-player feature added after the initial architectu
 - **Frontend:** `player.js` fetches `/api/public/project/:token` (no auth header). Emoji reactions are posted to `/api/public/project/:token/react`.
 - Allowed emojis: `❤️ 😄 👏 🌟 🎉` — hardcoded in both `share.js` and `player.js`. Change in both if you need to add/remove.
 
+### Analytics / Partner Integration Endpoints
+
+`backend/src/routes/analytics.js` exposes aggregated platform statistics for the partner
+platform (HelloYotta) to pull — not used by the ScratchJr editor itself.
+
+- Mounted at `/api/public/analytics/*`, registered **before** the normal JWT auth
+  middleware in `backend/src/index.js` (same place as the other `/api/public` routes).
+- Protected by a single static key, **not** the normal JWT flow: every request needs
+  `Authorization: Bearer <HELLOYOTTA_INBOUND_API_KEY>`, compared in constant time. Same
+  pattern already used by the server-to-server pull routes in `backend/src/routes/share.js`
+  (e.g. `GET /api/public/students/:studentId/time-spent`).
+- Series endpoints default to returning **all four rolling windows together** (week=7d,
+  fortnight=15d, month=30d, year=365d, counted back from "now", not calendar periods).
+  Pass `?period=week|fortnight|month|year` to restrict to one.
+
+| Endpoint | Returns |
+|----------|---------|
+| `GET /overview` | Platform totals with no time window: total users by role, total non-deleted projects, total/active assignment templates. |
+| `GET /projects/new` | Projects created per period, broken down by owner role (`professor` \| `admin` \| `aluno`). |
+| `GET /users/new` | New users per period (first time seen), by role. |
+| `GET /assignments/new` | New missions (`template_id IS NULL`) vs. new classroom adoptions (`template_id` set) per period. |
+| `GET /blocks/most-used` | Block usage ranking, overall and by category (`comecar`/`movimento`/`fluxo`/`aparencia`/`som`/`final`), computed from `computeProjectManifest()` over the `json` of all non-deleted projects. Optional `?period=` filters by `mtime` (last edit) instead of creation time. Hard-capped at 5000 projects per call (`truncated: true` if hit — narrow with `?period=`). |
+| `GET /usage-time` | Total/average editing time and active-user count per period, from `usage_events`. |
+
+**Data model notes (see `backend/migrations/20261118_analytics.sql`):**
+
+- There is no pre-existing `users` table — "professor" vs. "aluno" only ever lived as an
+  ephemeral JWT claim (`backend/src/services/identity.js`). Two tables persist this now,
+  **starting 2026-11-18** (no retroactive history before that date):
+  - `app_users(user_id, role, turma_id, first_seen_at, last_seen_at)` — upserted on every
+    authenticated request by `trackUserSeen()` (`backend/src/services/userTracking.js`),
+    called from `identityMiddleware` in `backend/src/index.js`. `role IS NULL` means
+    "aluno" by convention (student tokens never carry a `role` claim).
+  - `usage_events(id, project_id, owner, delta_seconds, created_at)` — one row per
+    accepted heartbeat, written **inside** the `increment_project_time` Postgres function
+    (same transaction as the `projects.time_spent_seconds` increment) so the logged delta
+    is always the clamped (0–240s) value actually applied.
+- `blocks/most-used`'s category map is a hand-maintained mirror of the color groupings in
+  `BlockSpecs.js#setupBlocksSpecs` (can't import that file server-side — it's DOM-dependent
+  for building its icon images). If a new block type is added there, mirror its category
+  in the `BLOCK_CATEGORIES` constant in `analytics.js` too.
+
 ### Legacy Folder (removed)
 This project used to ship an Electron desktop app alongside the web app, archived under
 `_legacy/` (Electron main/renderer process, old CI config, superseded entry points). The
@@ -402,6 +444,7 @@ Never introduce new globals. Always use module imports.
 | `AUTH_MODE` | `mock` for dev (uses dev-user-a/b tokens) or `production` (JWT + header fallback) | No (default: `mock`) |
 | `JWT_USER_HEADER` | Header name for user ID injection in production mode | No (default: `x-user-id`) |
 | `DEBUG` | Enable debug logging | No (default: `false`) |
+| `HELLOYOTTA_INBOUND_API_KEY` | Static bearer key protecting all server-to-server `/api/public/*` pull routes (HelloYotta → us), including `/api/public/analytics/*` | Yes (for those routes — they 503 without it) |
 
 ### Local Development Commands
 
@@ -465,6 +508,8 @@ The Supabase schema is defined in `backend/supabase-setup.sql`. Tables:
 | `userbkgs` | id, md5, width, height, ext, owner | Custom backgrounds |
 | `projectfiles` | md5 (PK), contents | Project file assets (binary content as text) |
 | `media` | id, project_id (FK), name, type, data (BYTEA) | Media associated with projects |
+| `app_users` | user_id (PK), role, turma_id, first_seen_at, last_seen_at | Persisted role (`professor`/`admin`/NULL=aluno) and first/last-seen timestamps per user — added in `backend/migrations/20261118_analytics.sql`, fed by `trackUserSeen()` on every authenticated request. No data before 2026-11-18. |
+| `usage_events` | id, project_id (FK), owner, delta_seconds, created_at | One row per accepted editing heartbeat (see `increment_project_time`). Added in the same migration; feeds `GET /api/public/analytics/usage-time`. |
 
 Multi-tenant tables (require `owner` for all operations): `projects`, `usershapes`, `userbkgs`.
 

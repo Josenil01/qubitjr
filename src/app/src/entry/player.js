@@ -26,6 +26,7 @@ import Palette from '../editor/ui/Palette.js';
 
 const EMOJIS = ['❤️', '😄', '👏', '🌟', '🎉'];
 const LABELS = { '❤️': 'Amei', '😄': 'Divertido', '👏': 'Parabéns', '🌟': 'Incrível', '🎉': 'Que show!' };
+const REACTION_COOLDOWN_MS = 3000;
 
 export async function playerMain() {
     // Aplicar patches do player sobre os prototypes do engine
@@ -338,20 +339,28 @@ function _renderReactions(token, apiBase) {
     if (!bar) return;
 
     const reactions = window.__playerReactions || {};
-    let sessionReacted = {};
+    // Cooldown por tempo (não por sessão): guardamos o timestamp do último clique em
+    // localStorage (sobrevive a reload/fechar aba) pra evitar clique duplo/spam, mas sem
+    // travar o visitante pro resto da vida — depois de REACTION_COOLDOWN_MS ele (ou outra
+    // pessoa no mesmo navegador) pode curtir de novo.
+    let lastReacted = {};
     try {
-        sessionReacted = JSON.parse(sessionStorage.getItem('sjr_reactions_' + token) || '{}');
+        lastReacted = JSON.parse(localStorage.getItem('sjr_reactions_' + token) || '{}');
     } catch (_) {}
 
-    function saveSession() {
-        try { sessionStorage.setItem('sjr_reactions_' + token, JSON.stringify(sessionReacted)); } catch (_) {}
+    function saveLastReacted() {
+        try { localStorage.setItem('sjr_reactions_' + token, JSON.stringify(lastReacted)); } catch (_) {}
+    }
+
+    function onCooldown(emoji) {
+        return (Date.now() - (lastReacted[emoji] || 0)) < REACTION_COOLDOWN_MS;
     }
 
     function render() {
         bar.innerHTML = '';
         EMOJIS.forEach(emoji => {
             const btn = document.createElement('button');
-            btn.className = 'prx-btn' + (sessionReacted[emoji] ? ' reacted' : '');
+            btn.className = 'prx-btn' + (onCooldown(emoji) ? ' reacted' : '');
             btn.title = LABELS[emoji] || emoji;
 
             const eSpan = document.createElement('span');
@@ -366,16 +375,17 @@ function _renderReactions(token, apiBase) {
             bar.appendChild(btn);
 
             btn.addEventListener('click', async () => {
-                if (sessionReacted[emoji]) return;
-                sessionReacted[emoji] = true;
+                if (onCooldown(emoji)) return;
+                lastReacted[emoji] = Date.now();
                 reactions[emoji] = (reactions[emoji] || 0) + 1;
-                saveSession();
+                saveLastReacted();
                 render();
                 const newBtn = bar.querySelectorAll('.prx-btn')[EMOJIS.indexOf(emoji)];
                 if (newBtn) {
                     newBtn.classList.add('pop');
                     newBtn.addEventListener('animationend', () => newBtn.classList.remove('pop'), { once: true });
                 }
+                setTimeout(render, REACTION_COOLDOWN_MS);
                 try {
                     await fetch(
                         apiBase + '/public/project/' + encodeURIComponent(token) + '/react',

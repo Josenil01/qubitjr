@@ -18,12 +18,14 @@ const { shareRouter, publicRouter } = require('./routes/share');
 const teacherRoutes = require('./routes/teacher');
 const realtimeRoutes = require('./routes/realtime');
 const assignmentsRoutes = require('./routes/assignments');
+const analyticsRoutes = require('./routes/analytics');
 const {
   verifyAndDecode,
   getUserIdFromClaims,
   getTurmaIdFromClaims,
   getPresenceStatusFromClaims,
 } = require('./services/identity');
+const { trackUserSeen } = require('./services/userTracking');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -152,6 +154,7 @@ async function identityMiddleware(req, res, next) {
     // quem autora várias missões no mesmo dia - ver DAILY_LIMIT_EXCEEDED).
     req.role = claims?.role || null;
     console.log(`[Auth] JWT userId: ${jwtUserId} (iss: ${claims?.iss || 'unknown'})`);
+    await trackUserSeen(req.userId, req.role, req.turmaId);
     return next();
   }
 
@@ -170,6 +173,7 @@ async function identityMiddleware(req, res, next) {
     // de projetos na segunda tentativa do mesmo dia.
     req.role = userId.startsWith('prof_') ? 'professor' : null;
     console.log(`[Auth] Mock userId: ${userId}`);
+    await trackUserSeen(req.userId, req.role, req.turmaId);
     return next();
   }
 
@@ -191,6 +195,7 @@ async function identityMiddleware(req, res, next) {
 // Rotas públicas registradas ANTES do identity middleware (sem auth)
 app.use('/api/public', require('./routes/publicProjectCaptures')());
 app.use('/api/public', publicRouter);
+app.use('/api/public/analytics', analyticsRoutes);
 
 app.use(identityMiddleware);
 

@@ -1,5 +1,6 @@
 node_modules
 out
+dist
 
 # Segredos — nunca versionar. .env.example continua rastreado (é o template).
 .env
@@ -19,6 +20,9 @@ src/app/src/editor/.DS_Store
 .DS_Store
 buglist.txt
 src/debug.log
+npm-output.log
+dev-server.stdout.log
+dev-server.stderr.log
 
 # graphify internal/machine-specific state (absolute local paths)
 graphify-out/.graphify_python

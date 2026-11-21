@@ -43,6 +43,8 @@ const TEACHER_PREVIEW_INTERVAL_MS = 200;
 
 let apiBase;
 let turmaId;
+let missions = []; // [{id, name, active, createdAt}] - ver GET /teacher/classroom/:turmaId/missions
+let selectedAssignmentId = null; // null = "todas as aulas" (comportamento de sempre: projeto mais recente de cada aluno)
 let roster = [];
 let onlineIds = new Set();
 let presenceChannel = null;
@@ -90,12 +92,16 @@ export async function teacherMain() {
     apiBase = window.API_URL || (location.origin + '/api');
     const params = new URLSearchParams(location.search);
     turmaId = params.get('turmaId');
+    // Persistido na URL pra sobreviver a um F5 sem o professor ter que
+    // reescolher a aula toda vez - mesmo padrão de turmaId.
+    selectedAssignmentId = params.get('assignmentId') || null;
 
     if (!turmaId) {
         _fatal('Link inválido. Nenhuma turma informada na URL.');
         return;
     }
 
+    await _loadMissions();
     await _loadRoster();
     await _connectPresence();
     _renderLobby();
@@ -113,8 +119,59 @@ function _fatal(msg) {
 
 // ── Dados ────────────────────────────────────────────────────────────────
 
+/**
+ * Preenche o seletor "Qual aula?" do topbar (#teacher-mission-select) com o
+ * histórico de missões já cadastradas pra esta turma (GET /teacher/
+ * classroom/:turmaId/missions) - pedido do usuário: sem escolher uma aula
+ * específica, o painel sempre olhava só o projeto mais recente de cada
+ * aluno, então quem concluiu e depois abriu outro projeto (livre ou de uma
+ * aula seguinte) perdia o selo de conclusão mesmo tendo terminado. Com uma
+ * aula escolhida, GET /students passa ?assignmentId= e olha só o projeto
+ * daquele aluno vinculado a ESSA missão (ver docblock da rota no backend).
+ * "Mais recente (padrão)" = selectedAssignmentId null = comportamento de
+ * sempre, sem filtro nenhum.
+ */
+async function _loadMissions() {
+    const res = await apiFetch(`/teacher/classroom/${encodeURIComponent(turmaId)}/missions`);
+    if (!res.ok) return; // não-fatal - painel segue funcionando sem o seletor (comportamento de sempre)
+    const data = await res.json();
+    missions = data.missions || [];
+
+    const select = gn('teacher-mission-select');
+    if (!select) return;
+    select.innerHTML = '';
+    const defaultOpt = newHTML('option', '', select);
+    defaultOpt.value = '';
+    defaultOpt.textContent = 'Mais recente (padrão)';
+    missions.forEach((m) => {
+        const opt = newHTML('option', '', select);
+        opt.value = String(m.id);
+        opt.textContent = m.name + (m.active ? ' (ativa)' : '');
+    });
+    // Se a aula salva na URL não existir mais nessa turma (apagada, ou
+    // link de outra turma), volta pro padrão em vez de mandar um
+    // assignmentId inválido pro backend (que responderia 400).
+    select.value = missions.some((m) => String(m.id) === String(selectedAssignmentId)) ?
+        String(selectedAssignmentId) : '';
+    selectedAssignmentId = select.value || null;
+    select.onchange = _onMissionChange;
+}
+
+function _onMissionChange(ev) {
+    selectedAssignmentId = ev.target.value || null;
+    const url = new URL(location.href);
+    if (selectedAssignmentId) {
+        url.searchParams.set('assignmentId', selectedAssignmentId);
+    } else {
+        url.searchParams.delete('assignmentId');
+    }
+    history.replaceState(null, '', url);
+    _loadRoster().then(_renderLobby);
+}
+
 async function _loadRoster() {
-    const res = await apiFetch(`/teacher/classroom/${encodeURIComponent(turmaId)}/students`);
+    const qs = selectedAssignmentId ? `?assignmentId=${encodeURIComponent(selectedAssignmentId)}` : '';
+    const res = await apiFetch(`/teacher/classroom/${encodeURIComponent(turmaId)}/students${qs}`);
     if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         _fatal(body.error || 'Não foi possível carregar a turma.');

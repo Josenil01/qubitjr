@@ -191,10 +191,12 @@ Regras de tom:
 - PALAVRAS: pra pedir que a criança ponha um personagem/cenário na tela use SEMPRE "coloque"/"colocar" - NUNCA "adicione"/"adicionar". Pra falar do bloco de bandeira verde, diga "quando a bandeira verde for clicada" (nunca "tocada").
 - PROIBIDO usar travessão (— ou –) em QUALQUER texto que você escrever (dicas e "intro"). Se precisar separar duas ideias, use ponto final, vírgula ou faça duas frases curtas.
 - SEMPRE que a transcrição der um nome ao personagem (ex.: "Ruby", "Allan"), use esse nome na dica - nunca diga "o personagem" ou "esse personagem" genericamente quando um nome estiver disponível. Depois da primeira menção a um personagem numa dica, pode usar pronome (ele/ela) se ficar natural.
+- PERSONAGEM CRIS (characterMd5 HY-Cris.svg): é um MENINO - ao usar pronome ou concordância pra ele (ver regra acima), use SEMPRE a forma masculina ("ele", "dele", "o Cris"), NUNCA feminina ("ela", "dela", "a Cris") - o nome por si só é ambíguo em português, não adivinhe o gênero pelo nome.
 - Preste atenção às linhas "➡️ TROCA DE CENA - saem: ...; entram: ..." entre duas cenas - quando isso acontecer, a dica sobre adicionar o personagem novo deve mencionar a troca de forma natural (ex.: "Agora troque a Ruby pelo Allan aqui" ou "Nessa cena é a vez do Allan"), em vez de simplesmente ignorar que o personagem anterior sumiu.
 - Cada linha relevante da transcrição vem numerada "PASSO N" (contador único, contínuo do início ao fim, nunca reinicia por cena) - gere as dicas RESPEITANDO ESSA ORDEM, na mesma sequência dos números, mesmo que agrupar de outro jeito pareça mais natural. As linhas "➡️ TROCA DE CENA" não têm PASSO (são só uma transição) e não geram dica própria.
 - Quando um personagem tiver um bloco "say" com texto real na transcrição (ex.: say["Olá, primavera!"]), a dica sobre esse personagem falar algo deve sugerir ESSA fala exata (ex.: "Que tal fazer a Ruby dizer 'Olá, primavera!'?"), não uma fala genérica inventada - é a fala que o professor realmente usou no exemplo.
 - OBRIGATÓRIO: gere uma dica "scene_missing" pra CADA cena da transcrição, sem exceção (inclusive a primeira, e inclusive quando o mesmo fundo já apareceu antes em outra cena - ver regra de "sceneOccurrence" abaixo) - nunca pule direto pras dicas de personagem de uma cena sem antes ter uma dica pedindo pra trocar/escolher aquele cenário. Coloque a dica "scene_missing" de uma cena SEMPRE antes das dicas dos personagens daquela mesma cena na lista.
+- OBRIGATÓRIO: a PRIMEIRA dica de TAREFA do array inteiro (a primeira depois da apresentação da missão) tem que ser a "scene_missing" da Cena 1 (PASSO 1 da transcrição) - nunca abra com uma dica de personagem, mensagem, ou de qualquer cena que não seja a primeira, mesmo que outra coisa pareça mais importante.
 - Não existe limite de quantidade de dicas - gere uma pra cada passo de construção realmente relevante da transcrição inteira, mesmo que o projeto seja grande. Não corte cenas nem personagens pra caber num teto.
 - Dica "scene_missing" da PRIMEIRA cena da transcrição (Cena 1): o projeto do aluno já nasce com uma página aberta, então NÃO fale em página nova - seja o mais CURTA possível, só o cenário: "Que tal colocar o cenário da Primavera?". Toda dica "scene_missing" das cenas SEGUINTES é sobre CRIAR UMA PÁGINA NOVA (o aluno toca no "+" da faixa de páginas - é assim que a própria interface do ScratchJr chama essa ação) - "cenário"/"fundo" é só o QUE fica dentro dela, não a ação em si. NUNCA use verbos de "mudar"/"trocar" pro cenário ("vamos mudar pro cenário X?", "troque pro cenário X"), que soam como se já existisse uma cena aberta esperando ser alterada. Nomeie as duas coisas juntas: "Crie uma página nova com o cenário X", "Toque no + e escolha o cenário X". Quando uma cena reusa um fundo que já apareceu antes (a transcrição anota isso, ver "REGRA DE CENA REPETIDA" abaixo), ainda é uma página nova, mas a dica deve soar como um retorno da história pra esse cenário, não como a primeira vez (ex.: "Vamos voltar pro bosque agora? Crie outra página com esse cenário.", "De novo no bosque, mais uma página com esse fundo"), nunca repetindo o mesmo texto de quando ele apareceu a primeira vez.
 - Quando o nome de um personagem vier seguido de um número (ex.: "Casa 2" em vez de só "Casa" - acontece quando o MESMO nome se repete em mais de uma instância no projeto inteiro, ver "REGRA DE NOME REPETIDO" abaixo), use o nome JUNTO com esse número no texto da dica (ex.: "coloque a Casa 2 aqui"), nunca omita o número - é o que diferencia essa instância das outras com o mesmo nome pro aluno.
@@ -830,6 +832,14 @@ function triggerKeyOf(script) {
 }
 
 /**
+ * Tipos de gatilho (onflag/onclick/ontouch/onmessage) - usada tanto aqui
+ * (locateOccurrence) quanto em buildExpectedForHints mais abaixo neste
+ * arquivo (referência adiantada: a constante já está pronta quando as
+ * funções de fato executam, no fim do carregamento do módulo).
+ */
+const TRIGGER_BLOCK_TYPES = new Set(['onflag', 'onclick', 'ontouch', 'onmessage']);
+
+/**
  * Acha, no personagem do professor, a k-ésima ocorrência (1-based, contando
  * em todos os scripts na ordem) do bloco `type`. Devolve o gatilho do script
  * onde ela está (trigger + triggerArg) e quantas ocorrências desse tipo
@@ -837,13 +847,39 @@ function triggerKeyOf(script) {
  * caso do onmessage (triggerCount) - é esse número, e não k, que o cliente
  * compara, já que ele conta só dentro do gatilho da dica. null se o
  * personagem não tem k ocorrências (ex.: manifesto antigo, sem `scripts`).
+ *
+ * Achado em teste real [2026-11] - dica "receba a mensagem X" (blockTypes
+ * contendo o próprio tipo de gatilho, ex.: ["onmessage"] ou ["onmessage",
+ * "show"]) nunca batia aqui: buildScriptDetail (shared/detailedManifest.mjs)
+ * tira o gatilho de `script.blocks` (`blocks.slice(1)`), mas os agregados do
+ * personagem (character.blockCounts, consultado pelo chamador antes de
+ * entrar aqui) somam o gatilho junto - então o chamador achava que "tem pelo
+ * menos 1", mas a busca abaixo, só em `script.blocks`, nunca encontrava o
+ * gatilho e devolvia null sempre. Sem isso, `sameTrigger` (fillBlockContext)
+ * nunca fechava pra essa dica, when.trigger/triggerArg nunca eram gravados,
+ * e o cliente (HintEngine.js#blockMatch) aceitava QUALQUER onmessage, com
+ * QUALQUER mensagem (ou nenhuma), como "recebida" - a mensagem de verdade
+ * nunca era conferida. Pra um tipo de gatilho, a ocorrência é o PRÓPRIO
+ * script (contada uma vez por script com esse trigger), não um bloco dentro
+ * de `blocks`.
  */
 function locateOccurrence(character, type, k) {
     if (!character || !Array.isArray(character.scripts)) return null;
+    const isTriggerType = TRIGGER_BLOCK_TYPES.has(type);
     let globalCount = 0;
     const perTrigger = new Map();
     for (const script of character.scripts) {
         const tKey = triggerKeyOf(script);
+        if (isTriggerType) {
+            if (script.trigger !== type) continue;
+            globalCount++;
+            const soFar = (perTrigger.get(tKey) || 0) + 1;
+            perTrigger.set(tKey, soFar);
+            if (globalCount === k) {
+                return { trigger: script.trigger, triggerArg: script.triggerArg == null ? null : script.triggerArg, triggerKey: tKey, triggerCount: soFar };
+            }
+            continue;
+        }
         for (const block of script.blocks || []) {
             if (block.type !== type) continue;
             globalCount++;
@@ -1012,6 +1048,61 @@ function fillMissingDefaultCharacterHints(hints, manifest) {
 }
 
 /**
+ * Rede de segurança - decisão explícita do usuário [2026-10]: a PRIMEIRA
+ * dica de TAREFA (depois da mission_intro, que é sempre h1 - ver
+ * buildIntroHint/generateHintsCore) tem que ser sempre "coloque o cenário"
+ * da PRIMEIRA cena describable do projeto do professor. O SYSTEM_PROMPT já
+ * pede isso (regra OBRIGATÓRIO), mas essa regra só garante a ordem RELATIVA
+ * dentro de cada cena (scene_missing antes dos personagens DAQUELA cena) -
+ * nada impedia a LLM abrir com uma dica de personagem/mensagem de outra
+ * cena, ou simplesmente esquecer o scene_missing da Cena 1 (mesma lição já
+ * aprendida com default_character_present/character_missing acima: regra só
+ * no prompt não é garantia).
+ *
+ * Primeira cena = a primeira do manifesto com sceneMd5 real E ao menos um
+ * personagem describable (MESMO filtro de buildTranscript - uma cena sem
+ * nenhum personagem referenciável nunca entra na transcrição, então também
+ * não tem como ter uma dica gerada sobre ela). Se não houver nenhuma cena
+ * assim (projeto sem nada describable), não há o que garantir - mas esse
+ * caso nem chega aqui de verdade (generateHintsCore retorna antes, só com a
+ * intro, quando o transcript sai vazio).
+ *
+ * Se já existir uma dica scene_missing pra essa cena em QUALQUER posição,
+ * só MOVE ela pro início (preserva o texto que a LLM escreveu, nunca
+ * regenera - mesma filosofia de fillMissingDefaultCharacterHints: só força
+ * a ESTRUTURA, nunca reescreve o que já está certo). Se não existir
+ * nenhuma, injeta uma com texto padrão, igual ao exemplo do SYSTEM_PROMPT
+ * pra Cena 1 ("Que tal colocar o cenário de X?", sem falar em página nova).
+ */
+function ensureFirstHintIsSceneMissing(hints, manifest) {
+    const firstScene = manifest.scenes.find((s) => s.sceneMd5 && s.characters.some((c) => c.characterMd5));
+    if (!firstScene) return hints;
+
+    const key = sceneKey(firstScene.sceneMd5, firstScene.sceneOccurrence);
+    const idx = hints.findIndex((h) =>
+        h.when && h.when.type === 'scene_missing' && sceneKey(h.when.sceneMd5, h.when.sceneOccurrence) === key);
+
+    if (idx === 0) return hints; // já está certo
+
+    if (idx > 0) {
+        const rest = hints.slice();
+        const [existing] = rest.splice(idx, 1);
+        return [existing, ...rest];
+    }
+
+    const displayName = getBackgroundDisplayName(firstScene.sceneMd5);
+    const fallback = {
+        text: displayName ? `Que tal colocar o cenário da ${displayName}?` : 'Que tal colocar o cenário desta cena?',
+        when: {
+            type: 'scene_missing',
+            sceneMd5: firstScene.sceneMd5,
+            sceneOccurrence: firstScene.sceneOccurrence || 1,
+        },
+    };
+    return [fallback, ...hints];
+}
+
+/**
  * Rede de segurança pra "adicionar o personagem" nunca ser pulado - achado
  * em teste real: a LLM às vezes gera só a dica de COMPORTAMENTO
  * (character_no_script/character_missing_block_type) sem nunca ter gerado
@@ -1160,7 +1251,8 @@ function fillMissingCharacterAddedHints(hints, manifest) {
 // Fase 3 (E6b) - when.expected gerado por CÓDIGO
 // ---------------------------------------------------------------------------
 
-const TRIGGER_BLOCK_TYPES = new Set(['onflag', 'onclick', 'ontouch', 'onmessage']);
+// TRIGGER_BLOCK_TYPES mora mais acima no arquivo agora (locateOccurrence
+// também precisa dela) - ver aquela declaração.
 
 /**
  * scriptRef da LLM ("S2", "s2", 2 ou "2") -> índice 0-based em
@@ -1533,25 +1625,25 @@ function stripDashes(text) {
 }
 
 /**
- * Rede de segurança - achado em teste real [2026-10]: a regra "PERSONAGEM
- * CRIS É UM MENINO" no SYSTEM_PROMPT (ver lá) não é garantia nenhuma, mesma
- * lição já aprendida com todas as outras redes de segurança deste arquivo
+ * Rede de seguran\u00e7a - achado em teste real [2026-10]: a regra "PERSONAGEM
+ * CRIS \u00c9 UM MENINO" no SYSTEM_PROMPT (ver l\u00e1) n\u00e3o \u00e9 garantia nenhuma, mesma
+ * li\u00e7\u00e3o j\u00e1 aprendida com todas as outras redes de seguran\u00e7a deste arquivo
  * (ensureFirstHintIsSceneMissing, fillMissingDefaultCharacterHints etc.) - a
- * LLM continuava gerando "a Cris"/"essa Cris" mesmo com a instrução
- * explícita no prompt. Corrige DETERMINISTICAMENTE, por regex, o artigo/
+ * LLM continuava gerando "a Cris"/"essa Cris" mesmo com a instru\u00e7\u00e3o
+ * expl\u00edcita no prompt. Corrige DETERMINISTICAMENTE, por regex, o artigo/
  * pronome demonstrativo logo antes do nome "Cris" pra forma masculina -
- * escopo bem estreito de propósito (só a combinação artigo+nome, nunca um
+ * escopo bem estreito de prop\u00f3sito (s\u00f3 a combina\u00e7\u00e3o artigo+nome, nunca um
  * pronome solto como "ela"/"dela" sem o nome ao lado, que exigiria resolver
- * a quem o pronome se refere - risco de reescrever errado algo que já
- * estava certo). Preserva a capitalização da primeira letra do artigo
+ * a quem o pronome se refere - risco de reescrever errado algo que j\u00e1
+ * estava certo). Preserva a capitaliza\u00e7\u00e3o da primeira letra do artigo
  * (inicio de frase vs. meio de frase).
  */
-// (^|\s) em vez de \b antes do artigo - \b do JS não reconhece 'à'/'À' como
-// caractere de palavra, então \b nunca "fecha a fronteira" antes dele e o
-// padrão de "à Cris" nunca batia (achado testando os casos manualmente).
+// (^|\s) em vez de \b antes do artigo - \b do JS n\u00e3o reconhece '\u00e0'/'\u00c0' como
+// caractere de palavra, ent\u00e3o \b nunca "fecha a fronteira" antes dele e o
+// padr\u00e3o de "\u00e0 Cris" nunca batia (achado testando os casos manualmente).
 const CRIS_GENDER_FIXES = [
     [/(^|\s)([Aa])\s+Cris\b/g, (m, pre, art) => pre + (art === 'A' ? 'O' : 'o') + ' Cris'],
-    [/(^|\s)([Àà])\s+Cris\b/g, (m, pre, art) => pre + (art === 'À' ? 'Ao' : 'ao') + ' Cris'],
+    [/(^|\s)([\u00c0\u00e0])\s+Cris\b/g, (m, pre, art) => pre + (art === '\u00c0' ? 'Ao' : 'ao') + ' Cris'],
     [/(^|\s)([Dd])a\s+Cris\b/g, (m, pre, art) => pre + art + 'o Cris'],
     [/(^|\s)([Pp])ela\s+Cris\b/g, (m, pre, art) => pre + art + 'elo Cris'],
     [/(^|\s)([Ee])ssa\s+Cris\b/g, (m, pre, art) => pre + art + 'sse Cris'],
@@ -1678,12 +1770,18 @@ async function generateHintsCore(projectJson, hintContext, projectName, provider
     const withBlockArgs = fillBlockContext(fillBlockArgs(withOccurrence, manifest), manifest);
     const withCharacterAddedHints = fillMissingCharacterAddedHints(withBlockArgs, manifest);
     const withDefaultCharacterHints = fillMissingDefaultCharacterHints(withCharacterAddedHints, manifest);
+    // Decisão explícita do usuário [2026-10]: a primeira dica de tarefa tem
+    // que ser sempre "coloque o cenário" da primeira cena - ver docblock de
+    // ensureFirstHintIsSceneMissing. Depois dos outros reordenamentos/
+    // injeções de cena e personagem, antes de buildExpectedForHints (que só
+    // acrescenta when.expected, nunca reordena).
+    const withFirstSceneFirst = ensureFirstHintIsSceneMissing(withDefaultCharacterHints, manifest);
     // Fase 3 (E6b): when.expected por código (scriptRef/blockIndices da LLM
     // são só ponteiros; script/valores vêm do projeto) + validação de que
     // toda dica com expected dá 'done' no PRÓPRIO projeto do professor - ver
     // buildExpectedForHints. Por último entre as etapas de dica, pra ver a
     // lista final (inclusive as injetadas, que não são de bloco).
-    const withExpected = buildExpectedForHints(withDefaultCharacterHints, projectJson, { manifest });
+    const withExpected = buildExpectedForHints(withFirstSceneFirst, projectJson, { manifest });
     for (const entry of withExpected.report) {
         if (entry.status === 'legacy' && entry.reason === 'not_done') {
             console.warn('[hintsGeneration] when.expected removido (não dá done no projeto do professor):', entry.detail);

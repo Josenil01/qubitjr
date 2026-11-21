@@ -402,6 +402,17 @@ function evaluateGroup (group, script) {
         }
         result = result || {state: 'done'};
         result.scriptIndex = script.scriptIndex;
+        // 'partial': essa dica cobre VÁRIOS blocos (covered.length > 1, ex.:
+        // "velocidade + andar" bundlados numa dica só) e o aluno já colocou
+        // PELO MENOS UM deles - a posição 'missing' escolhida acima é o resto
+        // do combo, não "ainda não chegou nesse passo". Dica de UM bloco só
+        // nunca é 'partial' (não tem com o que comparar) - preserva o
+        // comportamento de antes pra hint-por-passo (vale só a proativa).
+        if (result.state === 'pending' && result.reason === 'missing' && item.covered.length > 1) {
+            result.partial = item.covered.some(function (c) {
+                return c !== result.teacherIndex && al.teacherToStudent[c] >= 0;
+            });
+        }
         out.set(item.hint.id, result);
     });
     return out;

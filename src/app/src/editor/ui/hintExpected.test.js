@@ -367,6 +367,54 @@ describe('R3 - estados pendentes e zerados (nunca "valor errado")', () => {
     });
 });
 
+describe('R9 - "missing" dentro de um combo (setspeed + movimento numa dica só)', () => {
+    // Reprodução do bug relatado (missão 84): dica bundlada "velocidade + andar
+    // pra direita" (regra "UMA AÇÃO POR DICA" permite setspeed ir junto do
+    // movimento que ele acompanha). Aluno arrasta só o "andar" - falta o
+    // "velocidade" no MESMO script.
+    const comboScript = script(onflag(), b('setspeed', 2), b('right', 16));
+    const hint = {
+        id: 'combo1', text: 'Dica: Carro anda pra direita com velocidade normal',
+        when: {
+            type: 'character_missing_block_type', sceneMd5: SCENE, sceneOccurrence: 1,
+            characterMd5: RUBY, blockTypes: ['setspeed', 'right'], trigger: 'onflag',
+            expected: {trigger: 'onflag', triggerArg: null, script: scriptTokens(comboScript), covered: [0, 1]},
+        },
+    };
+    const hints = [hint];
+    const studentWith = (...scripts) => computeDetailedManifest(project([{md5: SCENE, sprites: [{md5: RUBY, name: 'Carro', scripts}]}]));
+
+    it('só o "right" (sem "setspeed"): fica pending/missing, mas agora GERA alerta ("missing")', () => {
+        const detailed = studentWith(script(onflag(), b('right', 16)));
+        const alerts = alignAlerts(hints, detailed);
+        expect(alerts).toHaveLength(1);
+        expect(alerts[0]).toMatchObject({kind: 'missing', blockType: 'setspeed', reason: 'missing', teacherIndex: 0, idleMs: 2000});
+        // A dica continua pendente de verdade (não "resolvida" só pelo "right").
+        expect(hintConditionHolds(hint, detailed)).toBe(true);
+        const d = decide(hints, detailed, {idleMs: 2000});
+        expect(d.action.kind).toBe('alert');
+        expect(d.action.info.kind).toBe('missing');
+    });
+
+    it('aluno não começou o script nenhum (reason no_script): continua SEM alerta - vale só a proativa', () => {
+        const detailed = studentWith(script(onclick(), b('hop', 1)));
+        expect(alignAlerts(hints, detailed)).toEqual([]);
+        expect(hintConditionHolds(hint, detailed)).toBe(true);
+        expect(decide(hints, detailed).action).toEqual({kind: 'hint', hint});
+    });
+
+    it('depois de completar (setspeed + right): sem alerta, dica resolvida', () => {
+        const detailed = studentWith(script(onflag(), b('setspeed', 2), b('right', 16)));
+        expect(alignAlerts(hints, detailed)).toEqual([]);
+        expect(hintConditionHolds(hint, detailed)).toBe(false);
+    });
+
+    it('alertText do kind "missing" reaproveita o texto da própria dica', () => {
+        const info = alignAlerts(hints, studentWith(script(onflag(), b('right', 16))))[0];
+        expect(alertText(info, hint)).toBe('Quase lá! Ainda falta um bloco nesse script. Dica: Carro anda pra direita com velocidade normal');
+    });
+});
+
 describe('R3 - assinatura estável, sem repetir o mesmo alerta', () => {
     const teacher = project([{md5: SCENE, sprites: [{md5: RUBY, name: 'Ruby', scripts: [script(onflag(), b('forward', 3))]}]}]);
     const hints = expectedHintsFor(teacher);
